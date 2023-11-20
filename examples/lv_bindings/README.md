@@ -1,0 +1,1 @@
+Currently, lv_micropython will not compile for ESP32S3 targets.  Replace micropython/lib/lv_bindings/mkrules/mkrules.cmake file with the one from this directory.  That will will remove all dependencies on ESP for the LVGL bindings, and you can compile as usual.
