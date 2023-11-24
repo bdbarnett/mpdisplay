@@ -1,6 +1,8 @@
 # mpdisplay
 C Display Drivers for Micropython including LV_Micropython
 
+Note: this is a work in progress.  It is completely usable now, but the API will likely change.
+
 Supports SPI and i8080 interfaces for many graphics controllers including but not limited to GC9107, GC9A01, ILI9342c, ST7735, ST7789, and ST7796.  For most graphics chips, all that is needed to add them is knowing the chips init string and rotation modes.  There will be many examples in the examples/config folder soon as I find them.
 
 NOTE:  These directions will be updated soon.  This is only a rough draft and its intended audience is people who are already familiar with building lv_micropython from source, but possibly not for ESP targets.
