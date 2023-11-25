@@ -1,9 +1,16 @@
 # SPDX-FileCopyrightText: 2020 Melissa LeBlanc-Williams for Adafruit Industries
 #
 # SPDX-License-Identifier: MIT
-#
+
 # Backlight - adapted from displayio.Display at:
 # https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py
+#
+# Takes a Pin object as a parameter and attemps to configure it as a PWM to enable
+# setting a variable brightness from 0.0 (fully off) to 1.0 (fully on).  If PWM fails
+# still allows controlling with 0.0 for off and any amount greater than 0.0 but less 
+# than or equal to 1.0 for on.  Can reverse polarity by setting on_high = false, making
+# brightness(1.0) on, regardless of whether that is a 1 or 0 on the Pin object.
+# Optionally allows setting the brightness when the instance is created.  Defaults to 1.0.
 
 BACKLIGHT_IN_OUT = 1
 BACKLIGHT_PWM = 2
