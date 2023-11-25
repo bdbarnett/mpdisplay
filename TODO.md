@@ -12,3 +12,5 @@ Not sure if this is necessary.  Currently hardcoded to heap_caps_alloc
 6) create a flush_cb wrapper for blit in C instead of using Python flush_cb
 7) Consider adding I2c_bus
 8) Consider adding Monochrome displays
+9) Move lvmp_devices to its own repo for use with other display drivers
+10) add encoders to example display_driver.py
