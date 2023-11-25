@@ -16,20 +16,22 @@ typedef struct _mpdisplay_display_rotation_t {
 
 typedef struct _mpdisplay_display_obj_t {
     mp_obj_base_t base;
-    mp_obj_t bus;
-    bus_handle_t bus_handle;
-    esp_lcd_panel_io_handle_t io_handle;
-    esp_lcd_panel_handle_t panel_handle;
-    bool inversion_mode;
-    uint16_t width;                         // logical width (after rotation)
-    uint16_t height;                        // logical height (after rotation)
-    uint8_t rotation;                       // current rotation
-    mpdisplay_display_rotation_t *rotations;            // list of rotation tuples
-    mp_obj_t custom_init;                   // custom init sequence
-    uint8_t rotations_len;                  // number of rotations
-    gpio_num_t rst;
-    bool swap_color_bytes;                  // swap color bytes (SPI only, I80 is builtin)
-} mpdisplay_obj_t;
+    bus_handle_t bus_handle;                    // bus handle
+    esp_lcd_panel_io_handle_t io_handle;        // io handle
+    esp_lcd_panel_handle_t panel_handle;        // panel handle
+    mp_obj_t ready_cb_func;                     // callback function
+    uint8_t rotations_len;                      // number of rotations
+    mp_obj_t bus;                               // bus object
+    uint16_t width;                             // logical width (after rotation)
+    uint16_t height;                            // logical height (after rotation)
+    uint16_t bpp;                               // bits per pixel
+    gpio_num_t rst;                             // reset pin
+    uint8_t rotation;                           // current rotation
+    bool bgr;                                   // color order
+    bool invert_color;                          // invert color
+    mp_obj_t init_sequence;                     // custom init sequence
+    mpdisplay_display_rotation_t *rotations;    // list of rotation tuples
+} mpdisplay_display_obj_t;
 
 mp_obj_t mpdisplay_display_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
 

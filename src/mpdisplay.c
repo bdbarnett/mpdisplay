@@ -32,7 +32,6 @@
 #include "py/runtime.h"
 
 #include "mpdisplay.h"
-#include "mpdisplay_common.h"
 
 // Default mpdisplay display orientation tables
 // can be overridden during init()
@@ -117,63 +116,47 @@ mpdisplay_display_rotation_t *ROTATIONS[] = {
     NULL
 };
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_width_obj, mpdisplay_display_width);
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_height_obj, mpdisplay_display_height);
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(mpdisplay_display_register_cb_obj, mpdisplay_display_register_cb);
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_reset_obj, mpdisplay_display_reset);
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_inversion_mode_obj, mpdisplay_display_inversion_mode);
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_rotation_obj, mpdisplay_display_rotation);
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_get_buf_obj, mpdisplay_display_get_buf);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpdisplay_display_blit_obj, 6, 6, mpdisplay_display_blit);
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_init_obj, mpdisplay_display_init);
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_deinit_obj, mpdisplay_display_deinit);
+// print function called in place of Micropython's __repr__ dunder method
+STATIC void mpdisplay_display_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
+    (void)kind;
+    mpdisplay_display_obj_t *self = MP_OBJ_TO_PTR(self_in);
+    mp_printf(print, "Display(bus, width=%u, height=%u, bpp=%u, reset=%u, rotation=%u, bgr=%s, invert_color=%s, init_sequence=(...), rotations=(...), backlight=Backlight(...)", 
+        self->width, self->height, self->bpp, self->rst, self->rotation, 
+        self->bgr ? "True" : "False", self->invert_color ? "True" : "False");
+}
 
-//
-// Define the Display class
-//
+/// .width()
+/// Returns the width of the display in pixels.
+STATIC mp_obj_t mpdisplay_display_width(mp_obj_t self_in) {
+    mpdisplay_display_obj_t *self = MP_OBJ_TO_PTR(self_in);
+    return mp_obj_new_int(self->width);
+}
 
-STATIC const mp_rom_map_elem_t mpdisplay_display_locals_dict_table[] = {
-    {MP_ROM_QSTR(MP_QSTR_reset), MP_ROM_PTR(&mpdisplay_display_reset_obj)},
-    {MP_ROM_QSTR(MP_QSTR_inversion_mode), MP_ROM_PTR(&mpdisplay_display_inversion_mode_obj)},
-    {MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&mpdisplay_display_init_obj)},
-    {MP_ROM_QSTR(MP_QSTR_rotation), MP_ROM_PTR(&mpdisplay_display_rotation_obj)},
-    {MP_ROM_QSTR(MP_QSTR_width), MP_ROM_PTR(&mpdisplay_display_width_obj)},
-    {MP_ROM_QSTR(MP_QSTR_height), MP_ROM_PTR(&mpdisplay_display_height_obj)},
-    {MP_ROM_QSTR(MP_QSTR_deinit), MP_ROM_PTR(&mpdisplay_display_deinit_obj)},
-    {MP_ROM_QSTR(MP_QSTR_get_buf), MP_ROM_PTR(&mpdisplay_display_get_buf_obj)},
-    {MP_ROM_QSTR(MP_QSTR_register_cb), MP_ROM_PTR(&mpdisplay_display_register_cb_obj)},
-    {MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&mpdisplay_display_blit_obj)},
-};
-STATIC MP_DEFINE_CONST_DICT(mpdisplay_display_locals_dict, mpdisplay_display_locals_dict_table);
+/// .height()
+/// Returns the height of the display in pixels.
+STATIC mp_obj_t mpdisplay_display_height(mp_obj_t self_in) {
+    mpdisplay_display_obj_t *self = MP_OBJ_TO_PTR(self_in);
+    return mp_obj_new_int(self->height);
+}
 
-#if MICROPY_OBJ_TYPE_REPR == MICROPY_OBJ_TYPE_REPR_SLOT_INDEX
+/// .register_cb(function)
+/// Register the ready callback function and argument to be called from lcd_panel_done()
+/// e.g. function(argument)
+/// required parameters:
+/// -- function: called when blit is completed
+STATIC mp_obj_t mpdisplay_display_register_cb(mp_obj_t self_in, mp_obj_t function) {
+    mpdisplay_display_obj_t *self = self_in;
+    if (mp_obj_is_callable(function)) {
+        self->ready_cb_func = function;
+    } else {
+        mp_raise_TypeError("Callback is not callable");
+    }
+    return mp_const_none;
+}
 
-MP_DEFINE_CONST_OBJ_TYPE(
-    mpdisplay_display_type,
-    MP_QSTR_Display,
-    MP_TYPE_FLAG_NONE,
-    print, mpdisplay_display_print,
-    make_new, mpdisplay_display_make_new,
-    locals_dict, &mpdisplay_display_locals_dict);
-
-#else
-
-const mp_obj_type_t mpdisplay_display_type = {
-    {&mp_type_type},
-    .name = MP_QSTR_Display,
-    .print = mpdisplay_display_print,
-    .make_new = mpdisplay_display_make_new,
-    .locals_dict = (mp_obj_dict_t *)&mpdisplay_display_locals_dict,
-};
-
-#endif
-
-//
 // Find the Rotation table for the given width and height
 // return the first rotation table if no match is found.
-//
-
-mpdisplay_display_rotation_t *set_rotations(uint16_t width, uint16_t height) {;
+STATIC mpdisplay_display_rotation_t *set_default_rotations(uint16_t width, uint16_t height) {;
     for (int i=0; i < MP_ARRAY_SIZE(ROTATIONS); i++) {
         mpdisplay_display_rotation_t *rotation;
         if ((rotation = ROTATIONS[i]) != NULL) {
@@ -185,55 +168,95 @@ mpdisplay_display_rotation_t *set_rotations(uint16_t width, uint16_t height) {;
     return ROTATIONS[0];
 }
 
-///
-/// .__init__(bus, width, height, reset, rotations, rotation, custom_init, inversion_mode)
+// Define the Display class
+
+// bindings for Display class functions in this file
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_width_obj, mpdisplay_display_width);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_height_obj, mpdisplay_display_height);
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_register_cb_obj, mpdisplay_display_register_cb);
+
+// bindings for Display class functions provided in architechture specific files
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_rotation_obj, mpdisplay_display_rotation);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpdisplay_display_blit_obj, 6, 6, mpdisplay_display_blit);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_deinit_obj, mpdisplay_display_deinit);
+
+STATIC const mp_rom_map_elem_t mpdisplay_display_locals_dict_table[] = {
+    {MP_ROM_QSTR(MP_QSTR_width), MP_ROM_PTR(&mpdisplay_display_width_obj)},
+    {MP_ROM_QSTR(MP_QSTR_height), MP_ROM_PTR(&mpdisplay_display_height_obj)},
+    {MP_ROM_QSTR(MP_QSTR_register_cb), MP_ROM_PTR(&mpdisplay_display_register_cb_obj)},
+    {MP_ROM_QSTR(MP_QSTR_rotation), MP_ROM_PTR(&mpdisplay_display_rotation_obj)},
+    {MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&mpdisplay_display_blit_obj)},
+    {MP_ROM_QSTR(MP_QSTR_deinit), MP_ROM_PTR(&mpdisplay_display_deinit_obj)},
+};
+STATIC MP_DEFINE_CONST_DICT(mpdisplay_display_locals_dict, mpdisplay_display_locals_dict_table);
+
+MP_DEFINE_CONST_OBJ_TYPE(
+    mpdisplay_display_type,
+    MP_QSTR_Display,
+    MP_TYPE_FLAG_NONE,
+    print, mpdisplay_display_print,
+    make_new, mpdisplay_display_make_new,
+    locals_dict, &mpdisplay_display_locals_dict);
+
+/// .__init__(bus, width, height, bpp, reset, rotation, bgr, invert_color, init_sequence, rotations)
 /// required parameters:
 /// -- bus: bus
 /// -- width: width of the display
 /// -- height: height of the display
 /// optional keyword parameters:
+/// -- bpp: color depth - bits per pixel
 /// -- reset: reset pin
-/// -- rotations: number of rotations
 /// -- rotation: rotation
-/// -- inversion_mode: inversion
-///
-
+/// -- bgr: color order, True = BGR, False = RGB
+/// -- invert_color: invert color data lines (polarity)
+/// -- init_sequence: sequence of commands to initialize the display
+/// -- rotations: list of rotation tuples
 mp_obj_t mpdisplay_display_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
     enum {
         ARG_bus,
         ARG_width,
         ARG_height,
+        ARG_bpp,
         ARG_reset,
-        ARG_rotations,
         ARG_rotation,
-        ARG_custom_init,
-        ARG_inversion_mode,
+        ARG_bgr,
+        ARG_invert_color,
+        ARG_init_sequence,
+        ARG_rotations,
     };
 
     STATIC const mp_arg_t allowed_args[] = {
         {MP_QSTR_bus, MP_ARG_OBJ | MP_ARG_REQUIRED, {.u_obj = MP_OBJ_NULL}},
-        {MP_QSTR_width, MP_ARG_INT | MP_ARG_REQUIRED, {.u_int = 0}},
-        {MP_QSTR_height, MP_ARG_INT | MP_ARG_REQUIRED, {.u_int = 0}},
+        {MP_QSTR_width, MP_ARG_INT | MP_ARG_REQUIRED | MP_ARG_KW_ONLY, {.u_int = 0}},
+        {MP_QSTR_height, MP_ARG_INT | MP_ARG_REQUIRED | MP_ARG_KW_ONLY, {.u_int = 0}},
+        {MP_QSTR_bpp, MP_ARG_INT | MP_ARG_KW_ONLY, {.u_int = 16}},
         {MP_QSTR_reset, MP_ARG_INT | MP_ARG_KW_ONLY, {.u_int = -1}},
-        {MP_QSTR_rotations, MP_ARG_OBJ | MP_ARG_KW_ONLY, {.u_obj = MP_OBJ_NULL}},
         {MP_QSTR_rotation, MP_ARG_INT | MP_ARG_KW_ONLY, {.u_int = 0}},
-        {MP_QSTR_custom_init, MP_ARG_KW_ONLY | MP_ARG_OBJ, {.u_obj = MP_OBJ_NULL}},
-        {MP_QSTR_inversion_mode, MP_ARG_BOOL | MP_ARG_KW_ONLY, {.u_bool = true}},
+        {MP_QSTR_bgr, MP_ARG_BOOL | MP_ARG_KW_ONLY, {.u_bool = false}},
+        {MP_QSTR_invert_color, MP_ARG_BOOL | MP_ARG_KW_ONLY, {.u_bool = true}},
+        {MP_QSTR_init_sequence, MP_ARG_KW_ONLY | MP_ARG_OBJ, {.u_obj = mp_const_none}},
+        {MP_QSTR_rotations, MP_ARG_OBJ | MP_ARG_KW_ONLY, {.u_obj = mp_const_none}},
     };
 
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all_kw_array(n_args, n_kw, all_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    mpdisplay_obj_t *self = m_new_obj(mpdisplay_obj_t);
+    mpdisplay_display_obj_t *self = m_new_obj(mpdisplay_display_obj_t);
     self->base.type = &mpdisplay_display_type;
     self->bus = args[ARG_bus].u_obj;
     self->width = args[ARG_width].u_int;
     self->height = args[ARG_height].u_int;
+    self->bpp = args[ARG_bpp].u_int;
     self->rst = args[ARG_reset].u_int;
-    self->custom_init = args[ARG_custom_init].u_obj;
-    self->inversion_mode = args[ARG_inversion_mode].u_bool;
+    self->bgr = args[ARG_bgr].u_bool;
+    self->invert_color = args[ARG_invert_color].u_bool;
+    self->init_sequence = args[ARG_init_sequence].u_obj;
 
-    if (args[ARG_rotations].u_obj != MP_OBJ_NULL) {
+    self->rotations = set_default_rotations(self->width, self->height);
+    
+    self->rotations_len = 4;
+    self->ready_cb_func = mp_const_none;
+    if (args[ARG_rotations].u_obj != mp_const_none) {
         size_t len;
         mp_obj_t *rotations_array = MP_OBJ_NULL;
         mp_obj_get_array(args[ARG_rotations].u_obj, &len, &rotations_array);
@@ -242,7 +265,6 @@ mp_obj_t mpdisplay_display_make_new(const mp_obj_type_t *type, size_t n_args, si
         for (int i = 0; i < self->rotations_len; i++) {
             mp_obj_t *rotation_tuple = NULL;
             size_t rotation_tuple_len = 0;
-
             mp_obj_tuple_get(rotations_array[i], &rotation_tuple_len, &rotation_tuple);
             if (rotation_tuple_len != 7) {
                 mp_raise_ValueError(MP_ERROR_TEXT("rotations tuple must have 7 elements"));
@@ -258,18 +280,23 @@ mp_obj_t mpdisplay_display_make_new(const mp_obj_type_t *type, size_t n_args, si
     }
 
     self->rotation = args[ARG_rotation].u_int % self->rotations_len;
+
+    mpdisplay_display_init(self);
+
     return MP_OBJ_FROM_PTR(self);
 }
 
-//
 // Define the mpdisplay module
-//
+
+// bindings for mpdisplay module functions provided in architechture specific files
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_allocate_buffer_obj, mpdisplay_allocate_buffer);
 
 STATIC const mp_map_elem_t mpdisplay_module_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_mpdisplay)},
     {MP_ROM_QSTR(MP_QSTR_Display), (mp_obj_t)&mpdisplay_display_type},
     {MP_ROM_QSTR(MP_QSTR_I80_bus), (mp_obj_t)&mpdisplay_i80_bus_type},
     {MP_ROM_QSTR(MP_QSTR_Spi_bus), (mp_obj_t)&mpdisplay_spi_bus_type},
+    {MP_ROM_QSTR(MP_QSTR_allocate_buffer), (mp_obj_t)&mpdisplay_allocate_buffer_obj},
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_mpdisplay_globals, mpdisplay_module_globals_table);
@@ -278,9 +305,5 @@ const mp_obj_module_t mp_module_mpdisplay = {
     .base = {&mp_type_module},
     .globals = (mp_obj_dict_t *)&mp_module_mpdisplay_globals,
 };
-
-//
-// Register the mpdisplay module
-//
 
 MP_REGISTER_MODULE(MP_QSTR_mpdisplay, mp_module_mpdisplay);
