@@ -1,3 +1,4 @@
+0) Add an mpdisplay_simpletest.py file to test the display without using LVGL
 1) Change from SPI object being initialized in mpdisplay_esp.c to it being passed as an argement to mpdisplay.Spi_bus, eg:
     spi = machine.SPI(1, mosi=35, sck=36)
     bus = mpdisplay.Spi_bus(spi, dc=8, cs=17)
