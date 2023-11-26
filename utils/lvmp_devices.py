@@ -1,5 +1,18 @@
 """
-Documentation coming soon     
+Documentation coming soon 
+Usage example:
+    devices = Devices(
+        display_drv = display_drv,
+        bgr = True,
+        factor = 10,
+        blit_func = display_drv.blit,
+        alloc_buf_func = mpdisplay.allocate_buffer,
+        reg_ready_cb_func = display_drv.register_cb,
+        touch_read_func = touch_drv.get_positions,
+        touch_rotation = 5,
+        enc_funcs = [enc1_funcs],
+        )
+    devices.list()
 """
 
 import lvgl as lv
@@ -12,15 +25,14 @@ class Devices():
     """
 
     def __init__(self, *, display_drv=None, bgr=False, factor=10, double_buffer=True,
-                 blit_func=None, register_ready_cb_func=None, alloc_buf_func=None,
+                 blit_func=None, reg_ready_cb_func=None, alloc_buf_func=None,
                  height=None, width=None, render_mode=lv.DISP_RENDER_MODE.PARTIAL,
-                 wrap_flush=True, touch_read_func=None, touch_rotation=None,
-                 encoder_read_funcs=None, encoder_pressed_funcs=None,
+                 wrap_flush=True, touch_read_func=None, touch_rotation=None, encoder_funcs=None, 
                  init=True, asynchronous=False, exception_sink=None, default_group=True):
 
         self.event_loop = self._init_lv(asynchronous, exception_sink) if init else None
         self.display = self._attach_display(display_drv, bgr, factor, double_buffer,
-                                            blit_func, register_ready_cb_func, alloc_buf_func,
+                                            blit_func, reg_ready_cb_func, alloc_buf_func,
                                             height, width, render_mode, wrap_flush,
                                             ) if blit_func else None
         self.initial_group = self._create_group(default_group)
@@ -50,7 +62,7 @@ class Devices():
 ####################### Display methods
 
     def _attach_display(self, display_drv, bgr, factor, double_buffer,
-                        blit_func, register_ready_cb_func, alloc_buf_func,
+                        blit_func, reg_ready_cb_func, alloc_buf_func,
                         height, width, render_mode, wrap_flush):
         self.display_drv = display_drv
         self._blit = blit_func
@@ -62,9 +74,9 @@ class Devices():
         self._get_buf(width, height, factor, double_buffer, alloc_buf_func)
         
         display = lv.disp_create(width, height)
-        if register_ready_cb_func:
+        if reg_ready_cb_func:
             self._blit_is_blocking = False
-            register_ready_cb_func(display.flush_ready)
+            reg_ready_cb_func(display.flush_ready)
         display.set_flush_cb(self._flush_cb if wrap_flush else self._blit)
         display.set_draw_buffers(self._buf1, self._buf2, len(self._buf1), render_mode)
         display.set_color_format(lv.COLOR_FORMAT.NATIVE if bgr else lv.COLOR_FORMAT.NATIVE_REVERSED)
@@ -136,20 +148,19 @@ class Devices():
 
 ####################### Encoder methods
 
-    def _attach_encoders(self, encoder_read_funcs, encoder_pressed_funcs):
+    def _attach_encoders(self, encoder_funcs):
         """
-        encoder_read_funcs:  List of functions to read encoder(s) values
-        encoder_pressed_funcs: List of functions to read encoder button(s) values.
-        len(encoder_read_funcs) will be created. If there are fewer encoder_pressed_funcs, the
-        remaining encoders will be created without buttons.  If there are more encoder_pressed_funcs,
-        the remaining buttons will be ignored.  See the notes on Encoder class for more details.
+        encoder_funcs:  List of (read_func, pressed_func) tuples
+        read_func: Function to read encoder values
+        pressed_func: Function to read encoder button value
+        If an encoder doesn't have an associated button, set pressed_func to None.
+        Example:  
+            devices = Devices(
+                encoder_funcs = [(enc1.value, enc1_btn.value), (enc2.value, Mone)],
+                )
         """
         encoders = []
-        for i, read_func in enumerate(encoder_read_funcs):
-            if len(encoder_pressed_funcs) > i:
-                pressed_func = encoder_pressed_funcs[i]
-            else:
-                pressed_func = None
+        for (read_func, pressed_func) in encoder_funcs:
             encoder = Encoder(read_func, pressed_func)
             self._indev_setup(encoder.indev)
             encoders.append(encoder)
@@ -168,7 +179,8 @@ class Encoder():
                    If pressed_func isn't specified, it will be configured to always return False (never pressed).
                    If you are reading a Pin object that has a pullup and normally open switch,
                    create a function to change to the opposite value, for example:
-                        def is_encoder_pressed(): not button_pin.value(), or
+                        def is_encoder_pressed(): not button_pin.value()
+                        or
                         is_encoder_pressed = lambda : not button_pin.value()
     long_press_duration:  Number of milliseconds for button to be pressed before calling the long_pressed method
     """
