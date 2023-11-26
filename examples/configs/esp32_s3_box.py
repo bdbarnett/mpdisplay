@@ -32,5 +32,6 @@ display_drv = mpdisplay.Display(
     rotation=0,
     bgr=True,
     invert_color=False,
-    backlight=Backlight(Pin(45, Pin.OUT), on_high=True),
 )
+
+backlight=Backlight(Pin(45, Pin.OUT), on_high=True)

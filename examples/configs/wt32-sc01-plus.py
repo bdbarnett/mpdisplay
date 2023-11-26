@@ -1,6 +1,6 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 # Usage:
-# `from <this file> import display_drv, backlight`
+# `from <this file> import display_drv``
 # or just use this file as your main.py and add your code.
 
 import mpdisplay
@@ -23,7 +23,7 @@ display_drv = mpdisplay.Display(
     width=320,
     height=480,
     bpp=16,
-    reset=-1,  # Reset pin 4 is shared with touch.  Should be controlled outside the driver.
+    reset=4,
     rotation=0,
     bgr=True,
     invert_color=True,

@@ -34,5 +34,6 @@ display_drv = mpdisplay.Display(
     invert_color=True,
     init_sequence=init_sequence,
     rotations=rotations,
-    backlight=None,
 )
+
+backlight=None
