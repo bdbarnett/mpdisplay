@@ -1,6 +1,6 @@
 Compiling lv_micropython for ESP32 platform including mpdisplay drivers
 
-These directions work under WSL, but can be adapted for your build platform.  See https://github.com/lvgl/lv_micropython for prerequisites.
+These directions work under Ubuntu on WSL, but can be adapted for your build platform.  See https://github.com/lvgl/lv_micropython for prerequisites.
 
 
 Install the ESP-IDF.  You need the ESP-IDF for Micropython and these mpdisplay drivers, not for LVGL since the replacement mkrules.cmake file removes the ESP-IDF dependency for lv_binding_micropython.  Currently lv_micropython includes Micropython 1.20, which uses ESP-IDF version 4.x.  Micropython version 1.21 switched to ESP-IDF version 5.x, so your ESP-IDF version will need to be upgraded when lv_micropython is upgraded to Micropython 1.21.  mpdisplay works with ESP-IDF 5.x as well.
