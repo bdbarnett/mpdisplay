@@ -13,15 +13,10 @@ mpdisplay is based on s3lcd at https://github.com/russhughes/s3lcd.  Many thanks
 
 mpdisplay currently only supports ESP32 targets, but will likely include STM32, RP2, MIMXRT and non-platform specific in the future.  It has been tested on multiple ESP32S3 boards with multiple types of displays, but should work as-is on any ESP32 microcontroller supported by ESP_LCD in ESP-IDF.
 
-To compile lv_micropython with these drivers, please see docs/LV_MICROPYTHON.MD.
+For directions on how to compile Micropython with these drivers, please see docs/COMPILING.md.
 
+Example config and driver files adapted from S3LCD are in the examples folder.
 
-In the coming days, I will create example configuration files and put them in the examples/configs folder here.  For now, download config files from
-https://github.com/russhughes/s3lcd/tree/main/examples/configs
-You will need to change all references to s3lcd to mpdisplay, change SPI_BUS to Spi_bus or I80_BUS to I80_bus to match Python naming conventions for classes, change ESPLCD to Display, and remove the color_space, dma_rows and options parameters, as they are not used by mpdisplay.  Also, s3lcd drivers require calling .init() after the display object has been created, whereas the display object is already inited in mpdisplay objects and should not be called again.  Finally, add add display_drv = config() to the bottom of the file.  Then you can create the display object like:
+TODO:  Add an mpdisplay_simpletest.py file to test the display without using LVGL.
 
-from tft_config import display_drv
-
-Don't worry, I'll make this simpler and have better examples in the near future.
-
-TODO:  Add info about creating buffers and lv.disp_create() or lv.display_create()
+For an easy way to use these drivers with lv_micropython, please see the example display_driver.py at https://github.com/bdbarnett/lvmp_devices
