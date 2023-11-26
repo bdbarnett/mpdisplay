@@ -1,4 +1,4 @@
-Background / Project goals
+# Project goals
 1) Decouple lvgl from esp-idf
 Currently, lv_binding_micropython includes hardware drivers written in C for several display types including ILI9341, ST7789 and GC9A01.  Because each architecture has it's own way of interacting with hardware, including DMA and communications protocols, the C drivers included in lv_binding_micropython are architecture-specific.  The ESP32-specific drivers are written based on ESP-IDF version 4.x.  Those drivers will compile for the original ESP32 microcontroller with ESP-IDF 4.x, but will not compile for newer microcontrollers like the ESP32-S3.  Also, Micropython switched to using ESP-IDF 5.x with Micropython version 1.21. Currently, it is impossible to compile unmodified lv_micropython for an ESP32-S3 target because the drivers, not the binding itself, are tied to an outdated version of ESP-IDF.  The ESP32-S3 is a powerful, very popular and readily available platform, so the incompatibilty has a huge impact on the community.
 
