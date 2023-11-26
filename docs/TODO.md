@@ -4,8 +4,8 @@
     bus = mpdisplay.Spi_bus(spi, dc=8, cs=17)
 2) Move swap_color_bytes from bus constructor to Display constructor
 3) use esp_lcd_panel_dev_config_t .data_endian in IDF > 5.0 to swap color bytes - should take place of lv.COLOR.NATIVE_REVERSED which was removed in v9.0
-- ESP-IDF v4.4.6 has swap_color_bytes in esp_lcd_panel_io_i80_config_t, but no equivalent for SPI
-- ESP-IDF v5.1.2 has the above, but also adds data_endian to esp_lcd_panel_dev_config_t, which applies to SPI and i80
+    -ESP-IDF v4.4.6 has swap_color_bytes in esp_lcd_panel_io_i80_config_t, but no equivalent for SPI
+    -ESP-IDF v5.1.2 has the above, but also adds data_endian to esp_lcd_panel_dev_config_t, which applies to SPI and i80
 4) Add an arg for CAP.  Currently hardcoded to MALLOC_CAP_DMA
 - Options are: MALLOC_CAP_DMA, _32bit, _8bit, _DMA, _SPIRAM, _INTERNAL, _DEFAULT, _IRAM_8BIT, _TCM
 5) Possibly switch to heap_caps_aligned_alloc (32-bit / 4 byte alignment).
