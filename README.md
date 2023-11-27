@@ -11,7 +11,7 @@ Please see the docs/OBJECTIVES.md file for a not so short explanation of the rea
 
 mpdisplay is based on s3lcd at https://github.com/russhughes/s3lcd.  Many thanks to Russ Hughes.  s3lcd was modified to create dma buffers to be used by any external graphics library including but not limited to lv_micropthon.  The only useful function exposed to Micropython, other than configuration and housekeeping functions, is `blit`.  All drawing, font, bitmap, png, and file functions have been removed, with the idea those will be provided by the graphics library using these drivers.  Also, the src files have had the ESP32 specific portions moved into separate files, facilitating adding other platform-specific functionality later.  LVGL under Micropython is the test case, but others can work so long as they call this driver's blit function.
 
-mpdisplay currently only supports ESP32 targets, but will likely include STM32, RP2, MIMXRT and non-platform specific in the future.  It has been tested on multiple ESP32S3 boards with multiple types of displays, but should work as-is on any ESP32 microcontroller supported by ESP_LCD in ESP-IDF.
+mpdisplay currently only supports ESP32 targets, but will likely include STM32, RP2, MIMXRT and non-platform specific targets in the future.  It has been tested on multiple ESP32S3 boards with multiple types of displays, but should work as-is on any ESP32 microcontroller supported by ESP_LCD in ESP-IDF.
 
 For directions on how to compile Micropython with these drivers, please see docs/COMPILING.md.
 
