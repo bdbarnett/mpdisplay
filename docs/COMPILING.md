@@ -2,9 +2,9 @@
 
 These directions are for compiling lv_micropython, but compiling for the base Micropython is very similar.  I plan to create separate directions in the future.  These directions work under Ubuntu on WSL, but can be adapted for your build platform.  See https://github.com/lvgl/lv_micropython for prerequisites.
 
-Install the ESP-IDF.  You need the ESP-IDF for Micropython and these mpdisplay drivers, not for LVGL since the replacement mkrules.cmake file removes the ESP-IDF dependency for lv_binding_micropython.  Currently lv_micropython includes Micropython 1.20, which uses ESP-IDF version 4.x.  Micropython version 1.21 switched to ESP-IDF version 5.x, so your ESP-IDF version will need to be upgraded when lv_micropython is upgraded to Micropython 1.21.  mpdisplay works with ESP-IDF 5.x as well.
+Install the ESP-IDF.  The replacement mkrules.cmake file below removes the ESP-IDF dependency for lv_binding_micropython, but ESP-IDF is still required for Micropython and these mpdisplay drivers.  Currently lv_micropython includes Micropython 1.20, which uses ESP-IDF version 4.x.  Micropython version 1.21 switched to ESP-IDF version 5.x, so your ESP-IDF version will need to be upgraded when lv_micropython is upgraded to Micropython 1.21.  mpdisplay works with ESP-IDF 5.x but has not been significantly tested.
 
-We'll call the directory you download the source files to your base directory.
+We'll call the directory you download the source files to "your base directory".
 
 From your base directory:
 
