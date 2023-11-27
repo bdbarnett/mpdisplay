@@ -19,4 +19,4 @@ Example config and driver files adapted from S3LCD are in the examples folder.
 
 To test it out after compiling mpdisplay into your Micropython or lv_micropython and uploading your firmware you will need 4 files.  Download backlight.py, your board config file, your graphics driver and mpdisplay_simpletest.py from this page.  Save your board config file as `display_config.py~.  If you can't find a driver or board config for your board, use the examples in the examples folder to create your own.  As mentioned, SPI and Intel 8080 buses are supported on ESP32 targets.
 
-For an easy way to use these drivers with LVGL be sure to test with mpdisplay_simpletest.py first.  Then see the example display_driver.py at https://github.com/bdbarnett/lvmp_devices
+For an easy way to use these drivers with LVGL be sure to test with mpdisplay_simpletest.py first.  Then see the example display_driver.py that uses lvmp_devices.py at https://github.com/bdbarnett/lvmp_devices
