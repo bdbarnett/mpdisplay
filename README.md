@@ -3,7 +3,7 @@ C Display Drivers for Micropython including LV_Micropython
 
 Note: this is a work in progress.  It is completely usable now, but the API will likely change.
 
-Supports SPI and i8080 interfaces for many graphics controllers including but not limited to GC9107, GC9A01, ILI9342c, ST7735, ST7789, and ST7796.  For most graphics chips, all that is needed to add them is knowing the chip's init string and rotation modes.
+Supports SPI and Intel 8080 interfaces for many graphics controllers including but not limited to GC9107, GC9A01, ILI9342c, ST7735, ST7789, and ST7796.  For most graphics chips, all that is needed to add them is knowing the chip's init string and rotation modes.
 
 NOTE:  These directions will be updated soon.  This is only a rough draft.  Its intended audience are people who are already familiar with building lv_micropython from source, but possibly not for ESP targets.
 
@@ -17,6 +17,6 @@ For directions on how to compile Micropython with these drivers, please see docs
 
 Example config and driver files adapted from S3LCD are in the examples folder.
 
-To test it out after compiling mpdisplay into your Micropython or lv_micropython and uploading your firmware you will need 4 files.  Download backlight.py, your board config file, your graphics driver and mpdisplay_simpletest.py from this page.  Save your board config file as `display_config.py~.  If you can't find a driver or board config for your board, use the examples in the examples folder to create your own.  As mentioned, SPI and i80 buses are supported on ESP32 targets.
+To test it out after compiling mpdisplay into your Micropython or lv_micropython and uploading your firmware you will need 4 files.  Download backlight.py, your board config file, your graphics driver and mpdisplay_simpletest.py from this page.  Save your board config file as `display_config.py~.  If you can't find a driver or board config for your board, use the examples in the examples folder to create your own.  As mentioned, SPI and Intel 8080 buses are supported on ESP32 targets.
 
 For an easy way to use these drivers with LVGL be sure to test with mpdisplay_simpletest.py first.  Then see the example display_driver.py at https://github.com/bdbarnett/lvmp_devices
