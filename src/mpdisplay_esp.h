@@ -40,4 +40,7 @@ mp_obj_t mpdisplay_display_rotation(mp_obj_t self_in, mp_obj_t value);
 mp_obj_t mpdisplay_display_blit(size_t n_args, const mp_obj_t *args);
 mp_obj_t mpdisplay_display_init(mp_obj_t self_in);
 mp_obj_t mpdisplay_display_deinit(mp_obj_t self_in);
-mp_obj_t mpdisplay_allocate_buffer(mp_obj_t size_in);
+
+mp_obj_t mpdisplay_allocate_buffer(size_t n_args, const mp_obj_t *args);
+
+extern const mp_obj_type_t mpdisplay_caps_type;

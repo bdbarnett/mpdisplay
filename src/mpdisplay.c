@@ -288,14 +288,15 @@ mp_obj_t mpdisplay_display_make_new(const mp_obj_type_t *type, size_t n_args, si
 
 // Define the mpdisplay module
 
-// bindings for mpdisplay module functions provided in architechture specific files
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_allocate_buffer_obj, mpdisplay_allocate_buffer);
+// bindings for mpdisplay module functions in other files
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpdisplay_allocate_buffer_obj, 1, 2, mpdisplay_allocate_buffer);
 
 STATIC const mp_map_elem_t mpdisplay_module_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_mpdisplay)},
     {MP_ROM_QSTR(MP_QSTR_Display), (mp_obj_t)&mpdisplay_display_type},
     {MP_ROM_QSTR(MP_QSTR_I80_bus), (mp_obj_t)&mpdisplay_i80_bus_type},
     {MP_ROM_QSTR(MP_QSTR_Spi_bus), (mp_obj_t)&mpdisplay_spi_bus_type},
+    {MP_ROM_QSTR(MP_QSTR_CAPS), (mp_obj_t)&mpdisplay_caps_type},
     {MP_ROM_QSTR(MP_QSTR_allocate_buffer), (mp_obj_t)&mpdisplay_allocate_buffer_obj},
 };
 

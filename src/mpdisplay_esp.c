@@ -107,7 +107,7 @@ STATIC bool lcd_panel_done(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_
     mpdisplay_display_obj_t *self = (mpdisplay_display_obj_t *)user_ctx;
     lcd_panel_active = false;
     if (mp_obj_is_callable(self->ready_cb_func)) {
-        // Call the registered callback with argument
+        // Call the registered callback
         cb_isr(self->ready_cb_func);
     }
     return false;
@@ -339,19 +339,46 @@ mp_obj_t mpdisplay_display_deinit(mp_obj_t self_in) {
     return mp_const_none;
 }
 
-/// .allocate_buffer(size)
+/// .allocate_buffer(size, cap)
 /// Create a buffer using heap_caps_malloc and return it as a bytearray
 /// required parameters:
 ///  -- size: size of buffer
-mp_obj_t mpdisplay_allocate_buffer(mp_obj_t size_in) {
-    size_t size = (size_t)mp_obj_get_int(size_in);
+/// optional parameters:
+///  -- caps: DMA capability (default=MALLOC_CAP_DMA)
+mp_obj_t mpdisplay_allocate_buffer(size_t n_args, const mp_obj_t *args) {
+    mp_int_t size = mp_obj_get_int(args[0]);
+    mp_int_t caps = (n_args == 2) ? mp_obj_get_int(args[1]) : MALLOC_CAP_DMA;
+
     if (size > 65536) {
-        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Buffer size too large.  Must be <= 65536."));
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Buffer size too large. Must be <= 65536."));
     }
-    void* buffer = heap_caps_malloc(size, MALLOC_CAP_DMA);
+    void* buffer = heap_caps_malloc(size, caps);
     if (buffer == NULL) {
         mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Failed to allocate DMA buffer"));
     }
-    memset(buffer, rand()&0xFF, size);
+    memset(buffer, 0xFF, size);
     return mp_obj_new_bytearray_by_ref(size, buffer);
 }
+
+/// .CAPS
+STATIC const mp_rom_map_elem_t mpdisplay_caps_locals_dict_table[] = {
+    // DMA capabilities from esp_heap_caps.h
+    {MP_ROM_QSTR(MP_QSTR_EXEC), MP_ROM_INT(MALLOC_CAP_EXEC)},
+    {MP_ROM_QSTR(MP_QSTR_32BIT), MP_ROM_INT(MALLOC_CAP_32BIT)},
+    {MP_ROM_QSTR(MP_QSTR_8BIT), MP_ROM_INT(MALLOC_CAP_8BIT)},
+    {MP_ROM_QSTR(MP_QSTR_DMA), MP_ROM_INT(MALLOC_CAP_DMA)},
+    {MP_ROM_QSTR(MP_QSTR_SPIRAM), MP_ROM_INT(MALLOC_CAP_SPIRAM)},
+    {MP_ROM_QSTR(MP_QSTR_INTERNAL), MP_ROM_INT(MALLOC_CAP_INTERNAL)},
+    {MP_ROM_QSTR(MP_QSTR_DEFAULT), MP_ROM_INT(MALLOC_CAP_DEFAULT)},
+    {MP_ROM_QSTR(MP_QSTR_IRAM_8BIT), MP_ROM_INT(MALLOC_CAP_IRAM_8BIT)},
+    {MP_ROM_QSTR(MP_QSTR_RETENTION), MP_ROM_INT(MALLOC_CAP_RETENTION)},
+    {MP_ROM_QSTR(MP_QSTR_RTCRAM), MP_ROM_INT(MALLOC_CAP_RTCRAM)},
+};
+
+STATIC MP_DEFINE_CONST_DICT(mpdisplay_caps_locals_dict, mpdisplay_caps_locals_dict_table);
+
+MP_DEFINE_CONST_OBJ_TYPE(
+    mpdisplay_caps_type,
+    MP_QSTR_CAPS,
+    MP_TYPE_FLAG_NONE,
+    locals_dict, &mpdisplay_caps_locals_dict);
