@@ -1,8 +1,8 @@
 # To do:
 0) Learn Markdown so the documentation isn't hideous!!!!!
 1) Change from SPI object being initialized in mpdisplay_esp.c to it being passed as an argement to mpdisplay.Spi_bus, eg:
-    spi = machine.SPI(1, mosi=35, sck=36)
-    bus = mpdisplay.Spi_bus(spi, dc=8, cs=17)
+    - spi = machine.SPI(1, mosi=35, sck=36)
+    - bus = mpdisplay.Spi_bus(spi, dc=8, cs=17)
 2) Move swap_color_bytes from bus constructor to Display constructor
 3) use esp_lcd_panel_dev_config_t .data_endian in IDF > 5.0 to swap color bytes - should take place of lv.COLOR.NATIVE_REVERSED which was removed in v9.0
     - ESP-IDF v4.4.6 has swap_color_bytes in esp_lcd_panel_io_i80_config_t, but no equivalent for SPI
