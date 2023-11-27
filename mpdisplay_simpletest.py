@@ -15,7 +15,7 @@
 #     https://github.com/bdbarnett/mpdisplay/tree/main/examples/configs
 #
 # If you can't find a driver or config for your board, you will need to
-# create your own based on the examples above.  SPI and i80 bus color
+# create your own based on the examples above.  SPI and i8080 bus color
 # displays are supported.
 
 import random
