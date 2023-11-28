@@ -5,7 +5,7 @@
 
 import mpdisplay
 from st7789 import init_sequence, rotations
-from backlight import Backlight
+# from backlight import Backlight
 from machine import Pin
 
 # Move the following 2 lines to your main.py if
@@ -35,4 +35,4 @@ display_drv = mpdisplay.Display(
     rotations=rotations,
 )
 
-backlight=Backlight(Pin(38, Pin.OUT), on_high=True)
+backlight=Pin(38, Pin.OUT, value=1)  # This board doesn't work well with Backlight's pwm
