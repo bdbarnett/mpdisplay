@@ -35,4 +35,4 @@ display_drv = mpdisplay.Display(
     rotations=rotations,
 )
 
-backlight=Pin(38, Pin.OUT, value=1)  # This board doesn't work well with Backlight's pwm
+backlight=Backlight(Pin(38, Pin.OUT), on_high=True)
