@@ -4,8 +4,8 @@
 #
 # Backlight class accepts a Pin object and optional boolean value for on_high.
 # Will attempt to make the pin a PWM pin.  Allows setting the backlight to full on
-# with .brightness(1), regardless whether the Pin value of 1 is on or off for the display.
-# PWM allows calling brightness with any value from 0.0 to 1.0 to allow dimming
+# with .value(1), regardless whether the Pin value of 1 is on or off for the display.
+# PWM allows calling value with any value from 0.0 to 1.0 to allow dimming
 # the display.  If it wasn't successful at setting up PWM, because the platform or 
 # pin don't support it, any value > 0.0 is on and 0.0 is off.
 # 
@@ -26,13 +26,13 @@ class Backlight:
     """
     Backlight controller
     :param pin: Pin object or None
-    :param on_high: True if .brightness() value of 1 is full on, False if value of 0 is full on
-    :param brightness: initial brightness 0.0 t0 1.0
+    :param on_high: True if .value() value of 1 is full on, False if value of 0 is full on
+    :param value: initial value 0.0 t0 1.0
     """
 
-    def __init__(self, pin, on_high=True, brightness=1.0):
+    def __init__(self, pin, on_high=True, value=1.0):
         self._on_high = on_high
-        self._brightness = brightness
+        self._value = value
         self._type = None
         self._backlight = None
         
@@ -46,15 +46,15 @@ class Backlight:
                 # PWM not implemented on this platform or Pin
                 self._backlight = pin
                 self._type = BACKLIGHT_IN_OUT
-        self.brightness(brightness)
+        self.value(value)
         
     def __call__(self, value=None):
         if value is None:
-            return self._brightness
+            return self._value
         else:
-            return self.brightness(value)
+            return self.value(value)
 
-    def brightness(self, value):
+    def value(self, value):
         if self._backlight is None: return
         if 0 <= float(value) <= 1.0:
             if self._type == BACKLIGHT_PWM:
@@ -63,4 +63,4 @@ class Backlight:
                 self._backlight.duty_u16(int(value * 0xFFFF))
             elif self._type == BACKLIGHT_IN_OUT:
                 self._backlight.value((value > 0.0) == self._on_high)
-            self._brightness = value
+            self._value = value
