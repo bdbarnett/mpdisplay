@@ -220,7 +220,7 @@ mp_obj_t mpdisplay_display_init(mp_obj_t self_in) {
                 config->data_gpio_nums[7],
             },
             .bus_width = config->bus_width,
-            .max_transfer_bytes = 65536,
+            .max_transfer_bytes = 1048576,
         };
         ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &self->bus_handle.i80));
 
@@ -228,7 +228,7 @@ mp_obj_t mpdisplay_display_init(mp_obj_t self_in) {
         esp_lcd_panel_io_i80_config_t io_config = {
             .cs_gpio_num = config->cs_gpio_num,
             .pclk_hz = config->pclk_hz,
-            .trans_queue_depth = 10,
+            .trans_queue_depth = 1,
             .on_color_trans_done = lcd_panel_done,
             .user_ctx = self,
             .dc_levels = {
@@ -258,7 +258,7 @@ mp_obj_t mpdisplay_display_init(mp_obj_t self_in) {
             .miso_io_num = -1,
             .quadwp_io_num = -1,
             .quadhd_io_num = -1,
-            .max_transfer_sz = 65536,
+            .max_transfer_sz = 0,
         };
         ESP_ERROR_CHECK(spi_bus_initialize(config->spi_host, &buscfg, SPI_DMA_CH_AUTO));
         esp_lcd_panel_io_handle_t io_handle = NULL;
@@ -267,7 +267,7 @@ mp_obj_t mpdisplay_display_init(mp_obj_t self_in) {
             .cs_gpio_num = config->cs_gpio_num,
             .pclk_hz = config->pclk_hz,
             .spi_mode = 0,
-            .trans_queue_depth = 10,
+            .trans_queue_depth = 1,
             .lcd_cmd_bits = config->lcd_cmd_bits,
             .lcd_param_bits = config->lcd_param_bits,
             .on_color_trans_done = lcd_panel_done,
@@ -349,7 +349,8 @@ mp_obj_t mpdisplay_allocate_buffer(size_t n_args, const mp_obj_t *args) {
     mp_int_t size = mp_obj_get_int(args[0]);
     mp_int_t caps = (n_args == 2) ? mp_obj_get_int(args[1]) : MALLOC_CAP_DMA;
 
-    if (size > 65536) {
+//    if (size > 65536) {
+    if (false) {
         mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Buffer size too large. Must be <= 65536."));
     }
     void* buffer = heap_caps_malloc(size, caps);
@@ -357,7 +358,8 @@ mp_obj_t mpdisplay_allocate_buffer(size_t n_args, const mp_obj_t *args) {
         mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Failed to allocate DMA buffer"));
     }
     memset(buffer, 0xFF, size);
-    return mp_obj_new_bytearray_by_ref(size, buffer);
+//    return mp_obj_new_memoryview(1, size, buffer); // TypeError: 'memoryview' object doesn't support item assignment
+    return mp_obj_new_bytearray_by_ref(size, buffer); // needs to return a memoryview instead of bytearray
 }
 
 /// .CAPS
