@@ -5,7 +5,7 @@
 
 import mpdisplay
 from st7789 import init_sequence, rotations
-from backlight import Backlight
+# from backlight import Backlight
 from machine import Pin
 
 # If you need to turn the display off in your code, move the following 2 lines to your main.py or use
@@ -36,4 +36,4 @@ display_drv = mpdisplay.Display(
     rotations=rotations,
 )
 
-backlight=Backlight(Pin(15, Pin.OUT), on_high=True)
+backlight=Pin(15, Pin.OUT, value=1)  # This board doesn't work well with Backlight's pwm on Pin 15
