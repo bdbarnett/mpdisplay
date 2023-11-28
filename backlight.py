@@ -39,8 +39,8 @@ class Backlight:
         if pin is not None:
             try:
                 from machine import PWM
-                # 100Hz looks decent and doesn't keep the CPU too busy
-                self._backlight = PWM(pin, freq=100, duty_u16=0)
+                # 1000Hz looks decent and doesn't keep the CPU too busy
+                self._backlight = PWM(pin, freq=1000, duty_u16=0)
                 self._type = BACKLIGHT_PWM
             except:
                 # PWM not implemented on this platform or Pin
