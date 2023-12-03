@@ -15,7 +15,6 @@ bus = mpdisplay.Spi_bus(
     dc=33,
     cs=15,
     pclk=27_000_000,
-    swap_color_bytes=True,
 )
 
 display_drv = mpdisplay.Display(
