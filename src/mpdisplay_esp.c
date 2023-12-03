@@ -30,11 +30,6 @@
 
 #include <string.h>
 
-#include "esp_err.h"
-
-#include "esp_lcd_types.h"
-#include "esp_lcd_panel_commands.h"
-#include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_vendor.h"
 #include "esp_lcd_panel_ops.h"
 
@@ -45,6 +40,9 @@
 #include "py/gc.h"
 
 #include "mpdisplay.h"
+#include "mpdisplay_esp.h"
+#include "mpdisplay_esp_i80_bus.h"
+#include "mpdisplay_esp_spi_bus.h"
 
 // Fix for MicroPython > 1.21 https://github.com/ricksorensen
 #if MICROPY_VERSION_MAJOR >= 1 && MICROPY_VERSION_MINOR > 21
@@ -66,6 +64,7 @@ STATIC volatile bool lcd_panel_active = false;
 STATIC inline void cb_isr(mp_obj_t cb) { // removed mp_obj_t arg
     if (cb != NULL && cb != mp_const_none) {
 
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
         volatile uint32_t sp = (uint32_t)get_sp();
 
         // Calling micropython from ISR
@@ -96,13 +95,15 @@ STATIC inline void cb_isr(mp_obj_t cb) { // removed mp_obj_t arg
         mp_sched_unlock();
 
         mp_thread_set_state(old_state);
-
+#else
+        mp_sched_schedule(cb, mp_const_none); // changed to mp_sched_schedule and removed the arg
+#endif
         mp_hal_wake_main_task_from_isr();
     }
 }
 
 // called when esp_lcd_panel_draw_bitmap is completed
-STATIC bool lcd_panel_done(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx) {
+bool lcd_panel_done(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx) {
 //    mp_printf(&mp_plat_print, "Blit complete\n");
     mpdisplay_display_obj_t *self = (mpdisplay_display_obj_t *)user_ctx;
     lcd_panel_active = false;
@@ -166,7 +167,7 @@ mp_obj_t mpdisplay_display_rotation(mp_obj_t self_in, mp_obj_t value) {
     return mp_const_none;
 }
 
-/// .blit(x, y, w, h, buf)
+/// .blit(x, y, w, h, buf) (alternative to .flush, do not use both)
 /// Send the buffer to the display.
 /// required parameters:
 ///  -- x: start column
@@ -189,7 +190,40 @@ mp_obj_t mpdisplay_display_blit(size_t n_args, const mp_obj_t *args) {
     esp_lcd_panel_draw_bitmap(self->panel_handle, x, y, x + w, y + h, buf);
     // if ready_cb_func wasn't registered, wait for esp_lcd_panel_draw_bitmap to complete.
     // esp_lcd_panel_draw_bitmap calls lcd_panel_done when complete, which sets lcd_panel_active = False
-    // and calls ready_cb_func if it is registered.  SEE cb_isr COMMENTS BELOW!!!!
+    // and calls ready_cb_func if it is registered.  SEE cb_isr COMMENTS ABOVE!!!!
+    if (self->ready_cb_func == mp_const_none) { 
+        while (lcd_panel_active) {
+        }
+    }
+    return mp_const_none;
+}
+
+/// .flush(src, area, buf) (alternative to .blit, do not use both)
+/// Send the buffer to the display.
+/// required parameters:
+///  -- src: display driver (ignored)
+///  -- area: area to update as a tuple (x1, y1, x2, y2)
+///  -- buf: color map
+mp_obj_t mpdisplay_display_flush(size_t n_args, const mp_obj_t *args) {
+    mpdisplay_display_obj_t *self = MP_OBJ_TO_PTR(args[0]);
+//    mp_obj_t *src = MP_OBJ_TO_PTR(args[1]);
+    mp_obj_tuple_t *area = MP_OBJ_TO_PTR(args[2]);
+
+    mp_int_t x1 = mp_obj_get_int(area->items[0]);
+    mp_int_t y1 = mp_obj_get_int(area->items[1]);
+    mp_int_t x2 = mp_obj_get_int(area->items[2]);
+    mp_int_t y2 = mp_obj_get_int(area->items[3]);
+
+    mp_buffer_info_t buf_info;
+    mp_get_buffer_raise(args[3], &buf_info, MP_BUFFER_READ);
+    u_int16_t *buf = buf_info.buf;
+
+    lcd_panel_active = true;
+//    mp_printf(&mp_plat_print, "Flushing: x_start=%u, y_start=%u, x_end=%u, y_end=%u, len=%u\n", x1, y1, x2, y2, buf_info.len);
+    esp_lcd_panel_draw_bitmap(self->panel_handle, x1, y1, x2 + 1, y2 + 1, buf);
+    // if ready_cb_func wasn't registered, wait for esp_lcd_panel_draw_bitmap to complete.
+    // esp_lcd_panel_draw_bitmap calls lcd_panel_done when complete, which sets lcd_panel_active = False
+    // and calls ready_cb_func if it is registered.  SEE cb_isr COMMENTS ABOVE!!!!
     if (self->ready_cb_func == mp_const_none) { 
         while (lcd_panel_active) {
         }
@@ -202,100 +236,29 @@ mp_obj_t mpdisplay_display_blit(size_t n_args, const mp_obj_t *args) {
 mp_obj_t mpdisplay_display_init(mp_obj_t self_in) {
     mpdisplay_display_obj_t *self = MP_OBJ_TO_PTR(self_in);
 
+    // self->bus is either an mpdisplay_i80_bus_obj_t or mpdisplay_spi_bus_obj_t
+    // set self->io_handle to the appropriate bus handle
     if (mp_obj_is_type(self->bus, &mpdisplay_i80_bus_type)) {
-        mpdisplay_i80_bus_obj_t *config = MP_OBJ_TO_PTR(self->bus);
-        self->bus_handle.i80 = NULL;
-        esp_lcd_i80_bus_config_t bus_config = {
-            .dc_gpio_num = config->dc_gpio_num,
-            .wr_gpio_num = config->wr_gpio_num,
-            .clk_src = LCD_CLK_SRC_PLL160M, // same as default in IDF5 and 0 in the enum of IDF4.4
-            .data_gpio_nums = {
-                config->data_gpio_nums[0],
-                config->data_gpio_nums[1],
-                config->data_gpio_nums[2],
-                config->data_gpio_nums[3],
-                config->data_gpio_nums[4],
-                config->data_gpio_nums[5],
-                config->data_gpio_nums[6],
-                config->data_gpio_nums[7],
-            },
-            .bus_width = config->bus_width,
-            .max_transfer_bytes = 1048576,
-        };
-        ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &self->bus_handle.i80));
-
-        esp_lcd_panel_io_handle_t io_handle = NULL;
-        esp_lcd_panel_io_i80_config_t io_config = {
-            .cs_gpio_num = config->cs_gpio_num,
-            .pclk_hz = config->pclk_hz,
-            .trans_queue_depth = 1,
-            .on_color_trans_done = lcd_panel_done,
-            .user_ctx = self,
-            .dc_levels = {
-                .dc_idle_level = config->dc_levels.dc_idle_level,
-                .dc_cmd_level = config->dc_levels.dc_cmd_level,
-                .dc_dummy_level = config->dc_levels.dc_dummy_level,
-                .dc_data_level = config->dc_levels.dc_data_level,
-            },
-            .lcd_cmd_bits = config->lcd_cmd_bits,
-            .lcd_param_bits = config->lcd_param_bits,
-            .flags = {
-                .cs_active_high = config->flags.cs_active_high,
-                .reverse_color_bits = config->flags.reverse_color_bits,
-                .swap_color_bytes = config->flags.swap_color_bytes,
-                .pclk_active_neg = config->flags.pclk_active_neg,
-                .pclk_idle_low = config->flags.pclk_idle_low,
-            }
-        };
-
-        ESP_ERROR_CHECK(esp_lcd_new_panel_io_i80(self->bus_handle.i80, &io_config, &io_handle));
-        self->io_handle = io_handle;
+        mpdisplay_i80_bus_obj_t *i80_bus = MP_OBJ_TO_PTR(self->bus);
+        self->io_handle = i80_bus->io_handle;
     } else if (mp_obj_is_type(self->bus, &mpdisplay_spi_bus_type)) {
-        mpdisplay_spi_bus_obj_t *config = MP_OBJ_TO_PTR(self->bus);
-        spi_bus_config_t buscfg = {
-            .sclk_io_num = config->sclk_io_num,
-            .mosi_io_num = config->mosi_io_num,
-            .miso_io_num = -1,
-            .quadwp_io_num = -1,
-            .quadhd_io_num = -1,
-            .max_transfer_sz = 0,
-        };
-        ESP_ERROR_CHECK(spi_bus_initialize(config->spi_host, &buscfg, SPI_DMA_CH_AUTO));
-        esp_lcd_panel_io_handle_t io_handle = NULL;
-        esp_lcd_panel_io_spi_config_t io_config = {
-            .dc_gpio_num = config->dc_gpio_num,
-            .cs_gpio_num = config->cs_gpio_num,
-            .pclk_hz = config->pclk_hz,
-            .spi_mode = 0,
-            .trans_queue_depth = 1,
-            .lcd_cmd_bits = config->lcd_cmd_bits,
-            .lcd_param_bits = config->lcd_param_bits,
-            .on_color_trans_done = lcd_panel_done,
-            .user_ctx = self,
-#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-            .flags.dc_as_cmd_phase = config->flags.dc_as_cmd_phase,
-#endif
-            .flags.dc_low_on_data = config->flags.dc_low_on_data,
-            .flags.octal_mode =config->flags.octal_mode,
-            .flags.lsb_first = config->flags.lsb_first
-        };
-
-        ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)config->spi_host, &io_config, &io_handle));
-        self->io_handle = io_handle;
+        mpdisplay_spi_bus_obj_t *spi_bus = MP_OBJ_TO_PTR(self->bus);
+        self->io_handle = spi_bus->io_handle;
     }
 
-    esp_lcd_panel_handle_t panel_handle = NULL;
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = self->rst,
         .bits_per_pixel = self->bpp,
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 1, 0)
         .rgb_ele_order = (self->bgr ? LCD_RGB_ELEMENT_ORDER_BGR : LCD_RGB_ELEMENT_ORDER_RGB), // IDF-v5.1
-//        .data_endian = (self->swap_color_bytes ? LCD_RGB_DATA_ENDIAN_BIG : LCD_RGB_DATA_ENDIAN_LITTLE), // No equivalent before IDF-v5.0
+// #elif ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+//        .data_endian = (self->swap_color_bytes ? LCD_RGB_DATA_ENDIAN_BIG : LCD_RGB_DATA_ENDIAN_LITTLE), // IDF-v5.0
 #else
         .color_space = (self->bgr ? ESP_LCD_COLOR_SPACE_BGR : ESP_LCD_COLOR_SPACE_RGB)  // IDF-v4.4
 #endif
     };
 
+    esp_lcd_panel_handle_t panel_handle = NULL;
     ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(self->io_handle, &panel_config, &panel_handle));
     self->panel_handle = panel_handle;
 
@@ -303,7 +266,7 @@ mp_obj_t mpdisplay_display_init(mp_obj_t self_in) {
     if (self->init_sequence == mp_const_none) {
         esp_lcd_panel_init(panel_handle);
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
-        esp_lcd_panel_disp_on_off(panel_handle,true); //switch lcd on, not longer a part of init
+        esp_lcd_panel_disp_on_off(panel_handle, true); //switch lcd on, not longer a part of init
 #endif
     } else {
         custom_init(self);
@@ -327,15 +290,6 @@ mp_obj_t mpdisplay_display_deinit(mp_obj_t self_in) {
     esp_lcd_panel_io_del(self->io_handle);
     self->io_handle = NULL;
 
-    if (mp_obj_is_type(self->bus, &mpdisplay_i80_bus_type)) {
-        esp_lcd_del_i80_bus(self->bus_handle.i80);
-        self->bus_handle.i80 = NULL;
-    } else if (mp_obj_is_type(self->bus, &mpdisplay_spi_bus_type)) {
-        mpdisplay_spi_bus_obj_t *config = MP_OBJ_TO_PTR(self->bus);
-        spi_bus_free(config->spi_host);
-        self->bus_handle.spi = NULL;
-    }
-
     return mp_const_none;
 }
 
@@ -358,8 +312,7 @@ mp_obj_t mpdisplay_allocate_buffer(size_t n_args, const mp_obj_t *args) {
         mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Failed to allocate DMA buffer"));
     }
     memset(buffer, 0xFF, size);
-//    return mp_obj_new_memoryview(1, size, buffer); // TypeError: 'memoryview' object doesn't support item assignment
-    return mp_obj_new_bytearray_by_ref(size, buffer); // needs to return a memoryview instead of bytearray
+    return mp_obj_new_bytearray_by_ref(size, buffer);
 }
 
 /// .CAPS

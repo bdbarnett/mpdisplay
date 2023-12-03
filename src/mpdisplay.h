@@ -2,7 +2,10 @@
 #ifndef __MPDISPLAY_H__
 #define __MPDISPLAY_H__
 
-#include "mpdisplay_esp.h"
+#include "py/obj.h"
+#include "mphalport.h"
+#include "esp_lcd_types.h"
+#include "esp_lcd_panel_io.h"
 
 typedef struct _mpdisplay_display_rotation_t {
     uint16_t width;     // width of the display in this rotation
@@ -16,7 +19,6 @@ typedef struct _mpdisplay_display_rotation_t {
 
 typedef struct _mpdisplay_display_obj_t {
     mp_obj_base_t base;
-    bus_handle_t bus_handle;                    // bus handle
     esp_lcd_panel_io_handle_t io_handle;        // io handle
     esp_lcd_panel_handle_t panel_handle;        // panel handle
     mp_obj_t ready_cb_func;                     // callback function

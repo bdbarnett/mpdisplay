@@ -32,6 +32,9 @@
 #include "py/runtime.h"
 
 #include "mpdisplay.h"
+#include "mpdisplay_esp.h"
+#include "mpdisplay_esp_i80_bus.h"
+#include "mpdisplay_esp_spi_bus.h"
 
 // Default mpdisplay display orientation tables
 // can be overridden during init()
@@ -170,14 +173,15 @@ STATIC mpdisplay_display_rotation_t *set_default_rotations(uint16_t width, uint1
 
 // Define the Display class
 
-// bindings for Display class functions in this file
+// bindings for Display class methods in this file
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_width_obj, mpdisplay_display_width);
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_height_obj, mpdisplay_display_height);
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_register_cb_obj, mpdisplay_display_register_cb);
 
-// bindings for Display class functions provided in architechture specific files
+// bindings for Display class methods provided in architecture specific files
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mpdisplay_display_rotation_obj, mpdisplay_display_rotation);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpdisplay_display_blit_obj, 6, 6, mpdisplay_display_blit);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpdisplay_display_flush_obj, 4, 4, mpdisplay_display_flush);
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mpdisplay_display_deinit_obj, mpdisplay_display_deinit);
 
 STATIC const mp_rom_map_elem_t mpdisplay_display_locals_dict_table[] = {
@@ -186,6 +190,7 @@ STATIC const mp_rom_map_elem_t mpdisplay_display_locals_dict_table[] = {
     {MP_ROM_QSTR(MP_QSTR_register_cb), MP_ROM_PTR(&mpdisplay_display_register_cb_obj)},
     {MP_ROM_QSTR(MP_QSTR_rotation), MP_ROM_PTR(&mpdisplay_display_rotation_obj)},
     {MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&mpdisplay_display_blit_obj)},
+    {MP_ROM_QSTR(MP_QSTR_flush), MP_ROM_PTR(&mpdisplay_display_flush_obj)},
     {MP_ROM_QSTR(MP_QSTR_deinit), MP_ROM_PTR(&mpdisplay_display_deinit_obj)},
 };
 STATIC MP_DEFINE_CONST_DICT(mpdisplay_display_locals_dict, mpdisplay_display_locals_dict_table);

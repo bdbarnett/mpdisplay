@@ -28,19 +28,22 @@
  * THE SOFTWARE.
  */
 
-#include "mpdisplay_esp_i80_bus.h"
-#include "mpdisplay_esp_spi_bus.h"
+#ifndef __mpdisplay_esp_H__
+#define __mpdisplay_esp_H__
 
-typedef union _bus_handle_t {
-    esp_lcd_i80_bus_handle_t i80;
-    esp_lcd_spi_bus_handle_t spi;
-} bus_handle_t;
+#include "py/obj.h"
+#include "esp_lcd_panel_io.h"
 
 mp_obj_t mpdisplay_display_rotation(mp_obj_t self_in, mp_obj_t value);
 mp_obj_t mpdisplay_display_blit(size_t n_args, const mp_obj_t *args);
+mp_obj_t mpdisplay_display_flush(size_t n_args, const mp_obj_t *args);
 mp_obj_t mpdisplay_display_init(mp_obj_t self_in);
 mp_obj_t mpdisplay_display_deinit(mp_obj_t self_in);
 
 mp_obj_t mpdisplay_allocate_buffer(size_t n_args, const mp_obj_t *args);
 
 extern const mp_obj_type_t mpdisplay_caps_type;
+
+extern bool lcd_panel_done(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx);
+
+#endif /* __mpdisplay_esp_H__ */
