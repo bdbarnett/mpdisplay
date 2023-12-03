@@ -18,7 +18,6 @@ bus = mpdisplay.I80_bus(
     dc=7,
     wr=8,
     cs=6,
-    swap_color_bytes=True,
     reverse_color_bits=False,
 )
 
