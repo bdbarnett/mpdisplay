@@ -1,15 +1,10 @@
+"""
+see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
+"""
+
 from busdisplay import BusDisplay
 from time import sleep_ms
-from micropython import const
 
-# IO expander pins
-_TP_RES_PIN   = const(1)
-_PWR_EN_PIN   = const(2)
-_LCD_CS_PIN   = const(3)
-_LCD_SDA_PIN  = const(4)
-_LCD_CLK_PIN  = const(5)
-_LCD_RST_PIN  = const(6)
-_SD_CS_PIN    = const(7)
 
 _INIT_SEQUENCE = [
     (0xFF, b'\x77\x01\x00\x00\x10', 0),
@@ -56,6 +51,19 @@ _INIT_SEQUENCE = [
     (0x29, b'\x00', 100)
 ]
 
+
+class IOPins():
+    def __init__(self, write, *, tp_res, pwr_en, lcd_cs, lcd_sda, lcd_clk, lcd_rst, sd_cs):
+        self.write = write
+        self.tp_res = tp_res
+        self.pwr_en = pwr_en
+        self.lcd_cs = lcd_cs
+        self.lcd_sda = lcd_sda
+        self.lcd_clk = lcd_clk
+        self.lcd_rst = lcd_rst
+        self.sd_cs = sd_cs
+
+
 class ST7701(BusDisplay):
     """
     ST7701 display driver
@@ -63,12 +71,22 @@ class ST7701(BusDisplay):
     :param io_expander: the io expander to configure the display
     """
 
-    def _init_(self, io_expander, *args, **kwargs):
+    def _init_(self, io_pins, *args, **kwargs):
 
-        if io_expander.__class__.__name__ == "XL9535":
-            self._init_xl9535(io_expander)
-        else:
-            raise NotImplementedError("IO expander not supported.")
+        self.io_pins = io_pins
+
+        self.io_pins.write(self.io_pins.pwr_en, 1)
+        self.io_pins.write(self.io_pins.lcd_cs, 1)
+        self.io_pins.write(self.io_pins.lcd_sda, 1)
+        self.io_pins.write(self.io_pins.lcd_clk, 1)
+
+        # Reset the display
+        self.io_pins.write(self.io_pins.lcd_rst, 1)
+        sleep_ms(200)
+        self.io_pins.write(self.io_pins.lcd_rst, 0)
+        sleep_ms(200)
+        self.io_pins.write(self.io_pins.lcd_rst, 1)
+        sleep_ms(200)
 
         super()._init_(*args, **kwargs)
 
@@ -86,56 +104,28 @@ class ST7701(BusDisplay):
             self._tx_data(params)
 
     def _tx_cmd(self, cmd):
-        self.write(_LCD_CS_PIN, 0)
-        self.write(_LCD_SDA_PIN, 0)
-        self.write(_LCD_CLK_PIN, 0)
-        self.write(_LCD_CLK_PIN, 1)
-        self._tx_byte(self.io_expander, cmd)
-        self.write(_LCD_CS_PIN, 1)
+        self.io_pins.write(self.io_pins.lcd_cs, 0)
+        self.io_pins.write(self.io_pins.lcd_sda, 0)
+        self.io_pins.write(self.io_pins.lcd_clk, 0)
+        self.io_pins.write(self.io_pins.lcd_clk, 1)
+        self._tx_byte(cmd)
+        self.io_pins.write(self.io_pins.lcd_cs, 1)
 
     def _tx_data(self, data):
         for i in range(len(data)):
-            self.write(_LCD_CS_PIN, 0)
-            self.write(_LCD_SDA_PIN, 1)
-            self.write(_LCD_CLK_PIN, 0)
-            self.write(_LCD_CLK_PIN, 1)
-            self._tx_byte(self.io_expander, data[i])
-            self.write(_LCD_CS_PIN, 1)
+            self.io_pins.write(self.io_pins.lcd_cs, 0)
+            self.io_pins.write(self.io_pins.lcd_sda, 1)
+            self.io_pins.write(self.io_pins.lcd_clk, 0)
+            self.io_pins.write(self.io_pins.lcd_clk, 1)
+            self._tx_byte(data[i])
+            self.io_pins.write(self.io_pins.lcd_cs, 1)
 
     def _tx_byte(self, bits):
         for _ in range(8):
             if (bits & 0x80):
-                self.write(_LCD_SDA_PIN, 1)
+                self.io_pins.write(self.io_pins.lcd_sda, 1)
             else:
-                self.write(_LCD_SDA_PIN, 0)
+                self.io_pins.write(self.io_pins.lcd_sda, 0)
             bits <<= 1
-            self.write(_LCD_CLK_PIN, 0)
-            self.write(_LCD_CLK_PIN, 1)
-
-    def _init_xl9535(self, io_expander):
-        self.write = io_expander.digitalWrite
-
-        pins = (1 << _PWR_EN_PIN) | \
-                (1 << _LCD_CS_PIN) | \
-                (1 << _TP_RES_PIN) | \
-                (1 << _LCD_SDA_PIN) | \
-                (1 << _LCD_CLK_PIN) | \
-                (1 << _LCD_RST_PIN) | \
-                (1 << _SD_CS_PIN)
-
-        io_expander.pinMode8(0, pins, io_expander.OUT)
-
-        self.write(_PWR_EN_PIN, 1)
-        self.write(_LCD_CS_PIN, 1)
-        self.write(_LCD_SDA_PIN, 1)
-        self.write(_LCD_CLK_PIN, 1)
-
-        # Reset the display
-        self.write(_LCD_RST_PIN, 1)
-        sleep_ms(200)
-        self.write(_LCD_RST_PIN, 0)
-        sleep_ms(200)
-        self.write(_LCD_RST_PIN, 1)
-        sleep_ms(200)
-
-
+            self.io_pins.write(self.io_pins.lcd_clk, 0)
+            self.io_pins.write(self.io_pins.lcd_clk, 1)

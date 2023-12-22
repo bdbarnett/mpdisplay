@@ -14,9 +14,7 @@ class DisplayDriver():
     def __init__(self, display, color_space, frame_buffer1, frame_buffer2=None):
 
         if not lv.is_initialized():
-            print(f"Initializing LVGL")
             lv.init()
-            print(f"LVGL initialized")
 
         self._color_size = lv.color_format_get_size(color_space)
 

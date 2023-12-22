@@ -1,7 +1,7 @@
 """ T-RGB 480x480 ST7701 display - 2.1" Full Circle with CST820 touch controller """
 
 from lcd_bus import RGBBus
-from st7701 import ST7701
+from st7701 import ST7701, IOPins
 from machine import Pin, I2C
 from cst8xx import CST8XX  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
 from xl9535 import XL9535
@@ -9,6 +9,17 @@ from xl9535 import XL9535
 
 i2c = I2C(0, scl=Pin(48), sda=Pin(8))
 io_expander = XL9535(i2c)
+io_expander.pinMode8(0, 0x01111111, io_expander.OUT)  # set pins 1 through 7 to output
+io_pins = IOPins(
+    io_expander.digitalWrite,
+    tp_res=1,
+    pwr_en=2,
+    lcd_cs=3,
+    lcd_sda=4,
+    lcd_clk=5,
+    lcd_rst=6,
+    sd_cs=7,
+)
 
 display_bus = RGBBus(
     hsync=47,
@@ -54,7 +65,7 @@ display_bus = RGBBus(
 )
 
 display_drv = ST7701(
-    io_expander,
+    io_pins,
     display_bus,
     width=480,
     height=480,

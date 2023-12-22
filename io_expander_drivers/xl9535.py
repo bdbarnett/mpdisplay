@@ -1,3 +1,7 @@
+"""
+see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
+"""
+
 from machine import I2C
 from micropython import const
 
