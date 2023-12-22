@@ -3,7 +3,7 @@
 import lvgl as lv
 from lv_driver_framework import DisplayDriver, TouchDriver
 from lcd_bus import RGBBus
-from t_rgb import ST7701
+from st7701 import ST7701
 from machine import Pin, I2C
 from cst8xx import CST8XX  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
 from xl9535 import XL9535
