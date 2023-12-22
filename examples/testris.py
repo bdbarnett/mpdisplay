@@ -8,7 +8,7 @@ from json import load, dump  # For saving the high score
 from machine import reset  # For restarting the game
 from micropython import const  # For constant values
 from framebuf import FrameBuffer, RGB565  # For drawing text
-from display_config import display_drv, touch_drv  # For the display driver
+from board_config import display_drv, touch_drv  # For the display driver
 from heap_caps import malloc, CAP_DMA  # For allocating buffers for the blocks and text
 
 swap_color_bytes = True
@@ -20,9 +20,12 @@ draw_block = lambda x, y, index: display_drv.blit(x, y, block_size, block_size, 
 display_width = display_drv.width
 display_height = display_drv.height
 
-# Setup the keypad, in this case a touchscreen keypad emulator
-# keypad should have a .read() method that returns the values 
-# keypad.LEFT, .DOWN, .RIGHT, .CCW, .CW, .START and .PAUSE
+# Setup the keypad
+# keypad should have a .read() method that returns the values: 
+#     keypad.LEFT, .DOWN, .RIGHT, .CCW, .CW, .START and .PAUSE
+# In this case keypad is a touchscreen keypad emulator provided by Touchpad.
+# To use Touchpad, change the first argument, touch_drv.get_positions, to the
+# function that reads touches from your touch driver and set touch_rotation=0 to 7.
 from touchpad import Touchpad
 keypad = Touchpad(touch_drv.get_positions, width=display_width, height=display_height, touch_rotation=0)
 
