@@ -2,15 +2,16 @@
 Testris game implemented in MicroPython by Brad Barnett.
 """
 
+from board_config import display_drv, touch_drv  # For the display & optional touch drivers
+from heap_caps import malloc, CAP_DMA  # For allocating buffers for the blocks and text
 from time import ticks_ms, ticks_diff  # For timing
 from random import choice, randint  # For random piece selection
 from json import load, dump  # For saving the high score
 from machine import reset  # For restarting the game
+from framebuf import FrameBuffer, RGB565  # For drawing text boxes
 from micropython import const  # For constant values
-from framebuf import FrameBuffer, RGB565  # For drawing text
-from board_config import display_drv, touch_drv  # For the display driver
-from heap_caps import malloc, CAP_DMA  # For allocating buffers for the blocks and text
 
+# If the color of the straight piece isn't cyanon your display, change this value.
 swap_color_bytes = True
 
 # Define the draw_block function
