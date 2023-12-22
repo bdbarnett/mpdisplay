@@ -5,7 +5,7 @@
 # Test touchscreen and allows changing touch driver rotation
 # to find a rotation that matches the display rotation.
 
-from board_config import touch_drv
+import lv_config
 import lvgl as lv
 
 alignments = (
