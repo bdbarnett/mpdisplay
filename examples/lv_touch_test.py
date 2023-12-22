@@ -8,6 +8,8 @@
 import lv_config
 import lvgl as lv
 
+touch_rotation = lambda x: lv_config.touch.set_touch_rotation(x)
+
 alignments = (
     (lv.ALIGN.TOP_LEFT, 0, 0),
     (lv.ALIGN.TOP_MID, 0, 0),
@@ -43,4 +45,4 @@ for alignment in alignments:
     btn.add_style(style_pressed, lv.STATE.PRESSED)
     btn.add_style(style_focused, lv.STATE.FOCUSED)
     
-print("To test different touch rotations, type `touch_drv.set_touch_rotation(x)` where x is 0 to 7")
+print("To test different touch rotations, type `touch_rotation(x)` where x is 0 to 7")
