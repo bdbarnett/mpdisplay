@@ -25,7 +25,6 @@ display_bus = I80Bus(
     data5=17,
     data6=16,
     data7=15,
-    max_transfer_bytes=1048576,
     freq=20000000,
     dc_idle_level=0,
     dc_cmd_level=0,
