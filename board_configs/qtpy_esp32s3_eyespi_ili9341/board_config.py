@@ -4,7 +4,6 @@ from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-import heap_caps
 
 
 display_bus = SPIBus(
