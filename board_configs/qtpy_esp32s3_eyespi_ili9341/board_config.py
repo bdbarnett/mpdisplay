@@ -1,19 +1,12 @@
 """ QTPy ESP32S3 with EyeSPI and ILI9341 2.8" display """
 
-import lvgl as lv
-from lv_driver_framework import DisplayDriver, TouchDriver
 from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
 import heap_caps
 
-print(f"Allocating buffers")
-buf_size = 320*480*2 // 10  # adjust this to your needs
-fbuf1 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
-fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
 
-print(f"Creating display bus")
 display_bus = SPIBus(
     dc=16,
     host=1,
@@ -35,7 +28,6 @@ display_bus = SPIBus(
     spi_mode=0,
 )
 
-print(f"Creating display driver")
 display_drv = ILI9341(
     display_bus,
     width=240,
@@ -55,10 +47,6 @@ display_drv = ILI9341(
     power_on_high=True,
 )
 
-print(f"Creating touch driver")
 i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=400000)
 touch_drv = FT6x36(i2c)
-
-print(f"Attaching to LVGL")
-lv_display = DisplayDriver(display_drv, lv.COLOR_FORMAT.RGB565, fbuf1, fbuf2)
-lv_touch = TouchDriver(touch_drv.get_positions, touch_rotation=5)
+touch_drv_read = touch_drv.get_positions
