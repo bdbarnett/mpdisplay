@@ -1,9 +1,8 @@
 """ display_simpletest"""
 
-
-import random
+from board_config import display_drv
 from heap_caps import malloc, CAP_DMA
-from display_config import display_drv
+import random
 
 
 # Get the display dimensions
