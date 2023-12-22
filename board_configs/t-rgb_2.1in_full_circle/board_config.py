@@ -1,18 +1,11 @@
 """ T-RGB 480x480 ST7701 display - 2.1" Full Circle with CST820 touch controller """
 
-import lvgl as lv
-from lv_driver_framework import DisplayDriver, TouchDriver
 from lcd_bus import RGBBus
 from st7701 import ST7701
 from machine import Pin, I2C
 from cst8xx import CST8XX  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
 from xl9535 import XL9535
-import heap_caps
 
-
-buf_size = 480*480*2  # adjust this to your needs
-fbuf1 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
-fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
 
 i2c = I2C(0, scl=Pin(48), sda=Pin(8))
 io_expander = XL9535(i2c)
@@ -81,6 +74,4 @@ display_drv = ST7701(
 )
 
 touch_drv = CST8XX(i2c)
-
-lv_display = DisplayDriver(display_drv, lv.COLOR_FORMAT.RGB565, fbuf1, fbuf2)
-lv_touch = TouchDriver(touch_drv.touches, touch_rotation=0)
+touch_drv_read = touch_drv.touches
