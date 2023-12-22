@@ -5,10 +5,8 @@
 # Test touchscreen and allows changing touch driver rotation
 # to find a rotation that matches the display rotation.
 
-import display_config
+from board_config import touch_drv
 import lvgl as lv
-
-devices = display_driver.devices
 
 alignments = (
     (lv.ALIGN.TOP_LEFT, 0, 0),
@@ -20,7 +18,7 @@ alignments = (
     (lv.ALIGN.BOTTOM_LEFT, 0, 0),
     (lv.ALIGN.BOTTOM_MID, 0, 0),
     (lv.ALIGN.BOTTOM_RIGHT, 0, 0),
-    )
+)
 
 style_base = lv.style_t()
 style_base.init()
@@ -45,4 +43,4 @@ for alignment in alignments:
     btn.add_style(style_pressed, lv.STATE.PRESSED)
     btn.add_style(style_focused, lv.STATE.FOCUSED)
     
-print("To test different touch rotations, type `devices.set_touch_rotation(x)` where x is 0 to 7")
+print("To test different touch rotations, type `touch_drv.set_touch_rotation(x)` where x is 0 to 7")
