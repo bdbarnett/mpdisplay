@@ -1,17 +1,10 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 
-import lvgl as lv
-from lv_driver_framework import DisplayDriver, TouchDriver
 from lcd_bus import I80Bus
 from st7796 import ST7796, PORTRAIT, COLOR_ORDER_BGR
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-import heap_caps
 
-
-buf_size = 320*480*2 // 10  # adjust this to your needs
-fbuf1 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
-fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
 
 # The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both
 # tied to pin 4.  Controlling this pin with the display driver can lead to an
@@ -68,6 +61,4 @@ display_drv = ST7796(
 
 i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=400000)
 touch_drv = FT6x36(i2c)
-
-lv_display = DisplayDriver(display_drv, lv.COLOR_FORMAT.RGB565, fbuf1, fbuf2)
-lv_touch = TouchDriver(touch_drv.get_positions, touch_rotation=5)
+touch_drv_read = touch_drv.get_positions
