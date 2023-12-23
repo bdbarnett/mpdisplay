@@ -56,6 +56,7 @@ class BusDisplay():
     def __init__(
         self,
         display_bus,
+        *,
         width,
         height,
         colstart=0,
@@ -72,10 +73,15 @@ class BusDisplay():
         reset_high=True,
         power_pin=None,
         power_on_high=True,
-#        data_as_commands=False,  # not implemented
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
+#                                          # for OLEDs, like the SSD1306
+#        brightness_command=None,  # not implemented
+#        data_as_commands=False,  # not implemented
+#        single_byte_bounds=False,  # not implemented
+#        pixels_in_byte_share_row=False,  # not implemented
+#        grayscale=False,  # not implemented
     ):
 
         
@@ -91,10 +97,14 @@ class BusDisplay():
         self._rotation = rotation
         self._color_depth = color_depth
         self._bgr = bgr
-#        self._data_as_commands = data_as_commands  # not implemented
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
+#        self._brightness_command = brightness_command
+#        self._data_as_commands = data_as_commands  # not implemented
+#        self._single_byte_bounds = single_byte_bounds  # not implemented
+#        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
+#        self._grayscale = grayscale  # not implemented
 
         self._reset_pin = Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None 
         self._reset_high = reset_high
