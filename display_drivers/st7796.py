@@ -1,8 +1,5 @@
 from busdisplay import (
     BusDisplay,
-    ROTATION_TABLE,
-    COLOR_ORDER_RGB,
-    COLOR_ORDER_BGR,
     PORTRAIT,
     LANDSCAPE,
     REVERSE_PORTRAIT,
@@ -73,7 +70,7 @@ class ST7796(BusDisplay):
         param_buf[0] = 0x96
         self.set_params(_CSCON, param_mv[:1])
 
-        param_buf[0] = self._madctl(self._color_order, self._rotation, ROTATION_TABLE)
+        param_buf[0] = self._madctl(self._bgr, self._rotation, self.rotation_table)
         self.set_params(_MADCTL, param_mv[:1])
 
         if self._color_depth // 8 == 2:  # NOQA

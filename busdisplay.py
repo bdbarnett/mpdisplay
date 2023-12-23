@@ -12,7 +12,7 @@ import lcd_bus
 # gc.threshold(0x10000) # leave enough room for SPI master TX DMA buffers
 alloc_emergency_exception_buf(256)
 
-# Constants
+# Command Constants
 _INVOFF = const(0x20)
 _INVON = const(0x21)
 _CASET = const(0x2A)
@@ -20,9 +20,9 @@ _RASET = const(0x2B)
 _RAMWR = const(0x2C)
 _MADCTL = const(0x36)
 
-COLOR_ORDER_RGB = const(0x00)
-COLOR_ORDER_BGR = const(0x08)
-
+# MADCTL bits
+_RGB = const(0x00)
+_BGR = const(0x08)
 _MADCTL_MH = const(0x04)  # Refresh 0=Left to Right, 1=Right to Left
 _MADCTL_ML = const(0x10)  # Refresh 0=Top to Bottom, 1=Bottom to Top
 _MADCTL_MV = const(0x20)  # 0=Normal, 1=Row/column exchange
@@ -30,7 +30,7 @@ _MADCTL_MX = const(0x40)  # 0=Left to Right, 1=Right to Left
 _MADCTL_MY = const(0x80)  # 0=Top to Bottom, 1=Bottom to Top
 
 # MADCTL values for each of the rotation constants for non-st7789 displays.
-ROTATION_TABLE = (
+_DEFAULT_ROTATION_TABLE = (
     _MADCTL_MX,
     _MADCTL_MV,
     _MADCTL_MY,
@@ -38,7 +38,8 @@ ROTATION_TABLE = (
 )
 
 # Negative rotation constants indicate the MADCTL value will come from
-# the ROTATION_TABLE, otherwise the rotation value is used as the MADCTL value.
+# the self.rotation_table, otherwise the rotation value is used as the MADCTL value.
+# Reset self.rotation_table in the display driver .init() to change the rotation values.
 PORTRAIT = const(-1)
 LANDSCAPE = const(-2)
 REVERSE_PORTRAIT = const(-3)
@@ -48,7 +49,6 @@ REVERSE_LANDSCAPE = const(-4)
 class BusDisplay():
 
     display_name = 'BusDisplay'
-    MAX_TRANSFER_BYTES = 1024*1024
 
     # Default values of "power" and "backlight" are reversed logic! 0 means ON.
     # You can change this by setting backlight_on and power_on arguments.
@@ -84,7 +84,6 @@ class BusDisplay():
 #        grayscale=False,  # not implemented
     ):
 
-        
         max_trans = width * height * color_depth
             
         display_bus.init(width, height, color_depth, max_trans, rgb565_byte_swap=reverse_bytes_in_word)
@@ -125,6 +124,7 @@ class BusDisplay():
                 # PWM not implemented on this platform or Pin
                 self._backlight_is_pwm = False
 
+        self.rotation_table = _DEFAULT_ROTATION_TABLE
         self._param_buf = bytearray(4)
         self._param_mv = memoryview(self._param_buf)
         self._initialized = False
@@ -133,13 +133,13 @@ class BusDisplay():
         if not self._initialized:
             raise RuntimeError('Display driver init() must call super().init()')
         self.brightness = brightness
-        self.rotation = self._rotation
         if invert:
             self.invert_colors(True)
 
     def init(self):
         """Post initialization tasks may be added here."""
         self._initialized = True
+        self.rotation = self._rotation
 
     def blit(self, x, y, width, height, buf):
         # Column addresses
@@ -191,13 +191,13 @@ class BusDisplay():
         self._rotation = value
 
         self._param_buf[0] = (
-            self._madctl(self._bgr, value, ROTATION_TABLE)
+            self._madctl(self._bgr, value, self.rotation_table)
         )
         self.display_bus.tx_param(_MADCTL, self._param_mv[:1])
 
     @staticmethod
     def _madctl(bgr, rotation, rotations):
-        color_order = COLOR_ORDER_BGR if bgr else COLOR_ORDER_RGB
+        color_order = _BGR if bgr else _RGB
         # if rotation is 0 or positive use the value as is.
         if rotation >= 0:
             return rotation | color_order
