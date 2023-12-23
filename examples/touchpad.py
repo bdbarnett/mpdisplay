@@ -51,7 +51,7 @@ class Touchpad():
         try:
             point = self.get_touched()
         except OSError as error:
-            # reading too fast
+            # Not ready to read yet
             return None
         if point:
             x, y = point
@@ -78,11 +78,11 @@ class Touchpad():
                     return 5
         return None
 
-# if __name__ == "__main__":
-if True:
+if __name__ == "__main__":
     from machine import I2C, Pin
     from ft6x36 import FT6x36
     
-    i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=100000)
+    i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
     touch_drv = FT6x36(i2c)
     keypad = Touchpad(touch_drv.get_positions, width=320, height=480, touch_rotation=0)
+    print(f"Type `keypad.read()` to get current position.")

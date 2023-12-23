@@ -14,16 +14,20 @@ fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
 
 
 import lvgl as lv
+import lv_utils
 import lv_driver_framework
 import board_config
 
+if not lv_utils.event_loop.is_running():
+    eventloop = lv_utils.event_loop(asynchronous=False, exception_sink=None)
+
 # Change lv.COLOR_FORMAT to match your display
 display = lv_driver_framework.DisplayDriver(
-    board_config.display_drv, lv.COLOR_FORMAT.RGB565, fbuf1, fbuf2)
+    board_config.display_drv, lv.COLOR_FORMAT.NATIVE, fbuf1, fbuf2, blocking=True)
 
 # Change touch_rotation to match your display
 touch = lv_driver_framework.TouchDriver(
-    board_config.touch_drv_read, touch_rotation=5)
+    board_config.touch_drv_read, touch_rotation=0)
 
 # Uncomment if your board has an encoder
 # encoder = lv_driver_framework.EncoderDriver(

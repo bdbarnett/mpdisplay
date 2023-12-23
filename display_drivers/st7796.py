@@ -1,7 +1,13 @@
-
-from busdisplay import BusDisplay, ROTATION_TABLE, \
-    COLOR_ORDER_RGB, COLOR_ORDER_BGR, \
-    PORTRAIT, LANDSCAPE, REVERSE_PORTRAIT, REVERSE_LANDSCAPE
+from busdisplay import (
+    BusDisplay,
+    ROTATION_TABLE,
+    COLOR_ORDER_RGB,
+    COLOR_ORDER_BGR,
+    PORTRAIT,
+    LANDSCAPE,
+    REVERSE_PORTRAIT,
+    REVERSE_LANDSCAPE,
+)
 from time import sleep_ms
 from micropython import const
 
@@ -23,7 +29,6 @@ _DISPON = const(0x29)
 
 
 class ST7796(BusDisplay):
-
     # The st7795 display controller has an internal framebuffer
     # arranged in 320 x 480
     # configuration. Physical displays with pixel sizes less than
@@ -45,7 +50,7 @@ class ST7796(BusDisplay):
     # ignores the lowest 2 bits in the byte to make it a 6 bit color channel
     # We just have to tell lvgl that we want to use
 
-    display_name = 'ST7796'
+    display_name = "ST7796"
 
     def _init_(self, *args, **kwargs):
         super()._init_(*args, **kwargs)
@@ -68,22 +73,17 @@ class ST7796(BusDisplay):
         param_buf[0] = 0x96
         self.set_params(_CSCON, param_mv[:1])
 
-        param_buf[0] = (
-            self._madctl(
-                self._color_byte_order, self._orientation,
-                ROTATION_TABLE
-            )
-        )
+        param_buf[0] = self._madctl(self._color_order, self._rotation, ROTATION_TABLE)
         self.set_params(_MADCTL, param_mv[:1])
 
-        if self._color_size == 2:  # NOQA
+        if self._color_depth // 8 == 2:  # NOQA
             pixel_format = 0x55
-        elif self._color_size == 3:
+        elif self._color_depth // 8 == 3:
             pixel_format = 0x77
         else:
             raise RuntimeError(
-                'ST7796 IC only supports '
-                'lv.COLOR_FORMAT.RGB565 or lv.COLOR_FORMAT.RGB888'
+                "ST7796 IC only supports "
+                "lv.COLOR_FORMAT.RGB565 or lv.COLOR_FORMAT.RGB888"
             )
 
         param_buf[0] = pixel_format
@@ -97,10 +97,8 @@ class ST7796(BusDisplay):
         param_buf[2] = 0x3B
         self.set_params(_DFC, param_mv[:3])
 
-        param_buf[:8] = bytearray([
-            0x40, 0x8A, 0x00, 0x00, 0x29, 0x19, 0xA5, 0x33
-        ])
-        self._data_bus.tx_param(_DOCA, param_mv[:8])
+        param_buf[:8] = bytearray([0x40, 0x8A, 0x00, 0x00, 0x29, 0x19, 0xA5, 0x33])
+        self.display_bus.tx_param(_DOCA, param_mv[:8])
 
         param_buf[0] = 0x06
         self.set_params(_PWR2, param_mv[:1])
@@ -113,16 +111,44 @@ class ST7796(BusDisplay):
 
         sleep_ms(120)
 
-        param_buf[:14] = bytearray([
-            0xF0, 0x09, 0x0b, 0x06, 0x04, 0x15, 0x2F,
-            0x54, 0x42, 0x3C, 0x17, 0x14, 0x18, 0x1B
-        ])
+        param_buf[:14] = bytearray(
+            [
+                0xF0,
+                0x09,
+                0x0B,
+                0x06,
+                0x04,
+                0x15,
+                0x2F,
+                0x54,
+                0x42,
+                0x3C,
+                0x17,
+                0x14,
+                0x18,
+                0x1B,
+            ]
+        )
         self.set_params(_PGC, param_mv[:14])
 
-        param_buf[:14] = bytearray([
-            0xE0, 0x09, 0x0B, 0x06, 0x04, 0x03, 0x2B,
-            0x43, 0x42, 0x3B, 0x16, 0x14, 0x17, 0x1B
-        ])
+        param_buf[:14] = bytearray(
+            [
+                0xE0,
+                0x09,
+                0x0B,
+                0x06,
+                0x04,
+                0x03,
+                0x2B,
+                0x43,
+                0x42,
+                0x3B,
+                0x16,
+                0x14,
+                0x17,
+                0x1B,
+            ]
+        )
         self.set_params(_NGC, param_mv[:14])
 
         sleep_ms(120)
@@ -134,9 +160,9 @@ class ST7796(BusDisplay):
         self.set_params(_CSCON, param_mv[:1])
 
         sleep_ms(120)
-        
+
         self.set_params(_DISPON)
 
         sleep_ms(120)
 
-        super().init(self)
+        super().init()

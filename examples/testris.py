@@ -2,7 +2,7 @@
 Testris game implemented in MicroPython by Brad Barnett.
 """
 
-from board_config import display_drv, touch_drv  # For the display & optional touch drivers
+from board_config import display_drv, touch_drv_read  # For the display & optional touch drivers
 from heap_caps import malloc, CAP_DMA  # For allocating buffers for the blocks and text
 from time import ticks_ms, ticks_diff  # For timing
 from random import choice, randint  # For random piece selection
@@ -11,8 +11,8 @@ from machine import reset  # For restarting the game
 from framebuf import FrameBuffer, RGB565  # For drawing text boxes
 from micropython import const  # For constant values
 
-# If the color of the straight piece isn't cyanon your display, change this value.
-swap_color_bytes = True
+# If the color of the square piece isn't yellow on your display, change this value.
+reverse_bytes_in_word = True
 
 # Define the draw_block function
 draw_block = lambda x, y, index: display_drv.blit(x, y, block_size, block_size, blocks[index])
@@ -25,10 +25,10 @@ display_height = display_drv.height
 # keypad should have a .read() method that returns the values: 
 #     keypad.LEFT, .DOWN, .RIGHT, .CCW, .CW, .START and .PAUSE
 # In this case keypad is a touchscreen keypad emulator provided by Touchpad.
-# To use Touchpad, change the first argument, touch_drv.get_positions, to the
+# To use Touchpad, change the first argument, touch_drv_read, to the
 # function that reads touches from your touch driver and set touch_rotation=0 to 7.
 from touchpad import Touchpad
-keypad = Touchpad(touch_drv.get_positions, width=display_width, height=display_height, touch_rotation=0)
+keypad = Touchpad(touch_drv_read, width=display_width, height=display_height, touch_rotation=0)
 
 # Define RGB565 colors
 BLACK = const(0x0000)
@@ -115,8 +115,8 @@ for color in [BLACK, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE, GRAY, WHITE
             else:
                 pixel_color = color  # Fill the block with the specified color
             address = (x + (y * block_size)) * 2  # Address of the pixel in the buffer, 2 bytes per pixel
-            block[address] = pixel_color & 0xff  if not swap_color_bytes else pixel_color >> 8 # Least significant byte
-            block[address + 1] = pixel_color >> 8  if not swap_color_bytes else pixel_color & 0xff # Most significant byte
+            block[address] = pixel_color & 0xff  if not reverse_bytes_in_word else pixel_color >> 8 # Least significant byte
+            block[address + 1] = pixel_color >> 8  if not reverse_bytes_in_word else pixel_color & 0xff # Most significant byte
     blocks.append(block)
 
 # Create a frame buffer for text
@@ -321,7 +321,7 @@ if SPLASH_ENABLED:  # Show the splash screen and wait for the user to press a ke
     wait_for_key()  # Wait for the user to press a key
 
 while True:  # Outer loop - play the game repeatedly
-    print("Outer loop")
+#     print("Outer loop")
     # Initialize game state
     # grid is a 2D list of block indices, 0 for empty, 1-7 indicates block color
     # grid is y, x, not x, y, so grid[y][x] is the block at (x, y).
@@ -346,7 +346,7 @@ while True:  # Outer loop - play the game repeatedly
     # Play the game
     show_score()  # Show the score
     while True:  # Main game loop
-        print("Main game loop")
+#         print("Main game loop")
         current_piece = next_piece  # Set the next piece to the current piece
         current_position = [GRID_WIDTH // 2 - len(current_piece[0]) // 2, 0]  # Start position for the piece
         if collision(current_piece, current_position, 0, 0):  # Check for game over
@@ -358,7 +358,7 @@ while True:  # Outer loop - play the game repeatedly
         last_drop = ticks_ms()  # Time of last automatic drop
 
         while current_piece:  # Middle loop - while the piece is in play
-            print("Redraw piece loop")
+#             print("Redraw piece loop")
             draw_piece(current_piece, current_position)  # Draw the current piece
             old_piece = current_piece.copy()  # Save the previous piece
             old_position = current_position.copy()  # Save the previous position

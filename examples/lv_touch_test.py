@@ -22,27 +22,36 @@ alignments = (
     (lv.ALIGN.BOTTOM_RIGHT, 0, 0),
 )
 
-style_base = lv.style_t()
-style_base.init()
-style_base.set_width(lv.pct(33))
-style_base.set_height(lv.pct(33))
+style_default = lv.style_t()
+style_default.init()
+style_default.set_width(lv.pct(33))
+style_default.set_height(lv.pct(33))
+style_default.set_bg_color(lv.palette_main(lv.PALETTE.BLUE))
 
 style_pressed = lv.style_t()
 style_pressed.init()
 style_pressed.set_transform_width(-10)
 style_pressed.set_transform_height(-10)
+style_pressed.set_bg_color(lv.palette_main(lv.PALETTE.GREEN))
 
 style_focused = lv.style_t()
 style_focused.init()
 style_focused.set_bg_color(lv.palette_main(lv.PALETTE.RED))
 
-parent = lv.scr_act()
+parent = lv.screen_active()
 
 for alignment in alignments:
-    btn = lv.btn(parent)
+    btn = lv.button(parent)
     btn.align(*alignment)
-    btn.add_style(style_base, 0)
+    btn.add_style(style_default, 0)
     btn.add_style(style_pressed, lv.STATE.PRESSED)
     btn.add_style(style_focused, lv.STATE.FOCUSED)
     
-print("To test different touch rotations, type `touch_rotation(x)` where x is 0 to 7")
+print(
+    "To test different touch rotations:\n",
+    "    if you ran `import lv_touch_test`\n",
+    "        type `lv_touch_test.touch_rotation(x)`\n",
+    "    if you ran the script directly, such as with Thonny\n",
+    "        type `touch_rotation(x)`\n",
+    "    where x is 0 to 7."
+    )

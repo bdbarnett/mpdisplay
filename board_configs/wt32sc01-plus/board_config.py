@@ -34,7 +34,7 @@ display_bus = I80Bus(
     param_bits=8,
     cs_active_high=False,
     reverse_color_bits=False,
-    swap_color_bytes=True,
+    swap_color_bytes=False,
     pclk_active_neg=False,
     pclk_idle_low=False,
 )
@@ -48,7 +48,8 @@ display_drv = ST7796(
     rotation=PORTRAIT,
     color_depth=16,
     color_order=COLOR_ORDER_BGR,
-    reverse_bytes_in_word=False,
+    reverse_bytes_in_word=True,
+    invert_colors=True,
     brightness=1.0,
     backlight_pin=45,
     backlight_on_high=True,
@@ -58,6 +59,6 @@ display_drv = ST7796(
     power_on_high=True,
 )
 
-i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=400000)
+i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
 touch_drv = FT6x36(i2c)
 touch_drv_read = touch_drv.get_positions

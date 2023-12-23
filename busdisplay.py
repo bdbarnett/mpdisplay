@@ -64,6 +64,7 @@ class BusDisplay():
         color_depth=16,
         color_order=COLOR_ORDER_BGR,
         reverse_bytes_in_word=False,
+        invert_colors=False,
         brightness=1.0,
         backlight_pin=None,
         backlight_on_high=True,
@@ -87,6 +88,7 @@ class BusDisplay():
         self.height = height
         self._colstart = colstart
         self._rowstart = rowstart
+        self._rotation = rotation
         self._color_depth = color_depth
         self._color_order = color_order
 #        self._data_as_commands = data_as_commands  # not implemented
@@ -121,7 +123,9 @@ class BusDisplay():
         if not self._initialized:
             raise RuntimeError('Display driver init() must call super().init()')
         self.brightness = brightness
-        self.rotation = rotation
+        self.rotation = self._rotation
+        if invert_colors:
+            self.invert_colors(True)
 
     def init(self):
         """Post initialization tasks may be added here."""
