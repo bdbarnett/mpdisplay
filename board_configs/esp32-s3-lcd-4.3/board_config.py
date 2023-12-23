@@ -2,8 +2,8 @@
 
 from lcd_bus import RGBBus
 from busdisplay import BusDisplay
-from machine import Pin
-from gt911 import GT911  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
+from machine import I2C, Pin
+from gt911 import GT911  # TODO: port to MicroPython
 
 
 display_bus = RGBBus(
