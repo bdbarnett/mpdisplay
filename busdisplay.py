@@ -63,8 +63,8 @@ class BusDisplay():
         rowstart=0,
         rotation=PORTRAIT,
         color_depth=16,
+        reverse_bytes_in_word=True,
         bgr=False,
-        reverse_bytes_in_word=False,
         invert=False,
         brightness=1.0,
         backlight_pin=None,
@@ -80,7 +80,7 @@ class BusDisplay():
 #        brightness_command=None,  # not implemented
 #        data_as_commands=False,  # not implemented
 #        single_byte_bounds=False,  # not implemented
-#        pixels_in_byte_share_row=False,  # not implemented
+#        pixels_in_byte_share_row=True,  # not implemented
 #        grayscale=False,  # not implemented
     ):
 
