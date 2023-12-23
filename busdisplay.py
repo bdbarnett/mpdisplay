@@ -62,9 +62,9 @@ class BusDisplay():
         rowstart=0,
         rotation=PORTRAIT,
         color_depth=16,
-        color_order=COLOR_ORDER_BGR,
+        bgr=False,
         reverse_bytes_in_word=False,
-        invert_colors=False,
+        invert=False,
         brightness=1.0,
         backlight_pin=None,
         backlight_on_high=True,
@@ -90,7 +90,7 @@ class BusDisplay():
         self._rowstart = rowstart
         self._rotation = rotation
         self._color_depth = color_depth
-        self._color_order = color_order
+        self._bgr = bgr
 #        self._data_as_commands = data_as_commands  # not implemented
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
@@ -124,7 +124,7 @@ class BusDisplay():
             raise RuntimeError('Display driver init() must call super().init()')
         self.brightness = brightness
         self.rotation = self._rotation
-        if invert_colors:
+        if invert:
             self.invert_colors(True)
 
     def init(self):
@@ -181,12 +181,13 @@ class BusDisplay():
         self._rotation = value
 
         self._param_buf[0] = (
-            self._madctl(self._color_order, value, ROTATION_TABLE)
+            self._madctl(self._bgr, value, ROTATION_TABLE)
         )
         self.display_bus.tx_param(_MADCTL, self._param_mv[:1])
 
     @staticmethod
-    def _madctl(color_order, rotation, rotations):
+    def _madctl(bgr, rotation, rotations):
+        color_order = COLOR_ORDER_BGR if bgr else COLOR_ORDER_RGB
         # if rotation is 0 or positive use the value as is.
         if rotation >= 0:
             return rotation | color_order

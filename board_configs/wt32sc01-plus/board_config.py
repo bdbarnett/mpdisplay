@@ -1,7 +1,7 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 
 from lcd_bus import I80Bus
-from st7796 import ST7796, PORTRAIT, COLOR_ORDER_BGR
+from st7796 import ST7796
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
 
@@ -45,11 +45,11 @@ display_drv = ST7796(
     height=480,
     colstart=0,
     rowstart=0,
-    rotation=PORTRAIT,
+    rotation=-1,
     color_depth=16,
-    color_order=COLOR_ORDER_BGR,
+    bgr=True,
     reverse_bytes_in_word=True,
-    invert_colors=True,
+    invert=True,
     brightness=1.0,
     backlight_pin=45,
     backlight_on_high=True,
