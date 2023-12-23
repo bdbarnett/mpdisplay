@@ -40,7 +40,7 @@ class DisplayDriver():
                 lv.DISPLAY_RENDER_MODE.PARTIAL
             )
         if not self._blocking:
-            self.display.display_bus.register_callback(self._flush_ready_cb, self._disp_drv)
+            self.display.display_bus.register_callback(self._flush_ready_cb)
 
     def _flush_cb(self, disp_drv, area, color_p):
         # we have to use the __dereference__ method because this method is

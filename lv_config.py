@@ -9,8 +9,8 @@ import heap_caps
 
 # Change these 3 lines to your needs
 buf_size = 320*480*2 // 10  # TODO: add note about buffer sizes
-fbuf1 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)  # TODO: add note malloc and CAPS
-fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA)
+fbuf1 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL)  # TODO: add note malloc and CAPS
+fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL)
 
 
 import lvgl as lv
