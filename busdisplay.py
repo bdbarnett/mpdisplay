@@ -145,6 +145,10 @@ class BusDisplay():
         self.rotation = self._rotation
 
     def blit(self, x, y, width, height, buf):
+        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
+        #TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
+        #TODO:  Add `if self._data_as_commands is True:` for Column and Row tx_param
+
         # Column addresses
         x1 = x + self._colstart
         x2 = x + self._colstart + width - 1
@@ -156,7 +160,7 @@ class BusDisplay():
 
         self.display_bus.tx_param(self._set_column_command, self._param_mv[:4])
 
-        # Page addresses
+        # Row addresses
         y1 = y + self._rowstart
         y2 = y + self._rowstart + height - 1
 
@@ -180,6 +184,8 @@ class BusDisplay():
             self.set_params(_INVOFF)
 
     def set_params(self, cmd, params=None):
+        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
+        #TODO:  Add `if self._data_as_commands is True:` for tx_param
         self.display_bus.tx_param(cmd, params)
 
     def get_params(self, cmd, params):
