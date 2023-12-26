@@ -34,6 +34,18 @@ You MAY edit the `board_config.py` to:
 - Enable an encoder if you add one
 - Add other non-display related drivers, such as SD card reader or real time clock (not provided)
 
+Here is a usage example:
+```
+import lv_config
+import lvgl as lv
+
+scr = lv.screen_active()
+button = lv.button(scr)
+button.center()
+label = lv.label(button)
+label.set_text("Test")
+```
+
 # My board isn't listed
 I have several more boards that I will add over the next couple weeks.  Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.  I'll post a list of the boards I have and plan on creating configs for soon.
 
