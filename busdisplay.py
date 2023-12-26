@@ -268,7 +268,13 @@ class BusDisplay():
 
     def _init_bytes(self, init_sequence):
         """
-        init_sequence is a CircuitPython displayIO compatible bytes object
+        init_sequence is a CircuitPython displayIO compatible bytes object.
+        The ``init_sequence`` is bitpacked to minimize the ram impact. Every command begins
+        with a command byte followed by a byte to determine the parameter count and if a
+        delay is need after. When the top bit of the second byte is 1, the next byte will be
+        the delay time in milliseconds. The remaining 7 bits are the parameter count
+        excluding any delay byte. The third through final bytes are the remaining command
+        parameters. The next byte will begin a new command definition.
         """
         DELAY = 0x80
         
@@ -293,7 +299,8 @@ class BusDisplay():
 
     def _init_list(self, init_sequence):
         """
-        init_sequence is a list of tuples.
+        The `_INIT_SEQUENCE` is a list of tuples. As a list, it can be modified in .init(), for example:
+            self._INIT_SEQUENCE[-1] = (0x29, b"\x00", 100)
         Each tuple contains the following:
             - The first element is the register address (command)
             - The second element is the register value (data)
