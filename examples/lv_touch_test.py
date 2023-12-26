@@ -58,5 +58,5 @@ print(
     "        type `lv_touch_test.touch_rotation(x)`\n",
     "    if you ran the script directly, such as with Thonny\n",
     "        type `touch_rotation(x)`\n",
-    "    where x is 0 to 7."
+    "    where x is 0 to 7 for binary values, -1 to -4 for index values."
     )

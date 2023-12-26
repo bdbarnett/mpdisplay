@@ -5,8 +5,6 @@
 from micropython import const, alloc_emergency_exception_buf
 from machine import Pin
 from time import sleep_ms
-import lcd_bus
-
 # import gc
 
 
@@ -48,10 +46,8 @@ REVERSE_LANDSCAPE = const(-4)
 
 
 class BusDisplay:
-    display_name = "BusDisplay"
 
-    # Default values of "power" and "backlight" are reversed logic! 0 means ON.
-    # You can change this by setting backlight_on and power_on arguments.
+    display_name = "BusDisplay"
 
     def __init__(
         self,
@@ -63,7 +59,6 @@ class BusDisplay:
         rowstart=0,
         rotation=PORTRAIT,
         color_depth=16,
-        reverse_bytes_in_word=True,
         bgr=False,
         invert=False,
         brightness=1.0,
@@ -76,25 +71,16 @@ class BusDisplay:
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
-        # Required for the 16-bit SSD1351 128x128 OLED
-        #        single_byte_bounds=False,
-        # Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
-        #        data_as_commands=False,
-        # Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
-        #        grayscale=False,
-        #        brightness_command=None,
-        # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
-        #        pixels_in_byte_share_row=True,
+# Required for the 16-bit SSD1351 128x128 OLED
+#        single_byte_bounds=False,
+# Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
+#        data_as_commands=False,
+# Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
+#        grayscale=False,
+#        brightness_command=None,
+# Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
+#        pixels_in_byte_share_row=True,
     ):
-        max_trans = width * height * color_depth
-
-        display_bus.init(
-            width,
-            height,
-            color_depth,
-            max_trans,
-            rgb565_byte_swap=reverse_bytes_in_word,
-        )
 
         self.display_bus = display_bus
         self.width = width
@@ -107,11 +93,11 @@ class BusDisplay:
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
-        #        self._single_byte_bounds = single_byte_bounds  # not implemented
-        #        self._data_as_commands = data_as_commands  # not implemented
-        #        self._grayscale = grayscale  # not implemented
-        #        self._brightness_command = brightness_command  # not implemented
-        #        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
+#        self._single_byte_bounds = single_byte_bounds  # not implemented
+#        self._data_as_commands = data_as_commands  # not implemented
+#        self._grayscale = grayscale  # not implemented
+#        self._brightness_command = brightness_command  # not implemented
+#        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
 
         self._reset_pin = (
             Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None
@@ -142,47 +128,36 @@ class BusDisplay:
         self._param_mv = memoryview(self._param_buf)
         self._initialized = False
 
+        display_bus.init(
+            width,
+            height,
+            color_depth,
+            self.width * self.height * self._color_depth // 8,
+            rgb565_byte_swap=False,
+        )
+
         self.init()
         if not self._initialized:
-            raise RuntimeError("Display driver init() must call super().init()")
+            raise RuntimeError("Display driver init() must call super().init() or set self._initialized = True")
         self.brightness = brightness
         if invert:
             self.invert_colors(True)
 
-    def init(self):
+    def init(self, render_mode_full=False):
         """Post initialization tasks may be added here."""
         self._initialized = True
         self.rotation = self._rotation
+        self.set_render_mode_full(render_mode_full)
 
-    def blit(self, x, y, width, height, buf):
-        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
-        # TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
-        # TODO:  Add `if self._data_as_commands is True:` for Column and Row tx_param
-        # Should RGBBus skip setting column and row addresses?
-
-        # Column addresses
-        x1 = x + self._colstart
-        x2 = x + self._colstart + width - 1
-
-        self._param_buf[0] = (x1 >> 8) & 0xFF
-        self._param_buf[1] = x1 & 0xFF
-        self._param_buf[2] = (x2 >> 8) & 0xFF
-        self._param_buf[3] = x2 & 0xFF
-
-        self.display_bus.tx_param(self._set_column_command, self._param_mv[:4])
-
-        # Row addresses
-        y1 = y + self._rowstart
-        y2 = y + self._rowstart + height - 1
-
-        self._param_buf[0] = (y1 >> 8) & 0xFF
-        self._param_buf[1] = y1 & 0xFF
-        self._param_buf[2] = (y2 >> 8) & 0xFF
-        self._param_buf[3] = y2 & 0xFF
-
-        self.display_bus.tx_param(self._set_row_command, self._param_mv[:4])
-
-        self.display_bus.tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
+    def set_render_mode_full(self, render_mode_full=False):
+        # If rendering the full screen, set the window once
+        # and pass each time .blit() is called.
+        if render_mode_full:
+            self._set_window(0, 0, self.width, self.height)
+            self.set_window = self._pass
+        # Otherwise, set the window each time .blit() is called.
+        else:
+            self.set_window = self._set_window
 
     def invert_colors(self, value):
         """
@@ -194,14 +169,6 @@ class BusDisplay:
         else:
             self.set_params(_INVOFF)
 
-    def set_params(self, cmd, params=None):
-        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
-        # TODO:  Add `if self._data_as_commands is True:` for tx_param
-        self.display_bus.tx_param(cmd, params)
-
-    def get_params(self, cmd, params):
-        self.display_bus.rx_param(cmd, params)
-
     @property
     def rotation(self):
         return self._rotation
@@ -211,29 +178,7 @@ class BusDisplay:
         self._rotation = value
 
         self._param_buf[0] = self._madctl(self._bgr, value, self.rotation_table)
-        self.display_bus.tx_param(_MADCTL, self._param_mv[:1])
-
-    @staticmethod
-    def _madctl(bgr, rotation, rotations):
-        color_order = _BGR if bgr else _RGB
-        # if rotation is 0 or positive use the value as is.
-        if rotation >= 0:
-            return rotation | color_order
-
-        # otherwise use abs(rotation)-1 as index to
-        # retrieve value from rotations set
-
-        index = abs(rotation) - 1
-        if index > len(rotations):
-            RuntimeError("Invalid display rotation value specified")
-
-        return rotations[index] | color_order
-
-    def reset(self):
-        if self._reset_pin is not None:
-            self._reset_pin.value(self._reset_high)
-            sleep_ms(120)
-            self._reset_pin.value(not self._reset_high)
+        self.set_params(_MADCTL, self._param_mv[:1])
 
     @property
     def power(self):
@@ -284,6 +229,66 @@ class BusDisplay:
                     self._backlight.value((value > 0.0) == self._on_high)
                 self._brightness = value
 
+    def reset(self):
+        if self._reset_pin is not None:
+            self._reset_pin.value(self._reset_high)
+            sleep_ms(120)
+            self._reset_pin.value(not self._reset_high)
+
+    def blit(self, x, y, width, height, buf):
+        x1 = x + self._colstart
+        x2 = x + self._colstart + width - 1
+        y1 = y + self._rowstart
+        y2 = y + self._rowstart + height - 1
+
+        self.set_window(x1, y1, x2, y2)
+        self.display_bus.tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
+
+    def _pass(*_, **__):
+        pass
+
+    def _set_window(self, x1, y1, x2, y2):
+        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
+        # TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
+
+        # Column addresses
+        self._param_buf[0] = (x1 >> 8) & 0xFF
+        self._param_buf[1] = x1 & 0xFF
+        self._param_buf[2] = (x2 >> 8) & 0xFF
+        self._param_buf[3] = x2 & 0xFF
+        self.set_params(self._set_column_command, self._param_mv[:4])
+
+        # Row addresses
+        self._param_buf[0] = (y1 >> 8) & 0xFF
+        self._param_buf[1] = y1 & 0xFF
+        self._param_buf[2] = (y2 >> 8) & 0xFF
+        self._param_buf[3] = y2 & 0xFF
+        self.set_params(self._set_row_command, self._param_mv[:4])
+
+    def set_params(self, cmd, params=None):
+        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
+        # TODO:  Add `if self._data_as_commands is True:` for tx_param
+        self.display_bus.tx_param(cmd, params)
+
+    def get_params(self, cmd, params):
+        self.display_bus.rx_param(cmd, params)
+
+    @staticmethod
+    def _madctl(bgr, rotation, rotations):
+        color_order = _BGR if bgr else _RGB
+        # if rotation is 0 or positive use the value as is.
+        if rotation >= 0:
+            return rotation | color_order
+
+        # otherwise use abs(rotation)-1 as index to
+        # retrieve value from rotations set
+
+        index = abs(rotation) - 1
+        if index > len(rotations):
+            RuntimeError("Invalid display rotation value specified")
+
+        return rotations[index] | color_order
+
     def _init_bytes(self, init_sequence):
         """
         init_sequence is a CircuitPython displayIO compatible bytes object.
@@ -328,3 +333,4 @@ class BusDisplay:
             self.set_params(line[0], line[1])
             if line[2] != 0:
                 sleep_ms(line[2])
+
