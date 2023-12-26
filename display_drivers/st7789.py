@@ -38,6 +38,7 @@ class ST7789(BusDisplay):
         super()._init_(*args, **kwargs)
 
     def init(self):
+#         self.rotation_table = _ROTATION_TABLE
         for line in _INIT_SEQUENCE:
             self.set_params(line[0], line[1])
             if line[2] != 0:

@@ -53,6 +53,7 @@ class ST7796(BusDisplay):
         super()._init_(*args, **kwargs)
 
     def init(self):
+#         self.rotation_table = _ROTATION_TABLE
         param_buf = bytearray(14)
         param_mv = memoryview(param_buf)
 

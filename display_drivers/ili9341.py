@@ -81,6 +81,7 @@ class ILI9341(BusDisplay):
         super().__init__(*args, **kwargs)
 
     def init(self):
+#         self.rotation_table = _ROTATION_TABLE
         DELAY = 0x80
         
         i = 0
