@@ -100,12 +100,8 @@ class ST7701(BusDisplay):
         super()._init_(*args, **kwargs)
 
     def init(self):
-        #         self.rotation_table = _ROTATION_TABLE
-        for line in _INIT_SEQUENCE:
-            self.set_params(line[0], line[1])
-            if line[2] != 0:
-                sleep_ms(line[2])
-        # print("Register setup complete")
+#         self.rotation_table = _ROTATION_TABLE
+        self._init_list(_INIT_SEQUENCE)
         super.init()
 
     def set_params(self, cmd, params=None):

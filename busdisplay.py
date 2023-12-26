@@ -266,3 +266,40 @@ class BusDisplay():
                     self._backlight.value((value > 0.0) == self._on_high)
                 self._brightness = value
 
+    def _init_bytes(self, init_sequence):
+        """
+        init_sequence is a CircuitPython displayIO compatible bytes object
+        """
+        DELAY = 0x80
+        
+        i = 0
+        while i < len(init_sequence):
+            command = init_sequence[i]
+            data_size = init_sequence[i + 1]
+            delay = (data_size & DELAY) != 0
+            data_size &= ~DELAY
+
+            self.set_params(command, init_sequence[i + 2 : i + 2 + data_size])
+
+            delay_time_ms = 10
+            if delay:
+                data_size += 1
+                delay_time_ms = init_sequence[i + 1 + data_size]
+                if delay_time_ms == 255:
+                    delay_time_ms = 500
+
+            sleep_ms(delay_time_ms)
+            i += 2 + data_size
+
+    def _init_list(self, init_sequence):
+        """
+        init_sequence is a list of tuples.
+        Each tuple contains the following:
+            - The first element is the register address (command)
+            - The second element is the register value (data)
+            - The third element is the delay in milliseconds after the register is set
+        """
+        for line in init_sequence:
+            self.set_params(line[0], line[1])
+            if line[2] != 0:
+                sleep_ms(line[2])

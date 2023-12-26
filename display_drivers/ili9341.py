@@ -90,25 +90,5 @@ class ILI9341(BusDisplay):
 
     def init(self):
 #         self.rotation_table = _ROTATION_TABLE
-        DELAY = 0x80
-        
-        i = 0
-        while i < len(_INIT_SEQUENCE):
-            command = _INIT_SEQUENCE[i]
-            data_size = _INIT_SEQUENCE[i + 1]
-            delay = (data_size & DELAY) != 0
-            data_size &= ~DELAY
-
-            self.set_params(command, _INIT_SEQUENCE[i + 2 : i + 2 + data_size])
-
-            delay_time_ms = 10
-            if delay:
-                data_size += 1
-                delay_time_ms = _INIT_SEQUENCE[i + 1 + data_size]
-                if delay_time_ms == 255:
-                    delay_time_ms = 500
-
-            sleep_ms(delay_time_ms)
-            i += 2 + data_size
-
+        self._init_bytes(_INIT_SEQUENCE)
         super().init()
