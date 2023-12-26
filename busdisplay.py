@@ -76,14 +76,15 @@ class BusDisplay():
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
-# Required for the SSD1351
+# Required for the 16-bit SSD1351 128x128 OLED
 #        single_byte_bounds=False,
-# Required for the SSD1331 in addition to the line above
+# Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
 #        data_as_commands=False,
-# Required for mono displays like the SSD1305, SSD1306, and SH1106 in addition to the 2 lines above
+# Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
 #        grayscale=False,
-#        pixels_in_byte_share_row=True,
 #        brightness_command=None,
+# Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
+#        pixels_in_byte_share_row=True,
     ):
 
         max_trans = width * height * color_depth
@@ -104,8 +105,8 @@ class BusDisplay():
 #        self._single_byte_bounds = single_byte_bounds  # not implemented
 #        self._data_as_commands = data_as_commands  # not implemented
 #        self._grayscale = grayscale  # not implemented
+#        self._brightness_command = brightness_command  # not implemented
 #        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
-#        self._brightness_command = brightness_command
 
         self._reset_pin = Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None 
         self._reset_high = reset_high
