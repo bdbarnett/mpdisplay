@@ -21,9 +21,9 @@ import board_config
 if not lv_utils.event_loop.is_running():
     eventloop = lv_utils.event_loop(asynchronous=False, exception_sink=None)
 
-# Change lv.COLOR_FORMAT to match your display
+# Change color_format to match your display
 display = lv_driver_framework.DisplayDriver(
-    board_config.display_drv, lv.COLOR_FORMAT.NATIVE, fbuf1, fbuf2, blocking=True)
+    board_config.display_drv, fbuf1, fbuf2, color_format=lv.COLOR_FORMAT.NATIVE, blocking=True)
 
 # Change touch_rotation to match your display
 touch = lv_driver_framework.TouchDriver(

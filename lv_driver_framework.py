@@ -11,52 +11,30 @@ class DisplayDriver():
 
     display_name = 'DisplayDriver'
 
-    def __init__(self, display, color_space, frame_buffer1, frame_buffer2=None, blocking=True):
+    def __init__(self, display, frame_buffer1, frame_buffer2=None, color_format=lv.COLOR_FORMAT.NATIVE, blocking=True):
 
-        self._color_size = lv.color_format_get_size(color_space)
+        self.display = display
         self._blocking = blocking
+        self._color_size = lv.color_format_get_size(color_format)
+        render_mode = lv.DISPLAY_RENDER_MODE.FULL if isinstance(self.display.display_bus, lcd_bus.RGBBus) else lv.DISPLAY_RENDER_MODE.PARTIAL
+
         if not lv.is_initialized():
             lv.init()
 
-
-        self.display = display
         self._disp_drv = lv.display_create(self.display.width, self.display.height)
-        self._disp_drv.set_color_format(color_space)
-
+        self._disp_drv.set_color_format(color_format)
         self._disp_drv.set_flush_cb(self._flush_cb)
-
-        if isinstance(self.display.display_bus, lcd_bus.RGBBus):
-            self._disp_drv.set_draw_buffers(
-                frame_buffer1,
-                frame_buffer2,
-                len(frame_buffer1),
-                lv.DISPLAY_RENDER_MODE.FULL
-            )
-        else:
-            self._disp_drv.set_draw_buffers(
-                frame_buffer1,
-                frame_buffer2,
-                len(frame_buffer1),
-                lv.DISPLAY_RENDER_MODE.PARTIAL
-            )
-        if not self._blocking:
-            self.display.display_bus.register_callback(self._flush_ready_cb)
-
+        if not self._blocking:  self.display.display_bus.register_callback(self._disp_drv.flush_ready)
+        self._disp_drv.set_draw_buffers(frame_buffer1, frame_buffer2, len(frame_buffer1), render_mode)
+    
     def _flush_cb(self, disp_drv, area, color_p):
         # we have to use the __dereference__ method because this method is
         # what converts from the C_Array object the binding passes into a
         # memoryview object that can be passed to the bus drivers
         self.display.blit(area.x1, area.y1, w:=(area.x2-area.x1+1), h:=(area.y2-area.y1+1), color_p.__dereference__(w*h*self._color_size))
         if self._blocking:
-            self._flush_ready_cb(disp_drv)
+            self._disp_drv.flush_ready()
 
-    # we always register this callback no matter what. This is what tells LVGL
-    # that the buffer is able to be written to. If this callback doesn't get
-    # registered then the flush function is going to block until the buffer
-    # gets emptied. Everything is handeled internally in the bus driver if
-    # using DMA and double buffer.
-    def _flush_ready_cb(self, disp_drv):
-        disp_drv.flush_ready()
 
 class TouchDriver():
 
