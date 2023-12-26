@@ -41,6 +41,14 @@ Implementation Notes
   <https://www.adafruit.com/product/3315>
 
 """
+"""
+The ``_INIT_SEQUENCE`` is bitpacked to minimize the ram impact. Every command begins
+with a command byte followed by a byte to determine the parameter count and if a
+delay is need after. When the top bit of the second byte is 1, the next byte will be
+the delay time in milliseconds. The remaining 7 bits are the parameter count
+excluding any delay byte. The third through final bytes are the remaining command
+parameters. The next byte will begin a new command definition.
+"""
 
 from busdisplay import BusDisplay
 from time import sleep_ms

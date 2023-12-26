@@ -1,6 +1,14 @@
 """
 see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
 """
+"""
+The `_INIT_SEQUENCE` is a list of tuples. As a list, it can be modified in .init(), for example:
+    self._INIT_SEQUENCE[-1] = (0x29, b"\x00", 100)
+Each tuple contains the following:
+    - The first element is the register address (command)
+    - The second element is the register value (data)
+    - The third element is the delay in milliseconds after the register is set
+"""
 
 from busdisplay import BusDisplay
 from time import sleep_ms

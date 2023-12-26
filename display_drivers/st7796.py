@@ -1,3 +1,7 @@
+'''
+The init sequence is written out line by line in .init()
+'''
+
 from busdisplay import (
     BusDisplay,
     PORTRAIT,
