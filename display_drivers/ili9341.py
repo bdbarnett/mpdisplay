@@ -42,7 +42,6 @@ Implementation Notes
 """
 
 from busdisplay import BusDisplay
-from time import sleep_ms
 
 _INIT_SEQUENCE = (
     b"\x01\x80\x80"  # Software reset then delay 0x80 (128ms)
