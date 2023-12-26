@@ -6,6 +6,7 @@ from micropython import const, alloc_emergency_exception_buf
 from machine import Pin
 from time import sleep_ms
 import lcd_bus
+
 # import gc
 
 
@@ -34,7 +35,7 @@ _DEFAULT_ROTATION_TABLE = (
     _MADCTL_MX,
     _MADCTL_MV,
     _MADCTL_MY,
-    _MADCTL_MY | _MADCTL_MX | _MADCTL_MV
+    _MADCTL_MY | _MADCTL_MX | _MADCTL_MV,
 )
 
 # Negative rotation constants indicate the MADCTL value will come from
@@ -46,9 +47,8 @@ REVERSE_PORTRAIT = const(-3)
 REVERSE_LANDSCAPE = const(-4)
 
 
-class BusDisplay():
-
-    display_name = 'BusDisplay'
+class BusDisplay:
+    display_name = "BusDisplay"
 
     # Default values of "power" and "backlight" are reversed logic! 0 means ON.
     # You can change this by setting backlight_on and power_on arguments.
@@ -76,20 +76,25 @@ class BusDisplay():
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
-# Required for the 16-bit SSD1351 128x128 OLED
-#        single_byte_bounds=False,
-# Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
-#        data_as_commands=False,
-# Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
-#        grayscale=False,
-#        brightness_command=None,
-# Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
-#        pixels_in_byte_share_row=True,
+        # Required for the 16-bit SSD1351 128x128 OLED
+        #        single_byte_bounds=False,
+        # Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
+        #        data_as_commands=False,
+        # Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
+        #        grayscale=False,
+        #        brightness_command=None,
+        # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
+        #        pixels_in_byte_share_row=True,
     ):
-
         max_trans = width * height * color_depth
-            
-        display_bus.init(width, height, color_depth, max_trans, rgb565_byte_swap=reverse_bytes_in_word)
+
+        display_bus.init(
+            width,
+            height,
+            color_depth,
+            max_trans,
+            rgb565_byte_swap=reverse_bytes_in_word,
+        )
 
         self.display_bus = display_bus
         self.width = width
@@ -102,16 +107,20 @@ class BusDisplay():
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
-#        self._single_byte_bounds = single_byte_bounds  # not implemented
-#        self._data_as_commands = data_as_commands  # not implemented
-#        self._grayscale = grayscale  # not implemented
-#        self._brightness_command = brightness_command  # not implemented
-#        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
+        #        self._single_byte_bounds = single_byte_bounds  # not implemented
+        #        self._data_as_commands = data_as_commands  # not implemented
+        #        self._grayscale = grayscale  # not implemented
+        #        self._brightness_command = brightness_command  # not implemented
+        #        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
 
-        self._reset_pin = Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None 
+        self._reset_pin = (
+            Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None
+        )
         self._reset_high = reset_high
 
-        self._power_pin = Pin(power_pin, Pin.OUT, value=power_on_high) if power_pin else None
+        self._power_pin = (
+            Pin(power_pin, Pin.OUT, value=power_on_high) if power_pin else None
+        )
         self._power_on_high = power_on_high
 
         self._backlight_pin = Pin(backlight_pin, Pin.OUT) if backlight_pin else None
@@ -120,6 +129,7 @@ class BusDisplay():
         if self._backlight_pin is not None:
             try:
                 from machine import PWM
+
                 # 1000Hz looks decent and doesn't keep the CPU too busy
                 self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True
@@ -134,7 +144,7 @@ class BusDisplay():
 
         self.init()
         if not self._initialized:
-            raise RuntimeError('Display driver init() must call super().init()')
+            raise RuntimeError("Display driver init() must call super().init()")
         self.brightness = brightness
         if invert:
             self.invert_colors(True)
@@ -146,8 +156,9 @@ class BusDisplay():
 
     def blit(self, x, y, width, height, buf):
         # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
-        #TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
-        #TODO:  Add `if self._data_as_commands is True:` for Column and Row tx_param
+        # TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
+        # TODO:  Add `if self._data_as_commands is True:` for Column and Row tx_param
+        # Should RGBBus skip setting column and row addresses?
 
         # Column addresses
         x1 = x + self._colstart
@@ -185,7 +196,7 @@ class BusDisplay():
 
     def set_params(self, cmd, params=None):
         # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
-        #TODO:  Add `if self._data_as_commands is True:` for tx_param
+        # TODO:  Add `if self._data_as_commands is True:` for tx_param
         self.display_bus.tx_param(cmd, params)
 
     def get_params(self, cmd, params):
@@ -199,9 +210,7 @@ class BusDisplay():
     def rotation(self, value):
         self._rotation = value
 
-        self._param_buf[0] = (
-            self._madctl(self._bgr, value, self.rotation_table)
-        )
+        self._param_buf[0] = self._madctl(self._bgr, value, self.rotation_table)
         self.display_bus.tx_param(_MADCTL, self._param_mv[:1])
 
     @staticmethod
@@ -216,7 +225,7 @@ class BusDisplay():
 
         index = abs(rotation) - 1
         if index > len(rotations):
-            RuntimeError('Invalid display rotation value specified')
+            RuntimeError("Invalid display rotation value specified")
 
         return rotations[index] | color_order
 
@@ -286,7 +295,7 @@ class BusDisplay():
         parameters. The next byte will begin a new command definition.
         """
         DELAY = 0x80
-        
+
         i = 0
         while i < len(init_sequence):
             command = init_sequence[i]
