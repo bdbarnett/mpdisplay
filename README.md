@@ -21,6 +21,7 @@ Download the following files and upload them to your board:
 You MAY edit the `lv_config.py` to:
 - Adjust the buffer size, type and quantity to match your needs
 - Set your color format if "lv.COLOR_FORMAT.NATIVE" doesn't work
+- Change from blocking mode to non-blocking mode (currently has issues in the display bus drivers)
 - Enable encoder(s) if you are using them
 
 You MAY edit the `board_config.py` to:
