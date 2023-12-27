@@ -5,16 +5,16 @@ Better docuentation coming soon!
 
 The display drivers here currently only support ESP32 boards.  That will change in time.  The touch and encoder drivers, as well as the `lv_driver_framework.py` and `lv_config.py`, aren't limited to any specific microcontroller.
 
-The graphics engine these drivers are targeted toward is LVGL on MicroPython, but they are structured so they may support any graphics engine on MicroPython.  See [display_simple_test.py](examples/display_simpletest.py) and [testris](https://github.com/bdbarnett/testris) for examples using these drivers without LVGL.
+The graphics engine these drivers are targeted toward is LVGL on MicroPython, but they are structured so they may support any graphics engine on MicroPython.  See [display_simple_test.py](lib/display_simpletest.py) and [testris](https://github.com/bdbarnett/testris) for examples using these drivers without LVGL.
 
 # Quickstart
 Download, compile and flash your board with the latest [lv_binding_micropython](https://github.com/kdschlosser/lv_binding_micropython/tree/MicroPython_1.21.0_Update).  See the directions on that page for more details.  It is a work in progress and may have issues that need to be resolved.  Kevin Schlosser is making many exciting changes to the binding including writing the display bus drivers that are used here.
 
 Download the following files and upload them to your board:
+- The lib folder, which includes the required files `busdisplay.py`, `lv_driver_framework` and `lv_config.py`, as well as the test files `lv_touch_test.py` and `display_simpletest.py`
 - The `board_config.py` from [board_configs](board_configs)
 - The driver for your display controller from [display_drivers](display_drivers)
 - The driver for your touchscreen controller from [touch_drivers](touch_drivers)
-- `busdisplay.py`, `lv_driver_framework` and `lv_config.py` from the root of this repo
 - If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
@@ -25,12 +25,17 @@ You MAY edit the `lv_config.py` to:
 - Enable encoder(s) if you are using them
 
 You MAY edit the `board_config.py` to:
-- Adjust the bus speed for possible higher throughput
-- Set the initial brightness of the backlight
+- Adjust the bus frequency for possible higher throughput
+- Set the initial brightness of the backlight if backlight_pin is set
 - Set the rotation of the display
 - Correct any settings that may be necessary for your setup
 - Enable an encoder if you add one
 - Add other non-display related drivers, such as SD card reader or real time clock (not provided)
+
+It is recommended that you first try the touch test program.  The color of the buttons should be blue when not selected, green when pressed and red when focused.  If the touch points don't line up with the buttons, it provides directions on how to find the correct touch rotation masks.  From the REPL type:
+```
+from lv_touch_test import mask, rotation
+```
 
 Here is a usage example:
 ```
