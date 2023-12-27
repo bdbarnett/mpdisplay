@@ -1,7 +1,7 @@
 # mpdisplay
 Display, touch and encoder drivers for MicroPython and lv_bindings_micropython
 
-Better docuentation coming soon!
+Better documentation coming soon!
 
 The display drivers here currently only support ESP32 boards.  That will change in time.  The touch and encoder drivers, as well as the `lv_driver_framework.py` and `lv_config.py`, aren't limited to any specific microcontroller.
 
