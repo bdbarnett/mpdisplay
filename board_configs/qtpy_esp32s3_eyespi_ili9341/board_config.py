@@ -47,6 +47,7 @@ display_drv = ILI9341(
     power_on_high=True,
 )
 
-i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=400000)
+i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=100000)
 touch_drv = FT6x36(i2c)
-touch_drv_read = touch_drv.get_positions
+touch_read_func=touch_drv.get_positions
+touch_rotation_table=None

@@ -5,6 +5,7 @@
 from micropython import const, alloc_emergency_exception_buf
 from machine import Pin
 from time import sleep_ms
+
 # import gc
 
 
@@ -46,7 +47,6 @@ REVERSE_LANDSCAPE = const(-4)
 
 
 class BusDisplay:
-
     display_name = "BusDisplay"
 
     def __init__(
@@ -71,20 +71,19 @@ class BusDisplay:
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
-# Required for the 16-bit SSD1351 128x128 OLED
-#        single_byte_bounds=False,
-# Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
-#        data_as_commands=False,
-# Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
-#        grayscale=False,
-#        brightness_command=None,
-# Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
-#        pixels_in_byte_share_row=True,
+        # Required for the 16-bit SSD1351 128x128 OLED
+        #        single_byte_bounds=False,
+        # Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
+        #        data_as_commands=False,
+        # Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
+        #        grayscale=False,
+        #        brightness_command=None,
+        # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
+        #        pixels_in_byte_share_row=True,
     ):
-
         self.display_bus = display_bus
-        self.width = width
-        self.height = height
+        self._width = width
+        self._height = height
         self._colstart = colstart
         self._rowstart = rowstart
         self._rotation = rotation
@@ -93,11 +92,11 @@ class BusDisplay:
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
-#        self._single_byte_bounds = single_byte_bounds  # not implemented
-#        self._data_as_commands = data_as_commands  # not implemented
-#        self._grayscale = grayscale  # not implemented
-#        self._brightness_command = brightness_command  # not implemented
-#        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
+        #        self._single_byte_bounds = single_byte_bounds  # not implemented
+        #        self._data_as_commands = data_as_commands  # not implemented
+        #        self._grayscale = grayscale  # not implemented
+        #        self._brightness_command = brightness_command  # not implemented
+        #        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
 
         self._reset_pin = (
             Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None
@@ -138,7 +137,9 @@ class BusDisplay:
 
         self.init()
         if not self._initialized:
-            raise RuntimeError("Display driver init() must call super().init() or set self._initialized = True")
+            raise RuntimeError(
+                "Display driver init() must call super().init() or set self._initialized = True"
+            )
         self.brightness = brightness
         if invert:
             self.invert_colors(True)
@@ -168,6 +169,18 @@ class BusDisplay:
             self.set_params(_INVON)
         else:
             self.set_params(_INVOFF)
+
+    @property
+    def width(self):
+        if abs(self._rotation) & 1:
+            return self._width
+        return self._height
+
+    @property
+    def height(self):
+        if abs(self._rotation) & 1:
+            return self._height
+        return self._width
 
     @property
     def rotation(self):
@@ -333,4 +346,3 @@ class BusDisplay:
             self.set_params(line[0], line[1])
             if line[2] != 0:
                 sleep_ms(line[2])
-

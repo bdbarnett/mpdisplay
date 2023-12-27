@@ -86,4 +86,5 @@ display_drv = ST7701(
 )
 
 touch_drv = CST8XX(i2c)
-touch_drv_read = touch_drv.touches
+touch_read_func = touch_drv.touches
+touch_rotation_table=None

@@ -48,6 +48,6 @@ display_drv = ST7796(
 )
 
 encoder_drv = RotaryIRQ(1, 2, pull_up=True, half_step=True)
-encoder_drv_read = encoder_drv.value
+encoder_read_func = encoder_drv.value
 encoder_button = Pin(0, Pin.IN, Pin.PULL_UP)
-encoder_button_read = lambda : not encoder_button.value()
+encoder_button_func = lambda : not encoder_button.value()

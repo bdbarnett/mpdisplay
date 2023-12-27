@@ -27,7 +27,7 @@ display_bus = I80Bus(
     param_bits=8,
     cs_active_high=False,
     reverse_color_bits=False,
-    swap_color_bytes=True,
+    swap_color_bytes=False,
     pclk_active_neg=False,
     pclk_idle_low=False,
 )
@@ -41,7 +41,7 @@ display_drv = ST7789(
     rotation=-1,  # PORTRAIT
     color_depth=16,
     bgr=False,
-    reverse_bytes_in_word=True,
+    reverse_bytes_in_word=False,
     invert=True,
     brightness=1.0,
     backlight_pin=38,
@@ -67,4 +67,5 @@ touch_drv.calibrate(
     height=display_drv.height,
     orientation=1,
 )
-touch_drv_read = touch_drv.get_touch
+touch_read_func = touch_drv.get_touch
+touch_rotation_table=None
