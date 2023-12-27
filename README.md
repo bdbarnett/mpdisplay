@@ -18,12 +18,9 @@ Download the following files and upload them to your board:
 - If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
-The board_config directory for your board contains symbollic links to all the files required.  You should only need to edit the two files that end in "config":  `lv_config.py` and `board_config.py`.
-
-You MUST edit the `lv_config.py` to:
+You MAY edit the `lv_config.py` to:
 - Adjust the buffer size, type and quantity to match your needs
 - Set your color format if "lv.COLOR_FORMAT.NATIVE" doesn't work
-- Set the rotation of your touch driver
 - Enable encoder(s) if you are using them
 
 You MAY edit the `board_config.py` to:
