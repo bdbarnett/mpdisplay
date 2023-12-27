@@ -1,10 +1,15 @@
 # SPDX-FileCopyrightText: 2023 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+#
+# Suggest setting I2C freq = 400000 and using IRQ pin for best performance
+# Set IRQ speed to 100000 if not using an IRQ pin
+
 
 from machine import Pin, I2C
+from time import sleep_ms
     
-class Chsc6x:
+class CHSC6X:
     CHSC6X_I2C_ID = const(0x2e)
     CHSC6X_READ_POINT_LEN = const(5)
 
@@ -13,6 +18,7 @@ class Chsc6x:
         self._addr = addr
         self._irq = Pin(irq_pin, Pin.IN, Pin.PULL_UP) if irq_pin else None
         self._buffer = bytearray(CHSC6X_READ_POINT_LEN)
+        sleep_ms(100)
 
     def is_touched(self):
         if self._irq is not None:
@@ -22,12 +28,17 @@ class Chsc6x:
         return (self.touch_read() is not None)
 
     def touch_read(self):
-        # Throws an OSError when called repetitively too fast
-        try:
-            self._i2c.readfrom_into(self._addr, self._buffer)
-        except OSError:
-            return None
-        
+        if self._irq is not None:
+            if self.is_touched() == True:
+                self._i2c.readfrom_into(self._addr, self._buffer)
+            else:
+                return None
+        else:
+            try:
+                self._i2c.readfrom_into(self._addr, self._buffer)
+            except OSError:
+                return None
+
         results = [i for i in self._buffer]
         # first byte is non-zero when touched, 3rd byte is x, 5th byte is y
         if results[0]:
@@ -37,9 +48,8 @@ class Chsc6x:
 
 def main():
     print("Started...")
-    i2c = I2C(0, sda=Pin(7), scl=Pin(6))
-    touch = Chsc6x(i2c, irq_pin=16)   # with IRQ pin
-#     touch = Chsc6x(i2c)               # without IRQ pin 
+    i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=400000)
+    touch = CHSC6X(i2c, irq_pin=16)
 
     while True:
         if touch.is_touched():

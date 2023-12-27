@@ -27,13 +27,13 @@ display_bus = SPIBus(
     spi_mode=0,
 )
 
-display_drv = ST7796(
+display_drv = ST7789(
     display_bus,
     width=170,
     height=320,
     colstart=0,
     rowstart=0,
-    rotation=-1,  # PORTRAIT
+    rotation=-1,
     color_depth=16,
     bgr=False,
     reverse_bytes_in_word=True,
@@ -46,6 +46,9 @@ display_drv = ST7796(
     power_pin=None,
     power_on_high=True,
 )
+
+touch_read_func = lambda : None
+touch_rotation_table = None
 
 encoder_drv = RotaryIRQ(1, 2, pull_up=True, half_step=True)
 encoder_read_func = encoder_drv.value

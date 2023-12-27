@@ -3,9 +3,16 @@
 from lcd_bus import I80Bus
 from st7789 import ST7789
 from machine import Pin
+from time import sleep_ms
 
 
+display_power_pin=Pin(15, Pin.OUT, value=1)
 display_rd_pin = Pin(9, Pin.OUT, value=1)
+display_reset_pin=Pin(5, Pin.OUT, value=1)
+sleep_ms(100)
+display_reset_pin.value(0)
+sleep_ms(100)
+display_reset_pin.value(1)
 
 display_bus = I80Bus(
     dc=7,
@@ -28,30 +35,30 @@ display_bus = I80Bus(
     param_bits=8,
     cs_active_high=False,
     reverse_color_bits=False,
-    swap_color_bytes=False,
+    swap_color_bytes=True,
     pclk_active_neg=False,
     pclk_idle_low=False,
 )
 
-display_drv = ST7796(
+display_drv = ST7789(
     display_bus,
     width=170,
     height=320,
     colstart=0,
-    rowstart=0,
-    rotation=-1,  # PORTRAIT
+    rowstart=35,
+    rotation=-1,
     color_depth=16,
-    bgr=False,  # RGB
+    bgr=False,
     reverse_bytes_in_word=False,
     invert=True,
     brightness=1.0,
     backlight_pin=38,
     backlight_on_high=True,
-    reset_pin=5,
+    reset_pin=None,
     reset_high=True,
-    power_pin=15,
+    power_pin=None,
     power_on_high=True,
 )
 
-touch_read_func=None
+touch_read_func=lambda : None
 touch_rotation_table=None

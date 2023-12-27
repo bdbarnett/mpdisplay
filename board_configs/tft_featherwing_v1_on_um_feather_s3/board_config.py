@@ -1,18 +1,18 @@
-""" QTPy ESP32S3 with EyeSPI and ILI9341 2.8" display """
+""" 3.5" TFT Featherwing V1 on Unexpected Maker Feather S3 """
 
 from lcd_bus import SPIBus
-from ili9341 import ILI9341
-from machine import Pin, I2C
-from ft6x36 import FT6x36
+from hx8357 import HX8357
+from machine import Pin
+# from stmpe610 import STMPE610_SPI # TODO: port from https://github.com/adafruit/Adafruit_CircuitPython_STMPE610
 
 
 display_bus = SPIBus(
-    dc=16,
+    dc=3,
     host=1,
     mosi=35,
     miso=37,
     sclk=36,
-    cs=5,
+    cs=1,
     freq=20_000_000,
     wp=-1,
     hd=-1,
@@ -27,17 +27,17 @@ display_bus = SPIBus(
     spi_mode=0,
 )
 
-display_drv = ILI9341(
+display_drv = HX8357(
     display_bus,
-    width=240,
-    height=320,
+    width=320,
+    height=480,
     colstart=0,
     rowstart=0,
     rotation=-1,
     color_depth=16,
     bgr=True,
     reverse_bytes_in_word=True,
-    invert=False,
+    invert=True,
     brightness=1.0,
     backlight_pin=None,
     backlight_on_high=True,
@@ -45,9 +45,9 @@ display_drv = ILI9341(
     reset_high=True,
     power_pin=None,
     power_on_high=True,
+    mirrored=True,
 )
 
-i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=100000)
-touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=(6, 3, 0, 5)
+# Note Touch_CS = 38
+touch_read_func=lambda : None
+touch_rotation_table=None
