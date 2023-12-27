@@ -61,6 +61,7 @@ class BusDisplay:
         color_depth=16,
         bgr=False,
         invert=False,
+        reverse_bytes_in_word=False,
         brightness=1.0,
         backlight_pin=None,
         backlight_on_high=True,
@@ -132,7 +133,7 @@ class BusDisplay:
             height,
             color_depth,
             self.width * self.height * self._color_depth // 8,
-            rgb565_byte_swap=False,
+            rgb565_byte_swap=reverse_bytes_in_word,
         )
 
         self.init()
