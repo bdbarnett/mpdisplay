@@ -41,6 +41,8 @@ class _BaseBus:
         """
         self.max_transfer_sz: int = buffer_size
         self._rgb565_byte_swap: bool = rgb565_byte_swap
+        if self._rgb565_byte_swap:
+            print("WARNING: rgb565_byte_swap is enabled. This is VERY slow!")
 
     def register_callback(self, callback: callable) -> None:
         """
