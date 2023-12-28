@@ -41,9 +41,9 @@ _DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
 #
 # buf = heap_caps.malloc(buffer_size, heap_caps.CAP_INTERNAL | heap_caps.CAP_DMA)
 
-class DisplayDriver():
 
-    display_name = 'DisplayDriver'
+class DisplayDriver:
+    display_name = "DisplayDriver"
 
     def __init__(
         self,
@@ -54,118 +54,142 @@ class DisplayDriver():
         *,
         factor=10,
         blocking=True,
-        ):
-
+    ):
         self.display = display
         self._color_size = lv.color_format_get_size(color_format)
-        self._frame_buffer1, self._frame_buffer2 = self._allocate_buffers(frame_buffer1, frame_buffer2, factor)
+        self._frame_buffer1, self._frame_buffer2 = self._allocate_buffers(
+            frame_buffer1, frame_buffer2, factor
+        )
         self._blocking = blocking
 
-        if len(self._frame_buffer1) >= display.width * display.height * self._color_size:
+        if (
+            len(self._frame_buffer1)
+            >= display.width * display.height * self._color_size
+        ):
             render_mode = lv.DISPLAY_RENDER_MODE.FULL
             self.display.set_render_mode_full(True)
         else:
             render_mode = lv.DISPLAY_RENDER_MODE.PARTIAL
             self.display.set_render_mode_full(False)
-    
+
         if not lv.is_initialized():
             lv.init()
 
         self._disp_drv = lv.display_create(self.display.width, self.display.height)
         self._disp_drv.set_color_format(color_format)
         self._disp_drv.set_flush_cb(self._flush_cb)
-        if not self._blocking:  self.display.display_bus.register_callback(self._disp_drv.flush_ready)
-        self._disp_drv.set_draw_buffers(self._frame_buffer1, self._frame_buffer2, len(self._frame_buffer1), render_mode)
+        if not self._blocking:
+            self.display.display_bus.register_callback(self._disp_drv.flush_ready)
+        self._disp_drv.set_draw_buffers(
+            self._frame_buffer1,
+            self._frame_buffer2,
+            len(self._frame_buffer1),
+            render_mode,
+        )
 
     def _flush_cb(self, disp_drv, area, color_p):
         # we have to use the __dereference__ method because this method is
         # what converts from the C_Array object the binding passes into a
         # memoryview object that can be passed to the bus drivers
-        self.display.blit(area.x1, area.y1, w:=(area.x2-area.x1+1), h:=(area.y2-area.y1+1), color_p.__dereference__(w*h*self._color_size))
+        self.display.blit(
+            area.x1,
+            area.y1,
+            w := (area.x2 - area.x1 + 1),
+            h := (area.y2 - area.y1 + 1),
+            color_p.__dereference__(w * h * self._color_size),
+        )
         if self._blocking:
             self._disp_drv.flush_ready()
 
     def _allocate_buffers(self, frame_buffer1, frame_buffer2, factor):
         if frame_buffer1 is None:
             import lcd_bus  # NOQA
+
             if isinstance(self.display.display_bus, lcd_bus.RGBBus):
                 frame_buffer1 = self.display.display_bus.get_frame_buffer(1)
                 frame_buffer2 = self.display.display_bus.get_frame_buffer(2)
             else:
-                import gc
-                import heap_caps  # NOQA
-
-                gc.collect()
+                from sys import platform
 
                 buf_size = int(
-                    self.display.width *
-                    self.display.height *
-                    self._color_size // factor
+                    self.display.width
+                    * self.display.height
+                    * self._color_size
+                    // factor
                 )
-                frame_buffer1 = heap_caps.malloc(
-                    buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
-                )
-                frame_buffer2 = heap_caps.malloc(
-                    buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
-                )
+                if platform == "bogus":
+                    import gc
+                    import heap_caps  # NOQA
 
-                if frame_buffer2 is None:
-                    if frame_buffer1 is not None:
-                        heap_caps.free(frame_buffer1)
+                    gc.collect()
 
                     frame_buffer1 = heap_caps.malloc(
-                        buf_size, heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
+                        buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
                     )
                     frame_buffer2 = heap_caps.malloc(
-                        buf_size, heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
+                        buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
                     )
 
-                if frame_buffer1 is None:
-                    if frame_buffer2 is not None:
-                        heap_caps.free(frame_buffer2)
-                        frame_buffer2 = None
+                    if frame_buffer2 is None:
+                        if frame_buffer1 is not None:
+                            heap_caps.free(frame_buffer1)
 
-                    frame_buffer1 = heap_caps.malloc(
-                        buf_size, heap_caps.CAP_INTERNAL
-                    )
-
-                    if frame_buffer1 is None:
                         frame_buffer1 = heap_caps.malloc(
-                            buf_size, heap_caps.CAP_SPIRAM
+                            buf_size, heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
+                        )
+                        frame_buffer2 = heap_caps.malloc(
+                            buf_size, heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
                         )
 
                     if frame_buffer1 is None:
-                        raise RuntimeError(
-                            'Not enough memory available to create frame buffer(s)'
+                        if frame_buffer2 is not None:
+                            heap_caps.free(frame_buffer2)
+                            frame_buffer2 = None
+
+                        frame_buffer1 = heap_caps.malloc(
+                            buf_size, heap_caps.CAP_INTERNAL
                         )
+
+                        if frame_buffer1 is None:
+                            frame_buffer1 = heap_caps.malloc(
+                                buf_size, heap_caps.CAP_SPIRAM
+                            )
+                else:
+                    frame_buffer1 = bytearray(buf_size)
+                    frame_buffer2 = bytearray(buf_size)
+
+        if frame_buffer1 is None:
+            raise RuntimeError("Not enough memory available to create frame buffer(s)")
 
         return frame_buffer1, frame_buffer2
 
-class TouchDriver():
 
-    display_name = 'TouchDriver'
+class TouchDriver:
+    display_name = "TouchDriver"
 
     def __init__(self, read_func, rotation, rotation_table):
         self._touch_read_func = read_func
-        self._touch_rotation_table = rotation_table if rotation_table else _DEFAULT_TOUCH_ROTATION_TABLE
-        
+        self._touch_rotation_table = (
+            rotation_table if rotation_table else _DEFAULT_TOUCH_ROTATION_TABLE
+        )
+
         self._indev = lv.indev_create()
         self._indev.set_type(lv.INDEV_TYPE.POINTER)
         self._indev.set_read_cb(self._touch_cb)
         self._indev.set_disp(lv.display_get_default())
         self._indev.set_group(lv.group_get_default())
-        
+
         self.set_touch_rotation(rotation)
 
     def _touch_cb(self, touch_indev, data):
         # LVGL hands us an object called data.  We just change the state attributes when necessary.
         point = self.get_touched()
         if point:
-            data.point = lv.point_t( {'x': point[0], 'y': point[1]} )
+            data.point = lv.point_t({"x": point[0], "y": point[1]})
         data.state = lv.INDEV_STATE.PRESSED if point else lv.INDEV_STATE.RELEASED
 
     def get_touched(self):
-        # touch_read_func should return None, a point as a tuple (x, y), a point as a list [x, y] or 
+        # touch_read_func should return None, a point as a tuple (x, y), a point as a list [x, y] or
         # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
         # or [[x1, x2], [y1, y2]].  If it doesn't, create a wrapper around your driver's read function
         # and set touch_read_func to that wrapper, or subclass TouchDriver and override .get_touched()
@@ -198,12 +222,12 @@ class TouchDriver():
         mask = mask & 0b111
         self._touch_invert_y = True if mask >> 2 & 1 else False
         self._touch_invert_x = True if mask >> 1 & 1 else False
-        self._touch_swap_xy =  True if mask >> 0 & 1 else False
+        self._touch_swap_xy = True if mask >> 0 & 1 else False
         self._touch_max_x = self._indev.get_disp().get_horizontal_resolution() - 1
         self._touch_max_y = self._indev.get_disp().get_vertical_resolution() - 1
 
 
-class EncoderDriver():
+class EncoderDriver:
     """
     read_func:  Function to read the value of the encoder.  Value should be continuous, not incremental.
     pressed_func:  Function that returns a truthy value if the button is pressed, falsy if not.
@@ -216,14 +240,13 @@ class EncoderDriver():
     long_press_duration:  Number of milliseconds for button to be pressed before calling the long_pressed method
     """
 
-    display_name = 'EncoderDriver'
+    display_name = "EncoderDriver"
 
     def __init__(self, read_func, pressed_func=None, long_press_duration=500):
-        
         self.value = read_func
-        self.pressed = pressed_func if pressed_func else lambda : False
+        self.pressed = pressed_func if pressed_func else lambda: False
         self.long_press_duration = long_press_duration
-        
+
         # Grab the initial state
         self._last_value = read_func()
         self._last_pressed = pressed_func()
@@ -242,9 +265,11 @@ class EncoderDriver():
         # Read the encoder
         value = self.value()
         if value != self._last_value:
-            data.enc_diff = value - self._last_value  # <- Reverse these to change direction of all encoders
+            data.enc_diff = (
+                value - self._last_value
+            )  # <- Reverse these to change direction of all encoders
             self._last_value = value
-        
+
         # Read the button.
         pressed = self.pressed()
         # Is it different than the last time we checked?
@@ -271,13 +296,16 @@ class EncoderDriver():
         # Was it pressed last time and still pressed now?
         elif self._last_pressed and pressed:
             # Yes.  If we're still counting and it has been longer than the long_press_duration
-            if self._last_ticks and ticks_diff(ticks_ms, self._last_ticks) > self.long_press_duration:
+            if (
+                self._last_ticks
+                and ticks_diff(ticks_ms, self._last_ticks) > self.long_press_duration
+            ):
                 # do whatever we do for a long press
                 self.long_pressed()
                 # and stop counting.
                 self._last_ticks = -1
 
-    def long_pressed(self):        
+    def long_pressed(self):
         # If we're in `editing` mode
         if self._indev.get_group().get_editing():
             # escape out of it.
