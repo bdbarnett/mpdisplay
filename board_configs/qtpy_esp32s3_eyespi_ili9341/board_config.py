@@ -34,6 +34,7 @@ display_drv = ILI9341(
     colstart=0,
     rowstart=0,
     rotation=0,
+    mirrored=False
     color_depth=16,
     bgr=True,
     reverse_bytes_in_word=True,
