@@ -101,7 +101,6 @@ class SPIBus(_BaseBus):
         sclk (int, optional): The pin number for the SCLK pin. Defaults to -1.
         cs (int, optional): The pin number for the CS pin. Defaults to -1.
         freq (int, optional): The SPI clock frequency in Hz. Defaults to -1.
-        spi (object, optional): A SPI object to use instead of creating a new one. Defaults to None.
         tx_only (bool, optional): Whether to use transmit-only mode. Defaults to False.
         cmd_bits (int, optional): The number of bits for command transmission. Defaults to 8.
         param_bits (int, optional): The number of bits for parameter transmission. Defaults to 8.
@@ -124,7 +123,6 @@ class SPIBus(_BaseBus):
             cs: int = -1,
             freq: int = -1,
             *,
-            spi: object = None,
             tx_only: bool = False,
             cmd_bits: int = 8,
             param_bits: int = 8,
@@ -151,7 +149,16 @@ class SPIBus(_BaseBus):
         self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_cmd)
         self.cs: Pin = Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != 0 else lambda val: None
 
-        if spi is None:
+        if mosi == -1 and miso == -1 and sclk == -1:
+            self.spi: SPI = SPI(
+                host,
+                baudrate=freq,
+                polarity=spi_mode & 2,
+                phase=spi_mode & 1,
+                bits=max(cmd_bits, param_bits),
+                firstbit=SPI.LSB if lsb_first else SPI.MSB,
+            )       
+        else:
             self.spi: SPI = SPI(
                 host,
                 baudrate=freq,
@@ -162,9 +169,7 @@ class SPIBus(_BaseBus):
                 sck=Pin(sclk, Pin.OUT),
                 mosi=Pin(mosi, Pin.OUT),
                 miso=Pin(miso, Pin.IN) if not tx_only else None,
-                )
-        else:
-            self.spi: SPI = spi
+            )
 
     def tx_color(
             self,
