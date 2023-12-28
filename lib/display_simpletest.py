@@ -1,21 +1,21 @@
 """ display_simpletest"""
 
 from board_config import display_drv
+from machine import Timer
 import random
 
-try:
-    from heap_caps import malloc, CAP_DMA, CAP_INTERNAL  # For allocating buffers for the blocks and text
-    create_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
-except:
-    create_buffer = lambda size: bytearray(size)
-
-# If the are incorrect, change this value.
+# If the colors are incorrect, change this value.
 # You may need to change the `reverse_bytes_in_word` value in board_config.py as well
 swap_color_bytes = False
 
-# Get the display dimensions
-display_width = display_drv.width
-display_height = display_drv.height
+# Determine how buffers are allocated
+# If heap_caps is available, use it to allocate in internal DMA-capable memory
+try:
+    from heap_caps import malloc, CAP_DMA, CAP_INTERNAL  # For allocating buffers for the blocks and text
+    alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
+# Otherwise use bytearray
+except:
+    alloc_buffer = lambda size: bytearray(size)
 
 # Define RGB565 colors
 BLACK = 0x0000
@@ -30,20 +30,41 @@ RED = 0xf800
 ORANGE = 0xfda0
 
 # Define the blocks
+bytes_per_pixel = 2
 block_size = 64   # Size of each dimension in pixels
-block_pixels = block_size * block_size
+block_bytes = block_size * block_size * bytes_per_pixel
 blocks = []
-# for color in [random.randint(0, 65535)] * 10:
+
+# Create the blocks
 for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE]:
-    block = create_buffer(block_pixels*2)
-    for i in range(block_pixels):
-        block[i*2] = pixel_color & 0xff if not swap_color_bytes else pixel_color >> 8
-        block[i*2+1] = pixel_color >> 8 if not swap_color_bytes else pixel_color & 0xff
+    block = alloc_buffer(block_bytes)
+    for i in range(0, block_bytes, bytes_per_pixel):
+        block[i] = pixel_color & 0xff if not swap_color_bytes else pixel_color >> 8
+        block[i+1] = pixel_color >> 8 if not swap_color_bytes else pixel_color & 0xff
     blocks.append(block)
+
+# Maximum start positions of blocks
+max_x = display_drv.width - block_size - 1
+max_y = display_drv.height - block_size - 1
+
+# Counter and function to show blocks per second
+block_count = 0
+def print_count(_):
+    global block_count
+    print(f"\x08\x08\x08{block_count:3}", end ="")
+    block_count=0
+
+# Prepare for the loop
+print(f"{block_size}x{block_size} blocks per second: 000", end="")
+tim = Timer(-1)
+tim.init(mode=Timer.PERIODIC, freq=1, callback=print_count)
 
 # Infinite loop
 while True:
-    buffer = random.choice(blocks)
-    x = random.randint(0, display_width-block_size-1)
-    y = random.randint(0, display_height-block_size-1)
-    display_drv.blit(x, y, block_size, block_size, buffer)
+    display_drv.blit(
+        random.randint(0, max_x),  # x position
+        random.randint(0, max_y),  # y position
+        block_size,                # width
+        block_size,                # height
+        random.choice(blocks))     # buffer
+    block_count += 1
