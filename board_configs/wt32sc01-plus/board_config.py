@@ -8,7 +8,7 @@ from ft6x36 import FT6x36
 
 # The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both
 # tied to pin 4.  Controlling this pin with the display driver can lead to an
-# unresponsive touchscreen.  This case is not common.  If they aren't tied 
+# unresponsive touchscreen.  This case is uncommon.  If they aren't tied 
 # together on your board, define reset in ST7796 instead, like:
 #    ST7796(reset=4)
 reset=Pin(4, Pin.OUT, value=1)
