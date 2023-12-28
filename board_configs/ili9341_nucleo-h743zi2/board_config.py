@@ -13,7 +13,7 @@ display_bus = SPIBus(
     dc='D9',
     cs='D10',
     tx_only=True,
-    host=0,
+    host=1,
     freq=20_000_000,
     spi_mode=0,
     cmd_bits=8,
@@ -44,7 +44,7 @@ display_drv = ILI9341(
     power_on_high=True,
 )
 
-i2c = I2C(1, sda=Pin('D14'), scl=Pin('D15'), freq=100000)
+i2c = I2C(1)
 touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=(6, 3, 0, 5)
