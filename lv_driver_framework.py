@@ -187,9 +187,9 @@ class TouchDriver():
         index = (rotation // 90) % len(self._touch_rotation_table)
         mask = self._touch_rotation_table[index]
         print(f"Looking up touch rotation {rotation} degrees (index: {index})")
-        self.set_touch_rotation_by_mask(mask)
+        self.set_touch_rotation_mask(mask)
 
-    def set_touch_rotation_by_mask(self, mask):
+    def set_touch_rotation_mask(self, mask):
         # mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
         # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
