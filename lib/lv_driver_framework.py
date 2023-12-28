@@ -117,7 +117,7 @@ class DisplayDriver:
                     * self._color_size
                     // factor
                 )
-                if platform == "bogus":
+                if platform == "esp32":
                     import gc
                     import heap_caps  # NOQA
 
