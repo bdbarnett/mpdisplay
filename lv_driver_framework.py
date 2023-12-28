@@ -183,25 +183,22 @@ class TouchDriver():
             return x, y
         return None
 
-    def set_touch_rotation(self, value):
-        # A negative rotation looks up the rotation in the self._touch_rotation_table.
-        # A 0 or positive rotation uses it as is.
-        if value < 0:
-            touch_rotation = self._touch_rotation_table[abs(value)-1]
-            print(f"Touch rotation set to index {value} (number {touch_rotation})")
-        else:
-            touch_rotation = value
-            print(f"Touch rotation set to number {touch_rotation}")
-            
-        # Touch_rotation is an integer from 0 to 7 (3 bits)
-        # Currently, bit 0 = invert_y, bit 1 is invert_x and bit 2 is swap_xy, but that may change.
-        # Your display driver should have a way to set rotation before you add it to Devices,
-        # but your touch driver may not have a way to set its rotation.  You can call this function
-        # any time after you've created devices to change the rotation.
-        self._touch_rotation = touch_rotation // 8
-        self._touch_invert_y = True if touch_rotation >> 2 & 1 else False
-        self._touch_invert_x = True if touch_rotation >> 1 & 1 else False
-        self._touch_swap_xy =  True if touch_rotation >> 0 & 1 else False
+    def set_touch_rotation(self, rotation):
+        index = (rotation // 90) % len(self._touch_rotation_table)
+        mask = self._touch_rotation_table[index]
+        print(f"Looking up touch rotation {rotation} degrees (index: {index})")
+        self.set_touch_rotation_by_mask(mask)
+
+    def set_touch_rotation_by_mask(self, mask):
+        # mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
+        # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
+        # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
+        # its rotation.  You can call this function any time after you've created devices to change the rotation.
+        print(f"Setting rotation mask to 0b{mask:>3b} (decimal {mask})")
+        mask = mask // 8
+        self._touch_invert_y = True if mask >> 2 & 1 else False
+        self._touch_invert_x = True if mask >> 1 & 1 else False
+        self._touch_swap_xy =  True if mask >> 0 & 1 else False
         self._touch_max_x = self._indev.get_disp().get_horizontal_resolution() - 1
         self._touch_max_y = self._indev.get_disp().get_vertical_resolution() - 1
 
