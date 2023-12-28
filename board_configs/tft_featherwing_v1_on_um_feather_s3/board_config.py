@@ -33,7 +33,8 @@ display_drv = HX8357(
     height=480,
     colstart=0,
     rowstart=0,
-    rotation=-1,
+    rotation=0,
+    mirrored=True,
     color_depth=16,
     bgr=True,
     reverse_bytes_in_word=True,
@@ -45,7 +46,6 @@ display_drv = HX8357(
     reset_high=True,
     power_pin=None,
     power_on_high=True,
-    mirrored=True,
 )
 
 # Note Touch_CS = 38
