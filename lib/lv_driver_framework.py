@@ -103,9 +103,7 @@ class DisplayDriver:
 
     def _allocate_buffers(self, frame_buffer1, frame_buffer2, factor):
         if frame_buffer1 is None:
-            import lcd_bus  # NOQA
-
-            if isinstance(self.display.display_bus, lcd_bus.RGBBus):
+            if "RGB" in repr(self.display.display_bus):
                 frame_buffer1 = self.display.display_bus.get_frame_buffer(1)
                 frame_buffer2 = self.display.display_bus.get_frame_buffer(2)
             else:
@@ -210,7 +208,6 @@ class TouchDriver:
     def set_touch_rotation(self, rotation):
         index = (rotation // 90) % len(self._touch_rotation_table)
         mask = self._touch_rotation_table[index]
-        print(f"Looking up touch rotation {rotation} degrees (index: {index})")
         self.set_touch_rotation_mask(mask)
 
     def set_touch_rotation_mask(self, mask):
@@ -218,7 +215,6 @@ class TouchDriver:
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
         # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
         # its rotation.  You can call this function any time after you've created devices to change the rotation.
-        print(f"Setting rotation mask to 0b{mask:>03b} (decimal {mask})\n")
         mask = mask & 0b111
         self._touch_invert_y = True if mask >> 2 & 1 else False
         self._touch_invert_x = True if mask >> 1 & 1 else False
