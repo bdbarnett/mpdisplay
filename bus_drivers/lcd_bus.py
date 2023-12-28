@@ -101,17 +101,18 @@ class SPIBus(_BaseBus):
         sclk (int, optional): The pin number for the SCLK pin. Defaults to -1.
         cs (int, optional): The pin number for the CS pin. Defaults to -1.
         freq (int, optional): The SPI clock frequency in Hz. Defaults to -1.
-        wp (int, optional): The pin number for the write protect pin. Not yet supported. Defaults to -1.
-        hd (int, optional): The pin number for the hold pin. Not yet supported. Defaults to -1.
-        quad_spi (bool, optional): Whether to use quad SPI mode. Defaults to False.
+        spi (object, optional): A SPI object to use instead of creating a new one. Defaults to None.
         tx_only (bool, optional): Whether to use transmit-only mode. Defaults to False.
         cmd_bits (int, optional): The number of bits for command transmission. Defaults to 8.
         param_bits (int, optional): The number of bits for parameter transmission. Defaults to 8.
         dc_low_on_data (bool, optional): Whether the data/command pin is low for data. Defaults to False.
-        sio_mode (bool, optional): Whether to use SIO mode. Defaults to False.
         lsb_first (bool, optional): Whether to transmit LSB first. Defaults to False.
         cs_high_active (bool, optional): Whether the CS pin is active high. Defaults to False.
         spi_mode (int, optional): The SPI mode. Defaults to 0.
+        wp (int, optional): The pin number for the write protect pin. Not yet supported. Defaults to -1.
+        hd (int, optional): The pin number for the hold pin. Not yet supported. Defaults to -1.
+        quad_spi (bool, optional): Whether to use quad SPI mode. Defaults to False.
+        sio_mode (bool, optional): Whether to use SIO mode. Defaults to False.
     """
     def __init__(
             self,
@@ -123,6 +124,7 @@ class SPIBus(_BaseBus):
             cs: int = -1,
             freq: int = -1,
             *,
+            spi: object = None,
             tx_only: bool = False,
             cmd_bits: int = 8,
             param_bits: int = 8,
@@ -147,19 +149,22 @@ class SPIBus(_BaseBus):
         self._cs_inactive: bool = not cs_high_active
 
         self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_cmd)
-        self.cs: Pin = Pin(cs, Pin.OUT, value=self._cs_inactive) if cs >= 0 else lambda val: None
+        self.cs: Pin = Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != 0 else lambda val: None
 
-        self.spi: SPI = SPI(
-            host,
-            baudrate=freq,
-            polarity=spi_mode & 2,
-            phase=spi_mode & 1,
-            bits=max(cmd_bits, param_bits),
-            firstbit=SPI.LSB if lsb_first else SPI.MSB,
-            sck=Pin(sclk, Pin.OUT),
-            mosi=Pin(mosi, Pin.OUT),
-            miso=Pin(miso, Pin.IN) if not tx_only else None,
-            )
+        if spi is None:
+            self.spi: SPI = SPI(
+                host,
+                baudrate=freq,
+                polarity=spi_mode & 2,
+                phase=spi_mode & 1,
+                bits=max(cmd_bits, param_bits),
+                firstbit=SPI.LSB if lsb_first else SPI.MSB,
+                sck=Pin(sclk, Pin.OUT),
+                mosi=Pin(mosi, Pin.OUT),
+                miso=Pin(miso, Pin.IN) if not tx_only else None,
+                )
+        else:
+            self.spi: SPI = spi
 
     def tx_color(
             self,
@@ -198,6 +203,7 @@ class SPIBus(_BaseBus):
         struct.pack_into('B', self.buf1, 0, cmd)
         self.cs(self._cs_active)
         self.dc(self._dc_cmd)
+        print(f"Writing {self.buf1}, {cmd}")
         self.spi.write(self.buf1)
         if len(data):
             self.dc(self._dc_data)
