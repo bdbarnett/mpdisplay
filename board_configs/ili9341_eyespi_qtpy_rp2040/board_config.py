@@ -8,19 +8,19 @@ from ft6x36 import FT6x36
 
 display_bus = SPIBus(
     dc=5,
-    host=0,
+    cs=20,
     mosi=3,
     miso=4, 
     sclk=6,
-    cs=20,
-    freq=20_000_000,
     tx_only=True,
+    host=0,
+    freq=20_000_000,
+    spi_mode=0,
     cmd_bits=8,
     param_bits=8,
-    dc_low_on_data=False,
     lsb_first=False,
+    dc_low_on_data=False,
     cs_high_active=False,
-    spi_mode=0,
 )
 
 display_drv = ILI9341(
