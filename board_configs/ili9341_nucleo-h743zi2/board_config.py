@@ -12,7 +12,13 @@ from ft6x36 import FT6x36
 display_bus = SPIBus(
     dc='D9',
     cs='D10',
-    spi=SPI(1),
+    tx_only=True,
+    host=0,
+    freq=20_000_000,
+    spi_mode=0,
+    cmd_bits=8,
+    param_bits=8,
+    lsb_first=False,
     dc_low_on_data=False,
     cs_high_active=False,
 )
