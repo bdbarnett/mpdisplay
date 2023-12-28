@@ -6,10 +6,7 @@ from micropython import const, alloc_emergency_exception_buf
 from machine import Pin
 from time import sleep_ms
 
-# import gc
 
-
-# gc.threshold(0x10000) # leave enough room for SPI master TX DMA buffers
 alloc_emergency_exception_buf(256)
 
 # Command Constants
@@ -29,28 +26,20 @@ _MADCTL_MV = const(0x20)  # 0=Normal, 1=Row/column exchange (Page/Column Order)
 _MADCTL_MX = const(0x40)  # 0=Left to Right, 1=Right to Left (Column Address Order)
 _MADCTL_MY = const(0x80)  # 0=Top to Bottom, 1=Bottom to Top (Page Address Order)
 
-# MADCTL values for each of the rotation constants for non-st7789 displays.
+# MADCTL values for each of the rotation constants.
 _DEFAULT_ROTATION_TABLE = (
-    _MADCTL_MX,
-    _MADCTL_MV,
-    _MADCTL_MY,
-    _MADCTL_MY | _MADCTL_MX | _MADCTL_MV,
+    _MADCTL_MX,                            # mirrored = False, rotation = 0
+    _MADCTL_MV,                            # mirrored = False, rotation = 90
+    _MADCTL_MY,                            # mirrored = False, rotation = 180
+    _MADCTL_MY | _MADCTL_MX | _MADCTL_MV,  # mirrored = False, rotation = 270
 )
 
 _MIRRORED_ROTATION_TABLE = (
-    0,
-    _MADCTL_MV | _MADCTL_MX,
-    _MADCTL_MX | _MADCTL_MY,
-    _MADCTL_MV | _MADCTL_MY,
+    0,                                     # mirrored = True, rotation = 0
+    _MADCTL_MV | _MADCTL_MX,               # mirrored = True, rotation = 90
+    _MADCTL_MX | _MADCTL_MY,               # mirrored = True, rotation = 180
+    _MADCTL_MV | _MADCTL_MY,               # mirrored = True, rotation = 270
 )
-# Negative rotation constants indicate the MADCTL value will come from
-# the self.rotation_table, otherwise the rotation value is used as the MADCTL value.
-# Reset self.rotation_table in the display driver .init() to change the rotation values.
-PORTRAIT = const(-1)
-LANDSCAPE = const(-2)
-REVERSE_PORTRAIT = const(-3)
-REVERSE_LANDSCAPE = const(-4)
-
 
 class BusDisplay:
     display_name = "BusDisplay"
@@ -63,7 +52,8 @@ class BusDisplay:
         height,
         colstart=0,
         rowstart=0,
-        rotation=PORTRAIT,
+        rotation=0,
+        mirrored=False,
         color_depth=16,
         bgr=False,
         invert=False,
@@ -75,7 +65,6 @@ class BusDisplay:
         reset_high=True,
         power_pin=None,
         power_on_high=True,
-        mirrored=False,
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
@@ -180,15 +169,15 @@ class BusDisplay:
 
     @property
     def width(self):
-        if abs(self._rotation) & 1:
-            return self._width
-        return self._height
+        if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
+            return self._height
+        return self._width
 
     @property
     def height(self):
-        if abs(self._rotation) & 1:
-            return self._height
-        return self._width
+        if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
+            return self._width
+        return self._height
 
     @property
     def rotation(self):
@@ -296,19 +285,10 @@ class BusDisplay:
 
     @staticmethod
     def _madctl(bgr, rotation, rotations):
-        color_order = _BGR if bgr else _RGB
-        # if rotation is 0 or positive use the value as is.
-        if rotation >= 0:
-            return rotation | color_order
-
-        # otherwise use abs(rotation)-1 as index to
-        # retrieve value from rotations set
-
-        index = abs(rotation) - 1
-        if index > len(rotations):
-            RuntimeError("Invalid display rotation value specified")
-
-        return rotations[index] | color_order
+        # Convert from degrees to one quarter rotations.  Wrap at the number of entries in the rotations table.
+        # For example, rotation = 90 -> index = 1.  With 4 entries in the rotation table, rotation = 540 -> index = 2
+        index = (rotation // 90) % len(rotations)
+        return rotations[index] | _BGR if bgr else _RGB
 
     def _init_bytes(self, init_sequence):
         """
