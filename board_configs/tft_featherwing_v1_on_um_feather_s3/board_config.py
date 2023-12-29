@@ -8,23 +8,19 @@ from machine import Pin
 
 display_bus = SPIBus(
     dc=3,
-    host=1,
+    cs=1,
     mosi=35,
     miso=37,
     sclk=36,
-    cs=1,
-    freq=20_000_000,
-    wp=-1,
-    hd=-1,
-    quad_spi=False,
+    host=1,
     tx_only=True,
+    freq=60_000_000,
+    spi_mode=0,
     cmd_bits=8,
     param_bits=8,
-    dc_low_on_data=False,
-    sio_mode=False,
     lsb_first=False,
+    dc_low_on_data=False,
     cs_high_active=False,
-    spi_mode=0,
 )
 
 display_drv = HX8357(

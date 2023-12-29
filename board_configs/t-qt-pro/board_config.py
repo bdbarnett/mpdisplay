@@ -7,23 +7,18 @@ from machine import Pin
 
 display_bus = SPIBus(
     dc=6,
-    host=1,
-    mosi=2,
-    sck=3,
     cs=5,
-    pclk=20_000_000,
+    mosi=2,
+    sclk=3,
+    host=1,
     tx_only=True,
-    wp=-1,
-    hd=-1,
-    quad_spi=False,
-    tx_only=True,
+    freq=60_000_000,
+    spi_mode=0,
     cmd_bits=8,
     param_bits=8,
-    dc_low_on_data=False,
-    sio_mode=False,
     lsb_first=False,
+    dc_low_on_data=False,
     cs_high_active=False,
-    spi_mode=0,
 )
 
 display_drv = GC9A01(

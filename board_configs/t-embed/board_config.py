@@ -8,23 +8,19 @@ from rotary_irq_esp import RotaryIRQ
 
 display_bus = SPIBus(
     dc=13,
-    host=1,
+    cs=10,
     mosi=11,
     miso=-1,
     sclk=12,
-    cs=10,
-    freq=60_000_000,
-    wp=-1,
-    hd=-1,
-    quad_spi=False,
+    host=1,
     tx_only=True,
+    freq=60_000_000,
+    spi_mode=0,
     cmd_bits=8,
     param_bits=8,
-    dc_low_on_data=False,
-    sio_mode=False,
     lsb_first=False,
+    dc_low_on_data=False,
     cs_high_active=False,
-    spi_mode=0,
 )
 
 display_drv = ST7789(
