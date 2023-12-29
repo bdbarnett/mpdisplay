@@ -53,6 +53,27 @@ button.center()
 label = lv.label(button)
 label.set_text("Test")
 ```
+# Througput comparison
+
+
+Allocating ten 64x64 blocks											
+18.75	Blocks per screen on ILI9341										
+ESP32 without PSRAM using BOARD=ESP32_GENERIC_S3, freq=80,000,000											
+PR2040 BOARD=ADAFRUIT_QTPY_RP2040, freq=62,500,000											
+				
+											
+Board	|	Bus Driver	|	Byte Swap	|	Alloc	    |	Block/sec	|	FPS	    |
+----	|	--------	|	---	        |	---     	|	---	        |	---	    |
+ESP32	|	C	        |	false       |	heap_caps	|	825	        |	44.0	|
+ESP32	|	C	        |	false	    |	bytearray	|	783	        |	41.8	|
+ESP32	|	C	        |	true	    |	heap_caps	|	495	        |	26.4	|
+ESP32	|	C        	|	true	    |	bytearray	|	487	        |	26.0	|
+ESP32	|	Python	    |	false	    |	heap_caps	|	578	        |	30.8	|
+ESP32	|	Python	    |	false	    |	bytearray	|	549	        |	29.3	|
+ESP32	|	Python	    |	true	    |	heap_caps	|	24	        |	1.3	    |
+ESP32	|	Python	    |	true	    |	bytearray	|	24	        |	1.3	    |
+RP2040	|	Python	    |	false	    |	bytearray	|	402	        |	21.4	|
+rp2040	|	Python	    |	false	    |	bytearray	|	13	        |	0.7	    |
 
 # My board isn't listed
 I have several more boards that I will add over the next couple weeks.  Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.
