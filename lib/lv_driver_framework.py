@@ -62,6 +62,14 @@ class DisplayDriver:
         )
         self._blocking = blocking
 
+        self._swap_enabled = False
+        # If the display bus is a MicroPython bus and it has byte swapping enabled, disable it and 
+        # set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
+        if hasattr(self.display.display_bus, "name") and "MicroPython" in self.display.display_bus.name:
+            if self.display.display_bus.rgb565_byte_swap:
+                self._swap_enabled = True
+                self.display.display_bus.enable_swap(False)
+
         if (
             len(self._frame_buffer1)
             >= display.width * display.height * self._color_size
@@ -88,15 +96,22 @@ class DisplayDriver:
         )
 
     def _flush_cb(self, disp_drv, area, color_p):
+        width = area.x2 - area.x1 + 1
+        height = area.y2 - area.y1 + 1
+
+        # Swap the bytes in the color buffer if necessary
+        if self._swap_enabled:
+            lv.draw_sw_rgb565_swap(color_p, width * height)
+
         # we have to use the __dereference__ method because this method is
         # what converts from the C_Array object the binding passes into a
         # memoryview object that can be passed to the bus drivers
         self.display.blit(
             area.x1,
             area.y1,
-            w := (area.x2 - area.x1 + 1),
-            h := (area.y2 - area.y1 + 1),
-            color_p.__dereference__(w * h * self._color_size),
+            width,
+            height,
+            color_p.__dereference__(width * height * self._color_size),
         )
         if self._blocking:
             self._disp_drv.flush_ready()
