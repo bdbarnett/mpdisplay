@@ -21,12 +21,14 @@ class _BaseBus:
     """
     Base class for bus communication. This class is meant to be subclassed by specific bus implementations.
     """
-
+    name = "MicroPython bus driver"
+    
     def __init__(self) -> None:
         """
         Initialize the base bus.
         """
         self.buf1: bytearray = bytearray(1)
+        self.buf2: bytearray = bytearray(2)
         self.trans_done: bool = True
         self.callback: Optional[callable] = None
         self.swap_bytes: callable = self._no_swap
@@ -42,11 +44,19 @@ class _BaseBus:
         """
         Initialize the bus with the given parameters.
         """
-        self._rgb565_byte_swap: bool = rgb565_byte_swap
+        self.enable_swap(rgb565_byte_swap)
 
-        if self._rgb565_byte_swap:
-            print("WARNING: rgb565_byte_swap is enabled. This is VERY slow!")
+    def enable_swap(self, enable: bool) -> None:
+        """
+        Enable or disable byte swapping.
+        """
+        self.rgb565_byte_swap = enable
+        if self.rgb565_byte_swap:
             self.swap_bytes = self._swap_bytes_in_place
+            print("WARNING: Bus driver color swap is enabled. This is VERY slow!")
+        else:
+            self.swap_bytes = self._no_swap
+            print("Bus driver color swap has been disabled.")
 
     def register_callback(self, callback: callable) -> None:
         """
@@ -122,6 +132,8 @@ class SPIBus(_BaseBus):
         sio_mode (bool, optional): Whether to use SIO mode. Defaults to False.
     """
 
+    name = "MicroPython SPIBus driver"
+
     def __init__(
         self,
         dc: int,
@@ -196,7 +208,6 @@ class SPIBus(_BaseBus):
         """
         self.trans_done = False
 
-        # Swap the color bytes if necessary before writing all at once
         self.tx_param(cmd, self.swap_bytes(data, len(data) // 2))
 
         self.bus_trans_done_cb()
