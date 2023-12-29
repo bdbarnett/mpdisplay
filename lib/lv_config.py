@@ -41,5 +41,4 @@ touch = lv_driver_framework.TouchDriver(
 )
 
 # Uncomment if your board has an encoder
-# encoder = lv_driver_framework.EncoderDriver(
-#     board_config.encoder_read_func, board_config.encoder_button_func)
+# encoder = lv_driver_framework.EncoderDriver(board_config.encoder_read_func, board_config.encoder_button_func)
