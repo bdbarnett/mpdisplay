@@ -3,19 +3,21 @@
 from board_config import display_drv
 from machine import Timer
 import random
+from sys import platform
 
 # If the colors are incorrect, change this value.
 # You may need to change the `reverse_bytes_in_word` value in board_config.py as well
 swap_color_bytes = False
 
 # Determine how buffers are allocated
+alloc_buffer = lambda size: memoryview(bytearray(size))
 # If heap_caps is available, use it to allocate in internal DMA-capable memory
-try:
-    from heap_caps import malloc, CAP_DMA, CAP_INTERNAL  # For allocating buffers for the blocks and text
-    alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
-# Otherwise use bytearray
-except:
-    alloc_buffer = lambda size: bytearray(size)
+if platform == "esp32":
+    try:
+        from heap_caps import malloc, CAP_DMA, CAP_INTERNAL  # For allocating buffers for the blocks and text
+        alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
+    except ImportError:
+        pass
 
 # Define RGB565 colors
 BLACK = 0x0000
@@ -34,6 +36,7 @@ bytes_per_pixel = 2
 block_size = 64   # Size of each dimension in pixels
 block_bytes = block_size * block_size * bytes_per_pixel
 blocks = []
+blocks_per_screen = (display_drv.width * display_drv.height) / (block_size * block_size)
 
 # Create the blocks
 for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE]:
@@ -49,13 +52,15 @@ max_y = display_drv.height - block_size - 1
 
 # Counter and function to show blocks per second
 block_count = 0
+iter_count = 0
 def print_count(_):
-    global block_count
-    print(f"\x08\x08\x08{block_count:3}", end ="")
-    block_count=0
+    global block_count, iter_count
+    iter_count += 1
+    print(f"\x08\x08\x08{(block_count // iter_count):3}", end ="")
 
 # Prepare for the loop
-print(f"{block_size}x{block_size} blocks per second: 000", end="")
+print(f"{block_size}x{block_size} blocks per screen: {blocks_per_screen:.2f}")
+print(f"Blocks per second:    ", end="")
 tim = Timer(-1)
 tim.init(mode=Timer.PERIODIC, freq=1, callback=print_count)
 
