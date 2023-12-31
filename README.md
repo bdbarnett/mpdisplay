@@ -8,7 +8,7 @@ The display drivers here currently support SPI and I8080 displays on ESP32 board
 The graphics engine these drivers are targeted toward is LVGL on MicroPython, but they are structured so they may support any graphics engine on MicroPython.  See [display_simple_test.py](lib/display_simpletest.py) and [testris](https://github.com/bdbarnett/testris) for examples using these drivers without LVGL.
 
 # Quickstart
-To use a SPI display on MicroPython without LVGL, you only need to add lcd_bus.py to the list of files in your /lib folder.  It should work with any recent version of MicroPython, but only version 1.21 (the current version) has been tested.
+To use a SPI display on MicroPython without LVGL, you only need to add lcd_bus.py to the list of files from below to put in your /lib folder.  It should work with any recent version of MicroPython, but only version 1.21 (the current version) has been tested.
 
 To use with LVGL on MicroPython, compile and flash your board with the latest [lv_binding_micropython](https://github.com/kdschlosser/lv_binding_micropython/tree/MicroPython_1.21.0_Update).  See the directions on that page for more details.  It is a work in progress and may have issues that need to be resolved.
 
