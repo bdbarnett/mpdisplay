@@ -14,7 +14,7 @@ To use with LVGL on MicroPython, compile and flash your board with the latest [l
 
 Download the following files and upload them to the /lib folder on your board:
 - The [lib](lib) folder, which includes the required files `busdisplay.py`, `lv_driver_framework` and `lv_config.py`, as well as the optional test files `lv_touch_test.py` and `display_simpletest.py`
-- If your board isn't an ESP32 or you aren't on lv_binding_micropython, you will the `lcd_bus.py` from [bus_drivers](bus_drivvers).  (It won't hurt to have this file in your /lib folder anyway, so you may as well grab it.)
+- If your board isn't an ESP32 or you aren't on lv_binding_micropython, you will need the `lcd_bus.py` from [bus_drivers](bus_drivvers).  (It won't hurt to have this file in your /lib folder anyway, so you may as well grab it.)
 - The `board_config.py` from [board_configs](board_configs)
 - The driver for your display controller from [display_drivers](display_drivers)
 - The driver for your touchscreen controller from [touch_drivers](touch_drivers)
