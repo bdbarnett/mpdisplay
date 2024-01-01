@@ -35,6 +35,17 @@ For use in LVGL, you MAY want to edit the `lv_config.py` to:
 - Change from blocking mode to non-blocking mode (currently has issues in the C display bus drivers)
 - Enable encoder(s) if you are using them.  Simply uncomment the last line.
 
+Note, if you have the new lv_binding_micropython with lcd_bus compiled in and also have lcd_bus.py in your /lib folder,
+the former takes precedence.  In this case, if you want to force MicroPython to use lcd_bus.py, change the include line in your board_config.py from
+```
+from lcd_bus include ...
+```
+to
+```
+from lib.lcd_bus include ...
+```
+
+# Usage
 It is recommended that you first try the [display_simpletest.py](lib/display_simpletest.py) program.  See the code from that program and [testris](https://github.com/bdbarnett/testris) for non-LVGL usage examples.
 
 If you have lv_binding_micropython, next try [lv_touch_test.py](lib/lv_touch_test.py).  The color of the buttons should be blue when not selected, green when pressed and red when focused.  If the touch points don't line up with the buttons, it provides directions on how to find the correct touch rotation masks.  From the REPL type:
@@ -55,25 +66,25 @@ label.set_text("Test")
 ```
 # Througput comparison
 
-
-Allocating ten 64x64 blocks											
-18.75	Blocks per screen on ILI9341										
-ESP32 without PSRAM using BOARD=ESP32_GENERIC_S3, freq=80,000,000											
-PR2040 BOARD=ADAFRUIT_QTPY_RP2040, freq=62,500,000											
+Running display_simpletest.py, which allocates ten 64x64 blocks and writes them to the screen at random.								
+There are 18.75 blocks per screen on the ILI9341 with 320x240 resolution.
+Test boards:
+- ESP32 without PSRAM (BOARD=ESP32_GENERIC_S3), freq=80,000,000											
+- RP2040 (BOARD=ADAFRUIT_QTPY_RP2040), freq=62,500,000											
 				
 											
-Board	|	Bus Driver	|	Byte Swap	|	Alloc	    |	Block/sec	|	FPS	    |
+Board	|	Bus Driver	|	Byte Swap	|	Alloc	        |	Block/sec	|	FPS	    |
 ----	|	--------	|	---	        |	---     	|	---	        |	---	    |
-ESP32	|	C	        |	false       |	heap_caps	|	825	        |	44.0	|
-ESP32	|	C	        |	false	    |	bytearray	|	783	        |	41.8	|
-ESP32	|	C	        |	true	    |	heap_caps	|	495	        |	26.4	|
-ESP32	|	C        	|	true	    |	bytearray	|	487	        |	26.0	|
-ESP32	|	Python	    |	false	    |	heap_caps	|	578	        |	30.8	|
-ESP32	|	Python	    |	false	    |	bytearray	|	549	        |	29.3	|
-ESP32	|	Python	    |	true	    |	heap_caps	|	24	        |	1.3	    |
-ESP32	|	Python	    |	true	    |	bytearray	|	24	        |	1.3	    |
-RP2040	|	Python	    |	false	    |	bytearray	|	402	        |	21.4	|
-rp2040	|	Python	    |	false	    |	bytearray	|	13	        |	0.7	    |
+ESP32	|	C	        |	false           |	heap_caps	|	825	        |	44.0        |
+ESP32	|	C	        |	false	        |	bytearray	|	783	        |	41.8	    |
+ESP32	|	C	        |	true	        |	heap_caps	|	495	        |	26.4	    |
+ESP32	|	C        	|	true	        |	bytearray	|	487	        |	26.0	    |
+ESP32	|	Python	        |	false	        |	heap_caps	|	578	        |	30.8	    |
+ESP32	|	Python	        |	false	        |	bytearray	|	549	        |	29.3	    |
+ESP32	|	Python	        |	true	        |	heap_caps	|	24	        |	1.3	    |
+ESP32	|	Python	        |	true	        |	bytearray	|	24	        |	1.3	    |
+RP2040	|	Python	        |	false	        |	bytearray	|	402	        |	21.4	    |
+rp2040	|	Python	        |	false	        |	bytearray	|	13	        |	0.7	    |
 
 # My board isn't listed
 I have several more boards that I will add over the next couple weeks.  Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.
