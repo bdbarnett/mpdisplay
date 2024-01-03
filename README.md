@@ -84,7 +84,7 @@ ESP32	|	Python	        |	false	        |	bytearray	|	549	        |	29.3	    |
 ESP32	|	Python	        |	true	        |	heap_caps	|	24	        |	1.3	    |
 ESP32	|	Python	        |	true	        |	bytearray	|	24	        |	1.3	    |
 RP2040	|	Python	        |	false	        |	bytearray	|	402	        |	21.4	    |
-rp2040	|	Python	        |	false	        |	bytearray	|	13	        |	0.7	    |
+rp2040	|	Python	        |	true	        |	bytearray	|	13	        |	0.7	    |
 
 # My board isn't listed
 I have several more boards that I will add over the next couple weeks.  Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.
