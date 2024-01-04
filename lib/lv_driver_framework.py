@@ -62,12 +62,12 @@ class DisplayDriver:
         )
         self._blocking = blocking
 
-        self._swap_enabled = False
+        self.swap_enabled = False
         # If the display bus is a MicroPython bus and it has byte swapping enabled, disable it and 
         # set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
         if hasattr(self.display.display_bus, "name") and "MicroPython" in self.display.display_bus.name:
-            if self.display.display_bus.rgb565_byte_swap:
-                self._swap_enabled = True
+            if self.display.display_bus.swap_enabled:
+                self.swap_enabled = True
                 self.display.display_bus.enable_swap(False)
 
         if (
@@ -100,7 +100,7 @@ class DisplayDriver:
         height = area.y2 - area.y1 + 1
 
         # Swap the bytes in the color buffer if necessary
-        if self._swap_enabled:
+        if self.swap_enabled:
             lv.draw_sw_rgb565_swap(color_p, width * height)
 
         # we have to use the __dereference__ method because this method is

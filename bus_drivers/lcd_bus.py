@@ -9,7 +9,8 @@ Provides similar functionality to lcd_bus from lv_binding_micropython for platfo
 other than ESP32
 """
 
-from machine import SPI, Pin
+import micropython
+import machine
 import struct
 
 
@@ -32,29 +33,32 @@ class _BaseBus:
         self.trans_done: bool = True
         self.callback: Optional[callable] = None
         self.swap_bytes: callable = self._no_swap
+        self.swap_enabled: bool = False
 
     def init(
         self,
         width: int,  # Not Used
         height: int,  # Not Used
-        bpp: int,  # Not Used
+        bpp: int,
         buffer_size: int,
         rgb565_byte_swap: bool,
     ) -> None:
         """
         Initialize the bus with the given parameters.
         """
-        self.enable_swap(rgb565_byte_swap)
+        self._bpp = bpp
+        self.enable_swap(rgb565_byte_swap or self.swap_enabled)
 
     def enable_swap(self, enable: bool) -> None:
         """
         Enable or disable byte swapping.
         """
-        self.rgb565_byte_swap = enable
-        if self.rgb565_byte_swap:
+        if enable and self._bpp == 16:
+            self.swap_enabled = True
             self.swap_bytes = self._swap_bytes_in_place
             print("WARNING: Bus driver color swap is enabled. This is VERY slow!")
         else:
+            self.swap_enabled = False
             self.swap_bytes = self._no_swap
             print("Bus driver color swap has been disabled.")
 
@@ -64,6 +68,7 @@ class _BaseBus:
         """
         self.callback = callback
 
+    @micropython.native
     def bus_trans_done_cb(self) -> bool:
         """
         Callback function to be called when a transaction is done.
@@ -73,6 +78,7 @@ class _BaseBus:
         self.trans_done = True
         return False
 
+    @micropython.native
     def _swap_bytes_in_place(self, buf: memoryview, buf_size_px: int) -> memoryview:
         """
         Swap the bytes in a buffer of RGB565 data.
@@ -82,23 +88,37 @@ class _BaseBus:
             buf[i], buf[i+1] = buf[i+1], buf[i]
         return buf
 
+    @micropython.native
     def _no_swap(self, buf: memoryview, buf_size_px: int) -> memoryview:
         """
         Do nothing to the buffer.
         """
         return buf
 
-    def tx_color(self, *_, **__) -> None:
+    @micropython.native
+    def tx_color(
+        self,
+        cmd: int,
+        data: memoryview,
+        x_start: int,
+        y_start: int,
+        x_end: int,
+        y_end: int,
+    ) -> None:
         """
-        Transmit color data. Must be overridden in subclass.
+        Transmit color data over the bus.
         """
-        raise NotImplementedError("Must be overridden in subclass")
+        self.trans_done = False
 
-    def tx_param(self, *_, **__) -> None:
+        self.tx_param(cmd, self.swap_bytes(data, len(data) // 2))
+
+        self.bus_trans_done_cb()
+
+    def tx_param(self, cmd: int, data: memoryview) -> None:
         """
-        Transmit parameters. Must be overridden in subclass.
+        Transmit parameters over the bus.
         """
-        raise NotImplementedError("Must be overridden in subclass")
+        raise NotImplementedError("Subclasses must implement tx_param")
 
     def rx_param(self, cmd: int, data: memoryview) -> int:
         """
@@ -167,64 +187,52 @@ class SPIBus(_BaseBus):
         self._cs_active: bool = cs_high_active
         self._cs_inactive: bool = not cs_high_active
 
-        self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_cmd)
-        self.cs: Pin = (
-            Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != 0 else lambda val: None
+        self.dc: machine.Pin = machine.Pin(dc, machine.Pin.OUT, value=self._dc_cmd)
+        self.cs: machine.Pin = (
+            machine.Pin(cs, machine.Pin.OUT, value=self._cs_inactive) if cs != 0 else lambda val: None
         )
 
         if mosi == -1 and miso == -1 and sclk == -1:
-            self.spi: SPI = SPI(
+            self.spi: machine.SPI = machine.SPI(
                 host,
                 baudrate=freq,
                 polarity=spi_mode & 2,
                 phase=spi_mode & 1,
                 bits=max(cmd_bits, param_bits),
-                firstbit=SPI.LSB if lsb_first else SPI.MSB,
+                firstbit=machine.SPI.LSB if lsb_first else machine.SPI.MSB,
             )
         else:
-            self.spi: SPI = SPI(
+            self.spi: machine.SPI = machine.SPI(
                 host,
                 baudrate=freq,
                 polarity=spi_mode & 2,
                 phase=spi_mode & 1,
                 bits=max(cmd_bits, param_bits),
-                firstbit=SPI.LSB if lsb_first else SPI.MSB,
-                sck=Pin(sclk, Pin.OUT),
-                mosi=Pin(mosi, Pin.OUT),
-                miso=Pin(miso, Pin.IN) if not tx_only else None,
+                firstbit=machine.SPI.LSB if lsb_first else machine.SPI.MSB,
+                sck=machine.Pin(sclk, machine.Pin.OUT),
+                mosi=machine.Pin(mosi, machine.Pin.OUT),
+                miso=machine.Pin(miso, machine.Pin.IN) if not tx_only else None,
             )
 
-    def tx_color(
-        self,
-        cmd: int,
-        data: memoryview,
-        x_start: int,
-        y_start: int,
-        x_end: int,
-        y_end: int,
-    ) -> None:
-        """
-        Transmit color data over the SPI bus.
-        """
-        self.trans_done = False
+        self._write = self.spi.write
 
-        self.tx_param(cmd, self.swap_bytes(data, len(data) // 2))
-
-        self.bus_trans_done_cb()
-
+    @micropython.native
     def tx_param(
         self,
-        cmd: int,
+        cmd: Optional[int] = None,
         data: Optional[memoryview] = None,
     ) -> None:
         """
         Transmit parameters over the SPI bus.
         """
-        struct.pack_into("B", self.buf1, 0, cmd)
         self.cs(self._cs_active)
-        self.dc(self._dc_cmd)
-        self.spi.write(self.buf1)
+
+        if cmd is not None:
+            struct.pack_into("B", self.buf1, 0, cmd)
+            self.dc(self._dc_cmd)
+            self._write(self.buf1)
         if data and len(data):
             self.dc(self._dc_data)
-            self.spi.write(data)
+            self._write(data)
+
         self.cs(self._cs_inactive)

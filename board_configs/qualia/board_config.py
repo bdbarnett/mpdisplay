@@ -1,10 +1,9 @@
 """ Qualia with 4.0" 720x720 display """
 
-from lcd_bus import RGBBus
-from busdisplay import BusDisplay
 # from machine import Pin, I2C
 # from cst8xx import CST8XX  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
-
+# from busdisplay import BusDisplay
+from lcd_bus import RGBBus
 
 display_bus = RGBBus(
     hsync=41,
@@ -28,7 +27,7 @@ display_bus = RGBBus(
     data13=38,  #b2
     data14=0,  #b3
     data15=45,  #b4
-    freq=16000000,
+    freq=25000000,
     hsync_pulse_width=2,
     hsync_front_porch=46,
     hsync_back_porch=44,
@@ -37,19 +36,22 @@ display_bus = RGBBus(
     vsync_front_porch=16,
     vsync_back_porch=18,
     vsync_idle_low=False,
-    pclk_active_neg=False,  # ?pclk_active_high
+    pclk_active_neg=False,
     pclk_idle_high=False,
     de_idle_high=False,
-    num_fbs=2,
+    num_fbs=1,
     bb_size_px=0,
     bb_inval_cache=False,
-    fb_in_psram=False,
+    fb_in_psram=True,
     no_fb=False,
     disp_active_low=False,
     refresh_on_demand=False,
 )
 
-# display_bus.init(720, 720, 16, buffer_size=1_036_800, rgb565_byte_swap=False)
+display_bus.init(720, 720, 16, buffer_size=720 * 720 * 2, rgb565_byte_swap=False)
+buf_1 = display_bus.get_frame_buffer(1)
+
+print(f"buf_1 is None:  {buf_1 is None}")
 
 # display_drv = BusDisplay(
 #     display_bus,
