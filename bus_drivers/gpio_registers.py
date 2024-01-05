@@ -1,3 +1,10 @@
+# SPDX-FileCopyrightText: 2023 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
+"""
+A helper class for getting the register addresses and masks for GPIO pins.
+"""
+
 import sys
 
 
