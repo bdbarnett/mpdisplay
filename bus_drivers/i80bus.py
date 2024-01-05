@@ -3,12 +3,16 @@ import machine
 import struct
 import sys
 from lib.lcd_bus import _BaseBus, Optional
+from gpio_registers import GPIO_SET_CLR_REGISTERS
 from time import sleep_us
 
 
 class I80Bus(_BaseBus):
     """
     Represents an I80 bus interface for controlling GPIO pins.
+    Currently only supports 8-bit data bus width and requires pin numbers instead of pin names.
+    ESP32, RP2, SAMD and NRF use pin numbers and should work with this driver.
+    MIMXRT and STM use pin names and will not work with this driver until pin names are supported.
 
     Args:
         dc (int): The pin number for the DC pin.
@@ -32,191 +36,92 @@ class I80Bus(_BaseBus):
     def __init__(self, dc, cs, wr, data0, data1, data2, data3, data4, data5, data6, data7, cs_active_high=False, dc_data_level=1, pclk_active_neg=False, swap_color_bytes=False) -> None:
         super().__init__()
         
-        # Create the data pins as outputs
-        data_pins = [data0, data1, data2, data3, data4, data5, data6, data7]
-        for pin in data_pins:
-            machine.Pin(pin, machine.Pin.OUT)
+        # Save the swap enabled setting for the base class
+        self.swap_enabled = swap_color_bytes
+
+        # Use the GPIO_SET_CLR_REGISTERS class to get the register addresses and masks
+        # for the control pins and to determine the number of pins per port for
+        # _setup_data_pins() and _write()
+        self.gpio=GPIO_SET_CLR_REGISTERS()
+
+        # Configure data pins as outputs, populate lookup tables, pin_masks and tx_values
+        self._setup_data_pins([data0, data1, data2, data3, data4, data5, data6, data7])
+
+        # Define the _write method
+        self._use_set_clr_regs = True if self.gpio.pins_per_port == 32 else False
+        self._last = None  # Integer used in _write method to determine if the value has changed
 
         # Create the control pins as outputs
-        self._pin_dc = machine.Pin(dc, machine.Pin.OUT)
-        self._pin_cs = machine.Pin(cs, machine.Pin.OUT)
-        self._pin_wr = machine.Pin(wr, machine.Pin.OUT)
-        
-        self.swap_enabled = swap_color_bytes
-        
-        
-        # Create the out registers for _write method
-        self._out_a_reg: int = self._GPIO_BASE_0 + self._GPIO_OUT_OFFSET
-        self._out_b_reg: int = self._GPIO_BASE_1 + self._GPIO_OUT_OFFSET
-        if self._pins_per_port == 16:
-            self._out_c_reg: int = self._GPIO_BASE_C + self._GPIO_OUT_OFFSET
-            self._out_d_reg: int = self._GPIO_BASE_D + self._GPIO_OUT_OFFSET
+        self._pin_dc = machine.Pin(dc, machine.Pin.OUT, value=not dc_data_level)
+        self._pin_cs = machine.Pin(cs, machine.Pin.OUT, value=not cs_active_high)
+        self._pin_wr = machine.Pin(wr, machine.Pin.OUT, value=pclk_active_neg)
 
-        # Create the cs and dc masks as an int
-        mask_cs: int = 1 << (cs % self._pins_per_port)
-        mask_dc: int = 1 << (dc % self._pins_per_port)
-        mask_wr: int = 1 << (wr % self._pins_per_port)
+        # Get the masks for the control pins
+        self._mask_cs_active, self._mask_cs_inactive = self.gpio.get_set_clr_masks(cs, cs_active_high)
+        self._mask_dc_data, self._mask_dc_cmd = self.gpio.get_set_clr_masks(dc, dc_data_level)
+        self._mask_wr_active, self._mask_wr_inactive = self.gpio.get_set_clr_masks(wr, pclk_active_neg)
 
-        # Create register locations for cs active and inactive, dc data and command
-        if self._pins_per_port == 32:  # Most platforms
-            self._write = self._write32
-            self._mask_cs_active = self._mask_cs_inactive = mask_cs
-            self._mask_dc_data = self._mask_dc_cmd = mask_dc
-            self._mask_wr_active = self._mask_wr_inactive = mask_wr
+        # Get the register addresses for the control pins
+        self._cs_active_reg, self._cs_inactive_reg = self.gpio.get_set_clr_regs(cs, cs_active_high)
+        self._dc_data_reg, self._dc_cmd_reg = self.gpio.get_set_clr_regs(dc, dc_data_level)
+        self._wr_active_reg, self._wr_inactive_reg = self.gpio.get_set_clr_regs(wr, pclk_active_neg)
 
-            if cs < 32:
-                cs_reg_base = self._GPIO_BASE_0
-            else:
-                cs_reg_base = self._GPIO_BASE_1
-
-            if dc < 32:
-                dc_reg_base = self._GPIO_BASE_0
-            else:
-                dc_reg_base = self._GPIO_BASE_1
-
-            if wr < 32:
-                wr_reg_base = self._GPIO_BASE_0
-            else:
-                wr_reg_base = self._GPIO_BASE_1
-
-            if cs_active_high:
-                self._cs_active_reg = cs_reg_base + self._GPIO_SET_OFFSET
-                self._cs_inactive_reg = cs_reg_base + self._GPIO_CLR_OFFSET
-            else:
-                self._cs_active_reg = cs_reg_base + self._GPIO_CLR_OFFSET
-                self._cs_inactive_reg = cs_reg_base + self._GPIO_SET_OFFSET
-
-            if dc_data_level:
-                self._dc_data_reg = dc_reg_base + self._GPIO_SET_OFFSET
-                self._dc_cmd_reg = dc_reg_base + self._GPIO_CLR_OFFSET
-            else:
-                self._dc_data_reg = dc_reg_base + self._GPIO_CLR_OFFSET
-                self._dc_cmd_reg = dc_reg_base + self._GPIO_SET_OFFSET
-
-            if pclk_active_neg:
-                self._wr_active_reg = wr_reg_base + self._GPIO_CLR_OFFSET
-                self._wr_inactive_reg = wr_reg_base + self._GPIO_SET_OFFSET
-            else:
-                self._wr_active_reg = wr_reg_base + self._GPIO_SET_OFFSET
-                self._wr_inactive_reg = wr_reg_base + self._GPIO_CLR_OFFSET
-
-        else:  # stm32
-            self._write = self._write16
-            if cs_active_high:
-                self._mask_cs_active = mask_cs
-                self._mask_cs_inactive = mask_cs << 16
-            else:
-                self._mask_cs_active = mask_cs << 16
-                self._mask_cs_inactive = mask_cs
-
-            if dc_data_level:
-                self._mask_dc_data = mask_dc
-                self._mask_dc_cmd = mask_dc << 16
-            else:
-                self._mask_dc_data = mask_dc << 16
-                self._mask_dc_cmd = mask_dc
-
-            if pclk_active_neg:
-                self._mask_wr_active = mask_wr << 16
-                self._mask_wr_inactive = mask_wr
-            else:
-                self._mask_wr_active = mask_wr
-                self._mask_wr_inactive = mask_wr << 16
-
-            if cs < 16:
-                cs_reg_base = self._GPIO_BASE_0
-            elif cs < 32:
-                cs_reg_base = self._GPIO_BASE_1
-            elif cs < 48:
-                cs_reg_base = self._GPIO_BASE_C
-            else:
-                cs_reg_base = self._GPIO_BASE_D
-
-            if dc < 16:
-                dc_reg_base = self._GPIO_BASE_0
-            elif dc < 32:
-                dc_reg_base = self._GPIO_BASE_1
-            elif dc < 48:
-                dc_reg_base = self._GPIO_BASE_C
-            else:
-                dc_reg_base = self._GPIO_BASE_D
-
-            if wr < 16:
-                wr_reg_base = self._GPIO_BASE_0
-            elif wr < 32:
-                wr_reg_base = self._GPIO_BASE_1
-            elif wr < 48:
-                wr_reg_base = self._GPIO_BASE_C
-            else:
-                wr_reg_base = self._GPIO_BASE_D
-
-            self._cs_active_reg = self._cs_inactive_reg = cs_reg_base + self._GPIO_SET_RESET_OFFSET
-            self._dc_data_reg = self._dc_cmd_reg = dc_reg_base + self._GPIO_SET_RESET_OFFSET
-            self._wr_active_reg = self._wr_inactive_reg = wr_reg_base + self._GPIO_SET_RESET_OFFSET
-
-        # Create the lookup tables as a list
-        self._lookup_table_1 = [None] * 256
-        self._lookup_table_2 = [None] * 256
-
-        # Create the pin mask as an int
-        self._pin_mask_1: int = 0
-        self._pin_mask_2: int = 0
-
-        # Populate lookup table and pin_mask
-        self._create_lookup_tables(data_pins)
-
-        # Integers used in _write method
-        self._tx_value_1: int = 0
-        self._tx_value_2: int = 0
-        self._last = None
-        
-    def _create_lookup_tables(self, pins: list[int]) -> None:
+    def _setup_data_pins(self, pins: list[int]) -> None:
         """
-        Creates a lookup table for a group of 8 pins.
-
-        Args:
-            pins (list): A list of 8 pin numbers.
-
-        Returns:
-            None
+        Sets output mode and creates lookup_tables, pin_masks and tx_values for a list pins.
+        Must be called after self.gpio is initialized.
         """
-        # Calculate the pin masks
+        bus_width = len(pins)
+        if bus_width != 8:
+            raise ValueError("bus_width must be 8")
+        
+        lut_entries = 2 ** bus_width  # 256 for 8-bit bus width
+
+        # Set the data pins as outputs
         for pin in pins:
-            if pin < 32:
-                self._pin_mask_1 |= (1 << pin)
-            elif pin < 64:
-                self._pin_mask_2 |= (1 << (pin - 32))
+            machine.Pin(pin, machine.Pin.OUT)
+
+        self._pin_masks = []
+        self._lookup_tables = []
+        self._tx_values = []
+        if self.gpio.pins_per_port == 32:
+            self._set_regs = []
+            self._clr_regs = []
+        else:
+            self._set_reset_regs = []
+
+        # Create the pin_masks and tx_values; initialize the lookup_tables
+        lut = 0  # Used only in the print statement below.  Can be removed.
+        # LUT values are 32-bit, so iterate through each set of 32 pins regardless of pins_per_port
+        for start_pin in range(0, max(pins), 32):
+            lut_pins = [p for p in pins if p >= start_pin and p < start_pin + 32]
+            pin_mask = sum([1 << (pin - start_pin) for pin in lut_pins]) if lut_pins else 0
+            self._pin_masks.append(pin_mask)
+            print(f"lut {lut}: pins = {lut_pins.sort().reverse()}; pin_mask = 0b{pin_mask:032b}")
+            self._lookup_tables.append([0] * lut_entries if pin_mask else None)
+            self._tx_values.append(0)  # Used in _write method
+            if self.gpio.pins_per_port == 32:
+                self._set_regs.append(self.gpio.set_reg(start_pin))
+                self._clr_regs.append(self.gpio.clr_reg(start_pin))
             else:
-                raise ValueError("Pin number must be less than 64")
+                self._set_reset_regs.append([self.gpio.set_reset_reg(start_pin), self.gpio.set_reset_reg(start_pin+16)])
+            lut += 1
+        print(f"pins = {pins.sort().reverse()}")
+        print(f"pin_masks = {self._pin_masks.reverse()}")
 
-        # Iterate through all possible 8-bit values (0 to 255)
-        for i in range(256):
-            mapped_value_a = 0
-            mapped_value_b = 0
-
-            # Iterate through each pin and set corresponding pin bits in mapped_value
-            for j, pin in enumerate(pins):
-                if i & (1 << j):
-                    if pin < 32:
-                        mapped_value_a |= (1 << pin)
-                    else:
-                        mapped_value_b |= (1 << (pin - 32))
-                    
-            # Add the mapping to the lookup table
-            self._lookup_table_1[i] = mapped_value_a
-            self._lookup_table_2[i] = mapped_value_b
-
-        print(self._lookup_table_1)
-        print(self._lookup_table_2)
-        print(f"0b{self._pin_mask_1:032b}")
-        print(f"0b{self._pin_mask_2:032b}")
+        # Populate the lookup tables
+        # Iterate through all possible 8-bit values (0 to 255), assumes 8-bit bus width
+        for index in range(lut_entries):
+            # Iterate through each pin
+            for bit_number, pin in enumerate(pins):
+                # If the bit is set in the index
+                if index & (1 << bit_number):
+                    # Set the bit in the lookup table
+                    self._lookup_tables[pin // 32][index] |= (1 << (pin % 32))
+        print(f"lookup_tables = {self._lookup_tables}")
 
     @micropython.native
-    def tx_param(
-        self,
-        cmd: Optional[int] = None,
-        data: Optional[memoryview] = None,
-    ) -> None:
+    def tx_param(self, cmd: Optional[int] = None, data: Optional[memoryview] = None) -> None:
         """Write to the display: command and/or data."""
 #        machine.mem32[self._cs_active_reg] = self._mask_cs_active  # CS Active
         self._pin_cs(0)
@@ -235,58 +140,38 @@ class I80Bus(_BaseBus):
         self._pin_cs(1)
 
     @micropython.native
-    def _write32(self, data: memoryview) -> None:
+    def _write(self, data: memoryview) -> None:
         """
-        Writes data to the I80 bus interface for devices with 32-bit GPIO registers.
+        Writes data to the I80 bus interface.
 
         Args:
             data (memoryview): The data to be written.
-
-        Returns:
-            None
         """
         for i in range(len(data)):
-            value = data[i] & 0xFF
+            value = data[i]   # 8-bit value (bus_width = 8)
 #            machine.mem32[self._wr_inactive_reg] = self._mask_wr_inactive  # WR Inactive
             self._pin_wr(0)
-            if value != self._last:
-                self._tx_value_1 = self._lookup_table_1[value] & 0xFFFFFFFF
-                machine.mem32[self._out_a_reg] = (self._tx_value_1 | (machine.mem32[self._out_a_reg] & ~self._pin_mask_1)) & 0xFFFFFFFF
-
-                self._tx_value_2 = self._lookup_table_2[value] & 0xFFFFFFFF
-                machine.mem32[self._out_b_reg] = (self._tx_value_2 | (machine.mem32[self._out_b_reg] & ~self._pin_mask_2)) & 0xFFFFFFFF
-
+            if value != self._last:  # No need to set the data pins again if the value hasn't changed
+                # Iterate through each lookup table
+                for i, lut in enumerate(self._lookup_tables):
+                    # If the pin_mask is not 0
+                    if self._pin_masks[i]:
+                        # Lookup the value in the table
+                        self._tx_values[i] = lut[value]  # 32-bit value
+                        if self._use_set_clr_regs:  # 32-bit ports
+                            # Set the appropriate bits for all 32 pins
+                            machine.mem32[self._set_regs[i]] = (self._tx_values[i] | (machine.mem32[self._set_regs[i]] & ~self._pin_masks[i])) & 0xFFFFFFFF
+                            # Clear the appropriate bits for all 32 pins
+                            machine.mem32[self._clr_regs[i]] = ((~self._tx_values[i] & 0xFFFFFFFF) | (machine.mem32[self._clr_regs[i]] & ~self._pin_masks[i])) & 0xFFFFFFFF
+                        else:  # 16-bit ports
+                            # Set and clear the bits for the first 16 pins
+                            machine.mem32[self._set_reset_regs[i][0]] = (self._tx_values[i] & 0xFFFF) | (machine.mem16[self._set_reset_regs[i][0]] & ~self._pin_masks[i] & 0xFFFF)
+                            # Set and clear the bits for the second 16 pins
+                            machine.mem32[self._set_reset_regs[i][1]] = (self._tx_values[i] >> 16) | (machine.mem16[self._set_reset_regs[i][1]] & ~self._pin_masks[i] >> 16)
                 self._last = value
 #            machine.mem32[self._wr_active_reg] = self._mask_wr_active  # WR Active
             self._pin_wr(1)
             sleep_us(1)
-
-    @micropython.native
-    def _write16(self, data: memoryview) -> None:
-        """
-        Writes data to the I80 bus interface for devices with 16-bit GPIO registers.
-
-        Args:
-            data (memoryview): The data to be written.
-
-        Returns:
-            None
-        """
-        for i in range(len(data)):
-            value = data[i] & 0xFF
-            machine.mem32[self._wr_inactive_reg] = self._mask_wr_inactive  # WR Inactive
-            if value != self._last:
-                self._tx_value_1 = self._lookup_table_1[value] & 0xFFFFFFFF
-                machine.mem16[self._out_a_reg] = ((self._tx_value_1 & 0xFFFF) | (machine.mem16[self._out_a_reg] & (~self._pin_mask_1 & 0xFFFF))) & 0xFFFF
-                machine.mem16[self._out_b_reg] = ((self._tx_value_1 >> 16) | (machine.mem16[self._out_b_reg] & (~self._pin_mask_1 >> 16))) & 0xFFFF
-
-                self._tx_value_2 = self._lookup_table_2[value] & 0xFFFFFFFF
-                machine.mem16[self._out_c_reg] = ((self._tx_value_2 & 0xFFFF) | (machine.mem16[self._out_c_reg] & (~self._pin_mask_2 & 0xFFFF))) & 0xFFFF
-                machine.mem16[self._out_d_reg] = ((self._tx_value_2 >> 16) | (machine.mem16[self._out_d_reg] & (~self._pin_mask_2 >> 16))) & 0xFFFF
-
-                self._last = value
-            machine.mem32[self._wr_active_reg] = self._mask_wr_active  # WR Active
-
 
 # Example usage
 # display_bus = I80Bus(

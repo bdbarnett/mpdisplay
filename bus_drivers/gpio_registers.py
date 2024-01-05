@@ -136,7 +136,7 @@ _hal_gpio_registers = {
 }
 
 
-class GPIO_REGISTERS:
+class GPIO_SET_CLR_REGISTERS:
     def __init__(self):
         platform = sys.platform.lower()
         _machine = sys.implementation._machine.lower().replace("-", "").replace("_", "")
@@ -154,7 +154,7 @@ class GPIO_REGISTERS:
                 self._port_regs = platform_data["port_regs"]["*"]
             else:
                 raise NotImplementedError(
-                    f"GPIO_REGISTERS not implemented for {platform} on {_machine}"
+                    f"GPIO_SET_CLR_REGISTERS not implemented for {platform} on {_machine}"
                 )
 
         self.pins_per_port = platform_data["pins_per_port"]
@@ -171,6 +171,26 @@ class GPIO_REGISTERS:
     def _port_reg(self, pin):
         return self._port_regs[pin // self.pins_per_port]
 
+    def get_set_clr_regs(self, pin, active_high=True):
+        if self.pins_per_port != 32:
+            return (self.set_reset_reg(pin), self.set_reset_reg(pin))
+        else:
+            if active_high:
+                return (self.set_reg(pin), self.clr_reg(pin))
+            else:
+                return (self.clr_reg(pin), self.set_reg(pin))
+
+    def get_set_clr_masks(self, pin, active_high=True):
+        if self.pins_per_port == 32:
+            return (self.mask(pin), self.mask(pin))
+        else:
+            if active_high:
+                return (self.mask_set(pin), self.mask_clr(pin))
+            else:
+                return (self.mask_clr(pin), self.mask_set(pin))
+
+    ############################### 32-bit ports ###############################
+
     def set_reg(self, pin):
         if self._set_offset is None:
             return None
@@ -183,6 +203,8 @@ class GPIO_REGISTERS:
 
     def mask(self, pin):
         return 1 << (pin % self.pins_per_port)
+    
+    ############################### 16-bit ports ###############################
 
     def set_reset_reg(self, pin):
         if self._set_reset_offset is None:
@@ -192,5 +214,5 @@ class GPIO_REGISTERS:
     def mask_set(self, pin):
         return (1 << (pin % self.pins_per_port)) & 0xFFFF
 
-    def mask_reset(self, pin):
+    def mask_clr(self, pin):
         return 1 << ((pin % self.pins_per_port) + 16)
