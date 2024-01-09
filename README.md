@@ -3,7 +3,7 @@ Display, touch and encoder drivers for MicroPython and lv_bindings_micropython
 
 Better documentation coming soon!
 
-The display drivers here currently support SPI and I8080 displays on ESP32 boards using the lcd_bus C drivers in [lv_binding_micropython](https://github.com/kdschlosser/lv_binding_micropython/tree/MicroPython_1.21.0_Update).  They also support SPI displays on ANY MicroPython microcontroller such as RP2040 and STM32 using [lcd_bus.py](bus_drivers/lcd_bus.py).  The touch and encoder drivers, as well as the `lv_driver_framework.py` and `lv_config.py`, aren't limited to any specific microcontroller.
+The display drivers here currently support SPI and I8080 displays on ESP32 boards using the lcd_bus C drivers in [lv_binding_micropython](https://github.com/kdschlosser/lv_binding_micropython/tree/MicroPython_1.21.0_Update).  They also support SPI displays on ANY MicroPython microcontroller such as RP2040 and STM32 using [lcd_bus.py](bus_drivers/lcd_bus.py).  There is also an implementation of I80Bus written in MicroPython in the [bus_drivers] directory, but it has limitations and is meant as a reference instead of production use.  See the notes in bus_drivers for more details about the I80 implementation.  The touch and encoder drivers here, as well as the `lv_driver_framework.py` and `lv_config.py` files, aren't limited to any specific microcontroller.
 
 The graphics engine these drivers are targeted toward is LVGL on MicroPython, but they are structured so they may support any graphics engine on MicroPython.  See [display_simple_test.py](lib/display_simpletest.py) and [testris](https://github.com/bdbarnett/testris) for examples using these drivers without LVGL.
 
