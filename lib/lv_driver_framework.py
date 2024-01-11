@@ -65,12 +65,16 @@ class DisplayDriver:
         self.swap_enabled = False
         # If the display bus is a MicroPython bus and it has byte swapping enabled, disable it and 
         # set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
+        # and disable swapping in the bus driver.
         if hasattr(self.display.display_bus, "name") and "MicroPython" in self.display.display_bus.name:
             if self.display.display_bus.swap_enabled:
                 self.swap_enabled = True
                 self.display.display_bus.enable_swap(False)
 
-        if (
+        if "RGB" in repr(self.display.display_bus):
+            render_mode = lv.DISPLAY_RENDER_MODE.DIRECT
+            self.display.set_render_mode_full(True)
+        elif (
             len(self._frame_buffer1)
             >= display.width * display.height * self._color_size
         ):
@@ -118,58 +122,65 @@ class DisplayDriver:
 
     def _allocate_buffers(self, frame_buffer1, frame_buffer2, factor):
         if frame_buffer1 is None:
-            if "RGB" in repr(self.display.display_bus):
-                frame_buffer1 = self.display.display_bus.get_frame_buffer(1)
-                frame_buffer2 = self.display.display_bus.get_frame_buffer(2)
-            else:
-                from sys import platform
+            from sys import platform
 
-                buf_size = int(
-                    self.display.width
-                    * self.display.height
-                    * self._color_size
-                    // factor
+            buf_size = int(
+                self.display.width *
+                self.display.height *
+                self._color_size
+            )
+
+            if not "RGB" in repr(self.display.display_bus):
+                buf_size = buf_size // factor
+
+            if platform == "esp32":
+                import gc
+                import heap_caps  # NOQA
+
+                gc.collect()
+
+                frame_buffer1 = heap_caps.malloc(
+                    buf_size,
+                    heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
                 )
-                if platform == "esp32":
-                    import gc
-                    import heap_caps  # NOQA
+                frame_buffer2 = heap_caps.malloc(
+                    buf_size,
+                    heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
+                )
+
+                if frame_buffer2 is None:
+                    if frame_buffer1 is not None:
+                        heap_caps.free(frame_buffer1)
 
                     gc.collect()
-
                     frame_buffer1 = heap_caps.malloc(
-                        buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
+                        buf_size,
+                        heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
                     )
                     frame_buffer2 = heap_caps.malloc(
-                        buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
+                        buf_size,
+                        heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
                     )
 
-                    if frame_buffer2 is None:
-                        if frame_buffer1 is not None:
-                            heap_caps.free(frame_buffer1)
+                if frame_buffer2 is None:
+                    if frame_buffer1 is not None:
+                        heap_caps.free(frame_buffer2)
 
-                        frame_buffer1 = heap_caps.malloc(
-                            buf_size, heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
-                        )
-                        frame_buffer2 = heap_caps.malloc(
-                            buf_size, heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
-                        )
+                    gc.collect()
+                    frame_buffer1 = heap_caps.malloc(
+                        buf_size,
+                        heap_caps.CAP_INTERNAL
+                    )
 
                     if frame_buffer1 is None:
-                        if frame_buffer2 is not None:
-                            heap_caps.free(frame_buffer2)
-                            frame_buffer2 = None
-
+                        gc.collect()
                         frame_buffer1 = heap_caps.malloc(
-                            buf_size, heap_caps.CAP_INTERNAL
+                            buf_size,
+                            heap_caps.CAP_SPIRAM
                         )
-
-                        if frame_buffer1 is None:
-                            frame_buffer1 = heap_caps.malloc(
-                                buf_size, heap_caps.CAP_SPIRAM
-                            )
-                else:
-                    frame_buffer1 = bytearray(buf_size)
-                    frame_buffer2 = bytearray(buf_size)
+            else:
+                frame_buffer1 = bytearray(buf_size)
+                frame_buffer2 = bytearray(buf_size)
 
         if frame_buffer1 is None:
             raise RuntimeError("Not enough memory available to create frame buffer(s)")

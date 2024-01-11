@@ -28,6 +28,7 @@ display_bus = RGBBus(
     data14=0,  #b3
     data15=45,  #b4
     freq=25000000,
+    bb_size_px=0,
     hsync_pulse_width=2,
     hsync_front_porch=46,
     hsync_back_porch=44,
@@ -36,16 +37,12 @@ display_bus = RGBBus(
     vsync_front_porch=16,
     vsync_back_porch=18,
     vsync_idle_low=False,
-    pclk_active_neg=False,
-    pclk_idle_high=False,
     de_idle_high=False,
-    num_fbs=1,
-    bb_size_px=0,
-    bb_inval_cache=False,
-    fb_in_psram=True,
-    no_fb=False,
+    pclk_idle_high=False,
+    pclk_active_neg=False,
     disp_active_low=False,
     refresh_on_demand=False,
+    bb_inval_cache=False,
 )
 
 display_bus.init(720, 720, 16, buffer_size=720 * 720 * 2, rgb565_byte_swap=False)
