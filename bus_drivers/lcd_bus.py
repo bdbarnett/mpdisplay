@@ -55,7 +55,7 @@ class _BaseBus:
         """
         if enable and self._bpp == 16:
             self.swap_enabled = True
-            self.swap_bytes = self._swap_bytes_in_place
+            self.swap_bytes = self._swap_bytes_viper
             print("WARNING: Bus driver color swap is enabled. This is VERY slow!")
         else:
             self.swap_enabled = False
@@ -79,21 +79,31 @@ class _BaseBus:
         return False
 
     @micropython.native
-    def _swap_bytes_in_place(self, buf: memoryview, buf_size_px: int) -> memoryview:
+    def _swap_bytes_in_place(self, buf: memoryview, buf_size_px: int) -> None:
         """
         Swap the bytes in a buffer of RGB565 data.
         VERY slow!!!!!!!!!
         """
         for i in range(0, buf_size_px * 2, 2):
             buf[i], buf[i+1] = buf[i+1], buf[i]
-        return buf
+
+    @micropython.viper
+    def _swap_bytes_viper(self, buf: ptr8, buf_size_px: int) -> ptr8:
+        """
+        Swap the bytes in a buffer of RGB565 data.
+        Somewhat faster than _swap_bytes_in_place.
+        """
+        for i in range(0, buf_size_px * 2, 2):
+            tmp = buf[i]
+            buf[i] = buf[i + 1]
+            buf[i + 1] = tmp
 
     @micropython.native
-    def _no_swap(self, buf: memoryview, buf_size_px: int) -> memoryview:
+    def _no_swap(self, buf: memoryview, buf_size_px: int) -> None:
         """
         Do nothing to the buffer.
         """
-        return buf
+        return
 
     @micropython.native
     def tx_color(
@@ -110,7 +120,8 @@ class _BaseBus:
         """
         self.trans_done = False
 
-        self.tx_param(cmd, self.swap_bytes(data, len(data) // 2))
+        self.swap_bytes(data, len(data) // 2)
+        self.tx_param(cmd, data)
 
         self.bus_trans_done_cb()
 
