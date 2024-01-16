@@ -43,11 +43,11 @@ _DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
 
 
 class DisplayDriver:
-    display_name = "DisplayDriver"
+    name = "DisplayDriver"
 
     def __init__(
         self,
-        display,
+        display_drv,
         color_format=lv.COLOR_FORMAT.NATIVE,
         frame_buffer1=None,
         frame_buffer2=None,
@@ -55,7 +55,7 @@ class DisplayDriver:
         factor=10,
         blocking=True,
     ):
-        self.display = display
+        self.display_drv = display_drv
         self._color_size = lv.color_format_get_size(color_format)
         self._frame_buffer1, self._frame_buffer2 = self._allocate_buffers(
             frame_buffer1, frame_buffer2, factor
@@ -63,36 +63,36 @@ class DisplayDriver:
         self._blocking = blocking
 
         self.swap_enabled = False
-        # If the display bus is a MicroPython bus and it has byte swapping enabled, disable it and 
-        # set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
-        # and disable swapping in the bus driver.
-        if hasattr(self.display.display_bus, "name") and "MicroPython" in self.display.display_bus.name:
-            if self.display.display_bus.swap_enabled:
+        # If the display bus is a MicroPython bus (not C) and it has byte swapping enabled,
+        # disable it and set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
+        if hasattr(self.display_drv.display_bus, "name") and "MicroPython" in self.display_drv.display_bus.name:
+            if self.display_drv.display_bus.swap_enabled:
+                print("Using LVGL color swap.  Disabling MicroPython display driver color swap.")
                 self.swap_enabled = True
-                self.display.display_bus.enable_swap(False)
+                self.display_drv.display_bus.enable_swap(False)
 
-        if "RGB" in repr(self.display.display_bus):
+        if "RGB" in repr(self.display_drv.display_bus):
             render_mode = lv.DISPLAY_RENDER_MODE.DIRECT
-            self.display.set_render_mode_full(True)
+            self.display_drv.set_render_mode_full(True)
         elif (
             len(self._frame_buffer1)
-            >= display.width * display.height * self._color_size
+            >= self.display_drv.width * self.display_drv.height * self._color_size
         ):
             render_mode = lv.DISPLAY_RENDER_MODE.FULL
-            self.display.set_render_mode_full(True)
+            self.display_drv.set_render_mode_full(True)
         else:
             render_mode = lv.DISPLAY_RENDER_MODE.PARTIAL
-            self.display.set_render_mode_full(False)
+            self.display_drv.set_render_mode_full(False)
 
         if not lv.is_initialized():
             lv.init()
 
-        self._disp_drv = lv.display_create(self.display.width, self.display.height)
-        self._disp_drv.set_color_format(color_format)
-        self._disp_drv.set_flush_cb(self._flush_cb)
+        self.lv_display = lv.display_create(self.display_drv.width, self.display_drv.height)
+        self.lv_display.set_color_format(color_format)
+        self.lv_display.set_flush_cb(self._flush_cb)
         if not self._blocking:
-            self.display.display_bus.register_callback(self._disp_drv.flush_ready)
-        self._disp_drv.set_draw_buffers(
+            self.display_drv.display_bus.register_callback(self.lv_display.flush_ready)
+        self.lv_display.set_draw_buffers(
             self._frame_buffer1,
             self._frame_buffer2,
             len(self._frame_buffer1),
@@ -110,7 +110,7 @@ class DisplayDriver:
         # we have to use the __dereference__ method because this method is
         # what converts from the C_Array object the binding passes into a
         # memoryview object that can be passed to the bus drivers
-        self.display.blit(
+        self.display_drv.blit(
             area.x1,
             area.y1,
             width,
@@ -118,19 +118,19 @@ class DisplayDriver:
             color_p.__dereference__(width * height * self._color_size),
         )
         if self._blocking:
-            self._disp_drv.flush_ready()
+            self.lv_display.flush_ready()
 
     def _allocate_buffers(self, frame_buffer1, frame_buffer2, factor):
         if frame_buffer1 is None:
             from sys import platform
 
             buf_size = int(
-                self.display.width *
-                self.display.height *
+                self.display_drv.width *
+                self.display_drv.height *
                 self._color_size
             )
 
-            if not "RGB" in repr(self.display.display_bus):
+            if not "RGB" in repr(self.display_drv.display_bus):
                 buf_size = buf_size // factor
 
             if platform == "esp32":
