@@ -30,17 +30,17 @@ class _BaseBus:
         """
         self.buf1: bytearray = bytearray(1)
         self.buf2: bytearray = bytearray(2)
-        self.trans_done: bool = True
-        self.callback: Optional[callable] = None
+        self.callback: callable = lambda : None
         self.swap_bytes: callable = self._no_swap
         self.swap_enabled: bool = False
+        self.trans_done: bool = True
 
     def init(
         self,
         width: int,  # Not Used
         height: int,  # Not Used
         bpp: int,
-        buffer_size: int,
+        buffer_size: int,  # Not Used
         rgb565_byte_swap: bool,
     ) -> None:
         """
@@ -55,7 +55,7 @@ class _BaseBus:
         """
         if enable and self._bpp == 16:
             self.swap_enabled = True
-            self.swap_bytes = self._swap_bytes_viper
+            self.swap_bytes = self._swap_bytes
             print("WARNING: Bus driver color swap is enabled. This is VERY slow!")
         else:
             self.swap_enabled = False
@@ -68,27 +68,17 @@ class _BaseBus:
         """
         self.callback = callback
 
-    @micropython.native
+    @micropython.viper
     def bus_trans_done_cb(self) -> bool:
         """
         Callback function to be called when a transaction is done.
         """
-        if self.callback is not None:
-            self.callback()
+        self.callback()
         self.trans_done = True
         return False
 
-    @micropython.native
-    def _swap_bytes_in_place(self, buf: memoryview, buf_size_px: int) -> None:
-        """
-        Swap the bytes in a buffer of RGB565 data.
-        VERY slow!!!!!!!!!
-        """
-        for i in range(0, buf_size_px * 2, 2):
-            buf[i], buf[i+1] = buf[i+1], buf[i]
-
     @micropython.viper
-    def _swap_bytes_viper(self, buf: ptr8, buf_size_px: int) -> ptr8:
+    def _swap_bytes(self, buf: ptr8, buf_size_px: int):
         """
         Swap the bytes in a buffer of RGB565 data.
         Somewhat faster than _swap_bytes_in_place.
@@ -98,10 +88,10 @@ class _BaseBus:
             buf[i] = buf[i + 1]
             buf[i + 1] = tmp
 
-    @micropython.native
-    def _no_swap(self, buf: memoryview, buf_size_px: int) -> None:
+    @micropython.viper
+    def _no_swap(self, buf: ptr8, buf_size_px: int):
         """
-        Do nothing to the buffer.
+        Do nothing.
         """
         return
 
