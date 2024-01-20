@@ -13,7 +13,7 @@ display_bus = SPIBus(
     miso=12,
     sclk=10,
     host=1,
-    tx_only=True,
+    tx_only=False,
     freq=60_000_000,
     spi_mode=0,
     cmd_bits=8,
@@ -39,7 +39,7 @@ display_drv = GC9A01(
     backlight_pin=25,
     backlight_on_high=True,
     reset_pin=13,
-    reset_high=True,
+    reset_high=False,
     power_pin=None,
     power_on_high=True,
 )
