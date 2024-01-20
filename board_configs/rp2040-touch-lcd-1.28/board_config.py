@@ -12,7 +12,7 @@ display_bus = SPIBus(
     mosi=11,
     miso=12,
     sclk=10,
-    host=0,
+    host=1,
     tx_only=True,
     freq=60_000_000,
     spi_mode=0,
@@ -44,7 +44,7 @@ display_drv = GC9A01(
     power_on_high=True,
 )
 
-i2c = I2C(0, sda=Pin(6), scl=Pin(7), freq=100_000)
+i2c = I2C(1, sda=Pin(6), scl=Pin(7), freq=100_000)
 touch_drv = CST816S(i2c, irq_pin=21, rst_pin=22)
-touch_read_func=touch_drv.get_point
-touch_rotation_table=(0, 5, 6, 3)
+touch_read_func = touch_drv.get_point
+touch_rotation_table = (0, 5, 6, 3)

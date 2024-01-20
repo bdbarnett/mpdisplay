@@ -1,22 +1,23 @@
 '''
 Adapted from https://github.com/waveshareteam/RP2040-Touch-LCD-1.28/blob/main/python/RP2040-LCD-1.28.py
+and https://github.com/koendv/cst816t/blob/master/src/cst816t.cpp
 '''
 from machine import Pin
 from time import sleep_ms
 
-class Touch_CST816S():
+class CST816S():
     #Initialize the touch chip
-    def __init__(self, bus, address=0x15, mode=1, irq_pin=None, rst_pin=None):
+    def __init__(self, bus, address=0x15, mode=0, irq_pin=None, rst_pin=None):
         self._bus = bus
         self._address = int(address) #Set slave address
-        self.int = Pin(irq_pin, Pin.IN, Pin.PULL_UP) if irq_pin else None
-        self.rst = Pin(rst_pin,Pin.OUT) if rst_pin else None
+        self.irq = Pin(irq_pin, Pin.IN) if irq_pin else None
+        self.rst = Pin(rst_pin, Pin.OUT) if rst_pin else None
         self.reset()
         bRet = self.whoami()
         if bRet :
             print("Success:  CST816S detected.")
             rev = self.read_revision()
-            print("CST816T Revision = {}".format(rev))
+            print("CST816S Revision = {}".format(rev))
             self.stop_sleep()
         else    :
             print("Error:  CST816S not detected.")
@@ -66,8 +67,6 @@ class Touch_CST816S():
             self._write_byte(0xEC, 0X01)
      
     def get_point(self):
-        if self.int and self.int.value() == 1:
-            return None
         xy_point = self._read_block(0x03, 4)
         x = ((xy_point[0] & 0x0f) << 8) + xy_point[1]
         y = ((xy_point[2] & 0x0f) << 8) + xy_point[3]
