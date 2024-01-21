@@ -117,11 +117,10 @@ I am considering creating board configs by request IF you provide a gift certifi
 - Add keypad support to be subclassed in lv_driver_framework.py and micro_gui_framework.py
 	- hardware pins
    	- matrix of pins
-   	- io expander
    	- capacitive touch pins
    	- capacitive touch chips
+   	- io expander
 - Add ePaper support.
-- Add RGB Matrix (HUB75) support.
 - Test boards with RGB buses using [lcd_bus](https://github.com/kdschlosser/lcd_bus) and [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython):
 	- qualia
    	- t-rgb_2.1in_full_circle
