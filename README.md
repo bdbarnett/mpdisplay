@@ -106,22 +106,26 @@ Please note, I am only providing configs for boards that have an integrated disp
 I am considering creating board configs by request IF you provide a gift certificate to pay for the board from Adafruit, DigiKey, Amazon, Pimoroni or wherever your board is stocked.  I'll post that here if I decide to do that.
 
 # TODO
+Short term
 - Create a micro_gui_framework.py for Micro-GUI similar to `lv_driver_framework.py`
 - Document how to create custom board_configs, display_drivers and touch_drivers.
-- Implement color OLED display drivers in `busdisplay.py`:
-  	- ssd1331, ssd1351
-- Implement mono I2C bus drivers in `lcd_bus.py` and `busdisplay.py`
-	- sh1106, ssd1305, ssd1306, ssd1325, ssd1327
-- Use a factory method in lcd_bus/__init__.py to choose the appropriate bus driver.  Other files in the lcd_bus folder would be _spibus.py, _i80bus.py and _i2cbus.py.
-  	- `from lcd_bus import I80Bus` would then load the I80bus without taking up unnecesary RAM by loading SPIBus and I2Cbus
+- Use a factory method in lcd_bus/__init__.py to choose the appropriate bus driver.  Other files in the lcd_bus folder would be _spibus.py, _i80bus.py and possibly platform specific versions of those.
+  	- `from lcd_bus import I80Bus` would then load the appropriate I80bus class without taking up unnecesary RAM by loading unneeded classes.
+- I80bus assumes pins will be non-sequential and on multiple ports.  Create a version that doesn't, so lookup tables aren't necessary in order to increase speed.
 - Add keypad support to be subclassed in lv_driver_framework.py and micro_gui_framework.py
 	- hardware pins
    	- matrix of pins
    	- capacitive touch pins
    	- capacitive touch chips
    	- io expander
-- Add ePaper support.
 - Test boards with RGB buses using [lcd_bus](https://github.com/kdschlosser/lcd_bus) and [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython):
 	- qualia
    	- t-rgb_2.1in_full_circle
    	- esp32-s3-lcd-4.3
+Long term
+- Add I2CBus
+- Implement color OLED display drivers in `busdisplay.py`:
+  	- ssd1331, ssd1351
+- Implement mono I2C bus drivers in `lcd_bus.py` and `busdisplay.py`
+	- sh1106, ssd1305, ssd1306, ssd1325, ssd1327
+- Implement ePaper support.
