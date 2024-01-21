@@ -122,6 +122,7 @@ Short term
 	- qualia
    	- t-rgb_2.1in_full_circle
    	- esp32-s3-lcd-4.3
+
 Long term
 - Add I2CBus
 - Implement color OLED display drivers in `busdisplay.py`:
