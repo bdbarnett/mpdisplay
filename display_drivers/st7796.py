@@ -69,12 +69,12 @@ class ST7796(BusDisplay):
         param_buf[0] = 0x96
         self.set_params(_CSCON, param_mv[:1])
 
-        param_buf[0] = self._madctl(self._bgr, self._rotation, self.rotation_table)
+        param_buf[0] = self._madctl(self.bgr, self.rotation, self.rotation_table)
         self.set_params(_MADCTL, param_mv[:1])
 
-        if self._color_depth // 8 == 2:  # NOQA
+        if self.color_depth // 8 == 2:  # NOQA
             pixel_format = 0x55
-        elif self._color_depth // 8 == 3:
+        elif self.color_depth // 8 == 3:
             pixel_format = 0x77
         else:
             raise RuntimeError(
