@@ -1,15 +1,14 @@
-# SPDX-FileCopyrightText: 2023 Brad Barnett
-#
-# SPDX-License-Identifier: MIT
-#
-# Tests touchscreen and allows changing touch driver rotation
-# to find a rotation that matches the display rotation.
-#
-# usage:
-#     from lv_touch_test import mask, rotation
-#
-#     mask(0b101)  # set's the rotation mask directly, useful for finding the correct mask to put in a rotation table
-#     rotation(270)  # set's the rotation to index 3 of the rotation table, useful for testing rotation table masks.
+""" 
+lv_touch_test.py
+Tests touchscreen and allows changing touch driver rotation
+to find a rotation that matches the display rotation.
+
+usage:
+    from lv_touch_test import mask, rotation
+
+    mask(0b101)  # set's the rotation mask directly, useful for finding the correct mask to put in a rotation table
+    rotation(270)  # set's the rotation to index 3 of the rotation table, useful for testing rotation table masks.
+ """
 
 import lv_config
 import lvgl as lv
