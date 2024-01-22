@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: MIT
 
+'''
+busdisplay.py - BusDisplay class for MicroPython
+'''
+
 from micropython import const, alloc_emergency_exception_buf
 from machine import Pin
 from time import sleep_ms
@@ -84,8 +88,8 @@ class BusDisplay:
         self._colstart = colstart
         self._rowstart = rowstart
         self._rotation = rotation
-        self._color_depth = color_depth
-        self._bgr = bgr
+        self.color_depth = color_depth
+        self.bgr = bgr
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
@@ -128,7 +132,7 @@ class BusDisplay:
             width,
             height,
             color_depth,
-            self.width * self.height * self._color_depth // 8,
+            self.width * self.height * self.color_depth // 8,
             rgb565_byte_swap=reverse_bytes_in_word,
         )
 
@@ -187,7 +191,7 @@ class BusDisplay:
     def rotation(self, value):
         self._rotation = value
 
-        self._param_buf[0] = self._madctl(self._bgr, value, self.rotation_table)
+        self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
         self.set_params(_MADCTL, self._param_mv[:1])
 
     @property
