@@ -7,20 +7,20 @@ An example implementation of an I80 bus driver written in MicroPython.
 This driver is VERY slow and is only intended as an example to be rewritten in C
 or have the _write method rewritten to use DMA transfers.
 """
+
 import machine
 import struct
-from lib.lcd_bus import _BaseBus, Optional
-from gpio_registers import GPIO_SET_CLR_REGISTERS
 from uctypes import addressof
 from array import array
+from ._basebus import BaseBus, Optional
 
 
-class I80Bus(_BaseBus):
+class I80Bus(BaseBus):
     """
     Represents an I80 bus interface for controlling GPIO pins.
     Currently only supports 8-bit data bus width and requires pin numbers instead of pin names.
     ESP32, RP2, SAMD and NRF use pin numbers and should work with this driver.
-    MIMXRT and STM use pin names and will not work with this driver until pin names are supported.
+    MIMXRT and STM use pin names and have not been tested.
 
     Args:
         dc (int): The pin number for the DC pin.
@@ -53,24 +53,26 @@ class I80Bus(_BaseBus):
         pclk_active_neg=False,
         swap_color_bytes=False,
         *,
-        freq=20_000_000,  # Not used
-        cmd_bits=8,  # Not used
-        param_bits=8,  # Not used
-        reverse_color_bits=False,  # Not used
-        pclk_idle_low=False,  # Not used
-        dc_idle_level=0,  # Not used
-        dc_cmd_level=0,  # Not used
-        dc_dummy_level=0,  # Not used
-    ) -> None:
+        freq=20_000_000,  # Not used; maintained for compatibility with lcd_bus C driver
+        cmd_bits=8,  # ditto
+        param_bits=8,  # ditto
+        reverse_color_bits=False,  # ditto
+        pclk_idle_low=False,  # ditto
+        dc_idle_level=0,  # ditto
+        dc_cmd_level=0,  # ditto
+        dc_dummy_level=0,  # ditto
+        ) -> None:
 
         super().__init__()
+        from ._gpio_registers import GPIO_SET_CLR_REGISTERS
 
         # Save the swap enabled setting for the base class
-        self.swap_enabled = swap_color_bytes
+        self._swap_enabled = swap_color_bytes
 
         # Use the GPIO_SET_CLR_REGISTERS class to get the register addresses and masks
         # for the control pins and to determine the number of pins per port for
-        # _setup_data_pins() and _write()
+        # _setup_data_pins() and _write().  Implemented as a local variable to allow
+        # the instance to be garbage collected after initialization.
         gpio = GPIO_SET_CLR_REGISTERS()
 
         # Define the _write method
@@ -96,18 +98,11 @@ class I80Bus(_BaseBus):
 
         # Configure data pins as outputs, populate lookup tables and pin_masks
         pins = [data0, data1, data2, data3, data4, data5, data6, data7]
-    #     self._setup_data_pins(pins)
 
-    # def _setup_data_pins(self, pins: list[int]) -> None:
-        """
-        Sets output mode and creates lookup_tables and pin_masks for a list pins.
-        Must be called after gpio is initialized.
-        """
-        bus_width = len(pins)
-        if bus_width != 8:
-            raise ValueError("bus_width must be 8")
-
-        lut_len = 2**bus_width  # 256 for 8-bit bus width
+        # Check that the bus width is 8
+        if len(pins) != 8:
+            raise ValueError("bus width must be 8")
+        lut_len = 2**len(pins)  # 256 for 8-bit bus width
 
         # Set the data pins as outputs
         for pin in pins:
@@ -176,7 +171,7 @@ class I80Bus(_BaseBus):
     @micropython.native
     def tx_param(
         self, cmd: Optional[int] = None, data: Optional[memoryview] = None
-    ) -> None:
+        ) -> None:
         """Write to the display: command and/or data."""
         machine.mem32[self._cs_reg] = self._cs_mask  # CS Active
 
@@ -212,7 +207,7 @@ class I80Bus(_BaseBus):
                         regB = ptr32(pin_data[n * 4 + 2])
                         lut = ptr32(pin_data[n * 4 + 3])
                         tx_value: int = lut[val]
-                        # if _is_32bit:
+                        # if _is_32bit:  # TODO:  Not working yet. Assume 32-bit for now.
                         if True:
                             regA[0] = tx_value
                             regB[0] = tx_value ^ pin_mask
