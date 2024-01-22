@@ -3,7 +3,7 @@
 from lcd_bus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
-from cst816s import CST816S
+from cst8xx import CST8XX
 
 
 display_bus = SPIBus(
@@ -45,6 +45,6 @@ display_drv = GC9A01(
 )
 
 i2c = I2C(1, sda=Pin(6), scl=Pin(7), freq=100_000)
-touch_drv = CST816S(i2c, irq_pin=21, rst_pin=22)
+touch_drv = CST8XX(i2c, irq_pin=21, rst_pin=22)
 touch_read_func = touch_drv.get_point
 touch_rotation_table = (0, 5, 6, 3)

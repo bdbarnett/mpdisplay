@@ -37,7 +37,7 @@ IRQ_EN_CHANGE = const(0x20)
 IRQ_EN_MOTION = const(0x10)
 IRQ_EN_LONGPRESS = const(0x01)
 
-class CST816S():
+class CST8XX():
     def __init__(self, bus, address=0x15, rst_pin=None,
                  irq_pin=None, irq_handler=lambda pin: None, irq_en=0x00, motion_mask=0b000):
 
