@@ -8,8 +8,8 @@ from gui_framework import SSD
 import framebuf
 import board_config
 
-# mode = framebuf.GS4_HMSB
+mode = framebuf.GS4_HMSB
 # mode = framebuf.GS8
-mode = framebuf.RGB565
+# mode = framebuf.RGB565
 
 ssd = SSD(board_config.display_drv, mode)
