@@ -23,8 +23,24 @@ Usage:
 
 import framebuf
 import gc
+from sys import platform
 
 
+# Determine how line buffers are allocated
+alloc_buffer = lambda size: bytearray(size)
+# If heap_caps is available, use it to allocate in internal DMA-capable memory
+if platform == "esp32":
+    try:
+        from heap_caps import malloc, CAP_DMA, CAP_INTERNAL
+        alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
+    except ImportError:
+        pass
+
+@micropython.viper
+def _lcopy16(dest:ptr16, source:ptr16, length:int):
+    for x in range(length):
+        dest[x] = source[x]
+        
 @micropython.viper
 def _lcopy8(dest:ptr8, source:ptr8, length:int, swapped:bool, bgr:bool):
     # Convert a line in 8 bit RGB332 format to 16 bit RGB565 format.
@@ -117,12 +133,12 @@ class SSD(framebuf.FrameBuffer):
             self._buffer = bytearray(self.width * self.height * 2)
             self.show = self._show16
         elif mode == framebuf.GS8:
-            self._linebuf = bytearray(self.width * 2)
+            self._linebuf = alloc_buffer(self.width * 2)
             self._buffer = bytearray(self.width * self.height)
             self.show = self._show8
         elif mode == framebuf.GS4_HMSB:
             SSD.lut = bytearray(0x00 for _ in range(32))
-            self._linebuf = bytearray(self.width * 2)
+            self._linebuf = alloc_buffer(self.width * 2)
             self._buffer = bytearray(self.width * self.height // 2)
             self.show = self._show4
         else:
@@ -133,8 +149,9 @@ class SSD(framebuf.FrameBuffer):
         self.show()  # Clear the display
         gc.collect()
 
+    @micropython.native
     def _show16(self):
-        # Copy the buffer to the display in one go.
+        # Copyt the buffer to the display in one go
         self.display_drv.blit(0, 0, self.width, self.height, self._mvb)
 
     @micropython.native
