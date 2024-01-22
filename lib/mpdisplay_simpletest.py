@@ -56,11 +56,11 @@ iter_count = 0
 def print_count(_):
     global block_count, iter_count
     iter_count += 1
-    print(f"\x08\x08\x08{(block_count // iter_count):3}", end ="")
+    print(f"\x08\x08\x08\x08{(block_count // iter_count):4}", end ="")
 
 # Prepare for the loop
 print(f"{block_size}x{block_size} blocks per screen: {blocks_per_screen:.2f}")
-print(f"Blocks per second:    ", end="")
+print(f"Blocks per second:     ", end="")
 tim = Timer(-1)
 tim.init(mode=Timer.PERIODIC, freq=1, callback=print_count)
 
