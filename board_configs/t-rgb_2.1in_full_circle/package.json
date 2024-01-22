@@ -1,0 +1,9 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-rgb_2.1in_full_circle/board_config.py"],
+      ["lib/st7701.py", "github:bdbarnett/mpdisplay/display_drivers/st7701.py"],
+      ["lib/cst8xx.py", "github:bdbarnett/mpdisplay/touch_drivers/cst8xx.py"],
+      ["lib/xl9535.py", "github:bdbarnett/mpdisplay/io_expander_drivers/xl9535.py"]
+    ],
+    "version": "0.1"
+  }

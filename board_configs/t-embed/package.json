@@ -1,0 +1,9 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-embed/board_config.py"],
+      ["lib/st7789.py", "github:bdbarnett/mpdisplay/display_drivers/st7789.py"],
+      ["lib/rotary.py", "github:miketeachman/micropython-rotary/rotary.py"],
+      ["lib/rotary_irq_esp.py", "github:miketeachman/micropython-rotary/rotary_irq_esp.py"]
+      ],
+    "version": "0.1"
+  }

@@ -1,0 +1,7 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/esp32-s3-lcd-4.3/board_config.py"],
+      ["lib/gt911.py", "github:bdbarnett/mpdisplay/touch_drivers/gt911.py"]
+    ],
+    "version": "0.1"
+  }

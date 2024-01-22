@@ -1,0 +1,7 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-qt-pro/board_config.py"],
+      ["lib/gc9a01.py", "github:bdbarnett/mpdisplay/display_drivers/gc9a01.py"]
+    ],
+    "version": "0.1"
+  }
