@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: MIT
 
+'''
+lv_driver_framework.py - LVGL driver framework for MPDisplay
+'''
+
 import lvgl as lv
 from time import ticks_ms, ticks_diff
 
@@ -66,7 +70,7 @@ class DisplayDriver:
         # If the display bus is a MicroPython bus (not C) and it has byte swapping enabled,
         # disable it and set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
         if hasattr(self.display_drv.display_bus, "name") and "MicroPython" in self.display_drv.display_bus.name:
-            if self.display_drv.display_bus.swap_enabled:
+            if self.display_drv.display_bus.enable_swap():
                 print("Using LVGL color swap.  Disabling MicroPython display driver color swap.")
                 self.swap_enabled = True
                 self.display_drv.display_bus.enable_swap(False)
