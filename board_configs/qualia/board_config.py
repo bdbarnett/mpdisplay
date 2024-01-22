@@ -1,9 +1,9 @@
 """ Qualia with 4.0" 720x720 display """
 
-# from machine import Pin, I2C
-# from cst8xx import CST8XX  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
-# from busdisplay import BusDisplay
 from lcd_bus import RGBBus
+from busdisplay import BusDisplay
+from machine import I2C, Pin
+from cst8xx import CST8XX
 
 display_bus = RGBBus(
     hsync=41,
@@ -45,32 +45,28 @@ display_bus = RGBBus(
     bb_inval_cache=False,
 )
 
-display_bus.init(720, 720, 16, buffer_size=720 * 720 * 2, rgb565_byte_swap=False)
-buf_1 = display_bus.get_frame_buffer(1)
+display_drv = BusDisplay(
+    display_bus,
+    width=720,
+    height=720,
+    colstart=0,
+    rowstart=0,
+    rotation=0,
+    mirrored=False,
+    color_depth=16,
+    bgr=True,
+    reverse_bytes_in_word=False,
+    invert=False,
+    brightness=1.0,
+    backlight_pin=None,
+    backlight_on_high=True,
+    reset_pin=None,
+    reset_high=True,
+    power_pin=None,
+    power_on_high=True,
+)
 
-print(f"buf_1 is None:  {buf_1 is None}")
-
-# display_drv = BusDisplay(
-#     display_bus,
-#     width=720,
-#     height=720,
-#     colstart=0,
-#     rowstart=0,
-#     rotation=0,
-#     mirrored=False,
-#     color_depth=16,
-#     bgr=True,
-#     reverse_bytes_in_word=False,
-#     invert=False,
-#     brightness=1.0,
-#     backlight_pin=None,
-#     backlight_on_high=True,
-#     reset_pin=None,
-#     reset_high=True,
-#     power_pin=None,
-#     power_on_high=True,
-# )
-
-# touch_drv = CST8XX(i2c)
-# touch_read_func = touch_drv.touches
-# touch_rotation_table=None
+i2c = I2C(0)
+touch_drv = CST8XX(i2c)
+touch_read_func = touch_drv.touches
+touch_rotation_table=None
