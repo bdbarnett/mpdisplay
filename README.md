@@ -101,4 +101,28 @@ RP2040	|	Python	        |	false	        |	bytearray	|	402	        |	21.4	    |
 rp2040	|	Python	        |	true	        |	bytearray	|	13	        |	0.7	    |
 
 # My board isn't listed
-Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.  I am considering creating board configs by request IF you provide a gift certificate to pay for the board from Adafruit, DigiKey, Amazon, Pimoroni or wherever your board is stocked.  I'll post that here if I decide to do that.
+Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.  Please consider contributing your board_config if your hardware doesn't require custom wiring.
+
+I am considering creating board configs by request IF you provide a gift certificate to pay for the board from Adafruit, DigiKey, Amazon, Pimoroni or wherever your board is stocked.  I'll post that here if I decide to do that.
+
+# TODO
+- Create a micro_gui_framework.py for Micro-GUI similar to `lv_driver_framework.py`
+- Document how to create custom board_configs, display_drivers and touch_drivers.
+- Implement color OLED display drivers in `busdisplay.py`:
+  	- ssd1331, ssd1351
+- Implement mono I2C bus drivers in `lcd_bus.py` and `busdisplay.py`
+	- sh1106, ssd1305, ssd1306, ssd1325, ssd1327
+- Use a factory method in lcd_bus/__init__.py to choose the appropriate bus driver.  Other files in the lcd_bus folder would be _spibus.py, _i80bus.py and _i2cbus.py.
+  	- `from lcd_bus import I80Bus` would then load the I80bus without taking up unnecesary RAM by loading SPIBus and I2Cbus
+- Add keypad support to be subclassed in lv_driver_framework.py and micro_gui_framework.py
+	- hardware pins
+   	- matrix of pins
+   	- io expander
+   	- capacitive touch pins
+   	- capacitive touch chips
+- Add ePaper support.
+- Add RGB Matrix (HUB75) support.
+- Test boards with RGB buses using [lcd_bus](https://github.com/kdschlosser/lcd_bus) and [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython):
+	- qualia
+   	- t-rgb_2.1in_full_circle
+   	- esp32-s3-lcd-4.3
