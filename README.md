@@ -136,6 +136,8 @@ Short term
    	- capacitive touch pins
    	- capacitive touch chips
    	- io expander
+- Enable installation from mip.install
+- Create documentation with readthedocs
 - Test boards with RGB buses using [lcd_bus](https://github.com/kdschlosser/lcd_bus) and [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython):
 	- qualia
    	- t-rgb_2.1in_full_circle
