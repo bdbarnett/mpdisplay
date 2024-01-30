@@ -39,6 +39,35 @@ Download the following files and upload them to the /lib folder on your board:
 - If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
+# Recommended filesystem structure
+
+```
+├── lib
+│   │
+│   ├── lcd_bus                 - Required if lcd_bus isn't compiled in, otherwise Optional
+│   │   │
+│   │   ├── __init__.py         - Required
+│   │   ├── _spibus.py          - Required for SPIBus
+│   │   ├── _i80bus.py          - Required for I80Bus
+│   │   └── _gpio_registers.py  - Required for I80Bus
+│   │
+│   ├── busdisplay.py           - Required
+│   ├── mpdisplay_simpletest.py - Optional (recommended)
+│   │
+│   ├── gui_framework.py        - GUI targets:  Required
+│   ├── nano_gui_simpletest.py  - GUI targets:  Optional (recommended)
+│   │
+│   ├── lv_driver_framework.py  - LVGL targets:  Required
+│   └── lv_touch_test.py        - LVGL targets:  Optional (recommended)
+│
+├── color_setup.py              - GUI targets:  Required
+├── lv_config.py                - LVGL targets:  Required
+│
+├── board_config.py             - Required
+├── st7796.py                   - Example display driver - one is required
+└── ft6x36.py                   - Example touch driver - only required if your display has touch
+```
+
 You MAY want to edit the `board_config.py` to:
 - Adjust the bus frequency for possible higher throughput
 - Set the initial brightness of the backlight if backlight_pin is set
