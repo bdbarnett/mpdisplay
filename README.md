@@ -47,6 +47,7 @@ Download the following files and upload them to the /lib folder on your board:
 │   ├── lcd_bus                 - Required if lcd_bus isn't compiled in, otherwise Optional
 │   │   │
 │   │   ├── __init__.py         - Required
+│   │   ├── _basebus.py         - Required
 │   │   ├── _spibus.py          - Required for SPIBus
 │   │   ├── _i80bus.py          - Required for I80Bus
 │   │   └── _gpio_registers.py  - Required for I80Bus
