@@ -41,6 +41,8 @@ Download the following files and upload them to the /lib folder on your board:
 
 # Recommended filesystem structure
 
+Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in / or /lib.
+
 ```
 ├── lib
 │   │
@@ -61,12 +63,9 @@ Download the following files and upload them to the /lib folder on your board:
 │   ├── lv_driver_framework.py  - LVGL targets:  Required
 │   └── lv_touch_test.py        - LVGL targets:  Optional (recommended)
 │
-├── color_setup.py              - GUI targets:  Required
-├── lv_config.py                - LVGL targets:  Required
-│
 ├── board_config.py             - Required
-├── st7796.py                   - Example display driver - one is required
-└── ft6x36.py                   - Example touch driver - only required if your display has touch
+├── color_setup.py              - GUI targets:  Required
+└── lv_config.py                - LVGL targets:  Required
 ```
 
 You MAY want to edit the `board_config.py` to:
