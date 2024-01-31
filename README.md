@@ -87,7 +87,7 @@ For use in Nano-GUI, you MAY want to edit the `color_setup.py` to:
   	- `mode = framebuf.RGB565` yields 65,536 colors; creates a frame buffer of size width * height * 2.  No bounce buffer is needed.
   	- `mode = framebuf.GS8` yields 256 colors; creates a frame buffer of size width * height and a bounce buffer of size width * 2
   	- `mode = framebuf.GS4_HMSB` yields 16 colors; creates a frame buffer of size width * height // 2 and a bounce buffer of size width * 2
-- Rename it to hardware_setup.py and add pin definitions for use with [Micro-Gui](https://github.com/peterhinch/micropython-micro-gui)
+- Rename it to hardware_setup.py and add pin definitions and add `Display` for use with [Micro-Gui](https://github.com/peterhinch/micropython-micro-gui)
 
 # Coexistence with lcd_bus (C bus drivers)
 Note, if you have lcd_bus compiled in, whether from LVGL_MicroPython or if you added it yourself, and also have lcd_bus.py in your /lib folder,
