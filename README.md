@@ -17,7 +17,20 @@ MPDisplay provides drivers for SPI and I80 bus displays using the included [lcd_
 [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics platform written in MicroPython for MicroPython.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly I80 and RGB Bus displays.
 
 # Quickstart
+
 Flash your board with your preferred version of MicroPython listed above.
+
+## Install with mip on a network connected board
+
+```
+>>> import mip
+>>> mip.install("github:bradbarnett/mpdisplay", target="")
+>>> mip.install("github:bradbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE/board_config.py", target="")
+>>> mip.install("github:bradbarnett/mpdisplay/display_drivers/YOUR_DRIVER_HERE.py")
+>>> mip.install("github:bradbarnett/mpdisplay/touch_drivers/YOUR_DRIVER_HERE.py")
+```
+
+## Manual installation
 
 Download the following files and upload them to your board:
 - The [lib](lib) folder
