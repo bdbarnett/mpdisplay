@@ -26,6 +26,12 @@ mip.install("github:bdbarnett/mpdisplay", target="/")
 mip.install("github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE", target="/")
 ```
 
+## Install with mpremote on non-network connected board
+```
+mpremote mip install --target=/ "github:bdbarnett/mpdisplay"
+mpremote mip install --target=/ "github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE"
+```
+
 ## Manual installation
 Download the following files and upload them to your board:
 - The [lib](lib) folder
@@ -138,7 +144,6 @@ from lib.lcd_bus include ...
    	- capacitive touch pins
    	- capacitive touch chips
    	- io expander
-- Document installing with mpremote
 - Create a throughput comparison chart
 - Create better documentation with readthedocs
 - Test boards with RGB buses using [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) and [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython):
