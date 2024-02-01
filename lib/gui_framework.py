@@ -37,11 +37,6 @@ if platform == "esp32":
         pass
 
 @micropython.viper
-def _lcopy16(dest:ptr16, source:ptr16, length:int):
-    for x in range(length):
-        dest[x] = source[x]
-        
-@micropython.viper
 def _lcopy8(dest:ptr8, source:ptr8, length:int, swapped:bool, bgr:bool):
     # Convert a line in 8 bit RGB332 format to 16 bit RGB565 format.
     # Each byte becomes 2 in destination. Source format:
