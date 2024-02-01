@@ -1,20 +1,20 @@
 # MPDisplay
 Display, touch and encoder drivers for [MicroPython](https://github.com/micropython/micropython)
 
-MPDisplay provides drivers for SPI and I80 bus displays using the included [lcd_bus](lib/lcd_bus) and also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.  In addition to bus drivers, MPDisplay provides display, touch and encoder drivers, as well as framework, config and test files for LV_MicroPython, LVGL_MicroPython, Nano-GUI and Micro-GUI.
+MPDisplay provides display, touch and encoder drivers as well as framework, config and test files for LV_MicroPython, LVGL_MicroPython, Nano-GUI and Micro-GUI.  It also provides drivers for SPI and I80 display buses using the included [lcd_bus](lib/lcd_bus) but also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.
 
 # Supported platforms
 ## MicroPython
-[MicroPython](https://github.com/micropython/micropython) doesn't include drivers for color displays nor display buses.  MPDisplay provides both bus and display drivers that will work with MicroPython's native `framebuf.FrameBuffer` and other methods of creating buffer objects before they are sent to the display.
+[MicroPython](https://github.com/micropython/micropython) doesn't include drivers for color displays nor display buses.  MPDisplay provides both display and bus drivers that will work with MicroPython's native `framebuf.FrameBuffer` and several other methods of creating buffer objects before they are sent to the display.
 
 ## LV_MicroPython
-[LV_MicroPython](https://github.com/lvgl/lv_micropython) is the official repository of LVGL integrated into MicroPython.  It does not include bus drivers separated from display drivers and is more difficult to use if your exact display isn't already supported.  The bus and display drivers in MPDisplay work with LV_MicroPython.
+[LV_MicroPython](https://github.com/lvgl/lv_micropython) is the official repository of LVGL integrated into MicroPython.  The handful of drivers it has are all-in-one, not modular, and are generally written for a specific display on a specific bus on a specific architecture.  The drivers in MPDisplay are modular and work with LV_MicroPython.
 
 ## LVGL_MicroPython
-[LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  The display drivers and `lv_driver_framework.py` in MPDisplay will work with the mp_lcd_bus bus drivers from LVGL_MicroPython.
+[LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  MPDisplay works with the mp_lcd_bus bus drivers in LVGL_MicroPython.
 
 ## Nano-GUI on MicroPython
-[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics platform written in MicroPython for MicroPython.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI.
+[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics platform written in MicroPython for MicroPython.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
 
 # Quickstart
 Flash your board with your preferred version of MicroPython listed above.
@@ -46,7 +46,7 @@ You will also need the folowing files that match your particular hardware:
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
 # Recommended filesystem structure
-Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in / or /lib.
+Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in /lib or /.
 ```
 ├── lib
 │   │
@@ -72,7 +72,7 @@ Don't forget to put your display and optional touchscreen and encoder drivers so
 └── lv_config.py                - LVGL targets:  Required
 ```
 
-You MAY want to edit the `board_config.py` to:
+You MAY want to edit your `board_config.py` to:
 - Adjust the bus frequency for possible higher throughput
 - Set the initial brightness of the backlight if backlight_pin is set
 - Set the rotation of the display
@@ -80,13 +80,13 @@ You MAY want to edit the `board_config.py` to:
 - Add other non-display related drivers, such as SD card reader or real time clock (not provided)
 - Correct any settings that may be necessary for your setup
 
-For use in LVGL, you MAY want to edit the `lv_config.py` to:
+For use in LVGL, you MAY want to edit `lv_config.py` to:
 - Adjust the buffer size, type and quantity to match your needs
 - Set your color format if "lv.COLOR_FORMAT.NATIVE" doesn't work
 - Change from blocking mode to non-blocking mode (currently has issues in mp_lcd_bus drivers)
 - Enable encoder(s) if you are using them.  Simply uncomment the last line.
 
-For use in Nano-GUI, you MAY want to edit the `color_setup.py` to:
+For use in Nano-GUI, you MAY want to edit `color_setup.py` to:
 - Change the mode to save RAM.  The fewer the number of colors, the less RAM is taken at the expense of a slight increase in refresh time.
   	- `mode = framebuf.RGB565` yields 65,536 colors; creates a frame buffer of size width * height * 2.  No bounce buffer is needed.
   	- `mode = framebuf.GS8` yields 256 colors; creates a frame buffer of size width * height and a bounce buffer of size width * 2
