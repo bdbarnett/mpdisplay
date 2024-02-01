@@ -19,6 +19,10 @@ Usage:
     'main.py'
         from color_setup import ssd
         <your code here>
+
+    OR if not using Nano-GUI or Micro-GUI
+        from color_setup import ssd, get_color, registered_colors  # Use registered_colors to test if 16 colors have already been registered when using a LUT.
+        <your code here>
 '''
 
 import framebuf
@@ -35,6 +39,38 @@ if platform == "esp32":
         alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
     except ImportError:
         pass
+
+# Number of colors that have been registered with get_color using idx=None
+registered_colors = 0
+
+def get_color(r, g, b, idx=None):
+    """
+    Get an RGB565 or RGB332 value for a color and optionally register it in the display's LUT.
+    This is a convenience function for using gui_framework WITHOUT Nano-GUI or Micro-GUI.
+    Those packages have their own methods of registering colors.
+
+    :param r: Red component (0-255)
+    :param g: Green component (0-255)
+    :param b: Blue component (0-255)
+    :param idx: Optional index to register the color in the display's LUT (0-15)
+    :return: RGB565 or RGB332 color value, or the index of the registered color
+    """
+    global registered_colors  # Index of the next color to register
+    c = SSD.rgb(r, g, b)  # Convert the color to RGB565 or RGB332
+    if not hasattr(SSD, 'lut'):  # If the ssd doesn't use a LUT in its current mode
+        return c  # Return the color as-is
+    if idx == None:  # If no index was provided
+        if registered_colors < 16:  # If there are fewer than 16 colors already registered
+            idx = registered_colors  # Set the index to the next available index
+            registered_colors += 1  # Increment the index for the next color
+        else:  # If there are already 16 colors registered
+            raise ValueError("16 colors have already been registered")
+    if not 0 <= idx <= 15:  # If the index is out of range
+        raise ValueError('Color numbers must be 0..15')
+    offset = idx << 1  # Multiply by 2 (2 bytes per 16-bit color)
+    SSD.lut[offset] = c & 0xff  # Set the lower 8 bits of the color
+    SSD.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
+    return idx  # Return the index of the registered color
 
 @micropython.viper
 def _lcopy8(dest:ptr8, source:ptr8, length:int, swapped:bool, bgr:bool):
