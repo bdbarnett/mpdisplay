@@ -23,11 +23,9 @@ Flash your board with your preferred version of MicroPython listed above.
 ## Install with mip on a network connected board
 
 ```
->>> import mip
->>> mip.install("github:bradbarnett/mpdisplay", target="")
->>> mip.install("github:bradbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE/board_config.py", target="")
->>> mip.install("github:bradbarnett/mpdisplay/display_drivers/YOUR_DRIVER_HERE.py")
->>> mip.install("github:bradbarnett/mpdisplay/touch_drivers/YOUR_DRIVER_HERE.py")
+import mip
+mip.install("github:bdbarnett/mpdisplay", target="/")
+mip.install("github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE", target="/")
 ```
 
 ## Manual installation
