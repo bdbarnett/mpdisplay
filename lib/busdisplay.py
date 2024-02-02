@@ -133,7 +133,7 @@ class BusDisplay:
             height,
             color_depth,
             self.width * self.height * self.color_depth // 8,
-            rgb565_byte_swap=reverse_bytes_in_word,
+            reverse_bytes_in_word,
         )
 
         self.init()
