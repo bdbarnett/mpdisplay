@@ -14,19 +14,22 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  MPDisplay works with the mp_lcd_bus bus drivers in LVGL_MicroPython.
 
 ## Nano-GUI on MicroPython
-[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics platform written in MicroPython for MicroPython.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
+[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics library written in MicroPython for MicroPython.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
 
 # Quickstart
 Flash your board with your preferred version of MicroPython listed above.
 
-## Install with mip on a network connected board
+## Install with mip
+Replace YOUR_BOARD_HERE with your the directory from [board_configs](board_configs) that matches your installation OR leave that line out and manually install the board_config.py and drivers per the Manual installation directions.
+
+### On a network connected board, at the REPL:
 ```
 import mip
 mip.install("github:bdbarnett/mpdisplay", target="/")
 mip.install("github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE", target="/")
 ```
 
-## Install with mpremote on non-network connected board
+### On a non-network connected board, use mpremote from your computer's command line:
 ```
 mpremote mip install --target=/ "github:bdbarnett/mpdisplay"
 mpremote mip install --target=/ "github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE"
@@ -36,7 +39,7 @@ mpremote mip install --target=/ "github:bdbarnett/mpdisplay/board_configs/YOUR_B
 Download the following files and upload them to your board:
 - The [lib](lib) folder
 - [lv_config.py](lv_config.py) for use with LV_MicroPython or LVGL_MicroPython
-- [color_setup.py](color_setup.py) for use with Nano-GUI or Micro-GUI
+- [color_setup.py](color_setup.py) for use with bare MicroPython, Nano-GUI or Micro-GUI
 
 You will also need the folowing files that match your particular hardware:
 - An appropriate `board_config.py` from [board_configs](board_configs).  If you don't find one that matches your hardware, try to find one with the same bus, display controller and MCU as yours.
@@ -45,35 +48,41 @@ You will also need the folowing files that match your particular hardware:
 - If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
-# Recommended filesystem structure
+# Suggested filesystem structure
 Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in /lib or /.
 ```
 ├── lib
 │   │
-│   ├── lcd_bus                 - Required if mp_lcd_bus isn't compiled in, otherwise Optional
+│   ├── lcd_bus                 - required if mp_lcd_bus isn't compiled in, otherwise Optional
 │   │   │
-│   │   ├── __init__.py         - Required
-│   │   ├── _basebus.py         - Required
-│   │   ├── _spibus.py          - Required for SPIBus
-│   │   ├── _i80bus.py          - Required for I80Bus
-│   │   └── _gpio_registers.py  - Required for I80Bus
+│   │   ├── __init__.py         - required
+│   │   ├── _basebus.py         - required
+│   │   ├── _spibus.py          - required for SPIBus
+│   │   ├── _i80bus.py          - required for I80Bus
+│   │   └── _gpio_registers.py  - required for I80Bus
 │   │
-│   ├── busdisplay.py           - Required
-│   ├── mpdisplay_simpletest.py - Optional (recommended)
+│   ├── busdisplay.py           - required in all cases
+│   ├── mpdisplay_simpletest.py - optional, does not require gui_framework.py or color_setup.py
 │   │
-│   ├── gui_framework.py        - GUI targets:  Required
-│   ├── nano_gui_simpletest.py  - GUI targets:  Optional (recommended)
+│   ├── lv_driver_framework.py  - LVGL:  required
+│   ├── lv_touch_test.py        - LVGL:  recommended
 │   │
-│   ├── lv_driver_framework.py  - LVGL targets:  Required
-│   └── lv_touch_test.py        - LVGL targets:  Optional (recommended)
+│   ├── gui_framework.py        - bare MicroPython:  recommended; Nano-GUI & Micro-GUI:  required
+│   ├── nano_gui_simpletest.py  - Nano-GUI:  recommended
+│   └── gui_simpletest.py       - bare MicroPython:  recommended, requires gui_framework.py 
+│                                 and color_setup.py
 │
-├── board_config.py             - Required
-├── color_setup.py              - GUI targets:  Required
-└── lv_config.py                - LVGL targets:  Required
+├── board_config.py             - required in all cases
+├── lv_config.py                - LVGL targets:  Required
+└── color_setup.py              - bare MicroPython:  recommended, requires gui_framework.py;
+                                  Nano-GUI:  required; Micro-GUI:  must be copied / renamed to
+								  hardware_setup.py and edited to include button Pin definitions
+								  and Display setup
 ```
 
 You MAY want to edit your `board_config.py` to:
-- Adjust the bus frequency for possible higher throughput
+- Add `from machine import freq; freq(<Your MPU Speed Here>)`
+- Adjust the bus frequency for possible higher throughput.  Some board_configs have a conservative setting.  Note: the bus frequency setting is only used in mp_lcd_bus, not MPDisplay's lcd_bus.
 - Set the initial brightness of the backlight if backlight_pin is set
 - Set the rotation of the display
 - Enable an encoder if you add one.  See [t-embed](board_configs/t-embed) for an example.
@@ -88,14 +97,17 @@ For use in LVGL, you MAY want to edit `lv_config.py` to:
 
 For use in Nano-GUI, you MAY want to edit `color_setup.py` to:
 - Change the mode to save RAM.  The fewer the number of colors, the less RAM is taken at the expense of a slight increase in refresh time.
-  	- `mode = framebuf.RGB565` yields 65,536 colors; creates a frame buffer of size width * height * 2.  No bounce buffer is needed.
-  	- `mode = framebuf.GS8` yields 256 colors; creates a frame buffer of size width * height and a bounce buffer of size width * 2
-  	- `mode = framebuf.GS4_HMSB` yields 16 colors; creates a frame buffer of size width * height // 2 and a bounce buffer of size width * 2
+  	- `mode = framebuf.RGB565` yields 65,536 colors; creates a frame buffer of size width * height * 2 bytes.  No bounce buffer is needed.  This is the fastest mode.
+  	- `mode = framebuf.GS8` yields 256 colors; creates a frame buffer of size width * height bytes and a bounce buffer of size width * 2 bytes.  This is the slowest mode.
+  	- `mode = framebuf.GS4_HMSB` yields 16 colors; creates a frame buffer of size width * height // 2 bytes and a bounce buffer of size width * 2 bytes.  This is somewhat slow.
 - Rename it to hardware_setup.py, add pin definitions and configure `Display` for use with [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui)
 
 # Usage
 ## All graphics platforms
-No matter which graphics platform you plan to use, it is recommended that you first try the [display_simpletest.py](lib/display_simpletest.py) program.  See the code from that program and [testris](https://github.com/bdbarnett/testris) for bare MicroPython usage examples.
+No matter which graphics platform you plan to use, it is recommended that you first try the [display_simpletest.py](lib/display_simpletest.py) program.  See the code from that program and [testris](https://github.com/bdbarnett/testris) for bare MicroPython usage examples.  It is also recommended that you try [gui_simpletest.py](lib/qui_simpletest.py), which uses [gui_framework.py](lib/gui_framework.py) and [color_setup.py](color_setup.py), but DOES NOT use Nano-GUI.  It demonstrates a simple way to get started with MPDisplay without using a graphics library that provides widgets.
+
+## Nano-GUI
+If you have downloaded the `gui` directory from [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) to your /lib folder, try [nano_gui_simpletest.py](lib/nano_gui_simpletest.py).  The color of the top-left square should be red, the diagonal line should be green, and the bottom-right square should be blue.
 
 ## LVGL
 If you have LVGL compiled into your MicroPython binary, try [lv_touch_test.py](lib/lv_touch_test.py).  The color of the buttons should be blue when not selected, green when pressed and red when focused.  If the touch points don't line up with the buttons, it provides directions in the REPL on how to find the correct touch rotation masks.  From the REPL type:
@@ -115,17 +127,13 @@ label = lv.label(button)
 label.set_text("Test")
 ```
 
-## Nano-GUI
-If you have downloaded the `gui` directory from Nano-GUI to your /lib folder, try [nano_gui_simpletest.py](lib/nano_gui_simpletest.py).  The color of the top-left square should be red, the diagonal line should be green, and the bottom-right square should be blue.
-
 # My board isn't listed
-Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.  Please consider contributing your board_config if your hardware doesn't require custom wiring.
+Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.  Please consider contributing your board_config.py if your hardware doesn't require custom wiring.
 
 I am considering creating board configs by request IF you provide a gift certificate to pay for the board from Adafruit, DigiKey, Amazon, Pimoroni or wherever your board is stocked.  I'll post that here if I decide to do that.
 
 # Coexistence with mp_lcd_bus (C bus drivers)
-Note, if you have mp_lcd_bus compiled in, whether from LVGL_MicroPython or if you added it yourself, and also have lcd_bus in your /lib folder,
-the former takes precedence.  In this case, if you want to force MicroPython to use lib/lcd_bus, change the include line in your board_config.py from
+Note, if you have mp_lcd_bus compiled in, whether from LVGL_MicroPython or if you added it yourself, and also have lcd_bus in your /lib folder, the former takes precedence.  In this case, if you want to force MicroPython to use lib/lcd_bus, change the include line in your board_config.py from
 ```
 from lcd_bus include ...
 ```
