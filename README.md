@@ -76,8 +76,8 @@ Don't forget to put your display and optional touchscreen and encoder drivers so
 ├── lv_config.py                - LVGL targets:  Required
 └── color_setup.py              - bare MicroPython:  recommended, requires gui_framework.py;
                                   Nano-GUI:  required; Micro-GUI:  must be copied / renamed to
-								  hardware_setup.py and edited to include button Pin definitions
-								  and Display setup
+                                  hardware_setup.py and edited to include button Pin definitions
+                                  and Display setup
 ```
 
 You MAY want to edit your `board_config.py` to:
