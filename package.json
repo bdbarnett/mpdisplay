@@ -8,6 +8,7 @@
       ["lib/busdisplay.py", "github:bdbarnett/mpdisplay/lib/busdisplay.py"],
       ["lib/mpdisplay_simpletest.py", "github:bdbarnett/mpdisplay/lib/mpdisplay_simpletest.py"],
       ["lib/gui_framework.py", "github:bdbarnett/mpdisplay/lib/gui_framework.py"],
+      ["lib/gui_simpletest.py", "github:bdbarnett/mpdisplay/lib/gui_simpletest.py"],
       ["lib/nano_gui_simpletest.py", "github:bdbarnett/mpdisplay/lib/nano_gui_simpletest.py"],
       ["lib/lv_driver_framework.py", "github:bdbarnett/mpdisplay/lib/lv_driver_framework.py"],
       ["lib/lv_touch_test.py", "github:bdbarnett/mpdisplay/lib/lv_touch_test.py"],
