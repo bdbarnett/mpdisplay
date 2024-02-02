@@ -21,13 +21,14 @@ Usage:
         <your code here>
 
     OR if not using Nano-GUI or Micro-GUI
-        from color_setup import ssd, get_color, registered_colors  # Use registered_colors to test if 16 colors have already been registered when using a LUT.
+        from color_setup import ssd, get_color, colors_registered  # Use colors_registered to test if 16 colors have already been registered when using a LUT.
         <your code here>
 '''
 
 import framebuf
 import gc
 from sys import platform
+import micropython
 
 
 # Determine how line buffers are allocated
@@ -39,47 +40,6 @@ if platform == "esp32":
         alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
     except ImportError:
         pass
-
-@micropython.viper
-def _lcopy8(dest:ptr8, source:ptr8, length:int, swapped:bool, bgr:bool):
-    # Convert a line in 8 bit RGB332 format to 16 bit RGB565 format.
-    # Each byte becomes 2 in destination. Source format:
-    # <R2 R1 R0 G2 G1 G0 B1 B0>
-    # dest:
-    # swapped==False, bgr==False: <R2 R1 R0 00 00 G2 G1 G0> <00 00 00 B1 B0 00 00 00>
-    # swapped==True,  bgr==False: <00 00 00 B1 B0 00 00 00> <R2 R1 R0 00 00 G2 G1 G0>
-    # swapped==False, bgr==True:  <B1 B0 00 00 00 G2 G1 G1> <00 00 00 R2 R1 R0 00 00>
-    # swapped==True,  bgr==True:  <00 00 00 R2 R1 R0 00 00> <B1 B0 00 00 00 G2 G1 G0>
-    if swapped:
-        lsb = 0
-        msb = 1
-    else:
-        lsb = 1
-        msb = 0
-    n = 0
-    for x in range(length):
-        c = source[x]
-        if bgr:
-            dest[n + lsb] = (c & 0xe0) | ((c & 0x1c) >> 2)  # Red Green
-            dest[n + msb] = (c & 0x03) << 3  # Blue
-        else:
-            dest[n + lsb] = ((c & 0x3) << 6) | ((c & 0x1c) >> 2)  # Blue Green
-            dest[n + msb] = (c & 0xe0) >> 3  # Red
-        n += 2
-
-@micropython.viper
-def _lcopy4(dest:ptr16, source:ptr8, lut:ptr16, length:int):
-    # Convert a line in 4+4 bit index format to two * 16 bit RGB565 format
-    # using a color lookup table. Each byte becomes 4 in destination.
-    # Source format:  <C03 C02 C01 C00 C13 C12 C11 C10>
-    # Dest format: the same as self.rgb * 2
-    n = 0
-    for x in range(length):
-        c = source[x]  # Get the indices of the 2 pixels
-        dest[n] = lut[c >> 4]  # lookup top 4 bits for even pixels
-        n += 1
-        dest[n] = lut[c & 0x0f]  # lookup bottom 4 bits for odd pixels
-        n += 1
 
 
 class SSD(framebuf.FrameBuffer):
@@ -94,8 +54,9 @@ class SSD(framebuf.FrameBuffer):
     '''
 
     rgb = None  # Function to convert r, g, b to a color value
+    colors_registered = 0  # For .color().  Not used in Nano-GUI or Micro-GUI.
 
-    def __init__(self, display_drv, mode):
+    def __init__(self, display_drv, mode, bounce_lines=8):
         self.display_drv = display_drv
         self.height = display_drv.height
         self.width = display_drv.width
@@ -133,13 +94,14 @@ class SSD(framebuf.FrameBuffer):
             self._buffer = bytearray(self.width * self.height * 2)
             self.show = self._show16
         elif mode == framebuf.GS8:
-            self._linebuf = alloc_buffer(self.width * 2)
+            self._bounce_lines = bounce_lines
+            self._bounce_buf = alloc_buffer(self.width * self._bounce_lines * 2)
             self._buffer = bytearray(self.width * self.height)
             self.show = self._show8
         elif mode == framebuf.GS4_HMSB:
             SSD.lut = bytearray(0x00 for _ in range(32))
-            SSD.registered_colors = 0  # Not used in Nano-GUI or Micro-GUI
-            self._linebuf = alloc_buffer(self.width * 2)
+            self._bounce_lines = bounce_lines
+            self._bounce_buf = alloc_buffer(self.width * self._bounce_lines * 2)
             self._buffer = bytearray(self.width * self.height // 2)
             self.show = self._show4
         else:
@@ -161,29 +123,42 @@ class SSD(framebuf.FrameBuffer):
         # to the display, line by line.
         swapped = self.swap_color_bytes
         bgr = self.bgr
+        buf = self._mvb
+        bb = self._bounce_buf
         wd = self.width
         ht = self.height
-        lb = self._linebuf
-        buf = self._mvb
-        for row in range(0, ht):  # For each line
-            start = row * wd
-            _lcopy8(lb, buf[start :], wd, swapped, bgr)
-            self.display_drv.blit(0, row, wd, 1, lb)
+        lines = self._bounce_lines
+        stride = lines * wd
+        chunks, remainder = divmod(ht, lines)
+        for chunk in range(chunks):
+            start = chunk * stride
+            self._bounce8(bb, buf[start :], stride, swapped, bgr)
+            self.display_drv.blit(0, chunk * lines, wd, lines, bb)
+        if remainder:
+            start = chunks * stride
+            self._bounce8(bb, buf[start :], remainder * wd, swapped, bgr)
+            self.display_drv.blit(0, chunks * lines, wd, remainder, bb)
 
     @micropython.native
     def _show4(self):
         # Convert the 4 bit index values to 16 bit RGB565 values using a lookup table
         # and then copy the line to the display, line by line.
         clut = SSD.lut
-        width = self.width
-        wd = self.width // 2  # 2 pixels per byte
-        ht = self.height
-        lb = self._linebuf
         buf = self._mvb
-        for row in range(0, ht):  # For each line
-            start = row * wd
-            _lcopy4(lb, buf[start :], clut, wd)  # Copy and map colors
-            self.display_drv.blit(0, row, width, 1, lb)
+        bb = self._bounce_buf
+        wd = self.width
+        ht = self.height
+        lines = self._bounce_lines
+        stride = lines * wd // 2  # 2 pixels per byte
+        chunks, remainder = divmod(ht, lines)
+        for chunk in range(chunks):
+            start = chunk * stride
+            self._bounce4(bb, buf[start :], stride, clut)
+            self.display_drv.blit(0, chunk * lines, wd, lines, bb)
+        if remainder:
+            start = chunks * stride
+            self._bounce4(bb, buf[start :], remainder * wd // 2, clut)
+            self.display_drv.blit(0, chunks * lines, wd, remainder, bb)
 
     @staticmethod
     def _rgb8(r, g, b):
@@ -218,7 +193,53 @@ class SSD(framebuf.FrameBuffer):
         return (color & 0xff) << 8 | (color & 0xff00) >> 8
 
     @staticmethod
-    def get_color(r, g, b, idx=None):
+    @micropython.viper
+    def _bounce8(dest:ptr8, source:ptr8, length:int, swapped:bool, bgr:bool):
+        # Convert a line in 8 bit RGB332 format to 16 bit RGB565 format.
+        # Each byte becomes 2 in destination. Source format:
+        # <R2 R1 R0 G2 G1 G0 B1 B0>
+        # dest:
+        # swapped==False, bgr==False: <R2 R1 R0 00 00 G2 G1 G0> <00 00 00 B1 B0 00 00 00>
+        # swapped==True,  bgr==False: <00 00 00 B1 B0 00 00 00> <R2 R1 R0 00 00 G2 G1 G0>
+        # swapped==False, bgr==True:  <B1 B0 00 00 00 G2 G1 G1> <00 00 00 R2 R1 R0 00 00>
+        # swapped==True,  bgr==True:  <00 00 00 R2 R1 R0 00 00> <B1 B0 00 00 00 G2 G1 G0>
+        #
+        # NOTE: seperating this into 2 functions, one for bgr and one for rgb yielded
+        # less than a 4% performance improvement, so I combined them into one function.
+        if swapped:
+            lsb = 0
+            msb = 1
+        else:
+            lsb = 1
+            msb = 0
+        n = 0
+        for x in range(length):
+            c = source[x]
+            if bgr:
+                dest[n + lsb] = (c & 0xe0) | ((c & 0x1c) >> 2)  # Red Green
+                dest[n + msb] = (c & 0x03) << 3  # Blue
+            else:
+                dest[n + lsb] = ((c & 0x3) << 6) | ((c & 0x1c) >> 2)  # Blue Green
+                dest[n + msb] = (c & 0xe0) >> 3  # Red
+            n += 2
+
+    @staticmethod
+    @micropython.viper
+    def _bounce4(dest:ptr16, source:ptr8, length:int, lut:ptr16):
+        # Convert a line in 4+4 bit index format to two * 16 bit RGB565 format
+        # using a color lookup table. Each byte becomes 4 in destination.
+        # Source format:  <C03 C02 C01 C00 C13 C12 C11 C10>
+        # Dest format: the same as self.rgb * 2
+        n = 0
+        for x in range(length):
+            c = source[x]  # Get the indices of the 2 pixels
+            dest[n] = lut[c >> 4]  # lookup top 4 bits for even pixels
+            n += 1
+            dest[n] = lut[c & 0x0f]  # lookup bottom 4 bits for odd pixels
+            n += 1
+
+    @staticmethod
+    def color(r, g, b, idx=None):
         """
         Get an RGB565 or RGB332 value for a color and optionally register it in the display's LUT.
         This is a convenience function for using this framework WITHOUT Nano-GUI or Micro-GUI.
@@ -227,20 +248,23 @@ class SSD(framebuf.FrameBuffer):
         :param r: Red component (0-255)
         :param g: Green component (0-255)
         :param b: Blue component (0-255)
-        :param idx: Optional index to register the color in the display's LUT (0-15)
-        :return: RGB565 or RGB332 color value or the index of the registered color
+        :param idx: Optional index to register the color in the display's LUT (0-15);
+                    ignored if the display doesn't use a LUT in its current mode
+        :return: RGB565 color value in RG565 mode;
+                 RGB332 color value in GS8 mode;
+                 the index of the registered color in the LUT in GS4_HMSB mode
         """
         c = SSD.rgb(r, g, b)  # Convert the color to RGB565 or RGB332
         if not hasattr(SSD, 'lut'):  # If the ssd doesn't use a LUT in its current mode
             return c  # Return the color as-is
         if idx == None:  # If no index was provided
-            if SSD.registered_colors < 16:  # If there are fewer than 16 colors already registered
-                idx = SSD.registered_colors  # Set the index to the next available index
-                SSD.registered_colors += 1  # Increment the index for the next color
+            if SSD.colors_registered < 16:  # If there are fewer than 16 colors registered
+                idx = SSD.colors_registered  # Set the index to the next index 
+                SSD.colors_registered += 1  # Increment the number of colors registered
             else:  # If there are already 16 colors registered
                 raise ValueError("16 colors have already been registered")
         if not 0 <= idx <= 15:  # If the index is out of range
-            raise ValueError('Color numbers must be 0..15')
+            raise ValueError("Color numbers must be 0..15")
         offset = idx << 1  # Multiply by 2 (2 bytes per 16-bit color)
         SSD.lut[offset] = c & 0xff  # Set the lower 8 bits of the color
         SSD.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
