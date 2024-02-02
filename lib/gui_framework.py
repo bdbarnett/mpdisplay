@@ -19,10 +19,6 @@ Usage:
     'main.py'
         from color_setup import ssd
         <your code here>
-
-    OR if not using Nano-GUI or Micro-GUI
-        from color_setup import ssd, get_color, colors_registered  # Use colors_registered to test if 16 colors have already been registered when using a LUT.
-        <your code here>
 '''
 
 import framebuf
