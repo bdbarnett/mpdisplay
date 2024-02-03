@@ -37,15 +37,15 @@ cd gh
 git clone -b v5.0.4 --recursive https://github.com/espressif/esp-idf.git esp-idf-v5.0.4
 cd esp-idf-v5.0.4
 ./install.sh
+cd ..
 
 # Download MicroPython and build the MPY cross compiler
-cd ..
 git clone -b v1.22-release --recursive https://github.com/micropython/micropython.git
 cd micropython
 make -C mpy-cross
+cd ..
 
 # Download mp_lcd_bus
-cd ..
 git clone https://github.com/kdschlosser/
 ```
 
