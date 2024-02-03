@@ -2,7 +2,7 @@
 
 from lcd_bus import I80Bus
 from st7796 import ST7796
-from machine import I2C, Pin  # See the note about reset below
+from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
 
 
@@ -25,18 +25,8 @@ display_bus = I80Bus(
     data5=17,
     data6=16,
     data7=15,
+    freq=10_000_000,
     swap_color_bytes=True,
-    cs_active_high=False,
-    pclk_active_neg=False,
-    dc_data_level=1,
-    freq=16_000_000,
-    dc_idle_level=0,
-    dc_cmd_level=0,
-    dc_dummy_level=0,
-    cmd_bits=8,
-    param_bits=8,
-    reverse_color_bits=False,
-    pclk_idle_low=False,
 )
 
 display_drv = ST7796(
