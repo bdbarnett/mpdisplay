@@ -1,5 +1,5 @@
-Compiling and testing mp_lcd_bus
-================================
+Compiling and testing MicroPython with mp_lcd_bus
+=================================================
 The following is my method of compiling and testing MPDisplay with [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) for ESP32-S3 boards.  I use Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.
 
 Download and install `esptool.exe` for use in WSL (once only)
