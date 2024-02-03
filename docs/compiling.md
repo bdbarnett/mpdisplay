@@ -1,6 +1,6 @@
 Compiling and testing MicroPython & mp_lcd_bus with WSL
 =======================================================
-The following is my method of compiling and testing MPDisplay with [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) for ESP32-S3 boards.  I use Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.
+The following is my method of compiling and testing MPDisplay with [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) for ESP32-S3 boards.  I use Ubuntu under Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.  This is not a full tutorial.  I documented it for my own reference and decided to post it online in case it my be useful to someone else.  See the official directions on the [MicroPython repository](https://github.com/micropython/micropython/tree/master/ports/esp32).  There are several Linux packages that will need to be installed beforehand using `sudo apt install`.  
 
 Download and install `esptool.exe` for use in WSL (once only)
 -------------------------------------------------------------
@@ -73,6 +73,7 @@ make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM USER_C_MODULES=../../../../m
 ```
 To build the **SPIRAM_OCT** ESP32_GENERIC_S3 variant:
 ```
+cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT clean
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT submodules
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
@@ -80,17 +81,20 @@ make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT USER_C_MODULES=../../../
 
 Flash the firmware to your board
 --------------------------------
-Connect the board and put it in bootloader mode, usually by holding the boot button while pressing the reset button.
+Connect the board and put it in bootloader mode, usually by holding the boot button while pressing the reset button.  Note the number after `-b` is the baudrate.  Some computers can go faster, but my main build machine is limited to this speed, so I stick with it.  YMMV.  Also note, we aren't specifying which COM port the board is on, so ESPTool uses the first one it finds.  If you use these commands, be sure there are no other serial devices connected!
 
 At the bash prompt:
 ```
-esptool.exe -erase_flash
+# Note we are still in the ~/gh/micropython/ports/esp32 directory
+esptool.exe erase_flash
 esptool.exe -b 460800 write_flash -z 0x0 build-ESP32_GENERIC_S3-SPIRAM/firmware.bin
 ```
 Reset your board
 
 Connect to your board to wifi and download MPDisplay
 ----------------------------------------------------
+There are many ways to get to the REPL, including `mpremote`, PuTTY and Thonny.  Use your preferred method.
+
 At the REPL:
 ```
 import lcd_bus    # Just to confirm it is built-in
