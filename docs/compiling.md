@@ -48,12 +48,12 @@ make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM USER_C_MODULES=../../../../m
 
 Flash to your board
 ===================
-<Connect board and put it in bootloader mode>
+Connect board and put it in bootloader mode
 ```
 esptool.exe -b 460800 erase_flash
 esptool.exe -b 460800 write_flash -z 0x0 build-ESP32_GENERIC_S3-SPIRAM/firmware.bin
 ```
-<Reset your board>
+Reset your board
 
 Connect to Wifi and download MPDisplay
 ======================================
