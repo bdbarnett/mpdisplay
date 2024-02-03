@@ -1,7 +1,7 @@
 `I80Bus` - Display Bus
 ======================
 
-class lcd_busI80Bus(
+class lcd_bus.I80Bus(
     *,
     dc: int,
     wr: int,
