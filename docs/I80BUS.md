@@ -1,8 +1,7 @@
 `I80Bus` - Display Bus
 ======================
-
+```
 class lcd_bus.I80Bus(
-    *,
     dc: int,
     wr: int,
     cs: int,
