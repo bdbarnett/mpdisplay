@@ -4,7 +4,7 @@ The following is my method of compiling and testing MPDisplay with [mp_lcd_bus](
 
 Download and install `esptool.exe` for use in WSL (once only)
 -------------------------------------------------------------
-I use ESPTool to flash firmware to ESP32 boards.  It is written in Python and is available as `esptool.py` for any OS with Python installed and as `esptool.exe` for Windows.  `esptool.py` searches for the serial port in the normal Unix places under /dev.  WSL doesn't forward COM ports to /dev (at least by default), so it is easier to use `esptool.exe`, which searches for COM ports.  Fortunately, Windows EXE files can be run from inside the WSL shell so long as the full filename including .EXE is used.
+I use ESPTool to flash firmware to ESP32 boards.  It is written in Python and is available as `esptool.py` for any OS with Python installed and as `esptool.exe` for Windows.  `esptool.py` searches for the serial port in the normal Unix places under /dev.  WSL doesn't forward COM ports to /dev (at least by default), so it is easier to use `esptool.exe`, which searches for COM ports.  Fortunately, Windows EXE files can be run from inside the WSL shell so long as the full filename including .exe is used.
 
 At the bash prompt:
 ```
