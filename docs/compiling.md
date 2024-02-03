@@ -97,7 +97,7 @@ There are many ways to get to the REPL, including `mpremote`, PuTTY and Thonny. 
 
 At the REPL:
 ```
-import lcd_bus    # Just to confirm it is built-in
+import lcd_bus    # Just to confirm it compiled in correctly
 
 import network
 wlan = network.WLAN(network.STA_IF)
