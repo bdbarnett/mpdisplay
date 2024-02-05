@@ -81,7 +81,7 @@ Don't forget to put your display and optional touchscreen and encoder drivers so
 ```
 
 You MAY want to edit your `board_config.py` to:
-- Add `from machine import freq; freq(<Your MPU Speed Here>)`
+- Add `from machine import freq; freq(<Your MCU Speed Here>)`
 - Adjust the bus frequency for possible higher throughput.  Some board_configs have a conservative setting.  Note: the bus frequency setting is only used in mp_lcd_bus, not MPDisplay's lcd_bus.
 - Set the initial brightness of the backlight if backlight_pin is set
 - Set the rotation of the display
