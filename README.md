@@ -5,7 +5,7 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 
 # Supported platforms
 ## MicroPython
-[MicroPython](https://github.com/micropython/micropython) doesn't include drivers for color displays nor display buses.  MPDisplay provides both display and bus drivers that will work with MicroPython's native `framebuf.FrameBuffer` and several other methods of creating buffer objects before they are sent to the display.  Here are directions for [compiling in mp_lcd_bus](compiling.md) if you have an ESP32 target.
+[MicroPython](https://github.com/micropython/micropython) doesn't include drivers for color displays nor display buses.  MPDisplay provides both display and bus drivers that will work with MicroPython's native `framebuf.FrameBuffer` and several other methods of creating buffer objects before they are sent to the display.  Here are directions for [compiling in mp_lcd_bus](docs/compiling.md) if you have an ESP32 target.
 
 ## LV_MicroPython
 [LV_MicroPython](https://github.com/lvgl/lv_micropython) is the official repository of LVGL integrated into MicroPython.  The handful of drivers it has are all-in-one, not modular, and are generally written for a specific display on a specific bus on a specific architecture.  The drivers in MPDisplay are modular and work with LV_MicroPython.
