@@ -77,7 +77,7 @@ class SPIBus(BaseBus):
 
         self.dc: machine.Pin = machine.Pin(dc, machine.Pin.OUT, value=self._dc_cmd)
         self.cs: machine.Pin = (
-            machine.Pin(cs, machine.Pin.OUT, value=self._cs_inactive) if cs != 0 else lambda val: None
+            machine.Pin(cs, machine.Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
         )
 
         if mosi == -1 and miso == -1 and sclk == -1:
