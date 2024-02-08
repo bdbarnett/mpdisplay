@@ -9,9 +9,7 @@ Provides similar functionality to lcd_bus from lv_binding_micropython for platfo
 other than ESP32
 """
 
-import micropython
 import machine
-import struct
 from ._basebus import BaseBus, Optional
 
 
@@ -63,7 +61,7 @@ class SPIBus(BaseBus):
         hd: int = -1,  # Not yet supported
         quad_spi: bool = False,  # Not yet supported
         sio_mode: bool = False,  # Not yet supported
-    ) -> None:
+        ) -> None:
         """
         Initialize the SPI bus with the given parameters.
         """
@@ -103,24 +101,3 @@ class SPIBus(BaseBus):
             )
 
         self._write = self.spi.write
-
-    @micropython.native
-    def tx_param(
-        self,
-        cmd: Optional[int] = None,
-        data: Optional[memoryview] = None,
-    ) -> None:
-        """
-        Transmit parameters over the SPI bus.
-        """
-        self.cs(self._cs_active)
-
-        if cmd is not None:
-            struct.pack_into("B", self.buf1, 0, cmd)
-            self.dc(self._dc_cmd)
-            self._write(self.buf1)
-        if data and len(data):
-            self.dc(self._dc_data)
-            self._write(data)
-
-        self.cs(self._cs_inactive)
