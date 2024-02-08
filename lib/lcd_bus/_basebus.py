@@ -8,6 +8,7 @@ subclassed by specific bus implementations.
 """
 
 import micropython
+import struct
 
 
 class Optional:
@@ -114,11 +115,26 @@ class BaseBus:
 
         self.bus_trans_done_cb()
 
-    def tx_param(self, cmd: int, data: memoryview) -> None:
+    @micropython.native
+    def tx_param(
+        self,
+        cmd: Optional[int] = None,
+        data: Optional[memoryview] = None,
+        ) -> None:
         """
         Transmit parameters over the bus.
         """
-        raise NotImplementedError("Subclasses must implement tx_param")
+        self.cs(self._cs_active)
+
+        if cmd is not None:
+            struct.pack_into("B", self.buf1, 0, cmd)
+            self.dc(self._dc_cmd)
+            self._write(self.buf1)
+        if data and len(data):
+            self.dc(self._dc_data)
+            self._write(data)
+
+        self.cs(self._cs_inactive)
 
     def rx_param(self, cmd: int, data: memoryview) -> int:
         """
