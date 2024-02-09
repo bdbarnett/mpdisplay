@@ -3,13 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 """
-lcd_bus.py - a MicroPython library for interfacing with displays using SPI or I80
-
-Provides similar functionality to lcd_bus from lv_binding_micropython for platforms
-other than ESP32
+An implementation of a SPI bus driver written in MicroPython.
 """
 
-import machine
+from machine import Pin, SPI
 from ._basebus import BaseBus, Optional
 
 
@@ -73,31 +70,33 @@ class SPIBus(BaseBus):
         self._cs_active: bool = cs_high_active
         self._cs_inactive: bool = not cs_high_active
 
-        self.dc: machine.Pin = machine.Pin(dc, machine.Pin.OUT, value=self._dc_cmd)
-        self.cs: machine.Pin = (
-            machine.Pin(cs, machine.Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
+        self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_cmd)
+        self.cs: Pin = (
+            Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
         )
 
         if mosi == -1 and miso == -1 and sclk == -1:
-            self.spi: machine.SPI = machine.SPI(
+            self.spi: SPI = SPI(
                 host,
                 baudrate=freq,
                 polarity=spi_mode & 0b10,
                 phase=spi_mode & 0b01,
                 bits=max(cmd_bits, param_bits),
-                firstbit=machine.SPI.LSB if lsb_first else machine.SPI.MSB,
+                firstbit=SPI.LSB if lsb_first else SPI.MSB,
             )
         else:
-            self.spi: machine.SPI = machine.SPI(
+            self.spi: SPI = SPI(
                 host,
                 baudrate=freq,
                 polarity=spi_mode & 0b10,
                 phase=spi_mode & 0b01,
                 bits=max(cmd_bits, param_bits),
-                firstbit=machine.SPI.LSB if lsb_first else machine.SPI.MSB,
-                sck=machine.Pin(sclk, machine.Pin.OUT),
-                mosi=machine.Pin(mosi, machine.Pin.OUT),
-                miso=machine.Pin(miso, machine.Pin.IN) if not tx_only else None,
+                firstbit=SPI.LSB if lsb_first else SPI.MSB,
+                sck=Pin(sclk, Pin.OUT),
+                mosi=Pin(mosi, Pin.OUT),
+                miso=Pin(miso, Pin.IN) if not tx_only else None,
             )
 
-        self._write = self.spi.write
+    def _write(self, data: memoryview, len: int) -> None:
+        """ Write data to the SPI bus. """
+        self.spi.write(data)
