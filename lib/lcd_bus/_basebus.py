@@ -65,21 +65,6 @@ class BaseBus:
                     print("Bus driver byte swap has been disabled.")
         return self._swap_enabled
 
-    def register_callback(self, callback: callable) -> None:
-        """
-        Register a callback function to be called when a transaction is done.
-        """
-        self.callback = callback
-
-    @micropython.viper
-    def bus_trans_done_cb(self) -> bool:
-        """
-        Callback function to be called when a transaction is done.
-        """
-        self.callback()
-        self.trans_done = True
-        return False  # Returns false for compatibility with mp_lcd_bus C driver
-
     @micropython.viper
     def _swap_bytes(self, buf: ptr8, buf_size_px: int):
         """
@@ -98,32 +83,37 @@ class BaseBus:
         """
         return
 
+    def register_callback(self, callback: callable) -> None:
+        """
+        Register a callback function to be called when a transaction is done.
+        """
+        self.callback = callback
+
+    @micropython.viper
+    def tx_color_done_cb(self) -> bool:
+        """
+        Callback function to be called when a transaction is done.
+        """
+        self.cs(self._cs_inactive)
+        self.callback()
+        self.trans_done = True
+        return False  # Returns false for compatibility with mp_lcd_bus C driver
+
     @micropython.native
-    def tx_color(
-        self,
-        cmd: int,
-        data: memoryview,
-        x_start: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
-        y_start: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
-        x_end: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
-        y_end: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
-        ) -> None:
+    def tx_color(self, cmd: int, data: memoryview, x_start: int, y_start: int, x_end: int, y_end: int) -> None:
         """
         Transmit color data over the bus.
         """
         self.trans_done = False
 
         self.swap_bytes(data, len(data) // 2)
+         
         self.tx_param(cmd, data)
 
-        self.bus_trans_done_cb()
+        self.tx_color_done_cb()
 
     @micropython.native
-    def tx_param(
-        self,
-        cmd: Optional[int] = None,
-        data: Optional[memoryview] = None,
-        ) -> None:
+    def tx_param(self, cmd: int, data: Optional[memoryview] = None) -> None:
         """
         Transmit parameters over the bus.
         """
