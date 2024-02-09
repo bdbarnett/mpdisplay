@@ -27,6 +27,7 @@ def __getattr__(attr):
     #       from ._module import attr
     if attr not in ("SPIBus", "I80Bus"):
         raise AttributeError(f"{attr} not provided by lcd_bus")
+    
     # module is the module name, e.g. "_i80bus_rp2" or "_i80bus"
     try:
         # Try to load the platform-specific module
@@ -36,6 +37,10 @@ def __getattr__(attr):
         # If the platform-specific module doesn't exist, then use the generic module
         module = "".join(["_", attr.lower()])
         value = getattr(__import__(module, None, None, [], 1), attr)
-    print(f"from {module} loaded {value}")
     globals()[attr] = value
+
+    # Print a message to the console indicating which module the attribute was imported from
+    # Comment out the following line to disable the message
+    print(f"Imported {value} from {module}.py")
+
     return value
