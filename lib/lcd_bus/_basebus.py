@@ -9,9 +9,9 @@ subclassed by specific bus implementations.
 
 import micropython
 import struct
+ 
 
-
-class Optional:
+class Optional:  # For typing
     pass
 
 
@@ -21,6 +21,7 @@ class BaseBus:
     specific bus implementations.
     """
     name = "MicroPython bus driver"
+    warn_byte_swap = True
     
     def __init__(self) -> None:
         """
@@ -35,10 +36,10 @@ class BaseBus:
 
     def init(
         self,
-        width: int,  # Not used; maintained for compatibility with lcd_bus C driver
-        height: int,  # Not used; maintained for compatibility with lcd_bus C driver
+        width: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
+        height: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
         bpp: int,
-        buffer_size: int,  # Not used; maintained for compatibility with lcd_bus C driver
+        buffer_size: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
         rgb565_byte_swap: bool,
         ) -> None:
         """
@@ -55,11 +56,13 @@ class BaseBus:
             if enable and self._bpp == 16:
                 self._swap_enabled = True
                 self.swap_bytes = self._swap_bytes
-                print("WARNING: Bus driver color swap is enabled. This may be slow.")
+                if self.warn_byte_swap:
+                    print("WARNING: Bus driver byte swap is enabled. This may be slow.")
             else:
                 self._swap_enabled = False
                 self.swap_bytes = self._no_swap
-                print("Bus driver color swap has been disabled.")
+                if self.warn_byte_swap:
+                    print("Bus driver byte swap has been disabled.")
         return self._swap_enabled
 
     def register_callback(self, callback: callable) -> None:
@@ -75,7 +78,7 @@ class BaseBus:
         """
         self.callback()
         self.trans_done = True
-        return False  # Returns false for compatibility with lcd_bus C driver
+        return False  # Returns false for compatibility with mp_lcd_bus C driver
 
     @micropython.viper
     def _swap_bytes(self, buf: ptr8, buf_size_px: int):
@@ -100,10 +103,10 @@ class BaseBus:
         self,
         cmd: int,
         data: memoryview,
-        x_start: int,  # Not used; maintained for compatibility with lcd_bus C driver
-        y_start: int,  # Not used; maintained for compatibility with lcd_bus C driver
-        x_end: int,  # Not used; maintained for compatibility with lcd_bus C driver
-        y_end: int,  # Not used; maintained for compatibility with lcd_bus C driver
+        x_start: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
+        y_start: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
+        x_end: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
+        y_end: int,  # Not used; maintained for compatibility with mp_lcd_bus C driver
         ) -> None:
         """
         Transmit color data over the bus.
@@ -129,10 +132,11 @@ class BaseBus:
         if cmd is not None:
             struct.pack_into("B", self.buf1, 0, cmd)
             self.dc(self._dc_cmd)
-            self._write(self.buf1)
+            self._write(self.buf1, 1)
+
         if data and len(data):
             self.dc(self._dc_data)
-            self._write(data)
+            self._write(data, len(data))
 
         self.cs(self._cs_inactive)
 
