@@ -1,5 +1,5 @@
 from ._i80bus import I80Bus as _I80Bus
-from rp2 import DMA, PIO, StateMachine, asm_pio
+from rp2 import PIO, StateMachine, asm_pio
 
 
 class I80Bus(_I80Bus):
@@ -10,33 +10,24 @@ class I80Bus(_I80Bus):
         print("Using _i80bus_rp2.py")
         super().__init__(*args, **kwargs)
 
-    @asm_pio(set_init=PIO.OUT_LOW)
+    @asm_pio(out_init=[PIO.OUT_LOW]*8, sideset_init=PIO.OUT_LOW, in_shiftdir=0, out_shiftdir=0,
+             autopush=False, autopull=False, push_thresh=32, pull_thresh=8, fifo_join=PIO.JOIN_NONE)
     def _i80bus_pio() -> None:
         """
         PIO state machine for the I80 bus.
         """
         # set the state machine to the initial state
-        set(pins, 0)
-        set(pins, 1)
-        set(pins, 0)
-        set(pins, 1)
+        wrap_target()
+        pull(block)             .side(0)
+        label("out8")
+        out(pins, 8)            .side(0)
+        jmp(osre, "continue")   .side(0)
+        jmp("out8")             .side(0)
+        label("continue")
+        irq(rel(0))             .side(0)      # Tell the main process the transfer is complete
+        wrap()
 
-        # wait for the data to be ready
-        wait(1, pin, 0)
-
-        # read the data
-        in_(pins, 8)
-
-        # wait for the data to be read
-        wait(1, pin, 1)
-
-        # set the state machine to the final state
-        set(pins, 0)
-        set(pins, 1)
-        set(pins, 0)
-        set(pins, 1)
-
-    def setup(self, pins: list[int], wr: int) -> None:
+    def setup(self, pins: list[int]) -> None:
         """
         Configure the rp2 PIO, DMA, and state machines to drive the data bus and control lines.
         """
@@ -48,16 +39,20 @@ class I80Bus(_I80Bus):
             raise ValueError("The pins must be consecutive.")
         
         # create the state machine
-        self.sm = StateMachine(0, self._i80bus_pio, freq=100_000_000, set_base=PIO(0))
-        self.sm.active(1)
+        self._sm = StateMachine(0, self._i80bus_pio, freq=freq, out_base=Pin(pins[0]), sideset_base=self._wr)
+        self._sm.irq(None)
+        self._sm.exec("set(x, 0)")
+        self._sm.exec("set(y, 0)")
+        self._sm.active(0)
 
-        # create the DMA channel
-        self.dma = DMA(0, self.sm, self._dma_channel)
-        self.dma.start()
-
-    def _write(self, data: memoryview, len: int) -> None:
+    def _write(self, data: memoryview, length: int) -> None:
         """
         Write the data to the display.
         """
-        self.dma.write(data, len)
-        self.dma.wait()
+        while self._sm.tx_fifo():  # Wait for the fifo to become empty.
+            pass
+        if length == 1:
+            self._sm.irq(None)
+        else:
+            self._sm.irq(self.trans_done)
+        self._sm.put(data)
