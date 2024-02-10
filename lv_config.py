@@ -26,7 +26,7 @@ try:
         eventloop = lv_utils.event_loop(asynchronous=False, exception_sink=None)
 except ImportError:
     import task_handler
-    task_handler = task_handler.TaskHandler()
+    _task_handler = task_handler.TaskHandler()
 
 # Change color_format to match your display
 display = lv_driver_framework.DisplayDriver(
