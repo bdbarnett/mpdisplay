@@ -17,12 +17,16 @@ Substitute width, height, bytes_per_pixel and factor with your values.
 # fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL)
 
 import lvgl as lv
-import lv_utils
 import lv_driver_framework
 import board_config
 
-if not lv_utils.event_loop.is_running():
-    eventloop = lv_utils.event_loop(asynchronous=False, exception_sink=None)
+try:
+    import lv_utils
+    if not lv_utils.event_loop.is_running():
+        eventloop = lv_utils.event_loop(asynchronous=False, exception_sink=None)
+except ImportError:
+    import task_handler
+    task_handler = task_handler.TaskHandler()
 
 # Change color_format to match your display
 display = lv_driver_framework.DisplayDriver(
