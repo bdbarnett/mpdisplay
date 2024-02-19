@@ -110,7 +110,7 @@ class SSD(framebuf.FrameBuffer):
 
     @micropython.native
     def _show16(self):
-        # Copyt the buffer to the display in one go
+        # Copy the buffer to the display in one go
         self.display_drv.blit(0, 0, self.width, self.height, self._mvb)
 
     @micropython.native
