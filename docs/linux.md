@@ -1,6 +1,6 @@
 Compiling and testing MicroPython & MicroPyton_SDL2
 ===================================================
-The following is my method of compiling and testing MPDisplay with [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) for Linux.  I use Ubuntu under Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.  This is not a full tutorial.  I documented it for my own reference and decided to post it online in case it my be useful to someone else.  See the official directions on the [MicroPython repository](https://github.com/micropython/micropython/tree/master/ports/esp32).  There are several Linux packages that will need to be installed beforehand using `sudo apt install`.  
+The following is my method of compiling and testing MPDisplay with [micropython_sdl2]([https://github.com/kdschlosser/mp_lcd_bus](https://github.com/russhughes/micropython_sdl2) for Linux.  I use Ubuntu under Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.  This is not a full tutorial.  I documented it for my own reference and decided to post it online in case it my be useful to someone else.  See the official directions on the [MicroPython repository](https://github.com/micropython/micropython/tree/master/ports/esp32).  There are several Linux packages that will need to be installed beforehand using `sudo apt install`.  
 
 Download repos and build the executable
 ---------------------------------------
@@ -25,15 +25,15 @@ Build MicroPython with MicroPython_SDL2
 At the bash prompt:
 ```
 # Note we are still in the ~/gh/micropython directory
-cd ports/unix
-make USER_C_MODULES=../../../../micropython_sdl2/micropython.cmake
+make -C ports/unix/ submodules
+make -C ports/unix/ USER_C_MODULES=../../../micropython_sdl2/
 ```
 
 Copy the executable to your path
 --------------------------------
 At the bash prompt:
 ```
-# Note we are still in the ~/gh/micropython/ports/unix directory
+# Note we are still in the ~/gh/micropython directory
 mkdir ~/bin
-cp build-standard/micropython ~/bin
+cp ports/unix/build-standard/micropython ~/bin
 ```
