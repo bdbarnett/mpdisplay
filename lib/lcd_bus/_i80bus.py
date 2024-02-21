@@ -52,7 +52,7 @@ class I80Bus(BaseBus):
         pclk_active_neg=False,
         swap_color_bytes=False,
         *,
-        freq=20_000_000,  # Not used; maintained for compatibility with mp_lcd_bus C driver
+        freq=20_000_000,  # Not used in this class; passed as an argument to _setup() for subclasses like _i80bus_rp2.py
         cmd_bits=8,  # ditto
         param_bits=8,  # ditto
         reverse_color_bits=False,  # ditto
@@ -74,10 +74,6 @@ class I80Bus(BaseBus):
         if len(pins) != 8:
             raise ValueError("bus width must be 8")
 
-        # Set the data pins as outputs
-        for pin in pins:
-            Pin(pin, Pin.OUT)
-
         # Setup the control pins
         self._dc_data: bool = bool(dc_data_level)
         self._dc_cmd: bool = not self._dc_data
@@ -93,9 +89,9 @@ class I80Bus(BaseBus):
         self._wr_inactive: bool = not self._wr_active  # not used in this class, may be used in a subclass
         self.wr: Pin = Pin(wr, Pin.OUT, value=pclk_active_neg)
 
-        self.setup(pins, wr)
+        self._setup(pins, wr, freq)
 
-    def setup(self, pins: list[int], wr: int) -> None:
+    def _setup(self, pins: list[int], wr: int, freq: int) -> None:
         """
         Setup lookup tables and pin data for the _write method.
         """
@@ -104,7 +100,7 @@ class I80Bus(BaseBus):
         # Use the GPIO_SET_CLR_REGISTERS class to get the register addresses and masks
         # for the data pins and wr pin and to determine the number of pins per port for
         # _write().  Implemented as a local variable to allow the instance to be garbage
-        # collected after setup function has completed.
+        # collected after _setup function has completed.
         gpio = GPIO_SET_CLR_REGISTERS()
 
         # If self._is_32bit is True the _write method will use a 32-bit set and a 32-bit
@@ -116,6 +112,10 @@ class I80Bus(BaseBus):
         self._wr_mask, self._wr_not_mask = gpio.get_set_clr_masks(wr, self._wr_active)
         # Get the register addresses for the write pin
         self._wr_reg, self._wr_not_reg = gpio.get_set_clr_regs(wr, self._wr_active)
+
+        # Set the data pins as outputs
+        for pin in pins:
+            Pin(pin, Pin.OUT)
 
         self._lookup_tables = []  # list of memoryview lookup tables
         pin_masks = []  # list of 32-bit pin masks

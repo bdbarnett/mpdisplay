@@ -22,7 +22,7 @@ class BaseBus:
     """
     name = "MicroPython bus driver"
     warn_byte_swap = True
-    
+
     def __init__(self) -> None:
         """
         Initialize the base bus.
@@ -90,11 +90,10 @@ class BaseBus:
         self.callback = callback
 
     @micropython.viper
-    def tx_color_done_cb(self) -> bool:
+    def _tx_color_done_cb(self) -> bool:
         """
         Callback function to be called when a transaction is done.
         """
-        self.cs(self._cs_inactive)
         self.callback()
         self.trans_done = True
         return False  # Returns false for compatibility with mp_lcd_bus C driver
@@ -105,18 +104,16 @@ class BaseBus:
         Transmit color data over the bus.
         """
         self.trans_done = False
-
         self.swap_bytes(data, len(data) // 2)
-         
         self.tx_param(cmd, data)
-
-        self.tx_color_done_cb()
+        self._tx_color_done_cb()
 
     @micropython.native
-    def tx_param(self, cmd: int, data: Optional[memoryview] = None) -> None:
+    def tx_param(self, cmd: Optional[int] = None, data: Optional[memoryview] = None) -> None:
         """
         Transmit parameters over the bus.
         """
+
         self.cs(self._cs_active)
 
         if cmd is not None:
@@ -124,7 +121,7 @@ class BaseBus:
             self.dc(self._dc_cmd)
             self._write(self.buf1, 1)
 
-        if data and len(data):
+        if len(data):
             self.dc(self._dc_data)
             self._write(data, len(data))
 

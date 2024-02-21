@@ -25,7 +25,7 @@ def __getattr__(attr):
     #       from ._module_platform import attr
     #   except ImportError:
     #       from ._module import attr
-    if attr not in ("SPIBus", "I80Bus"):
+    if attr not in ("SPIBus", "I80Bus", "SDL2Bus"):
         raise AttributeError(f"{attr} not provided by lcd_bus")
     
     # module is the module name, e.g. "_i80bus_rp2" or "_i80bus"

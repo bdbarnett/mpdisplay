@@ -45,15 +45,15 @@ class SPIBus(BaseBus):
         miso: int = -1,
         sclk: int = -1,
         cs: int = -1,
-        freq: int = -1,
+        freq: int = 10_000_000,
         *,
-        tx_only: bool = False,
-        cmd_bits: int = 8,
-        param_bits: int = 8,
+        tx_only: bool = True,
         dc_low_on_data: bool = False,
         lsb_first: bool = False,
         cs_high_active: bool = False,
         spi_mode: int = 0,
+        cmd_bits: int = 8,
+        param_bits: int = 8,
         wp: int = -1,  # Not yet suppported
         hd: int = -1,  # Not yet supported
         quad_spi: bool = False,  # Not yet supported
@@ -70,18 +70,13 @@ class SPIBus(BaseBus):
         self._cs_active: bool = cs_high_active
         self._cs_inactive: bool = not cs_high_active
 
-        self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_cmd)
-        self.cs: Pin = (
-            Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
-        )
-
         if mosi == -1 and miso == -1 and sclk == -1:
             self.spi: SPI = SPI(
                 host,
                 baudrate=freq,
                 polarity=spi_mode & 0b10,
                 phase=spi_mode & 0b01,
-                bits=max(cmd_bits, param_bits),
+                bits=8,
                 firstbit=SPI.LSB if lsb_first else SPI.MSB,
             )
         else:
@@ -90,12 +85,16 @@ class SPIBus(BaseBus):
                 baudrate=freq,
                 polarity=spi_mode & 0b10,
                 phase=spi_mode & 0b01,
-                bits=max(cmd_bits, param_bits),
+                bits=8,
                 firstbit=SPI.LSB if lsb_first else SPI.MSB,
                 sck=Pin(sclk, Pin.OUT),
                 mosi=Pin(mosi, Pin.OUT),
                 miso=Pin(miso, Pin.IN) if not tx_only else None,
             )
+
+        # DC and CS pins must be set AFTER the SPI bus is initialized on some boards
+        self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_data)
+        self.cs: Pin = Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
 
     def _write(self, data: memoryview, len: int) -> None:
         """ Write data to the SPI bus. """
