@@ -27,7 +27,6 @@ display_bus = I80Bus(
     param_bits=8,
     cs_active_high=False,
     reverse_color_bits=False,
-    swap_color_bytes=False,
     pclk_active_neg=False,
     pclk_idle_low=False,
 )

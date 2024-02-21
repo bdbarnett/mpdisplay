@@ -35,7 +35,6 @@ display_bus = I80Bus(
     param_bits=8,
     cs_active_high=False,
     reverse_color_bits=False,
-    swap_color_bytes=True,
     pclk_active_neg=False,
     pclk_idle_low=False,
 )
@@ -50,7 +49,7 @@ display_drv = ST7789(
     mirrored=False,
     color_depth=16,
     bgr=False,
-    reverse_bytes_in_word=False,
+    reverse_bytes_in_word=True,,
     invert=True,
     brightness=1.0,
     backlight_pin=38,

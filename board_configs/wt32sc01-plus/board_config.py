@@ -1,6 +1,6 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 
-from lcd_bus import I80Bus
+from lib.lcd_bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
@@ -26,7 +26,6 @@ display_bus = I80Bus(
     data6=16,
     data7=15,
     freq=10_000_000,
-    swap_color_bytes=True,
 )
 
 display_drv = ST7796(
@@ -39,6 +38,7 @@ display_drv = ST7796(
     mirrored=False,
     color_depth=16,
     bgr=True,
+    reverse_bytes_in_word=True,
     invert=True,
     brightness=1.0,
     backlight_pin=45,
