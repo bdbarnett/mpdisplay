@@ -6,7 +6,7 @@ Download repos and prepare to the build environment
 ---------------------------------------------------
 At the bash prompt:
 ```
-# I put all Github repositories in the "gh" directory.  Use your preferred directory.
+# I put all Github repositories in the directory "~/gh".  Use your preferred directory.
 cd ~
 mkdir gh
 cd gh
