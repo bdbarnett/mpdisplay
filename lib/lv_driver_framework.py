@@ -66,14 +66,12 @@ class DisplayDriver:
         )
         self._blocking = blocking
 
-        self.swap_enabled = False
-        # If the display bus is a MicroPython bus (not C) and it has byte swapping enabled,
-        # disable it and set a flag so we can call lv_draw_sw_rgb565_swap in _flush_cb
-        if hasattr(self.display_drv.display_bus, "name") and "MicroPython" in self.display_drv.display_bus.name:
-            if self.display_drv.display_bus.enable_swap():
-                print("Using LVGL color swap.  Disabling MicroPython display driver color swap.")
-                self.swap_enabled = True
-                self.display_drv.display_bus.enable_swap(False)
+        # If byte swapping is required and the display bus is capable of having byte swapping disabled,
+        # disable it and set a flag so we can swap the color bytes as they are created.
+        if self.display_drv.requires_byte_swap:
+            self.swap_color_bytes = self.display_drv.bus_swap_disable(True)
+        else:
+            self.swap_color_bytes = False
 
         if "RGB" in repr(self.display_drv.display_bus):
             render_mode = lv.DISPLAY_RENDER_MODE.DIRECT
@@ -108,7 +106,7 @@ class DisplayDriver:
         height = area.y2 - area.y1 + 1
 
         # Swap the bytes in the color buffer if necessary
-        if self.swap_enabled:
+        if self.swap_color_bytes:
             lv.draw_sw_rgb565_swap(color_p, width * height)
 
         # we have to use the __dereference__ method because this method is

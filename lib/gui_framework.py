@@ -60,14 +60,12 @@ class SSD(framebuf.FrameBuffer):
         self.palette = BoolPalette(mode)  # a 2-value color palette for rendering monochrome glyphs
                                           # with ssd.blit(glyph_buf, x, y, key=-1, pallette=ssd.pallette)
 
-        # If the display bus is a MicroPython bus (not C) and it has byte swapping enabled,
-        # disable it and set a flag so we can swap the bytes as they are put into the buffers
-        self.swap_color_bytes = False
-        if hasattr(display_drv.display_bus, "name") and "MicroPython" in display_drv.display_bus.name:
-            if display_drv.display_bus.enable_swap():
-                print("Disabling display_drv byte swap and populating colors with bytes swapped instead.")
-                display_drv.display_bus.enable_swap(False)
-                self.swap_color_bytes = True
+        # If byte swapping is required and the display bus is capable of having byte swapping disabled,
+        # disable it and set a flag so we can swap the color bytes as they are created.
+        if self.display_drv.requires_byte_swap:
+            self.swap_color_bytes = self.display_drv.bus_swap_disable(True)
+        else:
+            self.swap_color_bytes = False
 
         # Set the SSD.rgb function to the appropriate one for the mode, BGR, and byte swapping
         if mode == framebuf.GS8:
