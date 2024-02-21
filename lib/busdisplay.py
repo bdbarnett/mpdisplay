@@ -9,6 +9,7 @@ busdisplay.py - BusDisplay class for MicroPython
 from micropython import const, alloc_emergency_exception_buf
 from machine import Pin
 from time import sleep_ms
+import struct
 
 
 alloc_emergency_exception_buf(256)
@@ -72,14 +73,13 @@ class BusDisplay:
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
+        data_as_commands=False,
         # Required for the 16-bit SSD1351 128x128 OLED
         #        single_byte_bounds=False,
-        # Required for the 16-bit SSD1331 96x64 OLED in addition to the line above
-        #        data_as_commands=False,
-        # Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the 2 lines above
+        # Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the line above
         #        grayscale=False,
         #        brightness_command=None,
-        # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 4 lines above
+        # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 3 lines above
         #        pixels_in_byte_share_row=True,
     ):
         self.display_bus = display_bus
@@ -90,11 +90,12 @@ class BusDisplay:
         self._rotation = rotation
         self.color_depth = color_depth
         self.bgr = bgr
+        self.requires_byte_swap = reverse_bytes_in_word
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
+        self._data_as_commands = data_as_commands
         #        self._single_byte_bounds = single_byte_bounds  # not implemented
-        #        self._data_as_commands = data_as_commands  # not implemented
         #        self._grayscale = grayscale  # not implemented
         #        self._brightness_command = brightness_command  # not implemented
         #        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
@@ -123,19 +124,21 @@ class BusDisplay:
                 # PWM not implemented on this platform or Pin
                 self._backlight_is_pwm = False
 
+        self.set_window = self._set_window
+
         self.rotation_table = _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
         self._param_buf = bytearray(4)
         self._param_mv = memoryview(self._param_buf)
-        self._initialized = False
 
         display_bus.init(
-            width,
-            height,
-            color_depth,
-            self.width * self.height * self.color_depth // 8,
-            reverse_bytes_in_word,
+            self._width,
+            self._height,
+            self.color_depth,
+            self._width * self._height * self.color_depth // 8,
+            self.requires_byte_swap,
         )
 
+        self._initialized = False
         self.init()
         if not self._initialized:
             raise RuntimeError(
@@ -150,26 +153,41 @@ class BusDisplay:
         self._initialized = True
         self.rotation = self._rotation
         self.set_render_mode_full(render_mode_full)
+        self.fill_rect(0, 0, self.width, self.height, 0x0)
 
-    def set_render_mode_full(self, render_mode_full=False):
-        # If rendering the full screen, set the window once
-        # and pass each time .blit() is called.
-        if render_mode_full:
-            self._set_window(0, 0, self.width, self.height)
-            self.set_window = self._pass
-        # Otherwise, set the window each time .blit() is called.
-        else:
-            self.set_window = self._set_window
+    def blit(self, x, y, width, height, buf):
+        x1 = x + self._colstart
+        x2 = x1 + width - 1
+        y1 = y + self._rowstart
+        y2 = y1 + height - 1
 
-    def invert_colors(self, value):
-        """
-        If your white is showing up as black and your black is showing up as white
-        try setting this either True or False and see if it corrects the problem.
-        """
-        if value:
-            self.set_params(_INVON)
+        self.set_window(x1, y1, x2, y2)
+        if not self._data_as_commands:
+            self.display_bus.tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
         else:
-            self.set_params(_INVOFF)
+            self.display_bus.tx_param(self._write_ram_command, None)
+            self.display_bus.tx_color(None, buf, x1, y1, x2, y2)
+
+    def fill_rect(self, x, y, width, height, color):
+        """
+        Draw a rectangle at the given location, size and filled with color.
+
+        Args:
+            x (int): Top left corner x coordinate
+            y (int): Top left corner y coordinate
+            width (int): Width in pixels
+            height (int): Height in pixels
+            color (int): 565 encoded color
+        """
+
+        if height > width:
+            raw_data = struct.pack(">H", color) * height
+            for col in range(x, x + width + 1):
+                self.blit(col, y, 1, height, memoryview(raw_data[:]))
+        else:
+            raw_data = struct.pack(">H", color) * width
+            for row in range(y, y + height + 1):
+                self.blit(x, row, width, 1, memoryview(raw_data[:]))
 
     @property
     def width(self):
@@ -183,16 +201,36 @@ class BusDisplay:
             return self._width
         return self._height
 
-    @property
-    def rotation(self):
-        return self._rotation
+    def set_render_mode_full(self, render_mode_full=False):
+        # If rendering the full screen, set the window once
+        # and pass each time .blit() is called.
+        if render_mode_full:
+            self._set_window(0, 0, self.width, self.height)
+            self.set_window = self._pass
+        # Otherwise, set the window each time .blit() is called.
+        else:
+            self.set_window = self._set_window
 
-    @rotation.setter
-    def rotation(self, value):
-        self._rotation = value
+    def bus_swap_disable(self, value):
+        '''
+        If self.requires_bus_swap and the guest application is capable of byte swapping the color data
+        check to see if byte swapping can be disabled in the display bus.  If so, disable it.
 
-        self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
-        self.set_params(_MADCTL, self._param_mv[:1])
+        Guest applications that are capable of byte swapping should include:
+
+            # If byte swapping is required and the display bus is capable of having byte swapping disabled,
+            # disable it and set a flag so we can swap the color bytes as they are created.
+            if display_drv.requires_byte_swap:
+                swap_color_bytes = display_drv.bus_swap_disable(True)
+            else:
+                swap_color_bytes = False
+
+        Returns True if the bus swap was disabled, False if it was not.
+        '''
+        if hasattr(self.display_bus, "enable_swap"):
+            self.display_bus.enable_swap(not value)
+            return value
+        return False
 
     @property
     def power(self):
@@ -245,18 +283,104 @@ class BusDisplay:
 
     def reset(self):
         if self._reset_pin is not None:
-            self._reset_pin.value(self._reset_high)
-            sleep_ms(120)
-            self._reset_pin.value(not self._reset_high)
+            self.hard_reset()
+        else:
+            self.soft_reset()
 
-    def blit(self, x, y, width, height, buf):
-        x1 = x + self._colstart
-        x2 = x + self._colstart + width - 1
-        y1 = y + self._rowstart
-        y2 = y + self._rowstart + height - 1
+    def hard_reset(self):
+        self._reset_pin.value(self._reset_high)
+        sleep_ms(120)
+        self._reset_pin.value(not self._reset_high)
 
-        self.set_window(x1, y1, x2, y2)
-        self.display_bus.tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
+    def soft_reset(self):
+        """
+        Soft reset display.
+        """
+        self.set_params(_ST7789_SWRESET)
+        sleep_ms(150)
+
+    @property
+    def rotation(self):
+        return self._rotation
+
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+
+        self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
+        self.set_params(_MADCTL, self._param_mv[:1])
+
+    def sleep_mode(self, value):
+        """
+        Enable or disable display sleep mode.
+
+        Args:
+            value (bool): if True enable sleep mode. if False disable sleep
+            mode
+        """
+        if value:
+            self.set_params(_ST7789_SLPIN)
+        else:
+            self.set_params(_ST7789_SLPOUT)
+
+    def vscrdef(self, tfa, vsa, bfa):
+        """
+        Set Vertical Scrolling Definition.
+
+        To scroll a 135x240 display these values should be 40, 240, 40.
+        There are 40 lines above the display that are not shown followed by
+        240 lines that are shown followed by 40 more lines that are not shown.
+        You could write to these areas off display and scroll them into view by
+        changing the TFA, VSA and BFA values.
+
+        Args:
+            tfa (int): Top Fixed Area
+            vsa (int): Vertical Scrolling Area
+            bfa (int): Bottom Fixed Area
+        """
+        self.set_params(_ST7789_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+
+    def vscsad(self, vssa):
+        """
+        Set Vertical Scroll Start Address of RAM.
+
+        Defines which line in the Frame Memory will be written as the first
+        line after the last line of the Top Fixed Area on the display
+
+        Example:
+
+            for line in range(40, 280, 1):
+                tft.vscsad(line)
+                utime.sleep(0.01)
+
+        Args:
+            vssa (int): Vertical Scrolling Start Address
+
+        """
+        self.set_params(_ST7789_VSCSAD, struct.pack(">H", vssa))
+
+    def invert_colors(self, value):
+        """
+        If your white is showing up as black and your black is showing up as white
+        try setting this either True or False and see if it corrects the problem.
+        """
+        if value:
+            self.set_params(_INVON)
+        else:
+            self.set_params(_INVOFF)
+
+    def set_params(self, cmd, params=None):
+        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
+        if not self._data_as_commands:
+            self.display_bus.tx_param(cmd, params)
+        else:
+            self.display_bus.tx_param(cmd, None)
+            if params and len(params):
+                for i in range(len(params)):
+                    self.display_bus.tx_param(None, bytearray([params[i]]))
+
+    def _get_params(self, cmd, params):
+        self.display_bus.rx_param(cmd, params)
 
     def _pass(*_, **__):
         pass
@@ -278,14 +402,6 @@ class BusDisplay:
         self._param_buf[2] = (y2 >> 8) & 0xFF
         self._param_buf[3] = y2 & 0xFF
         self.set_params(self._set_row_command, self._param_mv[:4])
-
-    def set_params(self, cmd, params=None):
-        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
-        # TODO:  Add `if self._data_as_commands is True:` for tx_param
-        self.display_bus.tx_param(cmd, params)
-
-    def get_params(self, cmd, params):
-        self.display_bus.rx_param(cmd, params)
 
     @staticmethod
     def _madctl(bgr, rotation, rotations):
