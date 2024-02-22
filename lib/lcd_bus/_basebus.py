@@ -121,7 +121,7 @@ class BaseBus:
             self.dc(self._dc_cmd)
             self._write(self.buf1, 1)
 
-        if len(data):
+        if data and len(data):
             self.dc(self._dc_data)
             self._write(data, len(data))
 
