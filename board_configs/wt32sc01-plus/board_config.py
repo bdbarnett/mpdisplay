@@ -1,6 +1,6 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 
-from lib.lcd_bus import I80Bus
+from lcd_bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
