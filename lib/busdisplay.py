@@ -21,6 +21,11 @@ _CASET = const(0x2A)
 _RASET = const(0x2B)
 _RAMWR = const(0x2C)
 _MADCTL = const(0x36)
+_SWRESET = const(0x01)
+_SLPIN = const(0x10)
+_SLPOUT = const(0x11)
+_VSCRDEF = const(0x33)
+_VSCSAD = const(0x37)
 
 # MADCTL bits
 _RGB = const(0x00)
@@ -181,12 +186,12 @@ class BusDisplay:
         """
 
         if height > width:
-            raw_data = struct.pack(">H", color) * height
-            for col in range(x, x + width + 1):
+            raw_data = struct.pack("<H", color) * height
+            for col in range(x, x + width):
                 self.blit(col, y, 1, height, memoryview(raw_data[:]))
         else:
-            raw_data = struct.pack(">H", color) * width
-            for row in range(y, y + height + 1):
+            raw_data = struct.pack("<H", color) * width
+            for row in range(y, y + height):
                 self.blit(x, row, width, 1, memoryview(raw_data[:]))
 
     @property
@@ -296,7 +301,7 @@ class BusDisplay:
         """
         Soft reset display.
         """
-        self.set_params(_ST7789_SWRESET)
+        self.set_params(_SWRESET)
         sleep_ms(150)
 
     @property
@@ -319,9 +324,9 @@ class BusDisplay:
             mode
         """
         if value:
-            self.set_params(_ST7789_SLPIN)
+            self.set_params(_SLPIN)
         else:
-            self.set_params(_ST7789_SLPOUT)
+            self.set_params(_SLPOUT)
 
     def vscrdef(self, tfa, vsa, bfa):
         """
@@ -338,7 +343,7 @@ class BusDisplay:
             vsa (int): Vertical Scrolling Area
             bfa (int): Bottom Fixed Area
         """
-        self.set_params(_ST7789_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+        self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
     def vscsad(self, vssa):
         """
@@ -357,7 +362,7 @@ class BusDisplay:
             vssa (int): Vertical Scrolling Start Address
 
         """
-        self.set_params(_ST7789_VSCSAD, struct.pack(">H", vssa))
+        self.set_params(_VSCSAD, struct.pack(">H", vssa))
 
     def invert_colors(self, value):
         """
