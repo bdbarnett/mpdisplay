@@ -56,7 +56,6 @@ class SSD(framebuf.FrameBuffer):
         self.display_drv = display_drv
         self.height = display_drv.height
         self.width = display_drv.width
-        self.bgr = display_drv.bgr
         self.palette = BoolPalette(mode)  # a 2-value color palette for rendering monochrome glyphs
                                           # with ssd.blit(glyph_buf, x, y, key=-1, pallette=ssd.pallette)
 
@@ -69,17 +68,12 @@ class SSD(framebuf.FrameBuffer):
 
         # Set the SSD.rgb function to the appropriate one for the mode, BGR, and byte swapping
         if mode == framebuf.GS8:
-            SSD.rgb = self._rgb8
-        elif self.bgr == True:
-            if self.swap_color_bytes:
-                SSD.rgb = self._bgr16_swapped
-            else:
-                SSD.rgb = self._bgr16
+            SSD.rgb = self._rgb332
         else:
             if self.swap_color_bytes:
-                SSD.rgb = self._rgb16_swapped
+                SSD.rgb = self._rgb565_swapped
             else:
-                SSD.rgb = self._rgb16
+                SSD.rgb = self._rgb565
 
         # Set the show function to the appropriate one for the mode and
         # allocate the buffer.  Also create the line buffer and lut if needed.
@@ -116,7 +110,6 @@ class SSD(framebuf.FrameBuffer):
         # Convert the 8 bit RGB332 values to 16 bit RGB565 values and then copy the line
         # to the display, line by line.
         swapped = self.swap_color_bytes
-        bgr = self.bgr
         buf = self._mvb
         bb = self._bounce_buf
         wd = self.width
@@ -126,11 +119,11 @@ class SSD(framebuf.FrameBuffer):
         chunks, remainder = divmod(ht, lines)
         for chunk in range(chunks):
             start = chunk * stride
-            self._bounce8(bb, buf[start :], stride, swapped, bgr)
+            self._bounce8(bb, buf[start :], stride, swapped)
             self.display_drv.blit(0, chunk * lines, wd, lines, bb)
         if remainder:
             start = chunks * stride
-            self._bounce8(bb, buf[start :], remainder * wd, swapped, bgr)
+            self._bounce8(bb, buf[start :], remainder * wd, swapped)
             self.display_drv.blit(0, chunks * lines, wd, remainder, bb)
 
     @micropython.native
@@ -155,51 +148,47 @@ class SSD(framebuf.FrameBuffer):
             self.display_drv.blit(0, chunks * lines, wd, remainder, bb)
 
     @staticmethod
-    def _rgb8(r, g, b):
+    def _rgb332(r, g, b):
         # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
         # rrrgggbb
         return (r & 0xe0) | ((g >> 3) & 0x1c) | (b >> 6)
 
     @staticmethod
-    def _rgb16(r, g, b):
+    def _bgr565(r, g, b):
         # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
         # rrrrrggg gggbbbbb
         return ((b & 0xF8) << 8) | ((g & 0xFC) << 3) | (r >> 3)
     
     @staticmethod
-    def _rgb16_swapped(r, g, b):
+    def _bgr565_swapped(r, g, b):
         # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
         # ggbbbbbb rrrrrggg
-        color = SSD._rgb16(r, g, b)
+        color = SSD._rgb565(r, g, b)
         return (color & 0xff) << 8 | (color & 0xff00) >> 8
     
     @staticmethod
-    def _bgr16(r, g, b):
+    def _rgb565(r, g, b):
         # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
         # bbbbbggg gggrrrrr
         return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
     
     @staticmethod
-    def _bgr16_swapped(r, g, b):
+    def _rgb565_swapped(r, g, b):
         # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
         # gggrrrrr bbbbbggg
-        color = SSD._bgr16(r, g, b)
+        color = SSD._bgr565(r, g, b)
         return (color & 0xff) << 8 | (color & 0xff00) >> 8
 
     @staticmethod
     @micropython.viper
-    def _bounce8(dest:ptr8, source:ptr8, length:int, swapped:bool, bgr:bool):
+    def _bounce8(dest:ptr8, source:ptr8, length:int, swapped:bool):
         # Convert a line in 8 bit RGB332 format to 16 bit RGB565 format.
         # Each byte becomes 2 in destination. Source format:
         # <R2 R1 R0 G2 G1 G0 B1 B0>
         # dest:
-        # swapped==False, bgr==False: <R2 R1 R0 00 00 G2 G1 G0> <00 00 00 B1 B0 00 00 00>
-        # swapped==True,  bgr==False: <00 00 00 B1 B0 00 00 00> <R2 R1 R0 00 00 G2 G1 G0>
-        # swapped==False, bgr==True:  <B1 B0 00 00 00 G2 G1 G1> <00 00 00 R2 R1 R0 00 00>
-        # swapped==True,  bgr==True:  <00 00 00 R2 R1 R0 00 00> <B1 B0 00 00 00 G2 G1 G0>
-        #
-        # NOTE: seperating this into 2 functions, one for bgr and one for rgb yielded
-        # less than a 4% performance improvement, so I combined them into one function.
+        # swapped==False: <R2 R1 R0 00 00 G2 G1 G0> <00 00 00 B1 B0 00 00 00>
+        # swapped==True:  <00 00 00 B1 B0 00 00 00> <R2 R1 R0 00 00 G2 G1 G0>
+
         if swapped:
             lsb = 0
             msb = 1
@@ -209,12 +198,10 @@ class SSD(framebuf.FrameBuffer):
         n = 0
         for x in range(length):
             c = source[x]
-            if bgr:
-                dest[n + lsb] = (c & 0xe0) | ((c & 0x1c) >> 2)  # Red Green
-                dest[n + msb] = (c & 0x03) << 3  # Blue
-            else:
-                dest[n + lsb] = ((c & 0x3) << 6) | ((c & 0x1c) >> 2)  # Blue Green
-                dest[n + msb] = (c & 0xe0) >> 3  # Red
+            dest[n + lsb] = (c & 0xe0) | ((c & 0x1c) >> 2)  # Red Green
+            dest[n + msb] = (c & 0x03) << 3  # Blue
+            # dest[n + lsb] = ((c & 0x3) << 6) | ((c & 0x1c) >> 2)  # Blue Green
+            # dest[n + msb] = (c & 0xe0) >> 3  # Red
             n += 2
 
     @staticmethod
