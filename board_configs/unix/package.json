@@ -1,0 +1,7 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/linux/board_config.py"],
+      ["lib/sdl2_display.py", "github:bdbarnett/mpdisplay/display_drivers/sdl2_display.py"]
+    ],
+    "version": "0.1"
+  }
