@@ -1,7 +1,9 @@
+(Please note, the directory structure has changed, some of the filenames have changed, and some of the files have been moved into their own repositories.  Many of the links below aren't working.)
+
 # MPDisplay
 Display, touch and encoder drivers for [MicroPython](https://github.com/micropython/micropython)
 
-MPDisplay provides display, touch and encoder drivers as well as framework, config and test files for LV_MicroPython, LVGL_MicroPython, Nano-GUI and Micro-GUI.  It also provides drivers for SPI and I80 display buses using the included [lcd_bus](lib/lcd_bus) but also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.
+MPDisplay provides display, touch and encoder drivers as well as framework, config and test files for MicroPython and can be used in LV_MicroPython, LVGL_MicroPython, TFT Graphics, Nano-GUI and Micro-GUI.  It provides SDL2 LCD drivers for Unix as well as SPI and I80 display buses in the included [lcd_bus](lib/lcd_bus) but also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.
 
 # Supported platforms
 ## MicroPython
@@ -13,8 +15,14 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 ## LVGL_MicroPython
 [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  MPDisplay works with the mp_lcd_bus bus drivers in LVGL_MicroPython.
 
+## TFT Graphics
+[TFT Graphics](https://github.com/bdbarnett/tft_graphics) is a port I created of Russ Hughes's st7789mpy_py library to demonstrate MPDisplay's usefullness with other libraries.  It is fully functional a very powerful.  It includes all the examples provided in the original library.  It draws directly to the screen, only creating small buffers for individual characters in text or for bitmap images.
+
+## DisplayBuffer
+[DisplayBuffer](https://github.com/bdbarnett/displaybuffer) is a class I wrote based on the drivers Peter Hinch wrote in Nano-GUI and Micro-GUI.  I initially wrote it to make MPDisplay compatible with those libraries, but it is very useful on its own.  It is a framebuffer based on the number of pixels on the display, but can be sized to 2 bytes per pixel, 1 byte per pixel or 2 pixels per byte depending on whether the user wants all 65k (RGB565), only 256 (RGB332) or even only 16 (RGB565 in a lookup table) colors.  Very clever Mr. Hinch!
+
 ## Nano-GUI on MicroPython
-[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics library written in MicroPython for MicroPython by longtime MicroPython coder Peter Hinch.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
+[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics library written in MicroPython for MicroPython by longtime MicroPython coder Peter Hinch.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly Unix, I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
 
 # Quickstart
 Flash your board with your preferred version of MicroPython listed above.
@@ -51,33 +59,30 @@ You will also need the folowing files that match your particular hardware:
 # Suggested filesystem structure
 Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in /lib or /.
 ```
-├── lib
+├── mpdisplay (put each of these, not the mpdisplay directory, in your machine's lib directory)
 │   │
-│   ├── lcd_bus                 - required if mp_lcd_bus isn't compiled in, otherwise Optional
-│   │   │
+│   ├── lcd_bus                 - required if C bus drivers aren't compiled in, otherwise Optional
 │   │   ├── __init__.py         - required
 │   │   ├── _basebus.py         - required
-│   │   ├── _spibus.py          - required for SPIBus
-│   │   ├── _i80bus.py          - required for I80Bus
-│   │   └── _gpio_registers.py  - required for I80Bus
+│   │   ├── _spibus.py          - required for SPIBus only
+│   │   ├── _i80bus.py          - required for I80Bus only
+│   │   └── _gpio_registers.py  - required for I80Bus only
 │   │
-│   ├── busdisplay.py           - required in all cases
-│   ├── mpdisplay_simpletest.py - optional, does not require gui_framework.py or color_setup.py
+│   ├── busdisplay.py           - required for all SPI, I80 and RGB LCD buses
+│   ├── mpdisplay_simpletest.py - optional for all Unix, SPI, I80 and RGB targets
 │   │
-│   ├── lv_mpdisplay.py  - LVGL:  required
-│   ├── lv_touch_test.py        - LVGL:  recommended
-│   │
-│   ├── gui_framework.py        - bare MicroPython:  recommended; Nano-GUI & Micro-GUI:  required
-│   ├── nano_gui_simpletest.py  - Nano-GUI:  recommended
-│   └── gui_simpletest.py       - bare MicroPython:  recommended, requires gui_framework.py 
-│                                 and color_setup.py
+│   ├── sdl2_display.py         - required for Unix / Linux targets (same API as busdisplay)
+│   ├── sdl2_lcd.py             - required for Unix / Linux targets (same FUNCTION as lcd_bus)
+│   └── sdl2_lcd_simpletest.py  - Not needed.  Only useful for Unix developer purposes.
+|                                              May be removed from the repo in the future.
+│   
+├── lvgl (put each of these, not the lvgl directory, in your machine's lib directory)
+│   ├── lv_mpdisplay.py         - LVGL:  required
+│   └── lv_touch_test.py        - LVGL:  recommended
 │
-├── board_config.py             - required in all cases
-├── lv_config.py                - LVGL targets:  Required
-└── color_setup.py              - bare MicroPython:  recommended, requires gui_framework.py;
-                                  Nano-GUI:  required; Micro-GUI:  must be copied / renamed to
-                                  hardware_setup.py and edited to include button Pin definitions
-                                  and Display setup
+├── board_config.py             - required in all cases (put at the root of your machine's fs)
+└── lv_config.py                - LVGL targets:  required (put at the root of your machine's fs)
+
 ```
 
 You MAY want to edit your `board_config.py` to:
