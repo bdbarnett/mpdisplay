@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 '''
-lv_driver_framework.py - LVGL driver framework for MPDisplay
+lv_mpdisplay.py - LVGL driver framework for MPDisplay
 '''
 
 import lvgl as lv

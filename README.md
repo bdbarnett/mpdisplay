@@ -64,7 +64,7 @@ Don't forget to put your display and optional touchscreen and encoder drivers so
 │   ├── busdisplay.py           - required in all cases
 │   ├── mpdisplay_simpletest.py - optional, does not require gui_framework.py or color_setup.py
 │   │
-│   ├── lv_driver_framework.py  - LVGL:  required
+│   ├── lv_mpdisplay.py  - LVGL:  required
 │   ├── lv_touch_test.py        - LVGL:  recommended
 │   │
 │   ├── gui_framework.py        - bare MicroPython:  recommended; Nano-GUI & Micro-GUI:  required

@@ -17,7 +17,7 @@ Substitute width, height, bytes_per_pixel and factor with your values.
 # fbuf2 = heap_caps.malloc(buf_size, heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL)
 
 import lvgl as lv
-import lv_driver_framework
+import lv_mpdisplay
 import board_config
 
 try:
@@ -29,7 +29,7 @@ except ImportError:
     _task_handler = task_handler.TaskHandler()
 
 # Change color_format to match your display
-display = lv_driver_framework.DisplayDriver(
+display = lv_mpdisplay.DisplayDriver(
     board_config.display_drv,
     lv.COLOR_FORMAT.NATIVE,
     fbuf1,
@@ -38,11 +38,11 @@ display = lv_driver_framework.DisplayDriver(
     blocking=True,
 )
 
-touch = lv_driver_framework.TouchDriver(
+touch = lv_mpdisplay.TouchDriver(
     board_config.touch_read_func,
     rotation=board_config.display_drv.rotation,
     rotation_table=board_config.touch_rotation_table,
 )
 
 # Uncomment if your board has an encoder
-# encoder = lv_driver_framework.EncoderDriver(board_config.encoder_read_func, board_config.encoder_button_func)
+# encoder = lv_mpdisplay.EncoderDriver(board_config.encoder_read_func, board_config.encoder_button_func)
