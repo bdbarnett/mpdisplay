@@ -14,12 +14,13 @@ import struct
 
 alloc_emergency_exception_buf(256)
 
-# Command Constants
+# MIPI DCS (Display Command Set) Command Constants
 _INVOFF = const(0x20)
 _INVON = const(0x21)
 _CASET = const(0x2A)
 _RASET = const(0x2B)
 _RAMWR = const(0x2C)
+_COLMOD = const(0x3A)
 _MADCTL = const(0x36)
 _SWRESET = const(0x01)
 _SLPIN = const(0x10)
@@ -27,14 +28,16 @@ _SLPOUT = const(0x11)
 _VSCRDEF = const(0x33)
 _VSCSAD = const(0x37)
 
-# MADCTL bits
-_RGB = const(0x00)
-_BGR = const(0x08)
-_MADCTL_MH = const(0x04)  # Refresh 0=Left to Right, 1=Right to Left (Display Data Latch Order)
-_MADCTL_ML = const(0x10)  # Refresh 0=Top to Bottom, 1=Bottom to Top (Line Address Order)
-_MADCTL_MV = const(0x20)  # 0=Normal, 1=Row/column exchange (Page/Column Order)
-_MADCTL_MX = const(0x40)  # 0=Left to Right, 1=Right to Left (Column Address Order)
-_MADCTL_MY = const(0x80)  # 0=Top to Bottom, 1=Bottom to Top (Page Address Order)
+# MIPI DCS MADCTL bits
+# Bits 0 (Flip Vertical) and 1 (Flip Horizontal) affect how the display is refreshed, not how frame memory is written.
+# Instead of using them, we only change Bits 6 (column/horizontal) and 7 (page/vertical).
+_RGB = const(0x00)  # (Bit 3: 0=RGB order, 1=BGR order)
+_BGR = const(0x08)  # (Bit 3: 0=RGB order, 1=BGR order)
+_MADCTL_MH = const(0x04)  # Refresh 0=Left to Right, 1=Right to Left (Bit 2: Display Data Latch Order)
+_MADCTL_ML = const(0x10)  # Refresh 0=Top to Bottom, 1=Bottom to Top (Bit 4: Line Refresh Order)
+_MADCTL_MV = const(0x20)  # 0=Normal, 1=Row/column exchange (Bit 5: Page/Column Addressing Order)
+_MADCTL_MX = const(0x40)  # 0=Left to Right, 1=Right to Left (Bit 6: Column Address Order)
+_MADCTL_MY = const(0x80)  # 0=Top to Bottom, 1=Bottom to Top (Bit 7: Page Address Order)
 
 # MADCTL values for each of the rotation constants.
 _DEFAULT_ROTATION_TABLE = (
@@ -157,6 +160,7 @@ class BusDisplay:
         """Post initialization tasks may be added here."""
         self._initialized = True
         self.rotation = self._rotation
+        self._colmod()
         self.set_render_mode_full(render_mode_full)
         self.fill_rect(0, 0, self.width, self.height, 0x0)
 
@@ -414,6 +418,10 @@ class BusDisplay:
         # For example, rotation = 90 -> index = 1.  With 4 entries in the rotation table, rotation = 540 -> index = 2
         index = (rotation // 90) % len(rotations)
         return rotations[index] | _BGR if bgr else _RGB
+
+    def _colmod(self):
+        pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
+        self.set_params(_COLMOD, pixel_formats[self.color_depth])
 
     def _init_bytes(self, init_sequence):
         """
