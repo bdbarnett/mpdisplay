@@ -3,24 +3,16 @@
 from board_config import display_drv
 from machine import Timer
 import random
-from sys import platform
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
 # disable it and set a flag so we can swap the color bytes as they are created.
 if display_drv.requires_byte_swap:
-    swap_color_bytes = display_drv.bus_swap_disable(True)
+    needs_swap = display_drv.bus_swap_disable(True)
 else:
-    swap_color_bytes = False
+    needs_swap = False
 
-# Determine how buffers are allocated
+# Define how buffers are allocated
 alloc_buffer = lambda size: memoryview(bytearray(size))
-# If heap_caps is available, use it to allocate in internal DMA-capable memory
-if platform == "esp32":
-    try:
-        from heap_caps import malloc, CAP_DMA, CAP_INTERNAL  # For allocating buffers for the blocks and text
-        alloc_buffer = lambda size: malloc(size, CAP_DMA | CAP_INTERNAL)
-    except ImportError:
-        pass
 
 # Define RGB565 colors
 BLACK = 0x0000
@@ -42,12 +34,12 @@ blocks = []
 blocks_per_screen = (display_drv.width * display_drv.height) / (block_size * block_size)
 
 # Create the blocks
-for pixel_color in [1 << (x + 8) | 1 << x for x in range(8)]:
-# for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE]:
+# for pixel_color in [1 << (x + 8) | 1 << x for x in range(8)]:
+for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE]:
     block = alloc_buffer(block_bytes)
     for i in range(0, block_bytes, bytes_per_pixel):
-        block[i] = pixel_color & 0xff if not swap_color_bytes else pixel_color >> 8
-        block[i+1] = pixel_color >> 8 if not swap_color_bytes else pixel_color & 0xff
+        block[i] = pixel_color & 0xff if not needs_swap else pixel_color >> 8
+        block[i+1] = pixel_color >> 8 if not needs_swap else pixel_color & 0xff
     blocks.append(block)
 
 # Maximum start positions of blocks

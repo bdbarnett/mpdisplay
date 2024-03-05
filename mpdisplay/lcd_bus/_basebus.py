@@ -9,7 +9,7 @@ subclassed by specific bus implementations.
 
 import micropython
 import struct
- 
+
 
 class Optional:  # For typing
     pass
@@ -132,3 +132,18 @@ class BaseBus:
         Receive parameters. Not yet implemented.
         """
         raise NotImplementedError("rx_param not implemented.  Drivers are write-only.")
+
+    def deinit(self):
+        pass
+    
+    def __del__(self):
+        pass
+    
+    def allocate_framebuffer(self, size, caps):
+        return memoryview(bytearray(size))
+    
+    def free_framebuffer(self):
+        pass
+    
+    def get_lane_count(self):
+        pass

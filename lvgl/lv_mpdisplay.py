@@ -9,6 +9,16 @@ lv_mpdisplay.py - LVGL driver framework for MPDisplay
 import lvgl as lv
 from time import ticks_ms, ticks_diff
 
+
+try:
+    import lv_utils  # lv_micropython provides lv_utils
+    if not lv_utils.event_loop.is_running():
+        _eventloop = lv_utils.event_loop(asynchronous=False, exception_sink=None)
+except ImportError:
+    import task_handler  # lvgl_micropython provides task_handler
+    _task_handler = task_handler.TaskHandler()
+
+
 _DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
 
 # When using RGBBus as the data bus the user is not able to allocate the
@@ -52,18 +62,16 @@ class DisplayDriver:
     def __init__(
         self,
         display_drv,
-        color_format=lv.COLOR_FORMAT.NATIVE,
-        frame_buffer1=None,
-        frame_buffer2=None,
+        frame_buffer1,
+        frame_buffer2,
+        color_format=lv.COLOR_FORMAT.RGB565,
         *,
-        factor=10,
         blocking=True,
     ):
         self.display_drv = display_drv
         self._color_size = lv.color_format_get_size(color_format)
-        self._frame_buffer1, self._frame_buffer2 = self._allocate_buffers(
-            frame_buffer1, frame_buffer2, factor
-        )
+        self._frame_buffer1 = frame_buffer1
+        self._frame_buffer2 = frame_buffer2
         self._blocking = blocking
 
         # If byte swapping is required and the display bus is capable of having byte swapping disabled,
@@ -121,73 +129,6 @@ class DisplayDriver:
         )
         if self._blocking:
             self.lv_display.flush_ready()
-
-    def _allocate_buffers(self, frame_buffer1, frame_buffer2, factor):
-        if frame_buffer1 is None:
-            from sys import platform
-
-            buf_size = int(
-                self.display_drv.width *
-                self.display_drv.height *
-                self._color_size
-            )
-
-            if not "RGB" in repr(self.display_drv.display_bus):
-                buf_size = buf_size // factor
-
-            if platform == "esp32":
-                import gc
-                import heap_caps  # NOQA
-
-                gc.collect()
-
-                frame_buffer1 = heap_caps.malloc(
-                    buf_size,
-                    heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
-                )
-                frame_buffer2 = heap_caps.malloc(
-                    buf_size,
-                    heap_caps.CAP_DMA | heap_caps.CAP_INTERNAL
-                )
-
-                if frame_buffer2 is None:
-                    if frame_buffer1 is not None:
-                        heap_caps.free(frame_buffer1)
-
-                    gc.collect()
-                    frame_buffer1 = heap_caps.malloc(
-                        buf_size,
-                        heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
-                    )
-                    frame_buffer2 = heap_caps.malloc(
-                        buf_size,
-                        heap_caps.CAP_DMA | heap_caps.CAP_SPIRAM
-                    )
-
-                if frame_buffer2 is None:
-                    if frame_buffer1 is not None:
-                        heap_caps.free(frame_buffer2)
-
-                    gc.collect()
-                    frame_buffer1 = heap_caps.malloc(
-                        buf_size,
-                        heap_caps.CAP_INTERNAL
-                    )
-
-                    if frame_buffer1 is None:
-                        gc.collect()
-                        frame_buffer1 = heap_caps.malloc(
-                            buf_size,
-                            heap_caps.CAP_SPIRAM
-                        )
-            else:
-                frame_buffer1 = bytearray(buf_size)
-                frame_buffer2 = bytearray(buf_size)
-
-        if frame_buffer1 is None:
-            raise RuntimeError("Not enough memory available to create frame buffer(s)")
-
-        return frame_buffer1, frame_buffer2
 
 
 class TouchDriver:

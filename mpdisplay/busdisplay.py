@@ -160,7 +160,6 @@ class BusDisplay:
         """Post initialization tasks may be added here."""
         self._initialized = True
         self.rotation = self._rotation
-        self._colmod()
         self.set_render_mode_full(render_mode_full)
         self.fill_rect(0, 0, self.width, self.height, 0x0)
 
@@ -421,7 +420,7 @@ class BusDisplay:
 
     def _colmod(self):
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
-        self.set_params(_COLMOD, pixel_formats[self.color_depth])
+        self.set_params(_COLMOD, struct.pack(">H", pixel_formats[self.color_depth]))
 
     def _init_bytes(self, init_sequence):
         """

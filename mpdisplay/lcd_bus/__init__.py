@@ -16,6 +16,16 @@ and
 https://github.com/peterhinch/micropython-samples/blob/master/import/IMPORT.md#2-python-packages-and-the-lazy-loader
 '''
 from sys import platform
+from micropython import const
+
+
+# Memory capabilities.  Maintains compatibility with mp_lcd_bus's allocate_framebuffer
+MEMORY_32BIT = const(2)
+MEMORY_8BIT = const(4)
+MEMORY_DMA = const(8)
+MEMORY_SPIRAM = const(1024)
+MEMORY_INTERNAL = const(2048)
+MEMORY_DEFAULT = const(4096)
 
 
 def __getattr__(attr):
