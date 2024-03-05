@@ -31,7 +31,7 @@ except ImportError:
 # Change color_format to match your display
 display = lv_mpdisplay.DisplayDriver(
     board_config.display_drv,
-    lv.COLOR_FORMAT.NATIVE,
+    lv.COLOR_FORMAT.RGB565,
     fbuf1,
     fbuf2,
     factor=10,
