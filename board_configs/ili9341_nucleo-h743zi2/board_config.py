@@ -5,17 +5,20 @@ on ST Micro STM32 Nucleo-H743ZI2
 
 from lcd_bus import SPIBus
 from ili9341 import ILI9341
-from machine import Pin, I2C, SPI
+from machine import Pin, I2C
 from ft6x36 import FT6x36
 
 
 display_bus = SPIBus(
-    dc='D9',
-    cs='D10',
+    dc=Pin.board.D9,
+    cs=Pin.board.D10,
+#     mosi=Pin.board.D11,
+#     miso=Pin.board.D12,
+#     sclk=Pin.board.D13,
     host=1,
     tx_only=True,
     freq=60_000_000,
-    spi_mode=0,
+    spi_mode=3,
     cmd_bits=8,
     param_bits=8,
     lsb_first=False,

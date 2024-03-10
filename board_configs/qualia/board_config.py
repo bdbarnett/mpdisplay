@@ -28,21 +28,19 @@ display_bus = RGBBus(
     data14=0,  #b3
     data15=45,  #b4
     freq=25000000,
-    bb_size_px=0,
-    hsync_pulse_width=2,
     hsync_front_porch=46,
     hsync_back_porch=44,
+    hsync_pulse_width=2,
     hsync_idle_low=False,
-    vsync_pulse_width=2,
     vsync_front_porch=16,
     vsync_back_porch=18,
+    vsync_pulse_width=2,
     vsync_idle_low=False,
     de_idle_high=False,
     pclk_idle_high=False,
-    pclk_active_neg=False,
+    pclk_active_low=False,
     disp_active_low=False,
     refresh_on_demand=False,
-    bb_inval_cache=False,
 )
 
 display_drv = BusDisplay(
