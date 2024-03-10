@@ -133,17 +133,20 @@ class BaseBus:
         """
         raise NotImplementedError("rx_param not implemented.  Drivers are write-only.")
 
+    def allocate_framebuffer(self, size, caps):
+        """
+        Allocate a framebuffer of the given size and memory capabilities.
+
+        Note:  This function in mp_lcd_bus will throw an exception if more than 2 buffers are allocated,
+        so do not use it for more than 2 buffers if you want your code to be compatible with mp_lcd_bus.
+        """
+        return memoryview(bytearray(size))
+
     def deinit(self):
+        """
+        Deinitialize the bus.  Currently does nothing.
+        """
         pass
     
     def __del__(self):
-        pass
-    
-    def allocate_framebuffer(self, size, caps):
-        return memoryview(bytearray(size))
-    
-    def free_framebuffer(self):
-        pass
-    
-    def get_lane_count(self):
-        pass
+        self.deinit()
