@@ -1,8 +1,14 @@
 """ display_simpletest.py """
 
 from board_config import display_drv
-from machine import Timer
 import random
+
+try:
+    from machine import Timer
+    timed = True
+except ImportError:
+    timed = False
+
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
 # disable it and set a flag so we can swap the color bytes as they are created.
@@ -56,9 +62,10 @@ def print_count(_):
 
 # Prepare for the loop
 print(f"{block_size}x{block_size} blocks per screen: {blocks_per_screen:.2f}")
-print(f"Blocks per second:     ", end="")
-tim = Timer(-1)
-tim.init(mode=Timer.PERIODIC, freq=1, callback=print_count)
+if timed:
+    print(f"Blocks per second:     ", end="")
+    tim = Timer(-1)
+    tim.init(mode=Timer.PERIODIC, freq=1, callback=print_count)
 
 # Infinite loop
 while True:
