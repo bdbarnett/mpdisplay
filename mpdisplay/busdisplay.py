@@ -155,6 +155,7 @@ class BusDisplay:
         self.brightness = brightness
         if invert:
             self.invert_colors(True)
+        self._colmod()
 
     def init(self, render_mode_full=False):
         """Post initialization tasks may be added here."""
@@ -420,7 +421,8 @@ class BusDisplay:
 
     def _colmod(self):
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
-        self.set_params(_COLMOD, struct.pack(">H", pixel_formats[self.color_depth]))
+        self._param_buf[0] = pixel_formats[self.color_depth]
+        self.set_params(_COLMOD, self._param_mv[:1])
 
     def _init_bytes(self, init_sequence):
         """
