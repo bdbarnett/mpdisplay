@@ -33,5 +33,4 @@ class ST7735R(BusDisplay):
     def init(self):
 #         self.rotation_table = _ROTATION_TABLE
         self._init_list(_INIT_SEQUENCE)
-        self._initialized=True
-#         super().init()
+        super().init()

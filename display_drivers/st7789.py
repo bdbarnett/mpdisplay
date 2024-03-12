@@ -3,7 +3,6 @@ see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp3
 """
 
 from busdisplay import BusDisplay
-from time import sleep_ms
 
 
 _INIT_SEQUENCE = [
