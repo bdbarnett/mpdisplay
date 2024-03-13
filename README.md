@@ -24,7 +24,7 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 
 # Quickstart
 Flash your board with your preferred version of MicroPython listed above.  If using the Unix port of MicroPython, put the follwing files in your `lib` folder and skip to `Using popular graphics libraries`.  Note the Unix drivers included with lv_micropython are recommended over these drivers because these drivers discard all keyboard events.  These drivers will work for other graphics libraries on the Unix port of MicroPython.
-- sdl2_lcd.py, sdl2display.py, mpdisplay_simpletest.py and board_configs/unix/board_config.py
+- sdl2lcd.py, sdl2display.py, mpdisplay_simpletest.py and board_configs/unix/board_config.py
 
 ## Install on an MCU with mip
 Replace YOUR_BOARD_HERE with your the directory from [board_configs](board_configs) that matches your installation OR leave that line out and manually install the board_config.py and drivers per the Manual installation directions.
@@ -79,8 +79,8 @@ Don't forget to put your display and optional touchscreen and encoder drivers so
 │   ├── mpdisplay_simpletest.py - optional for all Unix, SPI, I80 and RGB targets
 │   │
 │   ├── sdl2_display.py         - required for Unix / Linux targets (same API as busdisplay)
-│   ├── sdl2_lcd.py             - required for Unix / Linux targets (same FUNCTION as lcd_bus)
-│   └── sdl2_lcd_simpletest.py  - Not needed.  Only useful for Unix developer purposes.
+│   ├── sdl2lcd.py             - required for Unix / Linux targets (same FUNCTION as lcd_bus)
+│   └── sdl2lcd_simpletest.py  - Not needed.  Only useful for Unix developer purposes.
 |                                              May be removed from the repo in the future.
 │   
 ├── lvgl/  (put each of these, not the lvgl directory, in your machine's lib directory)

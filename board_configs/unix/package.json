@@ -1,7 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/unix/board_config.py"],
-      ["lib/sdl2_lcd.py", "github:bdbarnett/mpdisplay/mpdisplay/sdl2_lcd.py"],
+      ["lib/sdl2lcd.py", "github:bdbarnett/mpdisplay/mpdisplay/sdl2lcd.py"],
       ["lib/sdl2display.py", "github:bdbarnett/mpdisplay/mpdisplay/sdl2display.py"],
       ["lib/mpdisplay_simpletest.py", "github:bdbarnett/mpdisplay/mpdisplay/mpdisplay_simpletest.py"]
     ],

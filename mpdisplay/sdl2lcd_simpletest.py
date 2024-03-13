@@ -1,10 +1,10 @@
 # sdl_lcd_simpletest.py - Simple test/demo of the SDL2 LCD module.
-# Description: Test the sdl2_lcd module EXCEPT for the LCD class.
+# Description: Test the sdl2lcd module EXCEPT for the LCD class.
 # Demonstrates copying a buffer to a texture, rendering a filled rectangle to the texture,
 # and rendering the texture to the window, both as a whole and as a part.
 # Also demonstrates handling events such as key presses and mouse movement.
 
-from sdl2_lcd import *
+from sdl2lcd import *
 from time import sleep_ms
 
 width = 640

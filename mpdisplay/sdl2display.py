@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: MIT
 """ Unix SDL2 Display Driver """
 
-import sdl2_lcd
+import sdl2lcd
 
-class SDL2Display(sdl2_lcd.LCD):
+class SDL2Display(sdl2lcd.LCD):
     """
-    Unix SDL2 display driver for MPDisplay.  Wraps sdl2_lcd.LCD to provide a
+    Unix SDL2 display driver for MPDisplay.  Wraps sdl2lcd.LCD to provide a
     get_touch method, set the requires_byte_swap attribute, and to provide
     empty properties and methods required by MPDisplay.
     """
@@ -38,8 +38,8 @@ class SDL2Display(sdl2_lcd.LCD):
         event = self.poll_event()
         if event:
             # if the event is SDL_MOUSEBUTTONDOWN, return the mouse position
-            if event[sdl2_lcd.TYPE] == sdl2_lcd.SDL_MOUSEBUTTONDOWN and event[sdl2_lcd.BUTTON] == sdl2_lcd.SDL_BUTTON_LEFT:
-                return (event[sdl2_lcd.X], event[sdl2_lcd.Y])
+            if event[sdl2lcd.TYPE] == sdl2lcd.SDL_MOUSEBUTTONDOWN and event[sdl2lcd.BUTTON] == sdl2lcd.SDL_BUTTON_LEFT:
+                return (event[sdl2lcd.X], event[sdl2lcd.Y])
         return None
 
     @property

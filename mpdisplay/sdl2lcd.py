@@ -222,7 +222,7 @@ class LCD:
         render_flags=SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
     ):
         """
-        Initializes the SDL2_LCD instance with the given parameters.
+        Initializes the sdl2lcd instance with the given parameters.
 
         :param width: The width of the display (default is 320).
         :type width: int
@@ -284,7 +284,7 @@ class LCD:
 
     def _init(self):
         """
-        Initializes the SDL2_LCD instance.
+        Initializes the sdl2lcd instance.
         """
         self._vsa = self.height - self._tfa - self._bfa  # Vertical scaling area
         retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
@@ -510,7 +510,7 @@ class LCD:
 
     def deinit(self):
         """
-        Deinitializes the SDL2_LCD instance.
+        Deinitializes the sdl2lcd instance.
         """
         retcheck(SDL_DestroyTexture(self.texture))
         retcheck(SDL_DestroyRenderer(self.renderer))
@@ -519,7 +519,7 @@ class LCD:
 
     def __del__(self):
         """
-        Deinitializes the SDL2_LCD instance.
+        Deinitializes the sdl2lcd instance.
         """
         self.deinit()
 

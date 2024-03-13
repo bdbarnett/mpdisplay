@@ -1,7 +1,7 @@
 """ Unix SDL2 board configuration """
 
 import sdl2display
-import sdl2_lcd
+import sdl2lcd
 import sys
 
 
@@ -11,8 +11,8 @@ display_drv = sdl2display.SDL2Display(
     x=0, # sdl2bus.SDL_WINDOWPOS_CENTERED,
     y=0, # sdl2bus.SDL_WINDOWPOS_CENTERED,
     title="MicroPython",
-    window_flags=sdl2_lcd.SDL_WINDOW_SHOWN,
-    render_flags=sdl2_lcd.SDL_RENDERER_ACCELERATED,
+    window_flags=sdl2lcd.SDL_WINDOW_SHOWN,
+    render_flags=sdl2lcd.SDL_RENDERER_ACCELERATED,
     color_depth=16,
     scale=1.5,
 )
