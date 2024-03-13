@@ -3,7 +3,7 @@
 # MPDisplay
 Display, touch and encoder drivers for [MicroPython](https://github.com/micropython/micropython)
 
-MPDisplay provides display, touch and encoder drivers as well as framework, config and test files for MicroPython and can be used in LV_MicroPython, LVGL_MicroPython, TFT Graphics, Nano-GUI and Micro-GUI.  It provides SDL2 LCD drivers for Unix as well as SPI and I80 display buses in the included [lcd_bus](lib/lcd_bus) but also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.
+MPDisplay provides display, touch and encoder drivers as well as framework, config and test files for MicroPython and can be used in LV_MicroPython, LVGL_MicroPython, TFT Graphics, Nano-GUI and Micro-GUI.  It provides SDL2 LCD drivers for Unix as well as SPI and I80 display buses in the included [lcd_bus](mpdisplay/lcd_bus) but also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.
 
 # Supported platforms
 ## MicroPython
@@ -16,10 +16,10 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  MPDisplay works with the mp_lcd_bus bus drivers in LVGL_MicroPython.
 
 ## TFT Graphics
-[TFT Graphics](https://github.com/bdbarnett/tft_graphics) is a port I created of Russ Hughes's st7789mpy_py library to demonstrate MPDisplay's usefullness with other libraries.  It is fully functional a very powerful.  It includes all the examples provided in the original library.  It draws directly to the screen, only creating small buffers for individual characters in text or for bitmap images.
+[TFT Graphics](https://github.com/bdbarnett/tft_graphics) is a port I created of Russ Hughes's st7789mpy_py library to demonstrate MPDisplay's usefullness with other libraries.  It is fully functional and very powerful.  It includes all the examples provided in the original library.  It draws directly to the screen, only creating small buffers for individual characters in text or for bitmap images.
 
 ## DisplayBuffer
-[DisplayBuffer](https://github.com/bdbarnett/displaybuffer) is a class I wrote based on the drivers Peter Hinch wrote in Nano-GUI and Micro-GUI.  I initially wrote it to make MPDisplay compatible with those libraries, but it is very useful on its own.  It is a framebuffer based on the number of pixels on the display, but can be sized to 2 bytes per pixel, 1 byte per pixel or 2 pixels per byte depending on whether the user wants all 65k (RGB565), only 256 (RGB332) or even only 16 (RGB565 in a lookup table) colors.  Very clever Mr. Hinch!
+[DisplayBuffer](https://github.com/bdbarnett/displaybuffer) is a class I wrote based on the drivers Peter Hinch wrote in Nano-GUI and Micro-GUI.  I initially wrote it to make MPDisplay compatible with those libraries, but it is very useful on its own.  It is a framebuffer based on the number of pixels on the display, but can be sized to 2 bytes per pixel, 1 byte per pixel or 2 pixels per byte depending on whether the user wants all 65k (RGB565), only 256 (RGB332) or even only 16 (RGB565 in a lookup table) colors.
 
 ## Nano-GUI on MicroPython
 [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics library written in MicroPython for MicroPython by longtime MicroPython coder Peter Hinch.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly Unix, I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
@@ -45,9 +45,7 @@ mpremote mip install --target=/ "github:bdbarnett/mpdisplay/board_configs/YOUR_B
 
 ## Manual installation
 Download the following files and upload them to your board:
-- The [lib](lib) folder
-- [lv_config.py](lv_config.py) for use with LV_MicroPython or LVGL_MicroPython
-- [color_setup.py](color_setup.py) for use with bare MicroPython, Nano-GUI or Micro-GUI
+- Put the contents of the [mpdisplay](mpdisplay) folder in your `lib` folder
 
 You will also need the folowing files that match your particular hardware:
 - An appropriate `board_config.py` from [board_configs](board_configs).  If you don't find one that matches your hardware, try to find one with the same bus, display controller and MCU as yours.
@@ -56,12 +54,20 @@ You will also need the folowing files that match your particular hardware:
 - If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
+If you have LVGL compiled into MicroPython, also get:
+- the contents of the [lvgl](lvgl) folder
+
+To use Nano-GUI or Micro-GUI, [see DisplayBuffer](https://github.com/bdbarnett/displaybuffer)
+
+To use [TFT_Graphics](https://github.com/bdbarnett/tft_graphics), see its directions.
+
+
 # Suggested filesystem structure
 Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in /lib or /.
 ```
-├── mpdisplay (put each of these, not the mpdisplay directory, in your machine's lib directory)
+├── mpdisplay/  (put each of these, not the mpdisplay directory, in your machine's lib directory)
 │   │
-│   ├── lcd_bus                 - required if C bus drivers aren't compiled in, otherwise Optional
+│   ├── lcd_bus/                - required if C bus drivers aren't compiled in, otherwise Optional
 │   │   ├── __init__.py         - required
 │   │   ├── _basebus.py         - required
 │   │   ├── _spibus.py          - required for SPIBus only
@@ -76,13 +82,12 @@ Don't forget to put your display and optional touchscreen and encoder drivers so
 │   └── sdl2_lcd_simpletest.py  - Not needed.  Only useful for Unix developer purposes.
 |                                              May be removed from the repo in the future.
 │   
-├── lvgl (put each of these, not the lvgl directory, in your machine's lib directory)
+├── lvgl/  (put each of these, not the lvgl directory, in your machine's lib directory)
 │   ├── lv_mpdisplay.py         - LVGL:  required
 │   └── lv_touch_test.py        - LVGL:  recommended
 │
 ├── board_config.py             - required in all cases (put at the root of your machine's fs)
 └── lv_config.py                - LVGL targets:  required (put at the root of your machine's fs)
-
 ```
 
 You MAY want to edit your `board_config.py` to:
@@ -100,22 +105,15 @@ For use in LVGL, you MAY want to edit `lv_config.py` to:
 - Change from blocking mode to non-blocking mode (currently has issues in mp_lcd_bus drivers)
 - Enable encoder(s) if you are using them.  Simply uncomment the last line.
 
-For use in Nano-GUI, you MAY want to edit `color_setup.py` to:
-- Change the mode to save RAM.  The fewer the number of colors, the less RAM is taken at the expense of a slight increase in refresh time.
-  	- `mode = framebuf.RGB565` yields 65,536 colors; creates a frame buffer of size width * height * 2 bytes.  No bounce buffer is needed.  This is the fastest mode.
-  	- `mode = framebuf.GS8` yields 256 colors; creates a frame buffer of size width * height bytes and a bounce buffer of size width * 2 bytes.  This is the slowest mode.
-  	- `mode = framebuf.GS4_HMSB` yields 16 colors; creates a frame buffer of size width * height // 2 bytes and a bounce buffer of size width * 2 bytes.  This is somewhat slow.
-- Rename it to hardware_setup.py, add pin definitions and configure `Display` for use with [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui)
-
 # Usage
 ## All graphics platforms
-No matter which graphics platform you plan to use, it is recommended that you first try the [display_simpletest.py](lib/display_simpletest.py) program.  See the code from that program and [testris](https://github.com/bdbarnett/testris) for bare MicroPython usage examples.  It is also recommended that you try [gui_simpletest.py](lib/qui_simpletest.py), which uses [gui_framework.py](lib/gui_framework.py) and [color_setup.py](color_setup.py), but DOES NOT use Nano-GUI.  It demonstrates a simple way to get started with MPDisplay without using a graphics library that provides widgets.
+No matter which graphics platform you plan to use, it is recommended that you first try the [display_simpletest.py](mpdisplay/mpdisplay_simpletest.py) program.  See the code from that program and [testris](https://github.com/bdbarnett/testris) for bare MicroPython usage examples.  It is also recommended that you try `displaybuf_simpletest.py` from [DisplayBuffer](https://github.com/bdbarnett/displaybuffer).  It demonstrates a simple way to get started with MPDisplay without using a graphics library that provides widgets.
 
 ## Nano-GUI
-If you have downloaded the `gui` directory from [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) to your /lib folder, try [nano_gui_simpletest.py](lib/nano_gui_simpletest.py).  The color of the top-left square should be red, the diagonal line should be green, and the bottom-right square should be blue.
+If you have downloaded the `gui` directory from [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) to your /lib folder, try `nano_gui_simpletest.py` from [DisplayBuffer](https://github.com/bdbarnett/displaybuffer).  The color of the top-left square should be red, the diagonal line should be green, and the bottom-right square should be blue.
 
 ## LVGL
-If you have LVGL compiled into your MicroPython binary, try [lv_touch_test.py](lib/lv_touch_test.py).  The color of the buttons should be blue when not selected, green when pressed and red when focused.  If the touch points don't line up with the buttons, it provides directions in the REPL on how to find the correct touch rotation masks.  From the REPL type:
+If you have LVGL compiled into your MicroPython binary, try [lv_touch_test.py](lvgl/lv_touch_test.py).  The color of the buttons should be blue when not selected, green when pressed and red when focused.  If the touch points don't line up with the buttons, it provides directions in the REPL on how to find the correct touch rotation masks.  From the REPL type:
 ```
 from lv_touch_test import mask, rotation
 ```
