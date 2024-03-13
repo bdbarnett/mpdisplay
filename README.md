@@ -1,5 +1,3 @@
-(Please note, the directory structure has changed, some of the filenames have changed, and some of the files have been moved into their own repositories.  Many of the links below aren't working.)
-
 # MPDisplay
 Display, touch and encoder drivers for [MicroPython](https://github.com/micropython/micropython)
 
