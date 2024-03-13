@@ -17,6 +17,7 @@ from ._basebus import BaseBus, Optional
 class I80Bus(BaseBus):
     """
     Represents an I80 bus interface for controlling GPIO pins.
+
     Currently only supports 8-bit data bus width and requires pin numbers instead of pin names.
     ESP32, RP2, SAMD and NRF use pin numbers and should work with this driver.
     MIMXRT and STM use pin names and have not been tested.
@@ -25,15 +26,36 @@ class I80Bus(BaseBus):
     GPIO registers.  If the pins are not sequential or are on different ports, the driver will
     use lookup tables to write data to the GPIO registers.
 
-    Args:
-        dc (int): The pin number for the DC pin.
-        cs (int): The pin number for the CS pin.
-        wr (int): The pin number for the WR pin.
-        d0 - d7 (int): The pin numbers for the data pins.
-        cs_active_high (bool): True if CS is active high, False if CS is active low.
-        dc_data_level (int): The level for the DC pin when sending data (1 or 0).
-        pclk_active_neg (bool): True if PCLK is active low, False if PCLK is active high.
-        swap_color_bytes (bool): True if the color bytes should be swapped, False otherwise.
+    :param dc: The pin number for the DC pin.
+    :type dc: int
+    :param cs: The pin number for the CS pin.
+    :type cs: int
+    :param wr: The pin number for the WR pin.
+    :type wr: int
+    :param d0: The pin number for the data pin 0.
+    :type d0: int
+    :param d1: The pin number for the data pin 1.
+    :type d1: int
+    :param d2: The pin number for the data pin 2.
+    :type d2: int
+    :param d3: The pin number for the data pin 3.
+    :type d3: int
+    :param d4: The pin number for the data pin 4.
+    :type d4: int
+    :param d5: The pin number for the data pin 5.
+    :type d5: int
+    :param d6: The pin number for the data pin 6.
+    :type d6: int
+    :param d7: The pin number for the data pin 7.
+    :type d7: int
+    :param cs_active_high: True if CS is active high, False if CS is active low.
+    :type cs_active_high: bool
+    :param dc_data_level: The level for the DC pin when sending data (1 or 0).
+    :type dc_data_level: int
+    :param pclk_active_neg: True if PCLK is active low, False if PCLK is active high.
+    :type pclk_active_neg: bool
+    :param swap_color_bytes: True if the color bytes should be swapped, False otherwise.
+    :type swap_color_bytes: bool
     """
 
     name = "MicroPython I80Bus driver"

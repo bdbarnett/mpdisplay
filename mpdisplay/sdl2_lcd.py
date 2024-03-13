@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """
 An implementation of an SDL2 Bus library written in MicroPython.
 """
@@ -218,6 +221,30 @@ class LCD:
         window_flags=SDL_WINDOW_SHOWN,
         render_flags=SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
     ):
+        """
+        Initializes the SDL2_LCD instance with the given parameters.
+
+        :param width: The width of the display (default is 320).
+        :type width: int
+        :param height: The height of the display (default is 240).
+        :type height: int
+        :param rotation: The rotation of the display (default is 0).
+        :type rotation: int
+        :param color_depth: The color depth of the display (default is 16).
+        :type color_depth: int
+        :param scale: The scale factor for the display (default is 1).
+        :type scale: int
+        :param x: The x-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
+        :type x: int
+        :param y: The y-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
+        :type y: int
+        :param title: The title of the display window (default is "MicroPython").
+        :type title: str
+        :param window_flags: The flags for creating the display window (default is SDL_WINDOW_SHOWN).
+        :type window_flags: int
+        :param render_flags: The flags for creating the renderer (default is SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC).
+        :type render_flags: int
+        """
         self._width = width
         self._height = height
         self._rotation = rotation
@@ -256,6 +283,9 @@ class LCD:
         self._init()
 
     def _init(self):
+        """
+        Initializes the SDL2_LCD instance.
+        """
         self._vsa = self.height - self._tfa - self._bfa  # Vertical scaling area
         retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
         retcheck(SDL_SetRenderDrawColor(self.renderer, 0, 0, 0, 255))
@@ -270,22 +300,46 @@ class LCD:
 
     @property
     def width(self):
+        """
+        The width of the display.
+        
+        :return: The width of the display.
+        :rtype: int
+        """
         if ((self._rotation // 90) & 1) == 1:  # if rotation index is odd
             return self._height
         return self._width
 
     @property
     def height(self):
+        """
+        The height of the display.
+        
+        :return: The height of the display.
+        :rtype: int
+        """
         if ((self._rotation // 90) & 1) == 1:  # if rotation index is odd
             return self._width
         return self._height
 
     @property
     def rotation(self):
+        """
+        The rotation of the display.
+
+        :return: The rotation of the display.
+        :rtype: int
+        """
         return self._rotation
 
     @rotation.setter
     def rotation(self, value):
+        """
+        Sets the rotation of the display.
+
+        :param value: The rotation of the display.
+        :type value: int
+        """
         if value == self._rotation:
             return
         self._rotation = value
@@ -295,6 +349,20 @@ class LCD:
         self._init()
 
     def blit(self, x, y, w, h, buffer):
+        """
+        Blits a buffer to the display.
+        
+        :param x: The x-coordinate of the display.
+        :type x: int
+        :param y: The y-coordinate of the display.
+        :type y: int
+        :param w: The width of the display.
+        :type w: int
+        :param h: The height of the display.
+        :type h: int
+        :param buffer: The buffer to blit to the display.
+        :type buffer: bytearray
+        """
         pitch = int(w * self.color_depth // 8)
         if len(buffer) != pitch * h:
             raise ValueError("Buffer size does not match dimensions")
@@ -303,11 +371,23 @@ class LCD:
         self._show(blitRect)
 
     def fill_rect(self, x, y, w, h, color):
-        '''
-        Fill a rectangle with a color
+        """
+        Fill a rectangle with a color.
+
         Renders to the texture instead of directly to the window
-        to facilitate scrolling and scaling
-        '''
+        to facilitate scrolling and scaling.
+
+        :param x: The x-coordinate of the rectangle.
+        :type x: int
+        :param y: The y-coordinate of the rectangle.
+        :type y: int
+        :param w: The width of the rectangle.
+        :type w: int
+        :param h: The height of the rectangle.
+        :type h: int
+        :param color: The color of the rectangle.
+        :type color: int
+        """
         fillRect = SDL_Rect(x, y, w, h)
         if self.color_depth == 16:
             r = (color >> 8) & 0xF8 | (color >> 13) & 0x7  # 5 bit to 8 bit red
@@ -323,6 +403,12 @@ class LCD:
         self._show(fillRect)
 
     def _show(self, renderRect=None):
+        """
+        Show the display.  Automatically called after blitting or filling the display.
+
+        :param renderRect: The rectangle to render (default is None).
+        :type renderRect: SDL_Rect
+        """
         if self._scroll_y == None:
             retcheck(SDL_RenderCopy(self.renderer, self.texture, renderRect, renderRect))
         else:
@@ -348,10 +434,26 @@ class LCD:
         retcheck(SDL_RenderPresent(self.renderer))
 
     def vscsad(self, y):
+        """
+        Set the vertical scroll start address.
+        
+        :param y: The vertical scroll start address.
+        :type y: int
+        """
         self._scroll_y = y
         self._show()
 
     def vscrdef(self, tfa, vsa, bfa):
+        """
+        Set the vertical scroll definition.
+
+        :param tfa: The top fixed area.
+        :type tfa: int
+        :param vsa: The vertical scrolling area.
+        :type vsa: int
+        :param bfa: The bottom fixed area.
+        :type bfa: int
+        """
         if tfa + vsa + bfa != self.height:
             raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
         self._tfa = tfa
@@ -360,6 +462,12 @@ class LCD:
         self._show()
 
     def poll_event(self):
+        """
+        Polls for an event and returns the event type and data.
+
+        :return: The event type and data.
+        :rtype: tuple
+        """
         e = self._event
         if SDL_PollEvent(e):
             event_type = int.from_bytes(e[:4], 'little')
@@ -401,12 +509,18 @@ class LCD:
         return None
 
     def deinit(self):
+        """
+        Deinitializes the SDL2_LCD instance.
+        """
         retcheck(SDL_DestroyTexture(self.texture))
         retcheck(SDL_DestroyRenderer(self.renderer))
         retcheck(SDL_DestroyWindow(self.win))
         retcheck(SDL_Quit())
 
     def __del__(self):
+        """
+        Deinitializes the SDL2_LCD instance.
+        """
         self.deinit()
 
 
@@ -415,14 +529,23 @@ class LCD:
 ###############################################################################
 
 class Events:
-    # SDL2's SDL_Event type is a union of several structs. The largest of these
-    # is 56 bytes long. The following structs are used to access the fields of
-    # the SDL_Event struct.
+    """
+    SDL2's SDL_Event type is a union of several structs. The largest of these
+    is 56 bytes long. The following structs are used to access the fields of
+    the SDL_Event struct.
+    """
 
     @staticmethod
     def to_struct(e):
-        # Return an event struct based on the event type
-        # The type is the first 4 bytes of the event
+        """
+        Return an event struct based on the event type
+        The type is the first 4 bytes of the event
+
+        :param e: The event.
+        :type e: bytearray
+        :return: The event struct.
+        :rtype: uctypes.struct
+        """
         event_type = int.from_bytes(e[:4], 'little')
         try:
             return uctypes.struct(uctypes.addressof(e), Events.event_map[event_type])
@@ -517,6 +640,9 @@ class Events:
 ###############################################################################
 
 def SDL_DEFINE_PIXELFORMAT(type, order, layout, bits, bytes):
+    """
+    Define a pixel format.
+    """
     return ((1 << 28) | ((type) << 24) | ((order) << 20) | ((layout) << 16) | \
         ((bits) << 8) | ((bytes) << 0))
 

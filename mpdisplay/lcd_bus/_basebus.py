@@ -44,13 +44,29 @@ class BaseBus:
         ) -> None:
         """
         Initialize the bus with the given parameters.
+
+        :param width: Width of the display in pixels
+        :type width: int
+        :param height: Height of the display in pixels
+        :type height: int
+        :param bpp: Bits per pixel
+        :type bpp: int
+        :param buffer_size: Size of the buffer in bytes
+        :type buffer_size: int
+        :param rgb565_byte_swap: Enable or disable color byte swapping
+        :type rgb565_byte_swap: bool
         """
         self._bpp = bpp
         self.enable_swap(rgb565_byte_swap or self._swap_enabled)
 
     def enable_swap(self, enable: Optional[bool] = None) -> bool:
         """
-        Enable or disable color byte swapping.  Returns the current state of the swap.
+        Enable or disable color byte swapping.  Returns the current state of the setting.
+
+        :param enable: Enable or disable color byte swapping
+        :type enable: bool
+        :return: Current state of the setting
+        :rtype: bool
         """
         if enable is not None:
             if enable and self._bpp == 16:
@@ -69,7 +85,11 @@ class BaseBus:
     def _swap_bytes(self, buf: ptr8, buf_size_px: int):
         """
         Swap the bytes in a buffer of RGB565 data.
-        Somewhat faster than _swap_bytes_in_place.
+
+        :param buf: Buffer of RGB565 data
+        :type buf: ptr8
+        :param buf_size_px: Size of the buffer in pixels
+        :type buf_size_px: int
         """
         for i in range(0, buf_size_px * 2, 2):
             tmp = buf[i]
@@ -79,13 +99,21 @@ class BaseBus:
     @micropython.viper
     def _no_swap(self, buf: ptr8, buf_size_px: int):
         """
-        Do nothing.
+        Do nothing.  This function is used when byte swapping is disabled.
+
+        :param buf: Buffer of RGB565 data
+        :type buf: ptr8
+        :param buf_size_px: Size of the buffer in pixels
+        :type buf_size_px: int
         """
         return
 
     def register_callback(self, callback: callable) -> None:
         """
         Register a callback function to be called when a transaction is done.
+
+        :param callback: Callback function
+        :type callback: callable
         """
         self.callback = callback
 
@@ -93,6 +121,8 @@ class BaseBus:
     def _tx_color_done_cb(self) -> bool:
         """
         Callback function to be called when a transaction is done.
+
+        :return: False
         """
         self.callback()
         self.trans_done = True
@@ -102,6 +132,19 @@ class BaseBus:
     def tx_color(self, cmd: int, data: memoryview, x_start: int, y_start: int, x_end: int, y_end: int) -> None:
         """
         Transmit color data over the bus.
+
+        :param cmd: Command to send before the data
+        :type cmd: int
+        :param data: Color data
+        :type data: memoryview
+        :param x_start: Starting x coordinate
+        :type x_start: int
+        :param y_start: Starting y coordinate
+        :type y_start: int
+        :param x_end: Ending x coordinate
+        :type x_end: int
+        :param y_end: Ending y coordinate
+        :type y_end: int
         """
         self.trans_done = False
         self.swap_bytes(data, len(data) // 2)
@@ -112,6 +155,11 @@ class BaseBus:
     def tx_param(self, cmd: Optional[int] = None, data: Optional[memoryview] = None) -> None:
         """
         Transmit parameters over the bus.
+
+        :param cmd: Command to send before the data
+        :type cmd: int
+        :param data: Parameter data
+        :type data: memoryview
         """
 
         self.cs(self._cs_active)
@@ -130,15 +178,25 @@ class BaseBus:
     def rx_param(self, cmd: int, data: memoryview) -> int:
         """
         Receive parameters. Not yet implemented.
+
+        :param cmd: Command to send before the data
+        :type cmd: int
+        :param data: Parameter data
+        :type data: memoryview
         """
         raise NotImplementedError("rx_param not implemented.  Drivers are write-only.")
 
-    def allocate_framebuffer(self, size, caps):
+    def allocate_framebuffer(self, size: int, caps: int):
         """
         Allocate a framebuffer of the given size and memory capabilities.
 
         Note:  This function in mp_lcd_bus will throw an exception if more than 2 buffers are allocated,
         so do not use it for more than 2 buffers if you want your code to be compatible with mp_lcd_bus.
+
+        :param size: Size of the buffer in bytes
+        :type size: int
+        :param caps: Memory capabilities.  Not used.  Maintains compatibility with mp_lcd_bus's allocate_framebuffer
+        :type caps: int
         """
         return memoryview(bytearray(size))
 
@@ -149,4 +207,7 @@ class BaseBus:
         pass
     
     def __del__(self):
+        """
+        Deinitialize the bus.
+        """
         self.deinit()

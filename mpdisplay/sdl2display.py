@@ -1,19 +1,39 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """ Unix SDL2 Display Driver """
 
 import sdl2_lcd
 
 class SDL2Display(sdl2_lcd.LCD):
     """
-    Unix SDL2 display driver for MPDisplay
+    Unix SDL2 display driver for MPDisplay.  Wraps sdl2_lcd.LCD to provide a
+    get_touch method, set the requires_byte_swap attribute, and to provide
+    empty properties and methods required by MPDisplay.
     """
     display_name = "SDL2Display"
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the SDL2Display driver.  Set requires_byte_swap to False
+        and call the base class constructor
+        
+        :param args: positional arguments to pass to the base class constructor
+        :param kwargs: keyword arguments to pass to the base class constructor
+        """
         self.requires_byte_swap = False
 
         super().__init__(*args, **kwargs)
 
     def get_touch(self):
+        """
+        Get the touch position from the SDL2 event queue.  If the event is
+        SDL_MOUSEBUTTONDOWN and the left button is pressed, return the
+        mouse position.  Otherwise, return None.
+        
+        :return: (x, y) tuple of the mouse position or None
+        :rtype: tuple or None
+        """
         # NOTE: This discards all events except MOUSEBUTTONDOWN on the left button
         event = self.poll_event()
         if event:

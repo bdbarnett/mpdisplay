@@ -55,6 +55,14 @@ _MIRRORED_ROTATION_TABLE = (
 )
 
 class BusDisplay:
+    class BusDisplay:
+        """
+        A class used to represent a display connected to a bus.
+
+        This class provides the necessary interfaces to interact with a display
+        connected to a bus. It allows setting various display parameters like
+        width, height, rotation, color depth, brightness, etc.
+        """
     display_name = "BusDisplay"
 
     def __init__(
@@ -90,6 +98,42 @@ class BusDisplay:
         # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 3 lines above
         #        pixels_in_byte_share_row=True,
     ):
+        """
+        Initializes the BusDisplay with the given parameters.
+
+        :param display_bus: The bus to which the display is connected.
+        :type display_bus: object
+        :param width: The width of the display.
+        :type width: int
+        :param height: The height of the display.
+        :type height: int
+        :param colstart: The starting column of the display (default is 0).
+        :type colstart: int, optional
+        :param rowstart: The starting row of the display (default is 0).
+        :type rowstart: int, optional
+        :param rotation: The rotation of the display (default is 0).
+        :type rotation: int, optional
+        :param mirrored: Whether the display is mirrored (default is False).
+        :type mirrored: bool, optional
+        :param color_depth: The color depth of the display (default is 16).
+        :type color_depth: int, optional
+        :param bgr: Whether the display uses BGR color order (default is False).
+        :type bgr: bool, optional
+        :param invert: Whether the display colors are inverted (default is False).
+        :type invert: bool, optional
+        :param reverse_bytes_in_word: Whether the bytes in a word are reversed (default is False).
+        :type reverse_bytes_in_word: bool, optional
+        :param brightness: The brightness of the display (default is 1.0).
+        :type brightness: float, optional
+        :param backlight_pin: The pin number for the display backlight (default is None).
+        :type backlight_pin: int, optional
+        :param backlight_on_high: Whether the backlight is on when the pin is high (default is True).
+        :type backlight_on_high: bool, optional
+        :param reset_pin: The pin number for resetting the display (default is None).
+        :type reset_pin: int, optional
+        :param reset_high: Whether the display resets when the pin is high (default is True).
+        :type reset_high: bool, optional
+        """
         self.display_bus = display_bus
         self._width = width
         self._height = height
@@ -158,13 +202,41 @@ class BusDisplay:
         self._colmod()
 
     def init(self, render_mode_full=False):
-        """Post initialization tasks may be added here."""
+        """
+        Post initialization tasks may be added here.
+        
+        This method may be overridden by subclasses to perform any post initialization.
+        If it is overridden, it must call super().init() or set self._initialized = True.
+
+        :param render_mode_full: Whether to set the display to render the full screen each
+         time the .blit() method is called (default is False).
+        :type render_mode_full: bool, optional
+        """
         self._initialized = True
         self.rotation = self._rotation
         self.set_render_mode_full(render_mode_full)
         self.fill_rect(0, 0, self.width, self.height, 0x0)
 
     def blit(self, x, y, width, height, buf):
+        """
+        Blit a buffer to the display.
+
+        This method takes a buffer of pixel data and writes it to a specified
+        rectangular area of the display. The top-left corner of the rectangle is
+        specified by the x and y parameters, and the size of the rectangle is
+        specified by the width and height parameters.
+
+        :param x: The x-coordinate of the top-left corner of the rectangle.
+        :type x: int
+        :param y: The y-coordinate of the top-left corner of the rectangle.
+        :type y: int
+        :param width: The width of the rectangle.
+        :type width: int
+        :param height: The height of the rectangle.
+        :type height: int
+        :param buf: The buffer containing the pixel data to be written to the display.
+        :type buf: memoryview
+        """
         x1 = x + self._colstart
         x2 = x1 + width - 1
         y1 = y + self._rowstart
@@ -181,14 +253,22 @@ class BusDisplay:
         """
         Draw a rectangle at the given location, size and filled with color.
 
-        Args:
-            x (int): Top left corner x coordinate
-            y (int): Top left corner y coordinate
-            width (int): Width in pixels
-            height (int): Height in pixels
-            color (int): 565 encoded color
-        """
+        This method draws a filled rectangle on the display. The top-left corner of
+        the rectangle is specified by the x and y parameters, and the size of the
+        rectangle is specified by the width and height parameters. The rectangle is
+        filled with the specified color.
 
+        :param x: The x-coordinate of the top-left corner of the rectangle.
+        :type x: int
+        :param y: The y-coordinate of the top-left corner of the rectangle.
+        :type y: int
+        :param width: The width of the rectangle in pixels.
+        :type width: int
+        :param height: The height of the rectangle in pixels.
+        :type height: int
+        :param color: The color to fill the rectangle with, encoded as a 565 color.
+        :type color: int
+        """
         if height > width:
             raw_data = struct.pack("<H", color) * height
             for col in range(x, x + width):
@@ -200,18 +280,32 @@ class BusDisplay:
 
     @property
     def width(self):
+        """The width of the display in pixels."""
         if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
             return self._height
         return self._width
 
     @property
     def height(self):
+        """The height of the display in pixels."""
         if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
             return self._width
         return self._height
 
     def set_render_mode_full(self, render_mode_full=False):
-        # If rendering the full screen, set the window once
+        """
+        Set the render mode of the display.
+
+        This method sets the render mode of the display. If the render_mode_full
+        parameter is True, the display will be set to render the full screen each
+        time the .blit() method is called. Otherwise, the window will be set each
+        time the .blit() method is called.
+
+        :param render_mode_full: Whether to set the display to render the full screen
+         each time the .blit() method is called (default is False).
+        :type render_mode_full: bool, optional
+        """
+        # If rendering the full screen, set the window now
         # and pass each time .blit() is called.
         if render_mode_full:
             self._set_window(0, 0, self.width, self.height)
@@ -221,8 +315,10 @@ class BusDisplay:
             self.set_window = self._set_window
 
     def bus_swap_disable(self, value):
-        '''
-        If self.requires_bus_swap and the guest application is capable of byte swapping the color data
+        """
+        Disable byte swapping in the display bus.
+
+        If self.requires_bus_swap and the guest application is capable of byte swapping color data
         check to see if byte swapping can be disabled in the display bus.  If so, disable it.
 
         Guest applications that are capable of byte swapping should include:
@@ -234,8 +330,11 @@ class BusDisplay:
             else:
                 swap_color_bytes = False
 
-        Returns True if the bus swap was disabled, False if it was not.
-        '''
+        :param value: Whether to disable byte swapping in the display bus.
+        :type value: bool
+        :return: True if the bus swap was disabled, False if it was not.
+        :rtype: bool
+        """
         if hasattr(self.display_bus, "enable_swap"):
             self.display_bus.enable_swap(not value)
             return value
@@ -243,6 +342,12 @@ class BusDisplay:
 
     @property
     def power(self):
+        """
+        The power state of the display.
+        
+        :return: The power state of the display.
+        :rtype: int
+        """
         if self._power_pin is None:
             return -1
 
@@ -254,6 +359,12 @@ class BusDisplay:
 
     @power.setter
     def power(self, value):
+        """
+        Set the power state of the display.
+        
+        :param value: The power state to set.
+        :type value: int
+        """
         if self._power_pin is None:
             return
 
@@ -264,6 +375,12 @@ class BusDisplay:
 
     @property
     def brightness(self):
+        """
+        The brightness of the display.
+
+        :return: The brightness of the display.
+        :rtype: float
+        """
         if self._backlight_pin is None:
             return -1
 
@@ -280,6 +397,12 @@ class BusDisplay:
 
     @brightness.setter
     def brightness(self, value):
+        """
+        Set the brightness of the display.
+
+        :param value: The brightness to set.
+        :type value: float
+        """
         if self._backlight_pin:
             if 0 <= float(value) <= 1.0:
                 if self._backlight_is_pwm:
@@ -291,12 +414,22 @@ class BusDisplay:
                 self._brightness = value
 
     def reset(self):
+        """
+        Reset display.
+
+        This method resets the display. If the display has a reset pin, it is
+        reset using the reset pin. Otherwise, the display is reset using the
+        software reset command.
+        """
         if self._reset_pin is not None:
             self.hard_reset()
         else:
             self.soft_reset()
 
     def hard_reset(self):
+        """
+        Hard reset display.
+        """
         self._reset_pin.value(self._reset_high)
         sleep_ms(120)
         self._reset_pin.value(not self._reset_high)
@@ -310,10 +443,22 @@ class BusDisplay:
 
     @property
     def rotation(self):
+        """
+        The rotation of the display.
+
+        :return: The rotation of the display.
+        :rtype: int
+        """
         return self._rotation
 
     @rotation.setter
     def rotation(self, value):
+        """
+        Set the rotation of the display.
+
+        :param value: The rotation to set.
+        :type value: int
+        """
         self._rotation = value
 
         self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
@@ -323,9 +468,8 @@ class BusDisplay:
         """
         Enable or disable display sleep mode.
 
-        Args:
-            value (bool): if True enable sleep mode. if False disable sleep
-            mode
+        :param value: If True, enable sleep mode. If False, disable sleep mode.
+        :type value: bool
         """
         if value:
             self.set_params(_SLPIN)
@@ -342,10 +486,12 @@ class BusDisplay:
         You could write to these areas off display and scroll them into view by
         changing the TFA, VSA and BFA values.
 
-        Args:
-            tfa (int): Top Fixed Area
-            vsa (int): Vertical Scrolling Area
-            bfa (int): Bottom Fixed Area
+        :param tfa: Top Fixed Area
+        :type tfa: int
+        :param vsa: Vertical Scrolling Area
+        :type vsa: int
+        :param bfa: Bottom Fixed Area
+        :type bfa: int
         """
         self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
@@ -354,7 +500,7 @@ class BusDisplay:
         Set Vertical Scroll Start Address of RAM.
 
         Defines which line in the Frame Memory will be written as the first
-        line after the last line of the Top Fixed Area on the display
+        line after the last line of the Top Fixed Area on the display.
 
         Example:
 
@@ -362,16 +508,17 @@ class BusDisplay:
                 tft.vscsad(line)
                 utime.sleep(0.01)
 
-        Args:
-            vssa (int): Vertical Scrolling Start Address
-
+        :param vssa: Vertical Scrolling Start Address
+        :type vssa: int
         """
         self.set_params(_VSCSAD, struct.pack(">H", vssa))
 
     def invert_colors(self, value):
         """
-        If your white is showing up as black and your black is showing up as white
-        try setting this either True or False and see if it corrects the problem.
+        Invert the colors of the display.
+
+        :param value: If True, invert the colors of the display. If False, do not invert the colors of the display.
+        :type value: bool
         """
         if value:
             self.set_params(_INVON)
@@ -379,6 +526,14 @@ class BusDisplay:
             self.set_params(_INVOFF)
 
     def set_params(self, cmd, params=None):
+        """
+        Set parameters for the display.
+
+        :param cmd: The command to set.
+        :type cmd: int
+        :param params: The parameters to set.
+        :type params: bytes
+        """
         # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_display.py#L165-L200
         if not self._data_as_commands:
             self.display_bus.tx_param(cmd, params)
@@ -388,13 +543,34 @@ class BusDisplay:
                 for i in range(len(params)):
                     self.display_bus.tx_param(None, bytearray([params[i]]))
 
-    def _get_params(self, cmd, params):
+    def get_params(self, cmd, params):
+        """
+        Get parameters for the display.
+
+        :param cmd: The command to get.
+        :type cmd: int
+        :param params: The parameters to get.
+        :type params: bytes
+        """
         self.display_bus.rx_param(cmd, params)
 
     def _pass(*_, **__):
+        """Do nothing.  Used to replace self.set_window when render_mode_full is True."""
         pass
 
     def _set_window(self, x1, y1, x2, y2):
+        """
+        Set the window for the display.
+
+        :param x1: The x-coordinate of the top-left corner of the window.
+        :type x1: int
+        :param y1: The y-coordinate of the top-left corner of the window.
+        :type y1: int
+        :param x2: The x-coordinate of the bottom-right corner of the window.
+        :type x2: int
+        :param y2: The y-coordinate of the bottom-right corner of the window.
+        :type y2: int
+        """
         # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
         # TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
 
@@ -414,25 +590,45 @@ class BusDisplay:
 
     @staticmethod
     def _madctl(bgr, rotation, rotations):
+        """
+        Return the MADCTL value for the given rotation.
+
+        :param bgr: Whether the display uses BGR color order.
+        :type bgr: bool
+        :param rotation: The rotation of the display.
+        :type rotation: int
+        :param rotations: The rotation table.
+        :type rotations: tuple
+        :return: The MADCTL value for the given rotation.
+        :rtype: int
+        """
         # Convert from degrees to one quarter rotations.  Wrap at the number of entries in the rotations table.
         # For example, rotation = 90 -> index = 1.  With 4 entries in the rotation table, rotation = 540 -> index = 2
         index = (rotation // 90) % len(rotations)
         return rotations[index] | _BGR if bgr else _RGB
 
     def _colmod(self):
+        """
+        Set the color mode for the display.
+        """
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
         self._param_buf[0] = pixel_formats[self.color_depth]
         self.set_params(_COLMOD, self._param_mv[:1])
 
     def _init_bytes(self, init_sequence):
         """
-        init_sequence is a CircuitPython displayIO compatible bytes object.
+        Send an initialization sequence to the display.
+
+        Used by display driver subclass if init_sequence is a CircuitPython displayIO compatible bytes object.
         The ``init_sequence`` is bitpacked to minimize the ram impact. Every command begins
         with a command byte followed by a byte to determine the parameter count and if a
         delay is need after. When the top bit of the second byte is 1, the next byte will be
         the delay time in milliseconds. The remaining 7 bits are the parameter count
         excluding any delay byte. The third through final bytes are the remaining command
         parameters. The next byte will begin a new command definition.
+
+        :param init_sequence: The initialization sequence to send to the display.
+        :type init_sequence: bytearray
         """
         DELAY = 0x80
 
@@ -457,12 +653,18 @@ class BusDisplay:
 
     def _init_list(self, init_sequence):
         """
-        The `_INIT_SEQUENCE` is a list of tuples. As a list, it can be modified in .init(), for example:
+        Send an initialization sequence to the display.
+
+        Used by display driver subclass if init_sequence is a list of tuples.
+        As a list, it can be modified in .init(), for example:
             self._INIT_SEQUENCE[-1] = (0x29, b"\x00", 100)
         Each tuple contains the following:
             - The first element is the register address (command)
             - The second element is the register value (data)
             - The third element is the delay in milliseconds after the register is set
+
+        :param init_sequence: The initialization sequence to send to the display.
+        :type init_sequence: list
         """
         for line in init_sequence:
             self.set_params(line[0], line[1])

@@ -1,9 +1,12 @@
-# SPDX-FileCopyrightText: 2023 Brad Barnett
+# SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
 
 """
 A helper class for getting the register addresses and masks for GPIO pins.
+Currently expects pins to be integers.  To facilitate the use of pin names or
+Pin objects, the _port_reg, mask, mask_set, and mask_clr methods will need to
+be modified.
 """
 
 import sys
@@ -177,6 +180,8 @@ class GPIO_SET_CLR_REGISTERS:
         )
 
     def _port_reg(self, pin):
+        if not isinstance(pin, int):
+            raise ValueError("pin must be an integer")
         return self._port_regs[pin // self.pins_per_port]
 
     def get_set_clr_regs(self, pin, active_high=True):
@@ -210,6 +215,8 @@ class GPIO_SET_CLR_REGISTERS:
         return self._port_reg(pin) + self._clr_offset
 
     def mask(self, pin):
+        if not isinstance(pin, int):
+            raise ValueError("pin must be an integer")
         return 1 << (pin % self.pins_per_port)
     
     ############################### 16-bit ports ###############################
@@ -220,7 +227,11 @@ class GPIO_SET_CLR_REGISTERS:
         return self._port_reg(pin)[0] + self._set_reset_offset
 
     def mask_set(self, pin):
+        if not isinstance(pin, int):
+            raise ValueError("pin must be an integer")
         return (1 << (pin % self.pins_per_port)) & 0xFFFF
 
     def mask_clr(self, pin):
+        if not isinstance(pin, int):
+            raise ValueError("pin must be an integer")
         return 1 << ((pin % self.pins_per_port) + 16)

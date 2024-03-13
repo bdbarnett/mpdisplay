@@ -14,25 +14,42 @@ class SPIBus(BaseBus):
     """
     SPI bus implementation of the base bus.
 
-    Args:
-        dc (int): The pin number for the data/command pin.
-        host (int, optional): The SPI host number. Defaults to 2.
-        mosi (int, optional): The pin number for the MOSI pin. Defaults to -1.
-        miso (int, optional): The pin number for the MISO pin. Defaults to -1.
-        sclk (int, optional): The pin number for the SCLK pin. Defaults to -1.
-        cs (int, optional): The pin number for the CS pin. Defaults to -1.
-        freq (int, optional): The SPI clock frequency in Hz. Defaults to -1.
-        tx_only (bool, optional): Whether to use transmit-only mode. Defaults to False.
-        cmd_bits (int, optional): The number of bits for command transmission. Defaults to 8.
-        param_bits (int, optional): The number of bits for parameter transmission. Defaults to 8.
-        dc_low_on_data (bool, optional): Whether the data/command pin is low for data. Defaults to False.
-        lsb_first (bool, optional): Whether to transmit LSB first. Defaults to False.
-        cs_high_active (bool, optional): Whether the CS pin is active high. Defaults to False.
-        spi_mode (int, optional): The SPI mode. Defaults to 0.
-        wp (int, optional): The pin number for the write protect pin. Not yet supported. Defaults to -1.
-        hd (int, optional): The pin number for the hold pin. Not yet supported. Defaults to -1.
-        quad_spi (bool, optional): Whether to use quad SPI mode. Defaults to False.
-        sio_mode (bool, optional): Whether to use SIO mode. Defaults to False.
+    :param dc: The pin number for the data/command pin.
+    :type dc: int
+    :param host: The SPI host number. Defaults to 2.
+    :type host: int, optional
+    :param mosi: The pin number for the MOSI pin. Defaults to -1.
+    :type mosi: int, optional
+    :param miso: The pin number for the MISO pin. Defaults to -1.
+    :type miso: int, optional
+    :param sclk: The pin number for the SCLK pin. Defaults to -1.
+    :type sclk: int, optional
+    :param cs: The pin number for the CS pin. Defaults to -1.
+    :type cs: int, optional
+    :param freq: The SPI clock frequency in Hz. Defaults to -1.
+    :type freq: int, optional
+    :param tx_only: Whether to use transmit-only mode. Defaults to False.
+    :type tx_only: bool, optional
+    :param cmd_bits: The number of bits for command transmission. Defaults to 8.
+    :type cmd_bits: int, optional
+    :param param_bits: The number of bits for parameter transmission. Defaults to 8.
+    :type param_bits: int, optional
+    :param dc_low_on_data: Whether the data/command pin is low for data. Defaults to False.
+    :type dc_low_on_data: bool, optional
+    :param lsb_first: Whether to transmit LSB first. Defaults to False.
+    :type lsb_first: bool, optional
+    :param cs_high_active: Whether the CS pin is active high. Defaults to False.
+    :type cs_high_active: bool, optional
+    :param spi_mode: The SPI mode. Defaults to 0.
+    :type spi_mode: int, optional
+    :param wp: The pin number for the write protect pin. Not yet supported. Defaults to -1.
+    :type wp: int, optional
+    :param hd: The pin number for the hold pin. Not yet supported. Defaults to -1.
+    :type hd: int, optional
+    :param quad_spi: Whether to use quad SPI mode. Defaults to False.
+    :type quad_spi: bool, optional
+    :param sio_mode: Whether to use SIO mode. Defaults to False.
+    :type sio_mode: bool, optional
     """
 
     name = "MicroPython SPIBus driver"
