@@ -8,6 +8,7 @@
 
 from machine import Pin, I2C
 from time import sleep_ms
+from micropython import const
     
 class CHSC6X:
     CHSC6X_I2C_ID = const(0x2e)
@@ -36,7 +37,7 @@ class CHSC6X:
         else:
             try:
                 self._i2c.readfrom_into(self._addr, self._buffer)
-            except OSError:
+            except OSError:  # Thrown when reading too fast
                 return None
 
         results = [i for i in self._buffer]
