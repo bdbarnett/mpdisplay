@@ -23,9 +23,10 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics library written in MicroPython for MicroPython by longtime MicroPython coder Peter Hinch.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly Unix, I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
 
 # Quickstart
-Flash your board with your preferred version of MicroPython listed above.
+Flash your board with your preferred version of MicroPython listed above.  If using the Unix port of MicroPython, put the follwing files in your `lib` folder and skip to `Using popular graphics libraries`.  Note the Unix drivers included with lv_micropython are recommended over these drivers because these drivers discard all keyboard events.  These drivers will work for other graphics libraries on the Unix port of MicroPython.
+- sdl2_lcd.py, sdl2display.py, mpdisplay_simpletest.py and board_configs/unix/board_config.py
 
-## Install with mip
+## Install on an MCU with mip
 Replace YOUR_BOARD_HERE with your the directory from [board_configs](board_configs) that matches your installation OR leave that line out and manually install the board_config.py and drivers per the Manual installation directions.
 
 ### On a network connected board, at the REPL:
@@ -41,7 +42,7 @@ mpremote mip install --target=/ "github:bdbarnett/mpdisplay"
 mpremote mip install --target=/ "github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE"
 ```
 
-## Manual installation
+## Manual installation on an MCU
 Download the following files and upload them to your board:
 - Put the contents of the [mpdisplay](mpdisplay) folder in your `lib` folder
 
@@ -52,6 +53,8 @@ You will also need the folowing files that match your particular hardware:
 - If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
 - If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
 
+
+## Using popular graphics libraries
 If you have LVGL compiled into MicroPython, also get:
 - the contents of the [lvgl](lvgl) folder
 
