@@ -46,7 +46,7 @@ _hal_gpio_registers = {
         "clr_offset": 0x18,
         "pins_per_port": 32,
         "port_regs": {
-            "rp2040": (0x50200000,),
+            "rp2040": (0xD0000000,),
         },
     },
     "nrf": {
