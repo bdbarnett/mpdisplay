@@ -120,13 +120,13 @@ class I80Bus(BaseBus):
         self.wr: Pin = Pin(wr, Pin.OUT, value=pclk_active_neg)
 
         # Check to see if pins are sequential and all on the same port:
-        if all(pins[i] + 1 == pins[i + 1] for i in range(len(pins) - 1)) and \
-                pins[0] // 32 == pins[-1] // 32:
-            # Use sequential mode
-            self._setup_seq(pins, wr, freq)
-        else:
+#         if all(pins[i] + 1 == pins[i + 1] for i in range(len(pins) - 1)) and \
+#                 pins[0] // 32 == pins[-1] // 32:
+#             # Use sequential mode
+#             self._setup_seq(pins, wr, freq)
+#         else:
             # Use LUT mode
-            self._setup_lut(pins, wr, freq)
+        self._setup_lut(pins, wr, freq)
 
     def _setup_lut(self, pins: list[int], wr: int, freq: int) -> None:
         """
@@ -151,9 +151,11 @@ class I80Bus(BaseBus):
         self._wr_mask, self._wr_not_mask = gpio.get_set_clr_masks(wr, self._wr_active)
         # Get the register addresses for the write pin
         self._wr_reg, self._wr_not_reg = gpio.get_set_clr_regs(wr, self._wr_active)
+        if False:  # Set to True to print the write pin registers and masks
+            print(f"Write pin\n {self._wr_reg=:#08x}, {self._wr_mask=:#032b}\n {self._wr_not_reg=:#08x}, {self._wr_not_mask=:#032b}\n")
 
         # Setup the data for pin_data and the lookup tables
-        self._lookup_tables = []  # list of memoryview lookup tables
+        self._lookup_tables = []  # list of bytearray lookup tables
         pin_masks = []  # list of 32-bit pin masks
         regsA = []  # list of set registers if _is_32bit else set/reset registers for lower 16 pins
         regsB = []  # list of clear registers if _is_32bit else set/reset registers for upper 16 pins
@@ -187,12 +189,6 @@ class I80Bus(BaseBus):
                     value |= 1 << (pin % 32)
                     self._lookup_tables[pin // 32][index] = value
 
-        if False:  # Set to True to print the lookup tables
-            for i, lut in enumerate(self._lookup_tables):
-                print(f"\nLookup table {i}:")
-                for j in range(0, lut_len):
-                    print(f"{j:03d}: 0b{lut[j]:032b}")
-
         # save all settings in an array pin_data for use in viper
         pin_data = array("I", [0] * 4 * self._num_luts)
         for i in range(self._num_luts):
@@ -200,6 +196,10 @@ class I80Bus(BaseBus):
             pin_data[i * 4 + 1] = regsA[i]
             pin_data[i * 4 + 2] = regsB[i]
             pin_data[i * 4 + 3] = addressof(self._lookup_tables[i])
+            if False:  # Set to True to print the lookup tables
+                print(f"\nLUT {i}: mask={pin_masks[i]:#032b}, {regsA[i]=:#08x}, {regsB[i]=:#08x}")
+                for j in range(0, lut_len):
+                    print(f"       {j:3d}: {self._lookup_tables[i][j]:#032b}")
         self._pin_data = memoryview(pin_data)
 
     def _setup_seq(self, pins: list[int], wr: int, freq: int) -> None:
