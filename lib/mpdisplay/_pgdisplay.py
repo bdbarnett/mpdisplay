@@ -269,7 +269,7 @@ class PGDisplay:
             if event.type == pg.QUIT:
                 self.quit_func()
             elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
-                return (event.type, event.key.name, event.mod)
+                return (event.type, event.unicode, event.mod)
             elif event.type == pg.MOUSEMOTION:
                 return (
                     event.type,
