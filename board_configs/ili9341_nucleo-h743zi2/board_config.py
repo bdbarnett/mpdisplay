@@ -8,22 +8,31 @@ from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
 
+"""
+The Nucleo-H743ZI/Nucleo-H743ZI2 do not have SPI1 defined.
+The following must be added to `mpconfigboard.h`:
+
+#define MICROPY_HW_SPI1_MOSI        (pin_B5)
+#define MICROPY_HW_SPI1_MISO        (pin_A6)
+#define MICROPY_HW_SPI1_SCK         (pin_A5)
+#define MICROPY_HW_SPI1_NSS         (pin_A15)  # Not used
+"""
 
 display_bus = SPIBus(
     dc=Pin.board.D9,
     cs=Pin.board.D10,
-#     mosi=Pin.board.D11,
-#     miso=Pin.board.D12,
-#     sclk=Pin.board.D13,
+#     mosi=Pin.board.D11, # Pin.cpu.B5
+#     miso=Pin.board.D12, # Pin.cpu.A6
+#     sclk=Pin.board.D13, # Pin.cpu.A5
     host=1,
     tx_only=True,
     freq=60_000_000,
-    spi_mode=3,
-    cmd_bits=8,
-    param_bits=8,
-    lsb_first=False,
-    dc_low_on_data=False,
-    cs_high_active=False,
+#     spi_mode=1,
+#     cmd_bits=8,
+#     param_bits=8,
+#     lsb_first=False,
+#     dc_low_on_data=False,
+#     cs_high_active=False,
 )
 
 display_drv = ILI9341(
