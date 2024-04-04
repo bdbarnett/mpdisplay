@@ -28,6 +28,9 @@ display_bus = I80Bus(
     freq=10_000_000,
 )
 
+i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
+touch_drv = FT6x36(i2c)
+
 display_drv = ST7796(
     display_bus,
     width=320,
@@ -47,9 +50,6 @@ display_drv = ST7796(
     reset_high=True,
     power_pin=None,
     power_on_high=True,
+    touch_read_func = touch_drv.get_positions,
 )
 
-i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
-touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=None
