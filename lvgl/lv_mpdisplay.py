@@ -19,8 +19,6 @@ except ImportError:
     _task_handler = task_handler.TaskHandler()
 
 
-_DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
-
 # When using RGBBus as the data bus the user is not able to allocate the
 # frame buffers. The user can call RGBBus.get_frame_buffer(buffer_number)
 # and pass the returned buffer(s) to the constructor for the display driver
@@ -81,7 +79,7 @@ class DisplayDriver:
         else:
             self.swap_color_bytes = False
 
-        if "RGB" in repr(self.display_drv.display_bus):
+        if hasattr(display_drv, "display_bus") and "RGB" in repr(display_drv.display_bus):
             render_mode = lv.DISPLAY_RENDER_MODE.DIRECT
             self.display_drv.set_render_mode_full(True)
         elif (
@@ -101,13 +99,20 @@ class DisplayDriver:
         self.lv_display.set_color_format(color_format)
         self.lv_display.set_flush_cb(self._flush_cb)
         if not self._blocking:
-            self.display_drv.display_bus.register_callback(self.lv_display.flush_ready)
+            self.display_drv.register_callback(self.lv_display.flush_ready)
         self.lv_display.set_draw_buffers(
             self._frame_buffer1,
             self._frame_buffer2,
             len(self._frame_buffer1),
             render_mode,
         )
+
+        # Create an input device and set its type and read callback function.
+        self._indev = lv.indev_create()
+        self._indev.set_type(lv.INDEV_TYPE.POINTER)
+        self._indev.set_read_cb(self._touch_cb)
+        self._indev.set_disp(lv.display_get_default())
+        self._indev.set_group(lv.group_get_default())
 
     def _flush_cb(self, disp_drv, area, color_p):
         width = area.x2 - area.x1 + 1
@@ -130,66 +135,14 @@ class DisplayDriver:
         if self._blocking:
             self.lv_display.flush_ready()
 
-
-class TouchDriver:
-    display_name = "TouchDriver"
-
-    def __init__(self, read_func, rotation, rotation_table):
-        self._touch_read_func = read_func
-        self._touch_rotation_table = (
-            rotation_table if rotation_table else _DEFAULT_TOUCH_ROTATION_TABLE
-        )
-
-        self._indev = lv.indev_create()
-        self._indev.set_type(lv.INDEV_TYPE.POINTER)
-        self._indev.set_read_cb(self._touch_cb)
-        self._indev.set_disp(lv.display_get_default())
-        self._indev.set_group(lv.group_get_default())
-
-        self.set_touch_rotation(rotation)
-
     def _touch_cb(self, touch_indev, data):
         # LVGL hands us an object called data.  We just change the state attributes when necessary.
-        point = self.get_touched()
+        point = self.display_drv.get_touched()
         if point:
             data.point = lv.point_t({"x": point[0], "y": point[1]})
-        data.state = lv.INDEV_STATE.PRESSED if point else lv.INDEV_STATE.RELEASED
-
-    def get_touched(self):
-        # touch_read_func should return None, a point as a tuple (x, y), a point as a list [x, y] or
-        # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
-        # or [[x1, x2], [y1, y2]].  If it doesn't, create a wrapper around your driver's read function
-        # and set touch_read_func to that wrapper, or subclass TouchDriver and override .get_touched()
-        # with your own logic.
-        touched = self._touch_read_func()
-        if touched:
-            # If it looks like a point, use it, otherwise get the first point out of the list / tuple
-            (x, y) = touched if isinstance(touched[0], int) else touched[0]
-            if self._touch_swap_xy:
-                x, y = y, x
-            if self._touch_invert_x:
-                x = self._touch_max_x - x
-            if self._touch_invert_y:
-                y = self._touch_max_y - y
-            return x, y
-        return None
-
-    def set_touch_rotation(self, rotation):
-        index = (rotation // 90) % len(self._touch_rotation_table)
-        mask = self._touch_rotation_table[index]
-        self.set_touch_rotation_mask(mask)
-
-    def set_touch_rotation_mask(self, mask):
-        # mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
-        # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
-        # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
-        # its rotation.  You can call this function any time after you've created devices to change the rotation.
-        mask = mask & 0b111
-        self._touch_invert_y = True if mask >> 2 & 1 else False
-        self._touch_invert_x = True if mask >> 1 & 1 else False
-        self._touch_swap_xy = True if mask >> 0 & 1 else False
-        self._touch_max_x = self._indev.get_disp().get_horizontal_resolution() - 1
-        self._touch_max_y = self._indev.get_disp().get_vertical_resolution() - 1
+            data.state = lv.INDEV_STATE.PRESSED
+        else:
+            data.state = lv.INDEV_STATE.RELEASED
 
 
 class EncoderDriver:

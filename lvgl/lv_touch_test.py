@@ -7,14 +7,12 @@ usage:
     from lv_touch_test import mask, rotation
 
     mask(0b101)  # set's the rotation mask directly, useful for finding the correct mask to put in a rotation table
-    rotation(270)  # set's the rotation to index 3 of the rotation table, useful for testing rotation table masks.
  """
 
 import lv_config
 import lvgl as lv
 
-mask = lambda x: lv_config.touch.set_touch_rotation_mask(x)
-rotation = lambda x: lv_config.touch.set_touch_rotation(x)
+mask = lambda x: lv_config.display.display_drv.set_touch_rotation_mask(x)
 
 alignments = (
     (lv.ALIGN.TOP_LEFT, 0, 0),
@@ -60,11 +58,8 @@ for alignment in alignments:
     
 print(
     "To test different touch rotations, run this program like:\n",
-    "    from lv_touch_test import mask, rotation\n\n",
+    "    from lv_touch_test import mask\n\n",
     "To find the correct mask to put in a rotation table, type:\n",
     "    mask(x)\n",
     "where x is a mask from 0b000 to 0b111 (or decimal 0 to 7)\n\n",
-    "To test the touch rotation table's masks, type:\n",
-    "    rotation(x)\n",
-    "where x is the rotation in degrees (0, 90, 180, 270)\n"
     )

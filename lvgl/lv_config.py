@@ -40,11 +40,5 @@ display = lv_mpdisplay.DisplayDriver(
     blocking=True,
 )
 
-touch = lv_mpdisplay.TouchDriver(
-    board_config.touch_read_func,
-    rotation=board_config.display_drv.rotation,
-    rotation_table=board_config.touch_rotation_table,
-)
-
 ### Uncomment if your board has an encoder
 # encoder = lv_mpdisplay.EncoderDriver(board_config.encoder_read_func, board_config.encoder_button_func)
