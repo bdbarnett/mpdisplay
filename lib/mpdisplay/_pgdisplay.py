@@ -51,7 +51,6 @@ class PGDisplay:
         self._title = title
         self._window_flags = window_flags
         self._tfa = self._bfa = 0  # Top and bottom fixed areas
-        self._scroll_y = None  # Scroll offset; set to None to disable scrolling
         self._bytes_per_pixel = color_depth // 8
 
         # Function to call when the window close button is clicked.
@@ -62,7 +61,7 @@ class PGDisplay:
 
         self.requires_byte_swap = False
 
-        pg.init()
+#         pg.init()
 
         self._init()
 
@@ -70,10 +69,11 @@ class PGDisplay:
         """
         Initializes the sdl2lcd instance.
         """
+        self._scroll_y = None  # Scroll offset; set to None to disable scrolling
         self._vsa = self.height - self._tfa - self._bfa  # Vertical scaling area
         self.screen = pg.display.set_mode(size=(int(self.width*self._scale), int(self.height*self._scale)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
         pg.display.set_caption(self._title)
-        self.screen.fill((255, 0, 0))
+        self.screen.fill((0, 0, 0))
         pg.display.flip()
 
         self.frame_buffer = pg.Surface(size=self.screen.get_size(), depth=self.color_depth)
@@ -152,6 +152,14 @@ class PGDisplay:
         self._show(blitRect)
 
     def _colorRGB(self, color):
+        if isinstance(color, int):
+            # convert color from int to bytes
+            if self.color_depth == 16:
+                # convert 16-bit int color to 2 bytes
+                color = [color & 0xFF, color >> 8]
+            else:
+                # convert 24-bit int color to 3 bytes
+                color = [color & 0xFF, (color >> 8) & 0xFF, color >> 16]
         if len(color) == 2:
             r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
             g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
@@ -179,14 +187,7 @@ class PGDisplay:
         :type color: int
         """
         fillRect = pg.Rect(x, y, w, h)
-        if self.color_depth == 16:
-            r = (color >> 8) & 0xF8 | (color >> 13) & 0x7  # 5 bit to 8 bit red
-            g = (color >> 3) & 0xFC | (color >> 9) & 0x3  # 6 bit to 8 bit green
-            b = (color << 3) & 0xF8 | (color >> 2) & 0x7  # 5 bit to 8 bit blue
-        else:
-            r, g, b = color >> 16 & 0xFF, (color >> 8) & 0xFF, color & 0xFF
-
-        self.frame_buffer.fill((r, g, b), fillRect)
+        self.frame_buffer.fill(self._colorRGB(color), fillRect)
         self._show(fillRect)
 
     def _show(self, renderRect=None):
