@@ -7,9 +7,16 @@ busdisplay.py - BusDisplay class for MicroPython
 '''
 
 from micropython import const, alloc_emergency_exception_buf
-from machine import Pin
 from time import sleep_ms
 import struct
+import sys
+
+if sys.implementation.name == "micropython":
+    from machine import Pin
+elif sys.implementation.name == "circuitpython":
+    import digitalio
+else:
+    raise NotImplementedError("Unsupported implementation")
 
 
 alloc_emergency_exception_buf(256)
@@ -92,14 +99,9 @@ class BusDisplay:
         set_column_command=_CASET,
         set_row_command=_RASET,
         write_ram_command=_RAMWR,
-        data_as_commands=False,
-        # Required for the 16-bit SSD1351 128x128 OLED
-        #        single_byte_bounds=False,
-        # Required for the 4-bit SSD1325 128x64 & SSD1327 128x128 OLEDs in addition to the line above
-        #        grayscale=False,
-        #        brightness_command=None,
-        # Required for 1-bit OLEDs like the SSD1305, SSD1306, and SH1106 in addition to the 3 lines above
-        #        pixels_in_byte_share_row=True,
+        brightness_command=None,  # For color OLEDs
+        data_as_commands=False,  # For color OLEDs
+        single_byte_bounds=False,  # For color OLEDs
         touch_read_func = None,
         touch_rotation_table = _DEFAULT_TOUCH_ROTATION_TABLE,
     ):
@@ -151,35 +153,33 @@ class BusDisplay:
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
-        self._data_as_commands = data_as_commands
-        #        self._single_byte_bounds = single_byte_bounds  # not implemented
-        #        self._grayscale = grayscale  # not implemented
-        #        self._brightness_command = brightness_command  # not implemented
-        #        self._pixels_in_byte_share_row = pixels_in_byte_share_row  # not implemented
+        self._brightness_command = brightness_command
+        self._data_as_commands = data_as_commands  # not implemented
+        self._single_byte_bounds = single_byte_bounds  # not implemented
         self._touch_read_func = touch_read_func if touch_read_func else lambda: None
         self._touch_rotation_table = touch_rotation_table
 
-        self._reset_pin = (
-            Pin(reset_pin, Pin.OUT, value=not reset_high) if reset_pin else None
-        )
+        self._reset_pin = self._config_pin_ouput(reset_pin, value=not reset_high)
         self._reset_high = reset_high
 
-        self._power_pin = (
-            Pin(power_pin, Pin.OUT, value=power_on_high) if power_pin else None
-        )
+        self._power_pin = self._config_pin_ouput(power_pin, value=power_on_high)
         self._power_on_high = power_on_high
 
-        self._backlight_pin = Pin(backlight_pin, Pin.OUT) if backlight_pin else None
+        self._backlight_pin = self._config_pin_ouput(backlight_pin, value=backlight_on_high)
         self._backlight_on_high = backlight_on_high
 
         if self._backlight_pin is not None:
             try:
-                from machine import PWM
-
-                # 1000Hz looks decent and doesn't keep the CPU too busy
-                self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
+                if sys.implementation.name == "micropython":
+                    from machine import PWM
+                    self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
+                elif sys.implementation.name == "circuitpython":
+                    from pwmio import PWMOut
+                    self._backlight_pin = PWMOut(self._backlight_pin, frequency=1000, duty_cycle=0)
+                else:
+                    raise NotImplementedError("Unsupported implementation")
                 self._backlight_is_pwm = True
-            except:
+            except ImportError:
                 # PWM not implemented on this platform or Pin
                 self._backlight_is_pwm = False
 
@@ -187,12 +187,12 @@ class BusDisplay:
 
         if hasattr(display_bus, "tx_color"):
             # lcd_bus and mp_lcd_bus use tx_color and tx_param to send color data and parameters
-            self._set_params = display_bus.tx_param
+            self._send_cmd_data = display_bus.tx_param
             self._blit = display_bus.tx_color
         else:
             # CircuitPython uses send() to send color data and parameters
-            self._set_params = display_bus.send
-            self._blit = self.set_params
+            self._send_cmd_data = display_bus.send
+            self._blit = self.send_cmd_data
 
         self.rotation_table = _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
         self._param_buf = bytearray(4)
@@ -409,19 +409,10 @@ class BusDisplay:
         :return: The brightness of the display.
         :rtype: float
         """
-        if self._backlight_pin is None:
+        if self._backlight_pin is None and self._brightness_command is None:
             return -1
 
-        if self._backlight_is_pwm == True:
-            value = self._backlight_pin.duty_u16()  # NOQA
-            return round(value / 65535)
-
-        value = self._backlight_pin.value()
-
-        if self._power_on_high:
-            return value
-
-        return not value
+        return self._brightness
 
     @brightness.setter
     def brightness(self, value):
@@ -431,15 +422,20 @@ class BusDisplay:
         :param value: The brightness to set.
         :type value: float
         """
-        if self._backlight_pin:
-            if 0 <= float(value) <= 1.0:
+        if 0 <= float(value) <= 1.0:
+            self._brightness = value
+            if self._backlight_pin:
+                if not self._backlight_on_high:
+                    value = 1.0 - value
                 if self._backlight_is_pwm:
-                    if not self._backlight_on_high:
-                        value = 1.0 - value
-                    self._backlight_pin.duty_u16(int(value * 0xFFFF))
+                    if sys.implementation.name == "micropython":
+                        self._backlight_pin.duty_u16(int(value * 0xFFFF))
+                    elif sys.implementation.name == "circuitpython":
+                        self._backlight_pin.duty_cycle = int(value * 0xFFFF)
                 else:
-                    self._backlight.value((value > 0.0) == self._on_high)
-                self._brightness = value
+                    self._backlight_pin.value(value > 0.5)
+            elif self._brightness_command is not None:
+                self.send_cmd_data(self._brightness_command, struct.pack("B", int(value * 255)))
 
     def reset(self):
         """
@@ -466,7 +462,7 @@ class BusDisplay:
         """
         Soft reset display.
         """
-        self.set_params(_SWRESET)
+        self.send_cmd_data(_SWRESET)
         sleep_ms(150)
 
     @property
@@ -491,7 +487,7 @@ class BusDisplay:
 
         # Set the display MADCTL bits for the given rotation.
         self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
-        self.set_params(_MADCTL, self._param_mv[:1])
+        self.send_cmd_data(_MADCTL, self._param_mv[:1])
 
         # Set the touch rotation mask for the given rotation.
         index = (value // 90) % len(self._touch_rotation_table)
@@ -506,9 +502,9 @@ class BusDisplay:
         :type value: bool
         """
         if value:
-            self.set_params(_SLPIN)
+            self.send_cmd_data(_SLPIN)
         else:
-            self.set_params(_SLPOUT)
+            self.send_cmd_data(_SLPOUT)
 
     def vscrdef(self, tfa, vsa, bfa):
         """
@@ -527,7 +523,7 @@ class BusDisplay:
         :param bfa: Bottom Fixed Area
         :type bfa: int
         """
-        self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+        self.send_cmd_data(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
     def vscsad(self, vssa):
         """
@@ -545,7 +541,7 @@ class BusDisplay:
         :param vssa: Vertical Scrolling Start Address
         :type vssa: int
         """
-        self.set_params(_VSCSAD, struct.pack(">H", vssa))
+        self.send_cmd_data(_VSCSAD, struct.pack(">H", vssa))
 
     def invert_colors(self, value):
         """
@@ -555,11 +551,11 @@ class BusDisplay:
         :type value: bool
         """
         if value:
-            self.set_params(_INVON)
+            self.send_cmd_data(_INVON)
         else:
-            self.set_params(_INVOFF)
+            self.send_cmd_data(_INVOFF)
 
-    def set_params(self, cmd, params=None, *args, **kwargs):
+    def send_cmd_data(self, cmd, params=None, *args, **kwargs):
         """
         Send cmd and parameters to the display.
 
@@ -568,18 +564,7 @@ class BusDisplay:
         :param params: The parameters to send.
         :type params: bytes
         """
-        self._set_params(cmd, params)
-
-    def get_params(self, cmd, params):
-        """
-        Get parameters for the display.
-
-        :param cmd: The command to get.
-        :type cmd: int
-        :param params: The parameters to get.
-        :type params: bytes
-        """
-        raise NotImplementedError("get_params() not implemented")
+        self._send_cmd_data(cmd, params)
 
     def _pass(*_, **__):
         """Do nothing.  Used to replace self.set_window when render_mode_full is True."""
@@ -606,14 +591,14 @@ class BusDisplay:
         self._param_buf[1] = x1 & 0xFF
         self._param_buf[2] = (x2 >> 8) & 0xFF
         self._param_buf[3] = x2 & 0xFF
-        self.set_params(self._set_column_command, self._param_mv[:4])
+        self.send_cmd_data(self._set_column_command, self._param_mv[:4])
 
         # Row addresses
         self._param_buf[0] = (y1 >> 8) & 0xFF
         self._param_buf[1] = y1 & 0xFF
         self._param_buf[2] = (y2 >> 8) & 0xFF
         self._param_buf[3] = y2 & 0xFF
-        self.set_params(self._set_row_command, self._param_mv[:4])
+        self.send_cmd_data(self._set_row_command, self._param_mv[:4])
 
     @staticmethod
     def _madctl(bgr, rotation, rotations):
@@ -640,7 +625,7 @@ class BusDisplay:
         """
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
         self._param_buf[0] = pixel_formats[self.color_depth]
-        self.set_params(_COLMOD, self._param_mv[:1])
+        self.send_cmd_data(_COLMOD, self._param_mv[:1])
 
     def _init_bytes(self, init_sequence):
         """
@@ -666,7 +651,7 @@ class BusDisplay:
             delay = (data_size & DELAY) != 0
             data_size &= ~DELAY
 
-            self.set_params(command, init_sequence[i + 2 : i + 2 + data_size])
+            self.send_cmd_data(command, init_sequence[i + 2 : i + 2 + data_size])
 
             delay_time_ms = 10
             if delay:
@@ -694,7 +679,7 @@ class BusDisplay:
         :type init_sequence: list
         """
         for line in init_sequence:
-            self.set_params(line[0], line[1])
+            self.send_cmd_data(line[0], line[1])
             if line[2] != 0:
                 sleep_ms(line[2])
 
@@ -729,3 +714,17 @@ class BusDisplay:
         self._touch_invert_y = True if mask >> 2 & 1 else False
         self._touch_invert_x = True if mask >> 1 & 1 else False
         self._touch_swap_xy = True if mask >> 0 & 1 else False
+
+    def _config_pin_ouput(self, pin, value=None):
+        if pin is None:
+            return None
+        
+        if sys.implementation.name == "micropython":
+            p = Pin(pin, Pin.OUT)
+        elif sys.implementation.name == "circuitpython":
+            p = digitalio.DigitalInOut(pin)
+            p.direction = digitalio.Direction.OUTPUT
+
+        if value is not None:
+            p.value(value)
+        return p
