@@ -6,20 +6,23 @@
 busdisplay.py - BusDisplay class for MicroPython
 '''
 
-from micropython import const, alloc_emergency_exception_buf
-from time import sleep_ms
 import struct
 import sys
 
 if sys.implementation.name == "micropython":
     from machine import Pin
+    from time import sleep_ms
+    from micropython import const, alloc_emergency_exception_buf
+    alloc_emergency_exception_buf(256)
 elif sys.implementation.name == "circuitpython":
     import digitalio
+    from micropython import const
+    from time import sleep
+    sleep_ms = lambda ms: sleep(ms / 1000)
+    import ulab.numpy as np
 else:
     raise NotImplementedError("Unsupported implementation")
 
-
-alloc_emergency_exception_buf(256)
 
 # MIPI DCS (Display Command Set) Command Constants
 _INVOFF = const(0x20)
@@ -159,25 +162,19 @@ class BusDisplay:
         self._touch_read_func = touch_read_func if touch_read_func else lambda: None
         self._touch_rotation_table = touch_rotation_table
 
-        self._reset_pin = self._config_pin_ouput(reset_pin, value=not reset_high)
+        self._reset_pin = self._config_pin_output(reset_pin, value=not reset_high)
         self._reset_high = reset_high
 
-        self._power_pin = self._config_pin_ouput(power_pin, value=power_on_high)
+        self._power_pin = self._config_pin_output(power_pin, value=power_on_high)
         self._power_on_high = power_on_high
 
-        self._backlight_pin = self._config_pin_ouput(backlight_pin, value=backlight_on_high)
+        self._backlight_pin = self._config_pin_output(backlight_pin, value=backlight_on_high)
         self._backlight_on_high = backlight_on_high
 
         if self._backlight_pin is not None:
             try:
-                if sys.implementation.name == "micropython":
-                    from machine import PWM
-                    self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
-                elif sys.implementation.name == "circuitpython":
-                    from pwmio import PWMOut
-                    self._backlight_pin = PWMOut(self._backlight_pin, frequency=1000, duty_cycle=0)
-                else:
-                    raise NotImplementedError("Unsupported implementation")
+                from machine import PWM
+                self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True
             except ImportError:
                 # PWM not implemented on this platform or Pin
@@ -258,6 +255,9 @@ class BusDisplay:
         :param buf: The buffer containing the pixel data to be written to the display.
         :type buf: memoryview
         """
+        if self.requires_byte_swap and sys.implementation.name == "circuitpython":
+            npbuf = np.frombuffer(buf, dtype=np.uint16)
+            npbuf.byteswap(inplace=True)
         x1 = x + self._colstart
         x2 = x1 + width - 1
         y1 = y + self._rowstart
@@ -286,6 +286,7 @@ class BusDisplay:
         :param color: The color to fill the rectangle with, encoded as a 565 color.
         :type color: int
         """
+        color = color & 0xFFFF  # Ensure color is 16-bit for circuitpython
         if height > width:
             raw_data = struct.pack("<H", color) * height
             for col in range(x, x + width):
@@ -352,7 +353,10 @@ class BusDisplay:
         :return: True if the bus swap was disabled, False if it was not.
         :rtype: bool
         """
-        if hasattr(self.display_bus, "enable_swap"):
+        if self.requires_byte_swap and sys.implementation.name == "circuitpython":
+            self.requires_byte_swap = not value
+            return value
+        elif hasattr(self.display_bus, "enable_swap"):
             self.display_bus.enable_swap(not value)
             return value
         return False
@@ -433,7 +437,10 @@ class BusDisplay:
                     elif sys.implementation.name == "circuitpython":
                         self._backlight_pin.duty_cycle = int(value * 0xFFFF)
                 else:
-                    self._backlight_pin.value(value > 0.5)
+                    if sys.implementation.name == "micropython":
+                        self._backlight_pin.value(value > 0.5)
+                    elif sys.implementation.name == "circuitpython":
+                        self._backlight_pin.value = (value > 0.5)
             elif self._brightness_command is not None:
                 self.send_cmd_data(self._brightness_command, struct.pack("B", int(value * 255)))
 
@@ -715,16 +722,17 @@ class BusDisplay:
         self._touch_invert_x = True if mask >> 1 & 1 else False
         self._touch_swap_xy = True if mask >> 0 & 1 else False
 
-    def _config_pin_ouput(self, pin, value=None):
+    def _config_pin_output(self, pin, value=None):
         if pin is None:
             return None
         
         if sys.implementation.name == "micropython":
             p = Pin(pin, Pin.OUT)
+            if value is not None:
+                p.value(value)
         elif sys.implementation.name == "circuitpython":
             p = digitalio.DigitalInOut(pin)
             p.direction = digitalio.Direction.OUTPUT
-
-        if value is not None:
-            p.value(value)
+            if value is not None:
+                p.value = value
         return p
