@@ -41,7 +41,7 @@ Implementation Notes
   <https://www.adafruit.com/product/3315>
 """
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 _INIT_SEQUENCE = (
     b"\x01\x80\x80"  # Software reset then delay 0x80 (128ms)
@@ -75,10 +75,9 @@ class ILI9341(BusDisplay):
     ILI9341 display driver
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)
 
     def init(self):
 #         self.rotation_table = _ROTATION_TABLE
-        self._init_bytes(_INIT_SEQUENCE)
         super().init()
