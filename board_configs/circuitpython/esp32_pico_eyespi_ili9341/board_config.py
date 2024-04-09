@@ -1,9 +1,10 @@
 """ QTPy ESP32 Pico with EyeSPI and ILI9341 2.8" display """
 
-import board
 from fourwire import FourWire
 from ili9341 import ILI9341
 from adafruit_focaltouch import Adafruit_FocalTouch
+from mpdisplay import Device_types
+import board
 
 import displayio
 displayio.release_displays()
@@ -12,19 +13,11 @@ display_bus = FourWire(
     board.SPI(),
     command=board.RX,
     chip_select=board.TX,
+    baudrate=30_000_000,
 #     reset=None,
-#     baudrate=24000000,
 #     polarity=0,
 #     phase=0,
 )
-
-i2c = board.I2C()
-touch_drv = Adafruit_FocalTouch(i2c)
-
-def touch_point():
-    touches = touch_drv.touches
-    if len(touches):
-        return touches[0]['x'], touches[0]['y']
 
 display_drv = ILI9341(
     display_bus,
@@ -45,6 +38,18 @@ display_drv = ILI9341(
     reset_high=True,
     power_pin=None,
     power_on_high=True,
-    touch_read_func=touch_point,
-    touch_rotation_table=(6, 3, 0, 5),
+)
+
+i2c = board.I2C()
+touch_drv = Adafruit_FocalTouch(i2c)
+
+def touch_point():
+    touches = touch_drv.touches
+    if len(touches):
+        return touches[0]['x'], touches[0]['y']
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_point,
+    user_data=(6, 3, 0, 5),
 )
