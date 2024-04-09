@@ -1,6 +1,6 @@
 """ CPython PyGame board configuration """
 
-import lib.mpdisplay as mpdisplay
+import mpdisplay
 import sys
 
 
