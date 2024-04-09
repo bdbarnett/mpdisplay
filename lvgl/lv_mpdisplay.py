@@ -8,6 +8,7 @@ lv_mpdisplay.py - LVGL driver framework for MPDisplay
 
 import lvgl as lv
 from time import ticks_ms, ticks_diff
+from mpdisplay import Events
 
 
 try:
@@ -137,9 +138,10 @@ class DisplayDriver:
 
     def _touch_cb(self, touch_indev, data):
         # LVGL hands us an object called data.  We just change the state attributes when necessary.
-        point = self.display_drv.get_touched()
-        if point:
-            data.point = lv.point_t({"x": point[0], "y": point[1]})
+        event = self._display_drv.poll_event()
+        if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
+            x, y = event.pos
+            data.point = lv.point_t({"x": x, "y": y})
             data.state = lv.INDEV_STATE.PRESSED
         else:
             data.state = lv.INDEV_STATE.RELEASED

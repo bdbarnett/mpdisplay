@@ -6,7 +6,7 @@ An implementation of an LCD library written in Python using pygame
 """
 
 import pygame as pg
-
+from collections import namedtuple
 
 class PGDisplay:
     '''
@@ -40,7 +40,7 @@ class PGDisplay:
         :type scale: int
         :param title: The title of the display window (default is "MicroPython").
         :type title: str
-        :param window_flags: The flags for creating the display window (default is SDL_WINDOW_SHOWN).
+        :param window_flags: The flags for creating the display window (default is pg.SHOWN).
         :type window_flags: int
         """
         self._width = width
@@ -195,7 +195,7 @@ class PGDisplay:
         Show the display.  Automatically called after blitting or filling the display.
 
         :param renderRect: The rectangle to render (default is None).
-        :type renderRect: SDL_Rect
+        :type renderRect: pg.Rect
         """
         if self._scroll_y == None:
             renderRect = pg.Rect(0, 0, self.width, self.height) if renderRect is None else renderRect
@@ -267,47 +267,11 @@ class PGDisplay:
             pg.MOUSEBUTTONUP,
             pg.MOUSEWHEEL,
             ):
+            # print(f"{event=}")
             if event.type == pg.QUIT:
                 self.quit_func()
-            elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
-                return (event.type, event.unicode, event.mod)
-            elif event.type == pg.MOUSEMOTION:
-                return (
-                    event.type,
-                    event.pos[0],
-                    event.pos[1],
-                    event.rel[0],
-                    event.rel[1],
-                    event.buttons,
-                )
-            elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
-                return (
-                    event.type,
-                    event.pos[0],
-                    event.pos[1],
-                    event.button,
-                )
-            elif event.type == pg.MOUSEWHEEL:
-                return (event.type, event.x, event.y, event.flipped)
-            else:  # Should never reach this point; left in so `if event_type in(...)` can be changed to `if True:` for debugging
-                return event.type
-        return None
-
-    def get_touched(self):
-        """
-        Get the touch position from the SDL2 event queue.  If the event is
-        SDL_MOUSEBUTTONDOWN and the left button is pressed, return the
-        mouse position.  Otherwise, return None.
-        
-        :return: (x, y) tuple of the mouse position or None
-        :rtype: tuple or None
-        """
-        # NOTE: This discards all events except MOUSEBUTTONDOWN on the left button
-        event = self.poll_event()
-        if event:
-            # if the event is SDL_MOUSEBUTTONDOWN, return the mouse position
-            if event[0] == pg.MOUSEBUTTONDOWN and event[3] == 1:
-                return (event[1], event[2])
+            else:
+                return event
         return None
 
     @property
@@ -355,3 +319,20 @@ class PGDisplay:
         Deinitializes the pygame instance.
         """
         self.deinit()
+
+
+class Events:
+    QUIT = pg.QUIT                        # User clicked the window close button
+    KEYDOWN = pg.KEYDOWN                  # Key pressed
+    KEYUP = pg.KEYUP                      # Key released
+    MOUSEMOTION = pg.MOUSEMOTION          # Mouse moved
+    MOUSEBUTTONDOWN = pg.MOUSEBUTTONDOWN  # Mouse button pressed
+    MOUSEBUTTONUP = pg.MOUSEBUTTONUP      # Mouse button released
+    MOUSEWHEEL = pg.MOUSEWHEEL            # Mouse wheel motion
+
+    Unknown = namedtuple("Common", "type")
+    Motion = namedtuple("Motion", "type pos rel buttons touch window")
+    Button = namedtuple("Button", "type pos button touch window")
+    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
+    Key = namedtuple("Key", "type unicode key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
+                                                                  # Instead, use `key` and `mod` for portable code

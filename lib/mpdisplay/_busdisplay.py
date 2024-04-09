@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Kevin Schlosser and Brad Barnett
+# SPDX-FileCopyrightText: 2024 Brad Barnett and Kevin Schlosser
 #
 # SPDX-License-Identifier: MIT
 
@@ -8,15 +8,17 @@ busdisplay.py - BusDisplay class for MicroPython
 
 import struct
 import sys
+from collections import namedtuple
+from micropython import const
 
 if sys.implementation.name == "micropython":
     from machine import Pin
     from time import sleep_ms
-    from micropython import const, alloc_emergency_exception_buf
+    from micropython import alloc_emergency_exception_buf
     alloc_emergency_exception_buf(256)
+    np = None
 elif sys.implementation.name == "circuitpython":
     import digitalio
-    from micropython import const
     from time import sleep
     sleep_ms = lambda ms: sleep(ms / 1000)
     import ulab.numpy as np
@@ -66,16 +68,44 @@ _MIRRORED_ROTATION_TABLE = (
 
 _DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
 
-class BusDisplay:
-    class BusDisplay:
-        """
-        A class used to represent a display connected to a bus.
 
-        This class provides the necessary interfaces to interact with a display
-        connected to a bus. It allows setting various display parameters like
-        width, height, rotation, color depth, brightness, etc.
-        """
-    display_name = "BusDisplay"
+Device = namedtuple("Device", "type callback user_data")
+
+
+class Device_types:
+    DISABLED = const(0x00)  # Device has been disabled
+    TOUCH = const(0x01)     # Provides MOUSEBUTTONDOWN events when touched
+    ENCODER = const(0x02)   # Provides MOUSEWHEEL events when turned, middle MOUSEBUTTONDOWN when pressed
+    KEYBOARD = const(0x03)  # Provides KEYDOWN and KEYUP events when keys are pressed or released
+    JOYSTICK = const(0x04)  # Joystick Events (not implemented)
+
+
+class Events:
+    # Event types (from SDL2 / PyGame, not complete)
+    QUIT = const(0x100)                     # User clicked the window close button
+    KEYDOWN = const(0x300)                  # Key pressed
+    KEYUP = const(0x301)                    # Key released
+    MOUSEMOTION = const(0x400)              # Mouse moved
+    MOUSEBUTTONDOWN = const(0x401)          # Mouse button pressed
+    MOUSEBUTTONUP = const(0x402)            # Mouse button released
+    MOUSEWHEEL = const(0x403)               # Mouse wheel motion
+
+    Unknown = namedtuple("Common", "type")
+    Motion = namedtuple("Motion", "type pos rel buttons touch window")
+    Button = namedtuple("Button", "type pos button touch window")
+    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
+    Key = namedtuple("Key", "type name key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
+                                                                  # Instead, use `key` and `mod` for portable code
+
+
+class BusDisplay:
+    """
+    A class used to represent a display connected to a bus.
+
+    This class provides the necessary interfaces to interact with a display
+    connected to a bus. It allows setting various display parameters like
+    width, height, rotation, color depth, brightness, etc.
+    """
 
     def __init__(
         self,
@@ -105,8 +135,6 @@ class BusDisplay:
         brightness_command=None,  # For color OLEDs
         data_as_commands=False,  # For color OLEDs
         single_byte_bounds=False,  # For color OLEDs
-        touch_read_func = None,
-        touch_rotation_table = _DEFAULT_TOUCH_ROTATION_TABLE,
     ):
         """
         Initializes the BusDisplay with the given parameters.
@@ -159,16 +187,15 @@ class BusDisplay:
         self._brightness_command = brightness_command
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
-        self._touch_read_func = touch_read_func if touch_read_func else lambda: None
-        self._touch_rotation_table = touch_rotation_table
+        self._devices = {}
 
-        self._reset_pin = self._config_pin_output(reset_pin, value=not reset_high)
+        self._reset_pin = self._config_output_pin(reset_pin, value=not reset_high)
         self._reset_high = reset_high
 
-        self._power_pin = self._config_pin_output(power_pin, value=power_on_high)
+        self._power_pin = self._config_output_pin(power_pin, value=power_on_high)
         self._power_on_high = power_on_high
 
-        self._backlight_pin = self._config_pin_output(backlight_pin, value=backlight_on_high)
+        self._backlight_pin = self._config_output_pin(backlight_pin, value=backlight_on_high)
         self._backlight_on_high = backlight_on_high
 
         if self._backlight_pin is not None:
@@ -496,11 +523,6 @@ class BusDisplay:
         self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
         self.send_cmd_data(_MADCTL, self._param_mv[:1])
 
-        # Set the touch rotation mask for the given rotation.
-        index = (value // 90) % len(self._touch_rotation_table)
-        mask = self._touch_rotation_table[index]
-        self.set_touch_rotation_mask(mask)
-
     def sleep_mode(self, value):
         """
         Enable or disable display sleep mode.
@@ -690,39 +712,7 @@ class BusDisplay:
             if line[2] != 0:
                 sleep_ms(line[2])
 
-    def get_touched(self):
-        # touch_read_func should return None, a point as a tuple (x, y), a point as a list [x, y] or
-        # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
-        # or [[x1, y1], [x2, y2]].  If it doesn't, create a wrapper around your driver's read function
-        # and set touch_read_func to that wrapper, or subclass TouchDriver and override .get_touched()
-        # with your own logic.  A point tuple/list may have additional values other than x and y that
-        # are ignored.  x and y must come first.  Some multi-touch drivers may return extra data such
-        # as the index of the touch point (1st, 2nd, etc).  Only the first point in the list will be
-        # used and any extra data in that point will be ignored.
-        touched = self._touch_read_func()
-        if touched:
-            # If it looks like a point, use it, otherwise get the first point out of the list / tuple
-            (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
-            if self._touch_swap_xy:
-                x, y = y, x
-            if self._touch_invert_x:
-                x = self.width - x - 1
-            if self._touch_invert_y:
-                y = self.height - y - 1
-            return x, y
-        return None
-
-    def set_touch_rotation_mask(self, mask):
-        # mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
-        # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
-        # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
-        # its rotation.  You can call this function any time after you've created devices to change the rotation.
-        mask = mask & 0b111
-        self._touch_invert_y = True if mask >> 2 & 1 else False
-        self._touch_invert_x = True if mask >> 1 & 1 else False
-        self._touch_swap_xy = True if mask >> 0 & 1 else False
-
-    def _config_pin_output(self, pin, value=None):
+    def _config_output_pin(self, pin, value=None):
         if pin is None:
             return None
         
@@ -736,3 +726,82 @@ class BusDisplay:
             if value is not None:
                 p.value = value
         return p
+
+    def register_device(self, type, callback, user_data=None):
+        """
+        Register a device to be polled.
+
+        :param type: The type of device to register.
+        :type type: int
+        :param callback: The function to read the device.
+        :type callback: callable
+        :param user_data: User data to pass to the read function.
+        :type user_data: object
+        """
+        device_id = len(self._devices)
+        if type == Device_types.TOUCH:
+            user_data = user_data if user_data else _DEFAULT_TOUCH_ROTATION_TABLE
+        self._devices[device_id] = Device(type, callback, user_data)
+        return device_id
+
+    def unregister_device(self, device_id):
+        """
+        Unregister a device.
+
+        :param device_id: The ID of the device to unregister.
+        :type device_id: int
+        """
+        if device_id in self._devices:
+            self._devices[device_id] = Device(Device_types.DISABLED, None, None)
+
+    def poll_event(self):
+        """
+        Provides a similar interface to PyGame's and SDL2's event queues.
+        In the future, additional input devices such as rotary encoders, joysticks,
+        etc. may be added to the event queue.  The returned event is a namedtuple
+        from the Events class.  The type of event is in the .type field.
+        """
+        for device_id, device in self._devices.items():
+            if device.type == Device_types.DISABLED:
+                continue
+            elif device.type == Device_types.TOUCH:
+                event = self._read_touch(device.callback, device.user_data)
+            else:
+                event = device.callback(device.user_data)
+
+            if event:
+                return event
+        return None
+
+    def set_device_data(self, device_id, user_data):
+        # You can call this function any time after you've created devices to change the user_data.
+        self._devices[device_id] = Device(
+            self._devices[device_id].type, self._devices[device_id].callback, self._devices[device_id].user_data)
+
+    def _read_touch(self, callback, rotation_table):
+        # callback should return None, a point as a tuple (x, y), a point as a list [x, y] or
+        # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
+        # or [[x1, y1], [x2, y2]].  If it doesn't, create a wrapper around your driver's read function
+        # and set touch_callback to that wrapper, or subclass TouchDriver and override .get_touched()
+        # with your own logic.  A point tuple/list may have additional values other than x and y that
+        # are ignored.  x and y must come first.  Some multi-touch drivers may return extra data such
+        # as the index of the touch point (1st, 2nd, etc).  Only the first point in the list will be
+        # used and any extra data in that point will be ignored.
+
+        # mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
+        # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
+        # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
+        # its rotation.
+        touched = callback()
+        if touched:
+            # If it looks like a point, use it, otherwise get the first point out of the list / tuple
+            (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
+            mask = rotation_table[self.rotation // 90]
+            if mask & 0b001:
+                x, y = y, x
+            if mask & 0b010:
+                x = self.width - x - 1
+            if mask & 0b100:
+                y = self.height - y - 1
+            return Events.Button(Events.MOUSEBUTTONDOWN, (x, y), 1, False, None)
+        return None

@@ -9,6 +9,7 @@ import uctypes
 import ffi
 import struct
 from micropython import const
+from collections import namedtuple
 
 ###############################################################################
 #                          SDL2 Constants                                     #
@@ -81,25 +82,12 @@ SDL_MOUSEBUTTONUP = const(0x402)            # Mouse button released
 SDL_MOUSEWHEEL = const(0x403)               # Mouse wheel motion
 SDL_POLLSENTINEL = const(0x7F00)            # Signals the end of an event poll cycle
 
-# SDL_KeyboardEvent and SDL_MouseButtonEvent states
-SDL_RELEASED = const(0)                   # Key or button released
-SDL_PRESSED = const(1)                    # Key or button pressed
-
-# SDL_MouseMotionEvent states
+# SDL_MouseMotionEvent button masks
 SDL_BUTTON_LMASK = const(1 << 0)           # Left mouse button
 SDL_BUTTON_MMASK = const(1 << 1)           # Middle mouse button
 SDL_BUTTON_RMASK = const(1 << 2)           # Right mouse button
 
-# SDL_MouseButtonEvent buttons
-SDL_BUTTON_LEFT = const(1)
-SDL_BUTTON_MIDDLE = const(2)
-SDL_BUTTON_RIGHT = const(3)
-
-# SDL_MouseWheelEvent directions
-SDL_MOUSEWHEEL_NORMAL = const(0)
-SDL_MOUSEWHEEL_FLIPPED = const(1)
-
-# SDL_Keycode values (not complete)
+# SDL_Keycode mod values (not complete)
 KMOD_NONE = const(0x0000)
 KMOD_LSHIFT = const(0x0001)
 KMOD_RSHIFT = const(0x0002)
@@ -116,35 +104,6 @@ KMOD_CTRL = KMOD_LCTRL | KMOD_RCTRL
 KMOD_SHIFT = KMOD_LSHIFT | KMOD_RSHIFT
 KMOD_ALT = KMOD_LALT | KMOD_RALT
 KMOD_GUI = KMOD_LGUI | KMOD_RGUI
-
-
-###############################################################################
-#                          Indices for event tuples                           #
-###############################################################################
-
-# Common
-TYPE = const(0)
-
-# Keyboard
-KEYNAME = const(1)
-MOD = const(2)
-
-# Mouse Motion
-X = const(1)
-Y = const(2)
-XREL = const(3)
-YREL = const(4)
-STATE = const(5)
-
-# Mouse Button
-# X = const(1)
-# Y = const(2)
-BUTTON = const(3)
-
-# Mouse Wheel
-# X = const(1)
-# Y = const(2)
-DIRECTION = const(3)
 
 
 ###############################################################################
@@ -471,9 +430,9 @@ class SDL2Display:
         :return: The event type and data.
         :rtype: tuple
         """
-        e = self._event
-        if SDL_PollEvent(e):
-            event_type = int.from_bytes(e[:4], 'little')
+        event_bytes = self._event
+        if SDL_PollEvent(event_bytes):
+            event_type = int.from_bytes(event_bytes[:4], 'little')
             if event_type in (
                 SDL_QUIT,
                 SDL_KEYDOWN,
@@ -483,49 +442,12 @@ class SDL2Display:
                 SDL_MOUSEBUTTONUP,
                 SDL_MOUSEWHEEL,
                 ):
-                event = Events.to_struct(e)
+                event = Events.to_struct(event_bytes)
+                # print(f"{event=}")
                 if event.type == SDL_QUIT:
                     self.quit_func()
-                elif event.type == SDL_KEYDOWN or event.type == SDL_KEYUP:
-                    keyname = SDL_GetKeyName(event.key.keysym.sym)
-                    return (event.type, keyname, event.key.keysym.mod)
-                elif event.type == SDL_MOUSEMOTION:
-                    return (
-                        event.type,
-                        event.motion.x,
-                        event.motion.y,
-                        event.motion.xrel,
-                        event.motion.yrel,
-                        event.motion.state,
-                    )
-                elif event.type == SDL_MOUSEBUTTONDOWN or event.type == SDL_MOUSEBUTTONUP:
-                    return (
-                        event.type,
-                        event.button.x,
-                        event.button.y,
-                        event.button.button,
-                    )
-                elif event.type == SDL_MOUSEWHEEL:
-                    return (event.type, event.wheel.x, event.wheel.y, event.wheel.direction)
-                else:  # Should never reach this point; left in so `if event_type in(...)` can be changed to `if True:` for debugging
-                    return event.type
-        return None
-
-    def get_touched(self):
-        """
-        Get the touch position from the SDL2 event queue.  If the event is
-        SDL_MOUSEBUTTONDOWN and the left button is pressed, return the
-        mouse position.  Otherwise, return None.
-        
-        :return: (x, y) tuple of the mouse position or None
-        :rtype: tuple or None
-        """
-        # NOTE: This discards all events except MOUSEBUTTONDOWN on the left button
-        event = self.poll_event()
-        if event:
-            # if the event is SDL_MOUSEBUTTONDOWN, return the mouse position
-            if event[TYPE] == SDL_MOUSEBUTTONDOWN and event[BUTTON] == SDL_BUTTON_LEFT:
-                return (event[X], event[Y])
+                else:
+                    return event
         return None
 
     @property
@@ -588,9 +510,23 @@ class Events:
     is 56 bytes long. The following structs are used to access the fields of
     the SDL_Event struct.
     """
+    QUIT = SDL_QUIT                        # User clicked the window close button
+    KEYDOWN = SDL_KEYDOWN                  # Key pressed
+    KEYUP = SDL_KEYUP                      # Key released
+    MOUSEMOTION = SDL_MOUSEMOTION          # Mouse moved
+    MOUSEBUTTONDOWN = SDL_MOUSEBUTTONDOWN  # Mouse button pressed
+    MOUSEBUTTONUP = SDL_MOUSEBUTTONUP      # Mouse button released
+    MOUSEWHEEL = SDL_MOUSEWHEEL            # Mouse wheel motion
+
+    Unknown = namedtuple("Common", "type")
+    Motion = namedtuple("Motion", "type pos rel buttons touch window")
+    Button = namedtuple("Button", "type pos button touch window")
+    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
+    Key = namedtuple("Key", "type name key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
+                                                                  # Instead, use `key` and `mod` for portable code
 
     @staticmethod
-    def to_struct(e):
+    def to_struct(event_bytes):
         """
         Return an event struct based on the event type
         The type is the first 4 bytes of the event
@@ -600,11 +536,28 @@ class Events:
         :return: The event struct.
         :rtype: uctypes.struct
         """
-        event_type = int.from_bytes(e[:4], 'little')
+        event_type = int.from_bytes(event_bytes[:4], 'little')
         try:
-            return uctypes.struct(uctypes.addressof(e), Events.event_map[event_type])
+            e = uctypes.struct(uctypes.addressof(event_bytes), Events.struct_map[event_type])
         except KeyError:
-            return uctypes.struct(uctypes.addressof(e), Events.SDL_CommonEvent)
+            e = uctypes.struct(uctypes.addressof(event_bytes), Events.SDL_CommonEvent)
+
+        if event_type == SDL_MOUSEMOTION:
+            l = 1 if e.motion.state & SDL_BUTTON_LMASK else 0
+            m = 1 if e.motion.state & SDL_BUTTON_MMASK else 0
+            r = 1 if e.motion.state & SDL_BUTTON_RMASK else 0
+            evt = Events.Motion(e.type, (e.motion.x, e.motion.y), (e.motion.xrel, e.motion.yrel), (l, m, r), e.motion.which != 0, e.motion.windowID)
+        elif event_type in (SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP):
+            evt = Events.Button(e.type, (e.button.x, e.button.y), e.button.button, e.button.which != 0, e.button.windowID)
+        elif event_type == SDL_MOUSEWHEEL:
+            evt = Events.Wheel(e.type, e.wheel.direction != 0, e.wheel.x, e.wheel.y, e.wheel.preciseX, e.wheel.preciseY, e.wheel.which != 0, e.wheel.windowID)
+        elif event_type in (SDL_KEYDOWN, SDL_KEYUP):
+            name = SDL_GetKeyName(e.key.keysym.sym)
+            evt = Events.Key(e.type, name, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.scancode, e.key.windowID)
+        else:
+            evt = Events.Unknown(e.type)
+
+        return evt
 
     # Define struct fields for SDL_CommonEvent
     SDL_CommonEvent = {
@@ -678,7 +631,7 @@ class Events:
     }
 
     # SDL_Event type to event struct mapping for event_type_to_struct()
-    event_map = {
+    struct_map = {
         SDL_KEYDOWN: SDL_KeyboardEvent,
         SDL_KEYUP: SDL_KeyboardEvent,
         SDL_MOUSEMOTION: SDL_MouseMotionEvent,
