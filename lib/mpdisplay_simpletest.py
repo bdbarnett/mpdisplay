@@ -4,10 +4,9 @@ from board_config import display_drv
 import random
 
 try:
-    from machine import Timer
-    timed = True
-except ImportError:
-    timed = False
+    from time import ticks_ms, ticks_diff
+except:
+    from adafruit_ticks import ticks_ms, ticks_diff
 
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
@@ -34,11 +33,11 @@ ORANGE = 0xfda0
 
 # Define the blocks
 bytes_per_pixel = 2
-block_size = 64   # Size of each dimension in pixels
-block_bytes = block_size * block_size * bytes_per_pixel
+block_width = 64
+block_height = 64
+block_bytes = block_width * block_height * bytes_per_pixel
 blocks = []
-blocks_per_screen = (display_drv.width * display_drv.height) / (block_size * block_size)
-
+blocks_per_screen = (display_drv.width * display_drv.height) // (block_width * block_height)
 # Create the blocks
 # for pixel_color in [1 << (x + 8) | 1 << x for x in range(8)]:
 for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE]:
@@ -49,30 +48,25 @@ for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RE
     blocks.append(block)
 
 # Maximum start positions of blocks
-max_x = display_drv.width - block_size - 1
-max_y = display_drv.height - block_size - 1
-
-# Counter and function to show blocks per second
-block_count = 0
-iter_count = 0
-def print_count(_):
-    global block_count, iter_count
-    iter_count += 1
-    print(f"\x08\x08\x08\x08{(block_count // iter_count):4}", end ="")
+max_x = display_drv.width - block_width - 1
+max_y = display_drv.height - block_height - 1
 
 # Prepare for the loop
-if timed:
-    print(f"{block_size}x{block_size} blocks per screen: {blocks_per_screen:.2f}")
-    print(f"Blocks per second:     ", end="")
-    tim = Timer(-1)
-    tim.init(mode=Timer.PERIODIC, freq=1, callback=print_count)
+print(f"{block_width}x{block_height} blocks per screen: {blocks_per_screen}")
+print(f"Blocks per second:     ", end="")
+
 
 # Infinite loop
+count = 0
+start = ticks_ms()
 while True:
-    display_drv.blit(
-        random.randint(0, max_x),  # x position
-        random.randint(0, max_y),  # y position
-        block_size,                # width
-        block_size,                # height
-        random.choice(blocks))     # buffer
-    block_count += 1
+    for _ in range(blocks_per_screen):
+        display_drv.blit(
+            random.randint(0, max_x),  # x position
+            random.randint(0, max_y),  # y position
+            block_width,                # width
+            block_height,                # height
+            random.choice(blocks))     # buffer
+    count += blocks_per_screen
+    elapsed = ticks_diff(ticks_ms(), start)
+    print(f"\x08\x08\x08\x08{(count * 1000 // elapsed):4}", end="")
