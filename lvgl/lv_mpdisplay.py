@@ -138,7 +138,7 @@ class DisplayDriver:
 
     def _touch_cb(self, touch_indev, data):
         # LVGL hands us an object called data.  We just change the state attributes when necessary.
-        event = self._display_drv.poll_event()
+        event = self.display_drv.poll_event()
         if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             data.point = lv.point_t({"x": x, "y": y})
