@@ -1,6 +1,6 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 
-from lib.lcd_bus import I80Bus
+from lcd_bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
@@ -29,9 +29,6 @@ display_bus = I80Bus(
     freq=10_000_000,
 )
 
-i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
-touch_drv = FT6x36(i2c)
-
 display_drv = ST7796(
     display_bus,
     width=320,
@@ -52,6 +49,9 @@ display_drv = ST7796(
     power_pin=None,
     power_on_high=True,
 )
+
+i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
+touch_drv = FT6x36(i2c)
 
 display_drv.register_device(
     type=Device_types.TOUCH,
