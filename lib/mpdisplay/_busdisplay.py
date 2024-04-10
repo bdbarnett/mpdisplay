@@ -216,7 +216,7 @@ class BusDisplay:
         else:
             # CircuitPython uses send() to send color data and parameters
             self._send_cmd_data = display_bus.send
-            self._blit = self.send_cmd_data
+            self._blit = self.set_params
 
         self.rotation_table = _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
         self._param_buf = bytearray(4)
@@ -469,7 +469,7 @@ class BusDisplay:
                     elif sys.implementation.name == "circuitpython":
                         self._backlight_pin.value = (value > 0.5)
             elif self._brightness_command is not None:
-                self.send_cmd_data(self._brightness_command, struct.pack("B", int(value * 255)))
+                self.set_params(self._brightness_command, struct.pack("B", int(value * 255)))
 
     def reset(self):
         """
@@ -496,7 +496,7 @@ class BusDisplay:
         """
         Soft reset display.
         """
-        self.send_cmd_data(_SWRESET)
+        self.set_params(_SWRESET)
         sleep_ms(150)
 
     @property
@@ -521,7 +521,7 @@ class BusDisplay:
 
         # Set the display MADCTL bits for the given rotation.
         self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
-        self.send_cmd_data(_MADCTL, self._param_mv[:1])
+        self.set_params(_MADCTL, self._param_mv[:1])
 
     def sleep_mode(self, value):
         """
@@ -531,9 +531,9 @@ class BusDisplay:
         :type value: bool
         """
         if value:
-            self.send_cmd_data(_SLPIN)
+            self.set_params(_SLPIN)
         else:
-            self.send_cmd_data(_SLPOUT)
+            self.set_params(_SLPOUT)
 
     def vscrdef(self, tfa, vsa, bfa):
         """
@@ -552,7 +552,7 @@ class BusDisplay:
         :param bfa: Bottom Fixed Area
         :type bfa: int
         """
-        self.send_cmd_data(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+        self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
     def vscsad(self, vssa):
         """
@@ -570,7 +570,7 @@ class BusDisplay:
         :param vssa: Vertical Scrolling Start Address
         :type vssa: int
         """
-        self.send_cmd_data(_VSCSAD, struct.pack(">H", vssa))
+        self.set_params(_VSCSAD, struct.pack(">H", vssa))
 
     def invert_colors(self, value):
         """
@@ -580,11 +580,11 @@ class BusDisplay:
         :type value: bool
         """
         if value:
-            self.send_cmd_data(_INVON)
+            self.set_params(_INVON)
         else:
-            self.send_cmd_data(_INVOFF)
+            self.set_params(_INVOFF)
 
-    def send_cmd_data(self, cmd, params=None, *args, **kwargs):
+    def set_params(self, cmd, params=None, *args, **kwargs):
         """
         Send cmd and parameters to the display.
 
@@ -620,14 +620,14 @@ class BusDisplay:
         self._param_buf[1] = x1 & 0xFF
         self._param_buf[2] = (x2 >> 8) & 0xFF
         self._param_buf[3] = x2 & 0xFF
-        self.send_cmd_data(self._set_column_command, self._param_mv[:4])
+        self.set_params(self._set_column_command, self._param_mv[:4])
 
         # Row addresses
         self._param_buf[0] = (y1 >> 8) & 0xFF
         self._param_buf[1] = y1 & 0xFF
         self._param_buf[2] = (y2 >> 8) & 0xFF
         self._param_buf[3] = y2 & 0xFF
-        self.send_cmd_data(self._set_row_command, self._param_mv[:4])
+        self.set_params(self._set_row_command, self._param_mv[:4])
 
     @staticmethod
     def _madctl(bgr, rotation, rotations):
@@ -654,7 +654,7 @@ class BusDisplay:
         """
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
         self._param_buf[0] = pixel_formats[self.color_depth]
-        self.send_cmd_data(_COLMOD, self._param_mv[:1])
+        self.set_params(_COLMOD, self._param_mv[:1])
 
     def _init_bytes(self, init_sequence):
         """
@@ -680,7 +680,7 @@ class BusDisplay:
             delay = (data_size & DELAY) != 0
             data_size &= ~DELAY
 
-            self.send_cmd_data(command, init_sequence[i + 2 : i + 2 + data_size])
+            self.set_params(command, init_sequence[i + 2 : i + 2 + data_size])
 
             delay_time_ms = 10
             if delay:
@@ -708,7 +708,7 @@ class BusDisplay:
         :type init_sequence: list
         """
         for line in init_sequence:
-            self.send_cmd_data(line[0], line[1])
+            self.set_params(line[0], line[1])
             if line[2] != 0:
                 sleep_ms(line[2])
 
@@ -792,7 +792,11 @@ class BusDisplay:
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
         # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
         # its rotation.
-        touched = callback()
+
+        try:  # If called too quickly, the touch driver may raise OSError: [Errno 116] ETIMEDOUT
+            touched = callback()
+        except OSError:
+            return None
         if touched:
             # If it looks like a point, use it, otherwise get the first point out of the list / tuple
             (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
