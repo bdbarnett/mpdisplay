@@ -1,13 +1,14 @@
 """ QTPy ESP32 Pico with EyeSPI and ILI9341 2.8" display """
 
+from displayio import release_displays
+release_displays()
+
 from fourwire import FourWire
 from ili9341 import ILI9341
 from adafruit_focaltouch import Adafruit_FocalTouch
 from mpdisplay import Device_types
 import board
 
-import displayio
-displayio.release_displays()
 
 display_bus = FourWire(
     board.SPI(),
