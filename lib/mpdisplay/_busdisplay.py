@@ -68,6 +68,10 @@ _MIRRORED_ROTATION_TABLE = (
 
 _DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
 
+SWAP_XY = const(0b001)
+REVERSE_X = const(0b010)
+REVERSE_Y = const(0b100)
+
 
 Device = namedtuple("Device", "type callback user_data")
 
@@ -801,11 +805,11 @@ class BusDisplay:
             # If it looks like a point, use it, otherwise get the first point out of the list / tuple
             (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
             mask = rotation_table[self.rotation // 90]
-            if mask & 0b001:
+            if mask & SWAP_XY:
                 x, y = y, x
-            if mask & 0b010:
+            if mask & REVERSE_X:
                 x = self.width - x - 1
-            if mask & 0b100:
+            if mask & REVERSE_Y:
                 y = self.height - y - 1
             return Events.Button(Events.MOUSEBUTTONDOWN, (x, y), 1, False, None)
         return None
