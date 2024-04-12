@@ -4,3 +4,15 @@
 [submodule "helpers/adafruit_ticks"]
 	path = helpers/adafruit_ticks
 	url = https://github.com/adafruit/Adafruit_CircuitPython_Ticks
+[submodule "helpers/tft_graphics"]
+	path = helpers/tft_graphics
+	url = https://github.com/bdbarnett/tft_graphics
+[submodule "helpers/displaybuffer"]
+	path = helpers/displaybuffer
+	url = https://github.com/bdbarnett/displaybuffer
+[submodule "examples/mpconsole"]
+	path = examples/mpconsole
+	url = https://github.com/bdbarnett/mpconsole
+[submodule "examples/testris"]
+	path = examples/testris
+	url = https://github.com/bdbarnett/testris
