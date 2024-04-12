@@ -1,9 +1,6 @@
 [submodule "encoder_drivers/micropython-rotary"]
 	path = encoder_drivers/micropython-rotary
 	url = https://github.com/miketeachman/micropython-rotary
-[submodule "examples/testris"]
-	path = examples/testris
-	url = https://github.com/bdbarnett/testris
 [submodule "helpers/displaybuffer"]
 	path = helpers/displaybuffer
 	url = https://github.com/bdbarnett/displaybuffer
