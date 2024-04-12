@@ -1,3 +1,6 @@
 [submodule "encoder_drivers/micropython-rotary"]
 	path = encoder_drivers/micropython-rotary
 	url = https://github.com/miketeachman/micropython-rotary
+[submodule "helpers/adafruit_ticks"]
+	path = helpers/adafruit_ticks
+	url = https://github.com/adafruit/Adafruit_CircuitPython_Ticks
