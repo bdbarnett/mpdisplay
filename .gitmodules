@@ -13,3 +13,6 @@
 [submodule "examples/testris"]
 	path = examples/testris
 	url = https://github.com/bdbarnett/testris
+[submodule "helpers/displaybuffer"]
+	path = helpers/displaybuffer
+	url = https://github.com/bdbarnett/displaybuffer
