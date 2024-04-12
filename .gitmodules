@@ -8,7 +8,7 @@
 	path = helpers/tft_graphics
 	url = https://github.com/bdbarnett/tft_graphics
 [submodule "examples/mpconsole"]
-	path = examples/mpconsole
+	path = helpers/mpconsole
 	url = https://github.com/bdbarnett/mpconsole
 [submodule "examples/testris"]
 	path = examples/testris
