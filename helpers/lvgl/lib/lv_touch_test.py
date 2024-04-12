@@ -2,17 +2,11 @@
 lv_touch_test.py
 Tests touchscreen and allows changing touch driver rotation
 to find a rotation that matches the display rotation.
-
-usage:
-    from lv_touch_test import mask, rotation
-
-    mask(0b101)  # set's the rotation mask directly, useful for finding the correct mask to put in a rotation table
  """
 
 import lv_config
 import lvgl as lv
 
-mask = lambda x: lv_config.display.display_drv.set_touch_rotation_mask(x)
 
 alignments = (
     (lv.ALIGN.TOP_LEFT, 0, 0),
@@ -55,11 +49,3 @@ for alignment in alignments:
     label = lv.label(btn)
     label.set_text(f"Btn{i}")
     label.center()
-    
-print(
-    "To test different touch rotations, run this program like:\n",
-    "    from lv_touch_test import mask\n\n",
-    "To find the correct mask to put in a rotation table, type:\n",
-    "    mask(x)\n",
-    "where x is a mask from 0b000 to 0b111 (or decimal 0 to 7)\n\n",
-    )
