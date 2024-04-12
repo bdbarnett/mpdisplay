@@ -5,4 +5,4 @@ import sys
 ### To run this command when you run Python, type:
 ###
 ###     python -i path.py
-sys.path.append('lib')
+sys.path.extend(['lib', 'romfonts'])
