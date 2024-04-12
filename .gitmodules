@@ -1,15 +1,6 @@
 [submodule "encoder_drivers/micropython-rotary"]
 	path = encoder_drivers/micropython-rotary
 	url = https://github.com/miketeachman/micropython-rotary
-[submodule "helpers/adafruit_ticks"]
-	path = helpers/adafruit_ticks
-	url = https://github.com/adafruit/Adafruit_CircuitPython_Ticks
-[submodule "helpers/tft_graphics"]
-	path = helpers/tft_graphics
-	url = https://github.com/bdbarnett/tft_graphics
-[submodule "examples/mpconsole"]
-	path = helpers/mpconsole
-	url = https://github.com/bdbarnett/mpconsole
 [submodule "examples/testris"]
 	path = examples/testris
 	url = https://github.com/bdbarnett/testris
