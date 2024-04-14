@@ -5,6 +5,7 @@ Usage:
     import wifi
     wlan = wifi.connect(SSID, PASSWORD)
 '''
+_retries = 10
 
 def connect(ssid, password):
     import network
@@ -13,7 +14,10 @@ def connect(ssid, password):
         wlan.active(True)
         print('Connecting to:', ssid, end=' ')
         wlan.connect(ssid, password)
-        while not wlan.isconnected():
-            print('.', end='')
-    print('\nNetwork config:', wlan.ifconfig(), '\n')
+        tries = 0
+        while tries < _retries:
+            if wlan.isconnected():
+                print('\nNetwork config:', wlan.ifconfig(), '\n')
+                break
+            tries += 1
     return wlan
