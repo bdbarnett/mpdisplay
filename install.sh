@@ -30,13 +30,8 @@
 
 ###################### Set these variables #####################################
 
-##### Uncomment these two lines for CPython
-# BOARD_CONFIG=mpdisplay/board_configs/cpython/board_config.py
-# EXE=python3
-
-##### Uncomment these two lines for MicroPython
-BOARD_CONFIG=mpdisplay/board_configs/unix/board_config.py
-EXE=micropython
+#### Set to the executable you want to use for the test at the end of the script
+EXE=python3  # micropython, python3 or python
 
 #### Set the following variables to your desired paths
 REPO=~/gh  # Path to clone repositories into
@@ -45,7 +40,8 @@ TARGET=~/micropython  # Path to copy Python files
 ##################################################################################
 
 
-LAUNCH=mpdisplay_simpletest.py
+BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py
+LAUNCH=mpconsole_advanced_demo
 
 # If $REPO directory does not exist, create it
 if [ ! -d $REPO ]; then
