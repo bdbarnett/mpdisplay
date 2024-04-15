@@ -61,6 +61,7 @@ git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
+git clone https://github.com/bdbarnett/timer.git $REPO/timer
 
 # Exit script immediately if any command exits with a non-zero status
 set -e
@@ -75,6 +76,7 @@ cp $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
 cp -r $REPO/displaybuffer/* $TARGET/
 cp -r $REPO/mpconsole/* $TARGET/
 cp -r $REPO/tft_graphics/* $TARGET/
+cp -r $REPO/timer/* $TARGET/
 cp $REPO/testris/testris.py $TARGET/examples/
 
 cp -r $REPO/micropython-touch/gui $TARGET/lib/
