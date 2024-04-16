@@ -119,5 +119,5 @@ rm $TARGET/LICENSE
 pushd $TARGET
 echo
 echo "Launching $LAUNCH"
-$EXE -i -c "import path, $LAUNCH"
+$EXE -c "import path, $LAUNCH"
 popd
