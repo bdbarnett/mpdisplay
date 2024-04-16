@@ -4,7 +4,7 @@
 #
 # Usage:
 #     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.sh
-#     sudo chmod a+x install.sh
+#     chmod u+x install.sh
 #     ./install.sh
 #
 # After installation, you may use the files in the $TARGET directory to 
