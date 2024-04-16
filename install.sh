@@ -1,47 +1,77 @@
 #!/bin/bash
 
 # Installation script for MPDisplay and several libraries that use it.
+#
+# Usage:
+#     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.sh
+#     sudo chmod a+x install.sh
+#     ./install.sh
+#
 # After installation, you may use the files in the $TARGET directory to 
 # transfer to your MicroPython or CircuitPython device.  You will need
 # to replace the board_config.py file with the appropriate file for your
 # device and add any drivers it references.
-
-# This script downloads the following repositories:
+#
+# This script clones the following repositories into the $REPO directory:
 #   - mpdisplay
 #   - displaybuffer
 #   - mpconsole
 #   - tft_graphics
 #   - testris
+#   - timer
 #   - Adafruit_CircuitPython_Ticks
 #   - micropython-touch
 #
 # It then copies the necessary files to their recommended locations in the
-# $TARGET directory and launches the $LAUNCH Python file.
-#
-# The $REPO and $TARGET directories are created if they do not exist.  The
-# $TARGET directory is where the Python files will be copied.  The $BOARD_CONFIG
-# variable specifies the board configuration file to use.  The $EXE variable
+# $TARGET directory and launches the $LAUNCH Python file as a test.  The $REPO
+# and $TARGET directories are created if they do not exist.  The $EXE variable
 # specifies the Python executable to use (python3 or micropython).
 #
-# You may run it as many times as you like from any directory.  The script will
-# always copy the files to the $TARGET directory.  If the $TARGET directory
-# already exists, the script will overwrite the files in the $TARGET directory.
+# You may run the script as many times as you like from any directory.  After 
+# runnng the first time, it will print an error for each repository it tries to
+# download since they are already downloaded, but that can be ignored.  (Note,
+# if you want to update a repo, 'cd' into its directory and type 'git pull'.)
+# All files will be copied from $REPO to $TARGET each time it is run, regardless
+# of whether the files in $TARGET have changed, so be careful not to overwrite
+# your changes.  It is recommended to make your changes in the $REPO directory
+# and then run this script to copy them to $TARGET for testing and transer to
+# a microcontroller.
+#
+# For testing purposes, it is recommended you 'cd' into the directory specified
+# by $TARGET and type either
+#     python3 -i path.py
+# or
+#     micropython -i path.py
+# That will add the directories necessary to run the demos to the path and leave
+# you at the REPL.  Or, type the following ommitting the '.py' file extensions:
+#     python3 -c "import path, <EXAMPLE>"
+# or
+#     micropython -c "import path, <EXAMPLE>"
+#
+# Remember:
+#     - All examples other than those for LVGL should run on MicroPython on Unix.
+#     - Examples that use MicroPython specific libraries, such as those based on
+#       the MicroPython-Touch library in the lib/gui directory will not run on
+#       CPython.
+#     - While MPDisplay suppots LVGL on microntrollers, it doesn't support LVGL
+#       on desktops operating systems, including MicroPython on Unix.
 
 
 ###################### Set these variables #####################################
-
-#### Set to the executable you want to use for the test at the end of the script
-EXE=python3  # micropython, python3 or python
 
 #### Set the following variables to your desired paths
 REPO=~/gh  # Path to clone repositories into
 TARGET=~/micropython  # Path to copy Python files
 
+#### Set to the executable you want to use for the test at the end of the script
+EXE=python3  # micropython, python3 or python
+
 ##################################################################################
 
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py
-LAUNCH=mpconsole_advanced_demo
+LAUNCH=testris
+
 
 # If $REPO directory does not exist, create it
 if [ ! -d $REPO ]; then
@@ -59,9 +89,9 @@ git clone https://github.com/bdbarnett/displaybuffer.git $REPO/displaybuffer
 git clone https://github.com/bdbarnett/mpconsole.git $REPO/mpconsole
 git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
+git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
-git clone https://github.com/bdbarnett/timer.git $REPO/timer
 
 # Exit script immediately if any command exits with a non-zero status
 set -e
@@ -72,21 +102,19 @@ cp $REPO/mpdisplay/utils/*.py $TARGET/lib/
 cp $REPO/mpdisplay/utils/*.bin $TARGET/
 cp $REPO/mpdisplay/utils/lvgl/lv_config.py $TARGET/
 
-cp $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
 cp -r $REPO/displaybuffer/* $TARGET/
 cp -r $REPO/mpconsole/* $TARGET/
 cp -r $REPO/tft_graphics/* $TARGET/
 cp -r $REPO/timer/* $TARGET/
 cp $REPO/testris/testris.py $TARGET/examples/
-
+cp $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
 cp -r $REPO/micropython-touch/gui $TARGET/lib/
+
+cp $REPO/$BOARD_CONFIG $TARGET/
 
 rm $TARGET/README.md
 rm $TARGET/LICENSE
 
-# if ! test -f $TARGET/board_config.py; then
-cp $REPO/$BOARD_CONFIG $TARGET/
-# fi
 
 pushd $TARGET
 echo
