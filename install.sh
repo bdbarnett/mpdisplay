@@ -5,6 +5,7 @@
 # Usage:
 #     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.sh
 #     chmod u+x install.sh
+#     (edit install.sh to set the $REPO, $TARGET and $EXE variables below)
 #     ./install.sh
 #
 # After installation, you may use the files in the $TARGET directory to 
