@@ -2,7 +2,7 @@
 see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
 """
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 from time import sleep_ms
 
 
@@ -73,7 +73,7 @@ class ST7701(BusDisplay):
     :param io_expander: the io expander to configure the display
     """
 
-    def _init_(self, io_pins, *args, **kwargs):
+    def __init__(self, io_pins, bus, **kwargs):
         self.io_pins = io_pins
 
         self.io_pins.write(self.io_pins.pwr_en, 1)
@@ -89,11 +89,10 @@ class ST7701(BusDisplay):
         self.io_pins.write(self.io_pins.lcd_rst, 1)
         sleep_ms(200)
 
-        super()._init_(*args, **kwargs)
+        super()._init_(bus, _INIT_SEQUENCE, **kwargs)
 
     def init(self):
 #         self.rotation_table = _ROTATION_TABLE
-        self._init_list(_INIT_SEQUENCE)
         super.init(render_mode_full=True)
 
     def set_params(self, cmd, params=None):

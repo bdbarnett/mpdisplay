@@ -28,8 +28,7 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 """
 
-from busdisplay import BusDisplay
-from micropython import const
+from mpdisplay import BusDisplay
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_HX8357.git"
@@ -60,10 +59,5 @@ _INIT_SEQUENCE = (
 class HX8357(BusDisplay):
     """HX8357D driver"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_bytes(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

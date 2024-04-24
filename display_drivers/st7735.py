@@ -23,7 +23,7 @@ Implementation Notes
 
 """
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ST7735.git"
@@ -51,12 +51,7 @@ _INIT_SEQUENCE = (
 
 # pylint: disable=too-few-public-methods
 class ST7735(BusDisplay):
-    """ST7735 driver"""
+    """ ST7735 driver """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_bytes(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

@@ -2,7 +2,7 @@
 see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
 """
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 
 _INIT_SEQUENCE = [
@@ -33,10 +33,5 @@ class ST7789(BusDisplay):
     ST7789 display driver
     """
 
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
-
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_list(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

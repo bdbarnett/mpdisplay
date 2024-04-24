@@ -23,7 +23,7 @@ Implementation Notes
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/tylercrumpton/CircuitPython_GC9A01.git"
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 _INIT_SEQUENCE = bytearray(
     b"\xFE\x00"  # Inter Register Enable1 (FEh)
@@ -52,12 +52,7 @@ _INIT_SEQUENCE = bytearray(
 
 # pylint: disable=too-few-public-methods
 class GC9A01(BusDisplay):
-    """GC9A01 displayio driver"""
+    """GC9A01 display driver"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_bytes(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

@@ -43,7 +43,7 @@ Implementation Notes
 
 """
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/electronut/Electronutlabs_CircuitPython_ILI9163.git"
@@ -75,10 +75,5 @@ _INIT_SEQUENCE = (
 class ILI9163(BusDisplay):
     """ILI9163 display driver"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_bytes(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

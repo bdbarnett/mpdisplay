@@ -34,7 +34,7 @@ Implementation Notes
 
 """
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ST7735R.git"
@@ -66,29 +66,7 @@ _INIT_SEQUENCE = bytearray(
 
 # pylint: disable=too-few-public-methods
 class ST7735R(BusDisplay):
-    """
-    ST7735R display driver
+    """ ST7735R display driver """
 
-    :param bool bgr: (Optional) An extra init sequence to append (default=False)
-    :param bool invert: (Optional) Invert the colors (default=False)
-    """
-
-    def __init__(
-        self, *args, bgr=False, invert=False, **kwargs):
-        init_sequence = _INIT_SEQUENCE
-        if bgr:
-            init_sequence += (
-                b"\x36\x01\xC0"  # _MADCTL Default rotation plus BGR encoding
-            )
-        else:
-            init_sequence += (
-                b"\x36\x01\xC8"  # _MADCTL Default rotation plus RGB encoding
-            )
-        if invert:
-            init_sequence += b"\x21\x00"  # _INVON
-        super().__init__(*args, **kwargs)
-
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_bytes(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

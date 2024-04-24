@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 
 
 _INIT_SEQUENCE = [
@@ -27,10 +27,6 @@ _INIT_SEQUENCE = [
 ]
 
 class ST7735R(BusDisplay):
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
 
-    def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        self._init_list(_INIT_SEQUENCE)
-        super().init()
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, _INIT_SEQUENCE, **kwargs)

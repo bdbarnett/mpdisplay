@@ -2,7 +2,7 @@
 The init sequence is written out line by line in .init()
 '''
 
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 from time import sleep_ms
 from micropython import const
 
@@ -24,31 +24,10 @@ _DISPON = const(0x29)
 
 
 class ST7796(BusDisplay):
-    # The st7795 display controller has an internal framebuffer
-    # arranged in 320 x 480
-    # configuration. Physical displays with pixel sizes less than
-    # 320 x 480 must supply a start_x and
-    # start_y argument to indicate where the physical display begins
-    # relative to the start of the
-    # display controllers internal framebuffer.
+    """ ST7796 display driver """
 
-    # this display driver supports RGB565 and also RGB666. RGB666 is going to
-    # use twice as much memory as the RGB565. It is also going to slow down the
-    # frame rate by 1/3, This is becasue of the extra byte of data that needs
-    # to get sent. To use RGB666 the color depth MUST be set to 32.
-    # so when compiling
-    # make sure to have LV_COLOR_DEPTH=32 set in LVFLAGS when you call make.
-    # For RGB565 you need to have LV_COLOR_DEPTH=16
-
-    # the reason why we use a 32 bit color depth is because of how the data gets
-    # written. The entire 8 bits for each byte gets sent. The controller simply
-    # ignores the lowest 2 bits in the byte to make it a 6 bit color channel
-    # We just have to tell lvgl that we want to use
-
-    display_name = "ST7796"
-
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
+    def __init__(self, bus, **kwargs):
+        super().__init__(bus, **kwargs)
 
     def init(self):
 #         self.rotation_table = _ROTATION_TABLE
