@@ -3,8 +3,9 @@
 from lcd_bus import RGBBus
 from st7701 import ST7701, IOPins
 from machine import Pin, I2C
-from cst8xx import CST8XX  # TODO: port to MicroPython from https://github.com/adafruit/Adafruit_CircuitPython_CST8XX
 from xl9535 import XL9535
+from cst8xx import CST8XX
+from mpdisplay import Device_types
 
 
 i2c = I2C(0, scl=Pin(48), sda=Pin(8))
@@ -87,5 +88,11 @@ display_drv = ST7701(
 )
 
 touch_drv = CST8XX(i2c)
-touch_read_func = touch_drv.touches
+touch_read_func = touch_drv.get_point
 touch_rotation_table=None
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
+)

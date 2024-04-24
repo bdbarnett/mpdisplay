@@ -4,6 +4,7 @@ from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
+from mpdisplay import Device_types
 
 
 display_bus = SPIBus(
@@ -22,9 +23,6 @@ display_bus = SPIBus(
     dc_low_on_data=False,
     cs_high_active=False,
 )
-
-i2c = I2C(0, sda=Pin(24), scl=Pin(25), freq=100000)
-touch_drv = FT6x36(i2c)
 
 display_drv = ILI9341(
     display_bus,
@@ -45,6 +43,15 @@ display_drv = ILI9341(
     reset_high=True,
     power_pin=None,
     power_on_high=True,
-    touch_read_func=touch_drv.get_positions,
-    touch_rotation_table=(6, 3, 0, 5),
+)
+
+i2c = I2C(0, sda=Pin(24), scl=Pin(25), freq=100000)
+touch_drv = FT6x36(i2c)
+touch_read_func=touch_drv.get_positions
+touch_rotation_table=(6, 3, 0, 5)
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
 )

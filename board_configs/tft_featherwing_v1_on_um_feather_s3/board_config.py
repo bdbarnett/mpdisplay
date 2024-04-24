@@ -45,5 +45,3 @@ display_drv = HX8357(
 )
 
 # Note Touch_CS = 38
-touch_read_func=lambda : None
-touch_rotation_table=None

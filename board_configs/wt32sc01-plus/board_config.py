@@ -52,9 +52,11 @@ display_drv = ST7796(
 
 i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
 touch_drv = FT6x36(i2c)
+touch_read_func=touch_drv.get_positions
+touch_rotation_table=None
 
 display_drv.register_device(
     type=Device_types.TOUCH,
-    callback=touch_drv.get_positions,
-    user_data=None,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
 )

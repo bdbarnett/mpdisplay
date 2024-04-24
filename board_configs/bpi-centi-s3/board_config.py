@@ -53,9 +53,6 @@ display_drv = ST7789(
     power_on_high=True,
 )
 
-touch_read_func = lambda : None
-touch_rotation_table = None
-
 encoder_drv = RotaryIRQ(37, 47, pull_up=True, half_step=True)
 encoder_read_func = encoder_drv.value
 encoder_button = Pin(35, Pin.IN, Pin.PULL_UP)

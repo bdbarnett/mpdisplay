@@ -44,6 +44,3 @@ display_drv = ILI9341(
     power_pin=None,
     power_on_high=True,
 )
-
-touch_read_func = lambda : None
-touch_rotation_table = None

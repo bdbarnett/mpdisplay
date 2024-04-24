@@ -2,7 +2,6 @@
 
 from lcd_bus import SPIBus
 from gc9a01 import GC9A01  # same as GC9107
-from machine import Pin
 
 
 display_bus = SPIBus(
@@ -41,6 +40,3 @@ display_drv = GC9A01(
     power_pin=None,
     power_on_high=True,
 )
-
-touch_read_func = lambda : None
-touch_rotation_table = None

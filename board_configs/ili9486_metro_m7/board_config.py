@@ -5,13 +5,6 @@ from ili9488 import ILI9488 as ILI9486
 from machine import SPI, Pin, freq  # See the note about reset below
 
 
-# The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both
-# tied to pin 4.  Controlling this pin with the display driver can lead to an
-# unresponsive touchscreen.  This case is uncommon.  If they aren't tied 
-# together on your board, define reset in ST7796 instead, like:
-#    ST7796(reset=4)
-reset=Pin(4, Pin.OUT, value=1)
-
 display_bus = I80Bus(
     dc=Pin.board.A2,
     wr=Pin.board.A1,
@@ -47,6 +40,3 @@ display_drv = ILI9486(
     power_pin=None,
     power_on_high=True,
     )
-
-touch_read_func = lambda: None
-touch_rotation_table = None

@@ -41,6 +41,3 @@ display_drv = ST7735(
     power_pin=None,
     power_on_high=True,
 )
-
-touch_read_func = lambda : None
-touch_rotation_table = None

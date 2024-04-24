@@ -4,6 +4,7 @@ from lcd_bus import I80Bus
 from ili9341 import ILI9341
 from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
+from mpdisplay import Device_types
 
 
 # The ILI9341 2.8" display has the reset pins of the display IC and the touch
@@ -53,3 +54,9 @@ i2c = I2C(0, sda=Pin(16), scl=Pin(17), freq=100000)  #IRQ = 11
 touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=None
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
+)

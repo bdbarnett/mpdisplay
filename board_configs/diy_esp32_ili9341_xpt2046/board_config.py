@@ -4,6 +4,7 @@ from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, SPI
 from xpt2046 import Touch
+from mpdisplay import Device_types
 
 display_bus = SPIBus(
     dc=5,
@@ -64,5 +65,12 @@ touch_drv.calibrate(
     height=display_drv.width,
     orientation=3,
 )
-touch_read_func = touch_drv.get_touch
+
+touch_read_func=touch_drv.get_touch,
 touch_rotation_table = (0b000, 0b000, 0b000, 0b100)
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
+)

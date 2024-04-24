@@ -4,6 +4,7 @@ from lcd_bus import I80Bus
 from st7789 import ST7789
 from machine import SPI, Pin  # See the note about reset below
 from xpt2046 import Touch
+from mpdisplay import Device_types
 
 
 display_bus = I80Bus(
@@ -58,6 +59,7 @@ touch_drv = Touch(
     cs=Pin(2),
     int_pin=Pin(9),
 )
+
 touch_drv.calibrate(
     xmin=150,
     xmax=1830,
@@ -67,5 +69,12 @@ touch_drv.calibrate(
     height=display_drv.height,
     orientation=1,
 )
+
 touch_read_func = touch_drv.get_touch
 touch_rotation_table=None
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
+)

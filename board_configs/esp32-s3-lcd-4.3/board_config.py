@@ -4,6 +4,7 @@ from lcd_bus import RGBBus
 from busdisplay import BusDisplay
 from machine import I2C, Pin
 from gt911 import GT911
+from mpdisplay import Device_types
 
 
 display_bus = RGBBus(
@@ -72,4 +73,11 @@ display_drv = BusDisplay(
 
 i2c = I2C(0, scl=Pin(9), sda=Pin(8))
 touch_drv = GT911(i2c)
-touch_drv_read = lambda : touch_drv.read_points()[1][0]
+touch_read_func = lambda : touch_drv.read_points()[1][0]
+touch_rotation_table = None
+
+display_drv.register_device(
+    type=Device_types.TOUCH,
+    callback=touch_read_func,
+    user_data=touch_rotation_table,
+)
