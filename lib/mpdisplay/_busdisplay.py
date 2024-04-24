@@ -94,6 +94,7 @@ class Events:
     MOUSEBUTTONUP = const(0x402)            # Mouse button released
     MOUSEWHEEL = const(0x403)               # Mouse wheel motion
 
+    # Event classes
     Unknown = namedtuple("Common", "type")
     Motion = namedtuple("Motion", "type pos rel buttons touch window")
     Button = namedtuple("Button", "type pos button touch window")
@@ -192,6 +193,7 @@ class BusDisplay:
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
         self._devices = {}
+        self._last_states = {}
 
         self._reset_pin = self._config_output_pin(reset_pin, value=not reset_high)
         self._reset_high = reset_high
@@ -744,7 +746,11 @@ class BusDisplay:
         """
         device_id = len(self._devices)
         if type == Device_types.TOUCH:
+            # user_data is the rotation table
             user_data = user_data if user_data else _DEFAULT_TOUCH_ROTATION_TABLE
+        if type == Device_types.ENCODER:
+            # user_data is the switch pin object
+            self._last_states[device_id] = user_data() if user_data else False
         self._devices[device_id] = Device(type, callback, user_data)
         return device_id
 
@@ -764,14 +770,21 @@ class BusDisplay:
         In the future, additional input devices such as rotary encoders, joysticks,
         etc. may be added to the event queue.  The returned event is a namedtuple
         from the Events class.  The type of event is in the .type field.
+
+        Currently returns as soon as an event is found and begins with the first
+        device registered the next time called, placing priority on the first
+        device registered.  Register less frequently fired or higher priority devices
+        first if you have problems with this.  This may change in the future.
         """
         for device_id, device in self._devices.items():
             if device.type == Device_types.DISABLED:
                 continue
             elif device.type == Device_types.TOUCH:
-                event = self._read_touch(device.callback, device.user_data)
+                event = self._read_touch(device_id, device.callback, device.user_data)
+            elif device.type == Device_types.ENCODER:
+                event = self._read_encoder(device_id, device.callback, device.user_data)
             else:
-                event = device.callback(device.user_data)
+                event = device.callback(device_id, device.user_data)
 
             if event:
                 return event
@@ -782,7 +795,7 @@ class BusDisplay:
         self._devices[device_id] = Device(
             self._devices[device_id].type, self._devices[device_id].callback, self._devices[device_id].user_data)
 
-    def _read_touch(self, callback, rotation_table):
+    def _read_touch(self, device_id, callback, rotation_table):
         # callback should return None, a point as a tuple (x, y), a point as a list [x, y] or
         # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
         # or [[x1, y1], [x2, y2]].  If it doesn't, create a wrapper around your driver's read function
@@ -811,5 +824,26 @@ class BusDisplay:
                 x = self.width - x - 1
             if mask & REVERSE_Y:
                 y = self.height - y - 1
+            self._last_states[device_id] = (x, y)
             return Events.Button(Events.MOUSEBUTTONDOWN, (x, y), 1, False, None)
+        elif self._last_states[device_id]:
+            x, y = self._last_states[device_id]
+            self._last_states[device_id] = False
+            return Events.Button(Events.MOUSEBUTTONUP, (x, y), 1, False, None)
+        return None
+
+    def _read_encoder(self, device_id, callback, switch_pin):
+        # callback can return number of steps turned since last call or simply -1, 0, or 1.
+        # swith_pin should also be callable and return truthy if the switch is pressed,
+        # falsy if it is not.
+        Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
+
+        pressed = switch_pin()
+        if pressed != self._last_states[device_id]:
+            self._last_states[device_id] = pressed
+            return Events.Button(Events.MOUSEBUTTONDOWN if pressed else Events.MOUSEBUTTONUP, (0, 0), 3, False, None)
+
+        steps = callback()
+        if steps:
+            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
         return None
