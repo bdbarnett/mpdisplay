@@ -1,4 +1,5 @@
 """
+GPL-3.0 License
 see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
 """
 
@@ -52,41 +53,38 @@ _INIT_SEQUENCE = [
 ]
 
 
-class IOPins:
+class LCDPins:
     def __init__(
-        self, write, *, tp_res, pwr_en, lcd_cs, lcd_sda, lcd_clk, lcd_rst, sd_cs
+        self, *, pwr_en, cs, sda, clk, rst
     ):
-        self.write = write
-        self.tp_res = tp_res
         self.pwr_en = pwr_en
-        self.lcd_cs = lcd_cs
-        self.lcd_sda = lcd_sda
-        self.lcd_clk = lcd_clk
-        self.lcd_rst = lcd_rst
-        self.sd_cs = sd_cs
+        self.cs = cs
+        self.sda = sda
+        self.clk = clk
+        self.rst = rst
 
 
 class ST7701(BusDisplay):
     """
     ST7701 display driver
 
-    :param io_expander: the io expander to configure the display
+    :param lcd_pins: the io pins to configure the display
     """
 
-    def __init__(self, io_pins, bus, **kwargs):
-        self.io_pins = io_pins
+    def __init__(self, lcd_pins, bus, **kwargs):
+        self.lcd_pins = lcd_pins
 
-        self.io_pins.write(self.io_pins.pwr_en, 1)
-        self.io_pins.write(self.io_pins.lcd_cs, 1)
-        self.io_pins.write(self.io_pins.lcd_sda, 1)
-        self.io_pins.write(self.io_pins.lcd_clk, 1)
+        self.lcd_pins.pwr_en(1)
+        self.lcd_pins.cs(1)
+        self.lcd_pins.sda(1)
+        self.lcd_pins.clk(1)
 
         # Reset the display
-        self.io_pins.write(self.io_pins.lcd_rst, 1)
+        self.lcd_pins.rst(1)
         sleep_ms(200)
-        self.io_pins.write(self.io_pins.lcd_rst, 0)
+        self.lcd_pins.rst(0)
         sleep_ms(200)
-        self.io_pins.write(self.io_pins.lcd_rst, 1)
+        self.lcd_pins.rst(1)
         sleep_ms(200)
 
         super()._init_(bus, _INIT_SEQUENCE, **kwargs)
@@ -101,28 +99,28 @@ class ST7701(BusDisplay):
             self._tx_data(params)
 
     def _tx_cmd(self, cmd):
-        self.io_pins.write(self.io_pins.lcd_cs, 0)
-        self.io_pins.write(self.io_pins.lcd_sda, 0)
-        self.io_pins.write(self.io_pins.lcd_clk, 0)
-        self.io_pins.write(self.io_pins.lcd_clk, 1)
+        self.lcd_pins.cs(0)
+        self.lcd_pins.sda(0)
+        self.lcd_pins.clk(0)
+        self.lcd_pins.clk(1)
         self._tx_byte(cmd)
-        self.io_pins.write(self.io_pins.lcd_cs, 1)
+        self.lcd_pins.cs(1)
 
     def _tx_data(self, data):
         for i in range(len(data)):
-            self.io_pins.write(self.io_pins.lcd_cs, 0)
-            self.io_pins.write(self.io_pins.lcd_sda, 1)
-            self.io_pins.write(self.io_pins.lcd_clk, 0)
-            self.io_pins.write(self.io_pins.lcd_clk, 1)
+            self.lcd_pins.cs(0)
+            self.lcd_pins.sda(1)
+            self.lcd_pins.clk(0)
+            self.lcd_pins.clk(1)
             self._tx_byte(data[i])
-            self.io_pins.write(self.io_pins.lcd_cs, 1)
+            self.lcd_pins.cs(1)
 
     def _tx_byte(self, bits):
         for _ in range(8):
             if bits & 0x80:
-                self.io_pins.write(self.io_pins.lcd_sda, 1)
+                self.lcd_pins.sda(1)
             else:
-                self.io_pins.write(self.io_pins.lcd_sda, 0)
+                self.lcd_pins.sda(0)
             bits <<= 1
-            self.io_pins.write(self.io_pins.lcd_clk, 0)
-            self.io_pins.write(self.io_pins.lcd_clk, 1)
+            self.lcd_pins.clk(0)
+            self.lcd_pins.clk(1)

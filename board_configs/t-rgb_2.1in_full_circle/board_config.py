@@ -1,26 +1,12 @@
 """ T-RGB 480x480 ST7701 display - 2.1" Full Circle with CST820 touch controller """
 
 from lcd_bus import RGBBus
-from st7701 import ST7701, IOPins
+from st7701 import ST7701, LCDPins
 from machine import Pin, I2C
 from xl9535 import XL9535
 from cst8xx import CST8XX
 from mpdisplay import Device_types
 
-
-i2c = I2C(0, scl=Pin(48), sda=Pin(8))
-io_expander = XL9535(i2c)
-io_expander.pinMode8(0, 0x01111111, io_expander.OUT)  # set pins 1 through 7 to output
-io_pins = IOPins(
-    io_expander.digitalWrite,
-    tp_res=1,
-    pwr_en=2,
-    lcd_cs=3,
-    lcd_sda=4,
-    lcd_clk=5,
-    lcd_rst=6,
-    sd_cs=7,
-)
 
 display_bus = RGBBus(
     hsync=47,
@@ -65,8 +51,20 @@ display_bus = RGBBus(
     bb_inval_cache=False,
 )
 
+i2c = I2C(0, scl=Pin(48), sda=Pin(8))
+io_expander = XL9535(i2c)
+lcd_pins = LCDPins(
+    pwr_en=io_expander.Pin(2, io_expander.OUT),
+    cs=io_expander.Pin(3, io_expander.OUT),
+    sda=io_expander.Pin(4, io_expander.OUT),
+    clk=io_expander.Pin(5, io_expander.OUT),
+    rst=io_expander.Pin(6, io_expander.OUT),
+)
+tp_rst=io_expander.Pin(1, io_expander.OUT, value=1)
+sd_cs=io_expander.Pin(7, io_expander.OUT, value=1)
+
 display_drv = ST7701(
-    io_pins,
+    lcd_pins,
     display_bus,
     width=480,
     height=480,
@@ -81,13 +79,13 @@ display_drv = ST7701(
     brightness=1.0,
     backlight_pin=46,
     backlight_on_high=True,
-    reset_pin=None,
-    reset_high=True,
-    power_pin=None,
-    power_on_high=True,
+    rst_pin=None,
+    rst_high=True,
+    pwr_en_pin=None,
+    pwr_en_on_high=True,
 )
 
-touch_drv = CST8XX(i2c)
+touch_drv = CST8XX(i2c, rst_pin=tp_rst)
 touch_read_func = touch_drv.get_point
 touch_rotation_table=None
 
