@@ -192,8 +192,8 @@ class BusDisplay:
         self._brightness_command = brightness_command
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
-        self._devices = {}
-        self._last_states = {}
+        self.devices = {}
+        self._device_states = {}
 
         self._reset_pin = self._config_output_pin(reset_pin, value=not reset_high)
         self._reset_high = reset_high
@@ -733,7 +733,7 @@ class BusDisplay:
                 p.value = value
         return p
 
-    def register_device(self, type, callback, user_data=None):
+    def register_device(self, type, callback, user_data=lambda: None):
         """
         Register a device to be polled.
 
@@ -744,14 +744,14 @@ class BusDisplay:
         :param user_data: User data to pass to the read function.
         :type user_data: object
         """
-        device_id = len(self._devices)
+        device_id = len(self.devices)
         if type == Device_types.TOUCH:
             # user_data is the rotation table
             user_data = user_data if user_data else _DEFAULT_TOUCH_ROTATION_TABLE
         if type == Device_types.ENCODER:
             # user_data is the switch pin object
-            self._last_states[device_id] = user_data() if user_data else False
-        self._devices[device_id] = Device(type, callback, user_data)
+            self._device_states[device_id] = (callback(), user_data())
+        self.devices[device_id] = Device(type, callback, user_data)
         return device_id
 
     def unregister_device(self, device_id):
@@ -761,8 +761,8 @@ class BusDisplay:
         :param device_id: The ID of the device to unregister.
         :type device_id: int
         """
-        if device_id in self._devices:
-            self._devices[device_id] = Device(Device_types.DISABLED, None, None)
+        if device_id in self.devices:
+            self.devices[device_id] = Device(Device_types.DISABLED, None, None)
 
     def poll_event(self):
         """
@@ -776,7 +776,7 @@ class BusDisplay:
         device registered.  Register less frequently fired or higher priority devices
         first if you have problems with this.  This may change in the future.
         """
-        for device_id, device in self._devices.items():
+        for device_id, device in self.devices.items():
             if device.type == Device_types.DISABLED:
                 continue
             elif device.type == Device_types.TOUCH:
@@ -792,8 +792,8 @@ class BusDisplay:
 
     def set_device_data(self, device_id, user_data):
         # You can call this function any time after you've created devices to change the user_data.
-        self._devices[device_id] = Device(
-            self._devices[device_id].type, self._devices[device_id].callback, self._devices[device_id].user_data)
+        self.devices[device_id] = Device(
+            self.devices[device_id].type, self.devices[device_id].callback, self.devices[device_id].user_data)
 
     def _read_touch(self, device_id, callback, rotation_table):
         # callback should return None, a point as a tuple (x, y), a point as a list [x, y] or
@@ -824,26 +824,29 @@ class BusDisplay:
                 x = self.width - x - 1
             if mask & REVERSE_Y:
                 y = self.height - y - 1
-            self._last_states[device_id] = (x, y)
+            self._device_states[device_id] = (x, y)
             return Events.Button(Events.MOUSEBUTTONDOWN, (x, y), 1, False, None)
-        elif self._last_states[device_id]:
-            x, y = self._last_states[device_id]
-            self._last_states[device_id] = False
+        elif self._device_states[device_id]:
+            x, y = self._device_states[device_id]
+            self._device_states[device_id] = False
             return Events.Button(Events.MOUSEBUTTONUP, (x, y), 1, False, None)
         return None
 
     def _read_encoder(self, device_id, callback, switch_pin):
-        # callback can return number of steps turned since last call or simply -1, 0, or 1.
+        # callback should return a running total of steps turned.  For instance, if the current
+        # position is 800 and it is moved 5 right then 3 left, the callback should return 802.
+        # The even returned will have the delta, 2 in this example.
         # swith_pin should also be callable and return truthy if the switch is pressed,
         # falsy if it is not.
-        Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-
+        last_pos, last_pressed = self._device_states[device_id]
         pressed = switch_pin()
-        if pressed != self._last_states[device_id]:
-            self._last_states[device_id] = pressed
+        if pressed != last_pressed:
+            self._device_states[device_id] = (last_pos, pressed)
             return Events.Button(Events.MOUSEBUTTONDOWN if pressed else Events.MOUSEBUTTONUP, (0, 0), 3, False, None)
 
-        steps = callback()
-        if steps:
+        pos = callback()
+        if pos != last_pos:
+            steps = pos - last_pos
+            self._device_states[device_id] = (pos, last_pressed)
             return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
         return None
