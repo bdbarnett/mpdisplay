@@ -104,7 +104,6 @@ fi
 cp -ur $REPO/mpdisplay/lib $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
-cp -u $REPO/mpdisplay/utils/*.bin $TARGET/
 cp -u $REPO/mpdisplay/utils/lvgl/lv_config.py $TARGET/
 
 cp -ur $REPO/displaybuffer/* $TARGET/
@@ -120,6 +119,7 @@ cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 rm $TARGET/README.md
 rm $TARGET/LICENSE
+rm $TARGET/.gitignore
 
 ######################## Launch the test app ####################################
 
