@@ -20,6 +20,7 @@
 #   - tft_graphics
 #   - testris
 #   - timer
+#   - framebuf
 #   - Adafruit_CircuitPython_Ticks
 #   - micropython-touch
 #
@@ -86,6 +87,7 @@ git clone https://github.com/bdbarnett/mpconsole.git $REPO/mpconsole
 git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
+git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
 git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
 
@@ -109,6 +111,7 @@ cp -ur $REPO/displaybuffer/* $TARGET/
 cp -ur $REPO/mpconsole/* $TARGET/
 cp -ur $REPO/tft_graphics/* $TARGET/
 cp -ur $REPO/timer/* $TARGET/
+cp -ur $REPO/framebuf/* $TARGET/
 cp -u $REPO/testris/testris.py $TARGET/examples/
 cp -u $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
 cp -ur $REPO/micropython-touch/gui $TARGET/lib/
