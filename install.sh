@@ -58,7 +58,7 @@
 #       on desktops operating systems, including MicroPython on Unix.
 
 
-###################### Set these variables #####################################
+##################### Required: set these variables #####################################
 
 #### Set the following variables to your desired paths
 REPO=~/gh  # Path to clone repositories into
@@ -67,21 +67,16 @@ TARGET=~/micropython  # Path to copy Python files
 #### Set to the executable you want to use for the test at the end of the script
 EXE=python3  # micropython, python3 or python
 
-##################################################################################
-
+##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py
 LAUNCH=testris
 
+######################## Download the repositories ###############################
 
 # If $REPO directory does not exist, create it
 if [ ! -d $REPO ]; then
     mkdir $REPO
-fi
-
-# If $TARGET directory does not exist, create it
-if [ ! -d $TARGET ]; then
-    mkdir $TARGET
 fi
 
 ##### Clone the repositories.  This will error if the repositories already exist.
@@ -94,28 +89,36 @@ git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
 
+######################## Stage the files in $TARGET ##############################
+
 # Exit script immediately if any command exits with a non-zero status
 set -e
 
-cp -r $REPO/mpdisplay/lib $TARGET/
-cp -r $REPO/mpdisplay/examples $TARGET/
-cp $REPO/mpdisplay/utils/*.py $TARGET/lib/
-cp $REPO/mpdisplay/utils/*.bin $TARGET/
-cp $REPO/mpdisplay/utils/lvgl/lv_config.py $TARGET/
+# If $TARGET directory does not exist, create it
+if [ ! -d $TARGET ]; then
+    mkdir $TARGET
+fi
 
-cp -r $REPO/displaybuffer/* $TARGET/
-cp -r $REPO/mpconsole/* $TARGET/
-cp -r $REPO/tft_graphics/* $TARGET/
-cp -r $REPO/timer/* $TARGET/
-cp $REPO/testris/testris.py $TARGET/examples/
-cp $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
-cp -r $REPO/micropython-touch/gui $TARGET/lib/
+cp -ur $REPO/mpdisplay/lib $TARGET/
+cp -ur $REPO/mpdisplay/examples $TARGET/
+cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
+cp -u $REPO/mpdisplay/utils/*.bin $TARGET/
+cp -u $REPO/mpdisplay/utils/lvgl/lv_config.py $TARGET/
 
-cp $REPO/$BOARD_CONFIG $TARGET/
+cp -ur $REPO/displaybuffer/* $TARGET/
+cp -ur $REPO/mpconsole/* $TARGET/
+cp -ur $REPO/tft_graphics/* $TARGET/
+cp -ur $REPO/timer/* $TARGET/
+cp -u $REPO/testris/testris.py $TARGET/examples/
+cp -u $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
+cp -ur $REPO/micropython-touch/gui $TARGET/lib/
+
+cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 rm $TARGET/README.md
 rm $TARGET/LICENSE
 
+######################## Launch the test app ####################################
 
 pushd $TARGET
 echo
