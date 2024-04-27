@@ -82,6 +82,7 @@ fi
 
 ##### Clone the repositories.  This will error if the repositories already exist.
 git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
+git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
 git clone https://github.com/bdbarnett/displaybuffer.git $REPO/displaybuffer
 git clone https://github.com/bdbarnett/mpconsole.git $REPO/mpconsole
 git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
@@ -106,6 +107,7 @@ cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
 cp -u $REPO/mpdisplay/utils/lvgl/lv_config.py $TARGET/
 
+cp -ur $REPO/lcd_bus/* $TARGET/
 cp -ur $REPO/displaybuffer/* $TARGET/
 cp -ur $REPO/mpconsole/* $TARGET/
 cp -ur $REPO/tft_graphics/* $TARGET/
@@ -119,7 +121,6 @@ cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 rm $TARGET/README.md
 rm $TARGET/LICENSE
-rm $TARGET/.gitignore
 
 ######################## Launch the test app ####################################
 
