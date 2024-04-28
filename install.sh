@@ -88,7 +88,7 @@ git clone https://github.com/bdbarnett/console.git $REPO/console
 git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
-git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
+git clone https://github.com/bdbarnett/romfont.git $REPO/romfont
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
@@ -114,7 +114,7 @@ cp -ur $REPO/console/* $TARGET/
 cp -ur $REPO/tft_graphics/* $TARGET/
 cp -ur $REPO/timer/* $TARGET/
 cp -ur $REPO/framebuf/* $TARGET/
-cp -ur $REPO/binfont/* $TARGET/
+cp -ur $REPO/romfont/* $TARGET/
 cp -u $REPO/testris/testris.py $TARGET/examples/
 cp -u $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
 cp -ur $REPO/micropython-touch/gui $TARGET/lib/
