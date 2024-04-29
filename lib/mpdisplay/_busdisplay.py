@@ -710,6 +710,12 @@ class BusDisplay(_BaseDisplay):
         device registered the next time called, placing priority on the first
         device registered.  Register less frequently fired or higher priority devices
         first if you have problems with this.  This may change in the future.
+
+        It is recommended to run poll_event repeatedly until all events have been
+        processed on a timed schedule.  For instance, schedule the following on a recurring basis:
+
+            while (event := display_drv.poll_event):
+                ...
         """
         for device in self.devices:
             event = device.read()
