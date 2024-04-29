@@ -14,15 +14,17 @@
 # device and add any drivers it references.
 #
 # This script clones the following repositories into the $REPO directory:
-#   - mpdisplay
-#   - displaybuffer
-#   - mpconsole
-#   - tft_graphics
-#   - testris
-#   - timer
-#   - framebuf
-#   - Adafruit_CircuitPython_Ticks
-#   - micropython-touch
+# - mpdisplay
+# - lcd_bus
+# - displaybuf
+# - console
+# - tft_graphics
+# - timer
+# - framebuf
+# - romfont
+# - testris
+# - Adafruit_CircuitPython_Ticks
+# - micropython-touch
 #
 # It then copies the necessary files to their recommended locations in the
 # $TARGET directory and launches the $LAUNCH Python file as a test.  The $REPO
@@ -71,7 +73,7 @@ EXE=python3  # micropython, python3 or python
 ##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
-LAUNCH=testris                                                # without .py extension
+LAUNCH=testris  # without .py extension
 
 ######################## Download the repositories ###############################
 
