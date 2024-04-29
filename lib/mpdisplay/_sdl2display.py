@@ -9,7 +9,7 @@ import uctypes
 import ffi
 import struct
 from micropython import const
-from collections import namedtuple
+from . import _BaseDisplay, Devices, Events
 
 ###############################################################################
 #                          SDL2 Constants                                     #
@@ -161,7 +161,7 @@ def retcheck(retvalue):
 #                          LCD class                                      #
 ###############################################################################
 
-class SDL2Display:
+class SDL2Display(_BaseDisplay):
     '''
     A class to create and manage the SDL2 window and renderer and emulate an LCD.
     Provides scrolling and rotation functions similar to an LCD.  The .texture
@@ -423,33 +423,6 @@ class SDL2Display:
         self._bfa = bfa
         self._show()
 
-    def poll_event(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        event_bytes = self._event
-        if SDL_PollEvent(event_bytes):
-            event_type = int.from_bytes(event_bytes[:4], 'little')
-            if event_type in (
-                SDL_QUIT,
-                SDL_KEYDOWN,
-                SDL_KEYUP,
-                SDL_MOUSEMOTION,
-                SDL_MOUSEBUTTONDOWN,
-                SDL_MOUSEBUTTONUP,
-                SDL_MOUSEWHEEL,
-                ):
-                event = Events.to_struct(event_bytes)
-                # print(f"{event=}")
-                if event.type == SDL_QUIT:
-                    self.quit_func()
-                else:
-                    return event
-        return None
-
     @property
     def power(self):
         return -1
@@ -499,34 +472,38 @@ class SDL2Display:
         """
         self.deinit()
 
+    def poll_event(self):
+        """
+        Polls for an event and returns the event type and data.
+
+        :return: The event type and data.
+        :rtype: tuple
+        """
+        event_bytes = self._event
+        if SDL_PollEvent(event_bytes):
+            event_type = int.from_bytes(event_bytes[:4], 'little')
+            if event_type in Events.types:
+                event = SDL_Event.from_bytes(event_bytes)
+                # print(f"{event=}")
+                if event.type == Events.QUIT:
+                    self.quit_func()
+                else:
+                    return event
+        return None
+
 
 ###############################################################################
-#                          Events class                                       #
+#                          SDL_Event class                                    #
 ###############################################################################
 
-class Events:
+class SDL_Event:
     """
     SDL2's SDL_Event type is a union of several structs. The largest of these
     is 56 bytes long. The following structs are used to access the fields of
     the SDL_Event struct.
     """
-    QUIT = SDL_QUIT                        # User clicked the window close button
-    KEYDOWN = SDL_KEYDOWN                  # Key pressed
-    KEYUP = SDL_KEYUP                      # Key released
-    MOUSEMOTION = SDL_MOUSEMOTION          # Mouse moved
-    MOUSEBUTTONDOWN = SDL_MOUSEBUTTONDOWN  # Mouse button pressed
-    MOUSEBUTTONUP = SDL_MOUSEBUTTONUP      # Mouse button released
-    MOUSEWHEEL = SDL_MOUSEWHEEL            # Mouse wheel motion
-
-    Unknown = namedtuple("Common", "type")
-    Motion = namedtuple("Motion", "type pos rel buttons touch window")
-    Button = namedtuple("Button", "type pos button touch window")
-    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple("Key", "type name key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
-                                                                  # Instead, use `key` and `mod` for portable code
-
     @staticmethod
-    def to_struct(event_bytes):
+    def from_bytes(event_bytes):
         """
         Return an event struct based on the event type
         The type is the first 4 bytes of the event
@@ -538,9 +515,9 @@ class Events:
         """
         event_type = int.from_bytes(event_bytes[:4], 'little')
         try:
-            e = uctypes.struct(uctypes.addressof(event_bytes), Events.struct_map[event_type])
+            e = uctypes.struct(uctypes.addressof(event_bytes), SDL_Event.struct_map[event_type])
         except KeyError:
-            e = uctypes.struct(uctypes.addressof(event_bytes), Events.SDL_CommonEvent)
+            e = uctypes.struct(uctypes.addressof(event_bytes), SDL_Event.SDL_CommonEvent)
 
         if event_type == SDL_MOUSEMOTION:
             l = 1 if e.motion.state & SDL_BUTTON_LMASK else 0
@@ -630,7 +607,7 @@ class Events:
         })
     }
 
-    # SDL_Event type to event struct mapping for event_type_to_struct()
+    # SDL_Event type to event struct mapping for event_type_from_bytes()
     struct_map = {
         SDL_KEYDOWN: SDL_KeyboardEvent,
         SDL_KEYUP: SDL_KeyboardEvent,

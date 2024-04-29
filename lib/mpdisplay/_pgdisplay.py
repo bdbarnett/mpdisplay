@@ -6,9 +6,10 @@ An implementation of an LCD library written in Python using pygame
 """
 
 import pygame as pg
-from collections import namedtuple
+from . import _BaseDisplay, Devices, Events
 
-class PGDisplay:
+
+class PGDisplay(_BaseDisplay):
     '''
     A class to emulate an LCD using pygame.
     Provides scrolling and rotation functions similar to an LCD.  The .texture
@@ -250,30 +251,6 @@ class PGDisplay:
         self._bfa = bfa
         self._show()
 
-    def poll_event(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        event = pg.event.poll()
-        if event.type in (
-            pg.QUIT,
-            pg.KEYDOWN,
-            pg.KEYUP,
-            pg.MOUSEMOTION,
-            pg.MOUSEBUTTONDOWN,
-            pg.MOUSEBUTTONUP,
-            pg.MOUSEWHEEL,
-            ):
-            # print(f"{event=}")
-            if event.type == pg.QUIT:
-                self.quit_func()
-            else:
-                return event
-        return None
-
     @property
     def power(self):
         return -1
@@ -320,19 +297,18 @@ class PGDisplay:
         """
         self.deinit()
 
+    def poll_event(self):
+        """
+        Polls for an event and returns the event type and data.
 
-class Events:
-    QUIT = pg.QUIT                        # User clicked the window close button
-    KEYDOWN = pg.KEYDOWN                  # Key pressed
-    KEYUP = pg.KEYUP                      # Key released
-    MOUSEMOTION = pg.MOUSEMOTION          # Mouse moved
-    MOUSEBUTTONDOWN = pg.MOUSEBUTTONDOWN  # Mouse button pressed
-    MOUSEBUTTONUP = pg.MOUSEBUTTONUP      # Mouse button released
-    MOUSEWHEEL = pg.MOUSEWHEEL            # Mouse wheel motion
-
-    Unknown = namedtuple("Common", "type")
-    Motion = namedtuple("Motion", "type pos rel buttons touch window")
-    Button = namedtuple("Button", "type pos button touch window")
-    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple("Key", "type unicode key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
-                                                                  # Instead, use `key` and `mod` for portable code
+        :return: The event type and data.
+        :rtype: tuple
+        """
+        event = pg.event.poll()
+        if event.type in Events.types:
+            # print(f"{event=}")
+            if event.type == Events.QUIT:
+                self.quit_func()
+            else:
+                return event
+        return None

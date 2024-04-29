@@ -8,8 +8,9 @@ busdisplay.py - BusDisplay class for MicroPython
 
 import struct
 import sys
-from collections import namedtuple
 from micropython import const
+from . import _BaseDisplay, Devices, Events
+
 
 if sys.implementation.name == "micropython":
     from machine import Pin
@@ -66,44 +67,8 @@ _MIRRORED_ROTATION_TABLE = (
     _MADCTL_MV | _MADCTL_MY,               # mirrored = True, rotation = 270
 )
 
-_DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
 
-SWAP_XY = const(0b001)
-REVERSE_X = const(0b010)
-REVERSE_Y = const(0b100)
-
-
-Device = namedtuple("Device", "type callback user_data")
-
-
-class Device_types:
-    DISABLED = const(0x00)  # Device has been disabled
-    TOUCH = const(0x01)     # Provides MOUSEBUTTONDOWN events when touched
-    ENCODER = const(0x02)   # Provides MOUSEWHEEL events when turned, middle MOUSEBUTTONDOWN when pressed
-    KEYBOARD = const(0x03)  # Provides KEYDOWN and KEYUP events when keys are pressed or released
-    JOYSTICK = const(0x04)  # Joystick Events (not implemented)
-
-
-class Events:
-    # Event types (from SDL2 / PyGame, not complete)
-    QUIT = const(0x100)                     # User clicked the window close button
-    KEYDOWN = const(0x300)                  # Key pressed
-    KEYUP = const(0x301)                    # Key released
-    MOUSEMOTION = const(0x400)              # Mouse moved
-    MOUSEBUTTONDOWN = const(0x401)          # Mouse button pressed
-    MOUSEBUTTONUP = const(0x402)            # Mouse button released
-    MOUSEWHEEL = const(0x403)               # Mouse wheel motion
-
-    # Event classes
-    Unknown = namedtuple("Common", "type")
-    Motion = namedtuple("Motion", "type pos rel buttons touch window")
-    Button = namedtuple("Button", "type pos button touch window")
-    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple("Key", "type name key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
-                                                                  # Instead, use `key` and `mod` for portable code
-
-
-class BusDisplay:
+class BusDisplay(_BaseDisplay):
     """
     A class used to represent a display connected to a bus.
 
@@ -192,8 +157,6 @@ class BusDisplay:
         self._brightness_command = brightness_command
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
-        self.devices = {}
-        self._device_states = {}
 
         self._reset_pin = self._config_output_pin(reset_pin, value=not reset_high)
         self._reset_high = reset_high
@@ -529,6 +492,10 @@ class BusDisplay:
         self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
         self.set_params(_MADCTL, self._param_mv[:1])
 
+        for device in self.devices:
+            if device.type == Devices.TOUCH:
+                device.rotation = value
+
     def sleep_mode(self, value):
         """
         Enable or disable display sleep mode.
@@ -733,120 +700,19 @@ class BusDisplay:
                 p.value = value
         return p
 
-    def register_device(self, type, callback, user_data=lambda: None):
-        """
-        Register a device to be polled.
-
-        :param type: The type of device to register.
-        :type type: int
-        :param callback: The function to read the device.
-        :type callback: callable
-        :param user_data: User data to pass to the read function.
-        :type user_data: object
-        """
-        device_id = len(self.devices)
-        if type == Device_types.TOUCH:
-            # user_data is the rotation table
-            user_data = user_data if user_data else _DEFAULT_TOUCH_ROTATION_TABLE
-        if type == Device_types.ENCODER:
-            # user_data is the switch pin object
-            self._device_states[device_id] = (callback(), user_data())
-        self.devices[device_id] = Device(type, callback, user_data)
-        return device_id
-
-    def unregister_device(self, device_id):
-        """
-        Unregister a device.
-
-        :param device_id: The ID of the device to unregister.
-        :type device_id: int
-        """
-        if device_id in self.devices:
-            self.devices[device_id] = Device(Device_types.DISABLED, None, None)
-
     def poll_event(self):
         """
         Provides a similar interface to PyGame's and SDL2's event queues.
-        In the future, additional input devices such as rotary encoders, joysticks,
-        etc. may be added to the event queue.  The returned event is a namedtuple
-        from the Events class.  The type of event is in the .type field.
+        The returned event is a namedtuple from the Events class.
+        The type of event is in the .type field.
 
         Currently returns as soon as an event is found and begins with the first
         device registered the next time called, placing priority on the first
         device registered.  Register less frequently fired or higher priority devices
         first if you have problems with this.  This may change in the future.
         """
-        for device_id, device in self.devices.items():
-            if device.type == Device_types.DISABLED:
-                continue
-            elif device.type == Device_types.TOUCH:
-                event = self._read_touch(device_id, device.callback, device.user_data)
-            elif device.type == Device_types.ENCODER:
-                event = self._read_encoder(device_id, device.callback, device.user_data)
-            else:
-                event = device.callback(device_id, device.user_data)
-
+        for device in self.devices:
+            event = device.read()
             if event:
                 return event
-        return None
-
-    def set_device_data(self, device_id, user_data):
-        # You can call this function any time after you've created devices to change the user_data.
-        self.devices[device_id] = Device(
-            self.devices[device_id].type, self.devices[device_id].callback, self.devices[device_id].user_data)
-
-    def _read_touch(self, device_id, callback, rotation_table):
-        # callback should return None, a point as a tuple (x, y), a point as a list [x, y] or
-        # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
-        # or [[x1, y1], [x2, y2]].  If it doesn't, create a wrapper around your driver's read function
-        # and set touch_callback to that wrapper, or subclass TouchDriver and override .get_touched()
-        # with your own logic.  A point tuple/list may have additional values other than x and y that
-        # are ignored.  x and y must come first.  Some multi-touch drivers may return extra data such
-        # as the index of the touch point (1st, 2nd, etc).  Only the first point in the list will be
-        # used and any extra data in that point will be ignored.
-
-        # mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
-        # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
-        # Your display driver should have a way to set rotation, but your touch driver may not have a way to set
-        # its rotation.
-
-        try:  # If called too quickly, the touch driver may raise OSError: [Errno 116] ETIMEDOUT
-            touched = callback()
-        except OSError:
-            return None
-        if touched:
-            # If it looks like a point, use it, otherwise get the first point out of the list / tuple
-            (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
-            mask = rotation_table[self.rotation // 90]
-            if mask & SWAP_XY:
-                x, y = y, x
-            if mask & REVERSE_X:
-                x = self.width - x - 1
-            if mask & REVERSE_Y:
-                y = self.height - y - 1
-            self._device_states[device_id] = (x, y)
-            return Events.Button(Events.MOUSEBUTTONDOWN, (x, y), 1, False, None)
-        elif self._device_states[device_id]:
-            x, y = self._device_states[device_id]
-            self._device_states[device_id] = False
-            return Events.Button(Events.MOUSEBUTTONUP, (x, y), 1, False, None)
-        return None
-
-    def _read_encoder(self, device_id, callback, switch_pin):
-        # callback should return a running total of steps turned.  For instance, if the current
-        # position is 800 and it is moved 5 right then 3 left, the callback should return 802.
-        # The even returned will have the delta, 2 in this example.
-        # swith_pin should also be callable and return truthy if the switch is pressed,
-        # falsy if it is not.
-        last_pos, last_pressed = self._device_states[device_id]
-        pressed = switch_pin()
-        if pressed != last_pressed:
-            self._device_states[device_id] = (last_pos, pressed)
-            return Events.Button(Events.MOUSEBUTTONDOWN if pressed else Events.MOUSEBUTTONUP, (0, 0), 3, False, None)
-
-        pos = callback()
-        if pos != last_pos:
-            steps = pos - last_pos
-            self._device_states[device_id] = (pos, last_pressed)
-            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
         return None

@@ -1,4 +1,8 @@
 from sys import implementation, platform
+from ._basedisplay import _BaseDisplay
+from ._devices import Devices
+from ._events import Events
+
 
 if implementation.name == "cpython":
     from ._pgdisplay import *

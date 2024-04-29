@@ -8,7 +8,7 @@ lv_mpdisplay.py - LVGL driver framework for MPDisplay
 
 import lvgl as lv
 from time import ticks_ms, ticks_diff
-from mpdisplay import Events, Device_types
+from mpdisplay import Events, Devices
 
 
 try:
@@ -108,21 +108,29 @@ class DisplayDriver:
             render_mode,
         )
 
-        self._next_event = None
-
         # Create an input device for each device of known type registered to display_drv
-        # and set its type and read callback function.
+        # and set its type and read callback function.  Save a reverence to the indev object
+        # in the device's user_data attribute to enable changing the indev's group or display
+        # later with:
+        #     indev = device.user_data
+        #     indev.set_group(new_group)
+        #     indev.set_disp(new_display)
         for device in display_drv.devices:
-            if device.device_type in (Device_types.TOUCH, Device_types.ENCODER):
-                self._indev = lv.indev_create()
-                self._indev.set_disp(lv.display_get_default())
-                self._indev.set_group(lv.group_get_default())
-                if device.device_type == Device_types.TOUCH:
-                    self._indev.set_type(lv.INDEV_TYPE.POINTER)
-                    self._indev.set_read_cb(self._touch_cb)
-                elif device.device_type == Device_types.ENCODER:
-                    self._indev.set_type(lv.INDEV_TYPE.ENCODER)
-                    self._indev.set_read_cb(self._encoder_cb)
+            if device.type in (Devices.TOUCH, Devices.ENCODER, Devices.KEYBOARD):
+                indev = lv.indev_create()
+                indev.set_disp(lv.display_get_default())
+                indev.set_group(lv.group_get_default())
+                device.user_data = indev
+                if device.type == Devices.TOUCH:
+                    device.set_read_cb(self._touch_cb)
+                    indev.set_type(lv.INDEV_TYPE.POINTER)
+                elif device.type == Devices.ENCODER:
+                    device.set_read_cb(self._encoder_cb)
+                    indev.set_type(lv.INDEV_TYPE.ENCODER)
+                elif device.type == Devices.KEYBOARD:
+                    device.set_read_cb(self._keyboard_cb)
+                    indev.set_type(lv.INDEV_TYPE.KEYPAD)
+                indev.set_read_cb(device.read_cb)
 
     def _flush_cb(self, disp_drv, area, color_p):
         width = area.x2 - area.x1 + 1
@@ -145,44 +153,20 @@ class DisplayDriver:
         if self._blocking:
             self.lv_display.flush_ready()
 
-    def _get_next_event(self, device_type):
-        if self._next_event:
-            event = self._next_event
-            self._next_event = None
-        else:
-            event = self.display_drv.poll_event()
-        if event is None:
-            return None
-        if event.type not in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP, Events.MOUSEWHEEL):
-            return None
-        if device_type == Device_types.TOUCH:
-            if event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP):
-                if event.button == 1:
-                    return event
-                if event.button in (2, 4, 5):
-                    return None
-        elif device_type == Device_types.ENCODER:
-            if event.type == Events.MOUSEWHEEL \
-                    or event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP) \
-                    and event.button == 3:
-                return event
-        else:
-            self._next_event = event
-
-    def _touch_cb(self, indev, data):
+    def _touch_cb(self, event, indev, data):
         # LVGL hands us an object called data.  We just change the state attributes when necessary.
-        if not (event := self._get_next_event(Device_types.TOUCH)):
+        if event is None:
             return
         if event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             data.point = lv.point_t({"x": x, "y": y})
             data.state = lv.INDEV_STATE.PRESSED
-        else:
+        elif event.type == Events.MOUSEBUTTONUP and event.button == 1:
             data.state = lv.INDEV_STATE.RELEASED
 
-    def _encoder_cb(self, indev, data):
+    def _encoder_cb(self, event, indev, data):
         # LVGL hands us an object called data.  We just change the enc_diff and/or state attributes if necessary.
-        if not (event := self._get_next_event(Device_types.ENCODER)):
+        if event is None:
             return
         if event.type == Events.MOUSEWHEEL:
             data.enc_diff = event.x if event.flipped == False else -event.x
@@ -191,6 +175,16 @@ class DisplayDriver:
         elif event.type == Events.MOUSEBUTTONUP and event.button == 3:
             data.state = lv.INDEV_STATE.RELEASED
 
+    def _keyboard_cb(self, event, indev, data):
+        # LVGL hands us an object called data.  We just change the state attributes when necessary.
+        if event is None:
+            return
+        if event.type == Events.KEYDOWN:
+            data.state = lv.INDEV_STATE.PRESSED
+            data.key = event.key
+        elif event.type == Events.KEYUP:
+            data.state = lv.INDEV_STATE.RELEASED
+            data.key = event.key
 
 class EncoderDriver:
     """
