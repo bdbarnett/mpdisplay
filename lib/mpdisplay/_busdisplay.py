@@ -714,7 +714,7 @@ class BusDisplay(_BaseDisplay):
         It is recommended to run poll_event repeatedly until all events have been
         processed on a timed schedule.  For instance, schedule the following on a recurring basis:
 
-            while (event := display_drv.poll_event):
+            while (event := display_drv.poll_event()):
                 ...
         """
         for device in self.devices:

@@ -215,6 +215,8 @@ class SDL2Display(_BaseDisplay):
         self._scroll_y = None  # Scroll offset; set to None to disable scrolling
         self.texture = None
 
+        self._event = bytearray(56)  # The largest size of an SDL_Event struct
+
         # Determine the pixel format
         if color_depth == 32:
             self._px_format = SDL_PIXELFORMAT_ARGB8888
@@ -473,11 +475,10 @@ class SDL2Display(_BaseDisplay):
         :return: The event type and data.
         :rtype: tuple
         """
-        event_bytes = self._event
-        if SDL_PollEvent(event_bytes):
-            event_type = int.from_bytes(event_bytes[:4], 'little')
+        if SDL_PollEvent(self._event):
+            event_type = int.from_bytes(self._event[:4], 'little')
             if event_type in Events.types:
-                event = SDL_Event.from_bytes(event_bytes)
+                event = SDL_Event.from_bytes(self._event)
                 # print(f"{event=}")
                 if event.type == Events.QUIT:
                     self.quit_func()

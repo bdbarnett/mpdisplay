@@ -9,7 +9,6 @@ class _BaseDisplay:
         # function that cleans up resources and calls `sys.exit()`.
         # .poll_event() must be called periodically to check for the quit event.
         self.quit_func = lambda: print(".quit_func not set")
-        self._event = bytearray(56)  # The largest size of an SDL_Event struct
 
     def register_device(self, dev, *args, **kwargs):
         """
