@@ -73,7 +73,7 @@ EXE=python3  # micropython, python3 or python
 ##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
-LAUNCH=testris  # without .py extension
+LAUNCH=mpdisplay_paint_test  # without .py extension
 
 ######################## Download the repositories ###############################
 
