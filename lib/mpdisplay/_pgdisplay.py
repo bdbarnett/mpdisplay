@@ -298,8 +298,11 @@ class PGDisplay(_BaseDisplay):
         :return: The event type and data.
         :rtype: tuple
         """
+        
+        if (event := super().poll_event()) is not None:
+            return event
         self._event = pg.event.poll()
-        if self._event.type in Events.types:
+        if self._event and self._event.type in Events.types:
             # print(f"{event=}")
             if self._event.type == Events.QUIT:
                 self.quit_func()

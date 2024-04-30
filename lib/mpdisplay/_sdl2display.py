@@ -475,6 +475,8 @@ class SDL2Display(_BaseDisplay):
         :return: The event type and data.
         :rtype: tuple
         """
+        if (event := super().poll_event()) is not None:
+            return event
         if SDL_PollEvent(self._event):
             event_type = int.from_bytes(self._event[:4], 'little')
             if event_type in Events.types:
