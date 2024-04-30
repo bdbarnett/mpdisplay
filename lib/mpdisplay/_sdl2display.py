@@ -9,7 +9,7 @@ import uctypes
 import ffi
 import struct
 from micropython import const
-from . import _BaseDisplay, Devices, Events
+from . import _BaseDisplay, Events
 
 ###############################################################################
 #                          SDL2 Constants                                     #
@@ -117,6 +117,7 @@ _sdl = ffi.open("libSDL2-2.0.so.0")
 SDL_Init = _sdl.func("i", "SDL_Init", "I")
 SDL_Quit = _sdl.func("v", "SDL_Quit", "")
 SDL_GetKeyName = _sdl.func("s", "SDL_GetKeyName", "i")
+SDL_GetKeyFromName = _sdl.func("i", "SDL_GetKeyFromName", "s")
 SDL_PollEvent = _sdl.func("i", "SDL_PollEvent", "P")
 SDL_GetError = _sdl.func("s", "SDL_GetError", "")
 
@@ -212,14 +213,7 @@ class SDL2Display(_BaseDisplay):
         self._scale = scale
         self._tfa = self._bfa = 0  # Top and bottom fixed areas
         self._scroll_y = None  # Scroll offset; set to None to disable scrolling
-        self._event = bytearray(56)  # The largest size of an SDL_Event struct
         self.texture = None
-
-        # Function to call when the window close button is clicked.
-        # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a 
-        # function that cleans up resources and calls `sys.exit()`.
-        # .poll_event() must be called periodically to check for the quit event.
-        self.quit_func = lambda: print(".quit_func not set")
 
         # Determine the pixel format
         if color_depth == 32:
@@ -487,8 +481,7 @@ class SDL2Display(_BaseDisplay):
                 # print(f"{event=}")
                 if event.type == Events.QUIT:
                     self.quit_func()
-                else:
-                    return event
+                return event
         return None
 
 

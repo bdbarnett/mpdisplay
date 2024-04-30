@@ -2,6 +2,7 @@ from sys import implementation, platform
 from ._basedisplay import _BaseDisplay
 from ._devices import Devices
 from ._events import Events
+from ._keys import Keys
 
 
 if implementation.name == "cpython":

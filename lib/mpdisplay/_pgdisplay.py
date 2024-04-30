@@ -6,7 +6,7 @@ An implementation of an LCD library written in Python using pygame
 """
 
 import pygame as pg
-from . import _BaseDisplay, Devices, Events
+from . import _BaseDisplay, Events
 
 
 class PGDisplay(_BaseDisplay):
@@ -53,12 +53,6 @@ class PGDisplay(_BaseDisplay):
         self._window_flags = window_flags
         self._tfa = self._bfa = 0  # Top and bottom fixed areas
         self._bytes_per_pixel = color_depth // 8
-
-        # Function to call when the window close button is clicked.
-        # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a 
-        # function that cleans up resources and calls `sys.exit()`.
-        # .poll_event() must be called periodically to check for the quit event.
-        self.quit_func = lambda: print(".quit_func not set")
 
         self.requires_byte_swap = False
 
@@ -304,11 +298,10 @@ class PGDisplay(_BaseDisplay):
         :return: The event type and data.
         :rtype: tuple
         """
-        event = pg.event.poll()
-        if event.type in Events.types:
+        self._event = pg.event.poll()
+        if self._event.type in Events.types:
             # print(f"{event=}")
-            if event.type == Events.QUIT:
+            if self._event.type == Events.QUIT:
                 self.quit_func()
-            else:
-                return event
+            return self._event
         return None

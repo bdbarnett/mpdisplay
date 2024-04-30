@@ -39,7 +39,7 @@ class _Device:
         self._data = data
         self._read2 = read2 if read2 else lambda: None
         self._data2 = data2
-        self._display = display
+        self.display = display
 
         self._state = None
         self._user_data = None  # User data that can be set and retrieved by applications such as lv_mpdisplay
@@ -66,9 +66,23 @@ class _Device:
     @user_data.setter
     def user_data(self, value):
         self._user_data = value
+
+    @property
+    def display(self):
+        return self._display
+    
+    @display.setter
+    def display(self, disp):
+        self._display = disp
+        disp.register_device(self)
+        if self.type == Devices.TOUCH:
+            self.rotation = disp.rotation
         
 
 class TouchDevice(_Device):
+    """
+    Only reports mouse button 1.
+    """
     type = Devices.TOUCH
 
     def __init__(self, *args, **kwargs):
@@ -103,6 +117,7 @@ class TouchDevice(_Device):
         except OSError:
             return None
         if touched:
+            last_pos = self._state
             # If it looks like a point, use it, otherwise get the first point out of the list / tuple
             (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
             
@@ -112,9 +127,13 @@ class TouchDevice(_Device):
                 x = self._display.width - x - 1
             if self._mask & REVERSE_Y:
                 y = self._display.height - y - 1
-            self._state = (x, y)  # Save the position for the next read
-            return Events.Button(Events.MOUSEBUTTONDOWN, self._state, 1, False, None)
-        elif self._state:
+            self._state = (x, y)  # Save the position for the next 
+            if last_pos is not None:
+                last_x, last_y = last_pos
+                return Events.Motion(Events.MOUSEMOTION, self._state, (x-last_x, y-last_y), (1, 0, 0), False, None)
+            else:
+                return Events.Button(Events.MOUSEBUTTONDOWN, self._state, 1, False, None)
+        elif self._state is not None:
             last_pos = self._state
             self._state = None
             return Events.Button(Events.MOUSEBUTTONUP, last_pos, 1, False, None)
