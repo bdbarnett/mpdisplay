@@ -143,9 +143,17 @@ class EncoderDevice(_Device):
     type = Devices.ENCODER
 
     def __init__(self, *args, **kwargs):
+        """
+        self._data is the mouse button number to report for the switch.
+        Default is 2 (middle mouse button).  If the mouse button number is even,
+        the wheel will report vertical (y) movement.  If the mouse button number is odd,
+        the wheel will report horizontal (x) movement.  This corresponds to a typical mouse
+        wheel being button 2 and the wheel moving vertically.  It also correponds to
+        scrolling horizontally on a touchpad with two-finger scrolling and using the right button.
+        """
         super().__init__(*args, **kwargs)
         self._state = (0, False)  # (position, pressed)
-        self._switch_button = self._data2 if self._data2 else 3  # Default to right mouse button
+        self._switch_button = self._data if self._data else 2  # Default to middle mouse button
 
     def read(self):
         # _read should return a running total of steps turned.  For instance, if the current
@@ -163,7 +171,9 @@ class EncoderDevice(_Device):
         if pos != last_pos:
             steps = pos - last_pos
             self._state = (pos, last_pressed)
-            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
+            if self._switch_button % 2 == 0:  # If the mouse button is even,
+                return Events.Wheel(Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None) # report on y
+            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None) # else report on x
         return None
 
 class KeyboardDevice(_Device):
