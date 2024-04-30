@@ -77,7 +77,6 @@ class _Device:
         disp.register_device(self)
         if self.type == Devices.TOUCH:
             self.rotation = disp.rotation
-        
 
 class TouchDevice(_Device):
     """
