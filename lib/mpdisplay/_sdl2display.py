@@ -239,9 +239,9 @@ class SDL2Display(_BaseDisplay):
 
         self.requires_byte_swap = False
 
-        self._init()
+        self.init()
 
-    def _init(self):
+    def init(self):
         """
         Initializes the sdl2lcd instance.
         """
@@ -256,30 +256,6 @@ class SDL2Display(_BaseDisplay):
         if not self.texture:
             raise RuntimeError(f"{SDL_GetError()}")
         retcheck(SDL_SetTextureBlendMode(self.texture, SDL_BLENDMODE_NONE))
-
-    @property
-    def width(self):
-        """
-        The width of the display.
-        
-        :return: The width of the display.
-        :rtype: int
-        """
-        if ((self._rotation // 90) & 1) == 1:  # if rotation index is odd
-            return self._height
-        return self._width
-
-    @property
-    def height(self):
-        """
-        The height of the display.
-        
-        :return: The height of the display.
-        :rtype: int
-        """
-        if ((self._rotation // 90) & 1) == 1:  # if rotation index is odd
-            return self._width
-        return self._height
 
     @property
     def rotation(self):
@@ -305,7 +281,7 @@ class SDL2Display(_BaseDisplay):
 
         retcheck(SDL_SetWindowSize(self.win, int(self.width*self._scale), int(self.height*self._scale)))
         retcheck(SDL_DestroyTexture(self.texture))
-        self._init()
+        self.init()
 
     def blit(self, x, y, w, h, buffer):
         """
@@ -361,6 +337,58 @@ class SDL2Display(_BaseDisplay):
         retcheck(SDL_SetRenderTarget(self.renderer, None))  # Reset the render target back to the window
         self._show(fillRect)
 
+    def vscrdef(self, tfa, vsa, bfa):
+        """
+        Set the vertical scroll definition.
+
+        :param tfa: The top fixed area.
+        :type tfa: int
+        :param vsa: The vertical scrolling area.
+        :type vsa: int
+        :param bfa: The bottom fixed area.
+        :type bfa: int
+        """
+        if tfa + vsa + bfa != self.height:
+            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
+        self._tfa = tfa
+        self._vsa = vsa
+        self._bfa = bfa
+        self._show()
+
+    def vscsad(self, y):
+        """
+        Set the vertical scroll start address.
+        
+        :param y: The vertical scroll start address.
+        :type y: int
+        """
+        self._scroll_y = y
+        self._show()
+
+    def deinit(self):
+        """
+        Deinitializes the sdl2lcd instance.
+        """
+        retcheck(SDL_DestroyTexture(self.texture))
+        retcheck(SDL_DestroyRenderer(self.renderer))
+        retcheck(SDL_DestroyWindow(self.win))
+        retcheck(SDL_Quit())
+
+############### Class Specific Functions ################
+
+    def read(self):
+        """
+        Polls for an event and returns the event type and data.
+
+        :return: The event type and data.
+        :rtype: tuple
+        """
+        if SDL_PollEvent(self._event):
+            event_type = int.from_bytes(self._event[:4], 'little')
+            if event_type in Events.types:
+                return SDL_Event.from_bytes(self._event)
+        return None
+
     def _show(self, renderRect=None):
         """
         Show the display.  Automatically called after blitting or filling the display.
@@ -391,96 +419,6 @@ class SDL2Display(_BaseDisplay):
                 retcheck(SDL_RenderCopy(self.renderer, self.texture, bfaRect, bfaRect))
 
         retcheck(SDL_RenderPresent(self.renderer))
-
-    def vscsad(self, y):
-        """
-        Set the vertical scroll start address.
-        
-        :param y: The vertical scroll start address.
-        :type y: int
-        """
-        self._scroll_y = y
-        self._show()
-
-    def vscrdef(self, tfa, vsa, bfa):
-        """
-        Set the vertical scroll definition.
-
-        :param tfa: The top fixed area.
-        :type tfa: int
-        :param vsa: The vertical scrolling area.
-        :type vsa: int
-        :param bfa: The bottom fixed area.
-        :type bfa: int
-        """
-        if tfa + vsa + bfa != self.height:
-            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
-        self._tfa = tfa
-        self._vsa = vsa
-        self._bfa = bfa
-        self._show()
-
-    @property
-    def power(self):
-        return -1
-
-    @power.setter
-    def power(self, value):
-        return
-
-    @property
-    def brightness(self):
-        return -1
-
-    @brightness.setter
-    def brightness(self, value):
-        return
-
-    def reset(self):
-        return
-
-    def hard_reset(self):
-        return
-
-    def soft_reset(self):
-        return
-
-    def sleep_mode(self, value):
-        return
-
-    def init(self, render_mode_full=False):
-        return
-
-    def set_render_mode_full(self, render_mode_full=False):
-        return
-
-    def deinit(self):
-        """
-        Deinitializes the sdl2lcd instance.
-        """
-        retcheck(SDL_DestroyTexture(self.texture))
-        retcheck(SDL_DestroyRenderer(self.renderer))
-        retcheck(SDL_DestroyWindow(self.win))
-        retcheck(SDL_Quit())
-
-    def __del__(self):
-        """
-        Deinitializes the sdl2lcd instance.
-        """
-        self.deinit()
-
-    def read(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        if SDL_PollEvent(self._event):
-            event_type = int.from_bytes(self._event[:4], 'little')
-            if event_type in Events.types:
-                return SDL_Event.from_bytes(self._event)
-        return None
 
 
 ###############################################################################

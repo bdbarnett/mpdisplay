@@ -59,9 +59,9 @@ class PGDisplay(_BaseDisplay):
 
 #         pg.init()
 
-        self._init()
+        self.init()
 
-    def _init(self):
+    def init(self):
         """
         Initializes the sdl2lcd instance.
         """
@@ -74,30 +74,6 @@ class PGDisplay(_BaseDisplay):
 
         self.frame_buffer = pg.Surface(size=self.screen.get_size(), depth=self.color_depth)
         self.frame_buffer.fill((0, 0, 0))
-
-    @property
-    def width(self):
-        """
-        The width of the display.
-        
-        :return: The width of the display.
-        :rtype: int
-        """
-        if ((self._rotation // 90) & 1) == 1:  # if rotation index is odd
-            return self._height
-        return self._width
-
-    @property
-    def height(self):
-        """
-        The height of the display.
-        
-        :return: The height of the display.
-        :rtype: int
-        """
-        if ((self._rotation // 90) & 1) == 1:  # if rotation index is odd
-            return self._width
-        return self._height
 
     @property
     def rotation(self):
@@ -121,7 +97,7 @@ class PGDisplay(_BaseDisplay):
             return
         self._rotation = value
 
-        self._init()
+        self.init()
 
     def blit(self, x, y, w, h, buffer):
         """
@@ -147,23 +123,6 @@ class PGDisplay(_BaseDisplay):
                 self.frame_buffer.set_at((x + j, y + i), color)
         self._show(blitRect)
 
-    def _colorRGB(self, color):
-        if isinstance(color, int):
-            # convert color from int to bytes
-            if self.color_depth == 16:
-                # convert 16-bit int color to 2 bytes
-                color = [color & 0xFF, color >> 8]
-            else:
-                # convert 24-bit int color to 3 bytes
-                color = [color & 0xFF, (color >> 8) & 0xFF, color >> 16]
-        if len(color) == 2:
-            r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
-            g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
-            b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
-        else:
-            r, g, b = color
-        return (r, g, b)
-
     def fill_rect(self, x, y, w, h, color):
         """
         Fill a rectangle with a color.
@@ -185,6 +144,54 @@ class PGDisplay(_BaseDisplay):
         fillRect = pg.Rect(x, y, w, h)
         self.frame_buffer.fill(self._colorRGB(color), fillRect)
         self._show(fillRect)
+
+    def vscrdef(self, tfa, vsa, bfa):
+        """
+        Set the vertical scroll definition.
+
+        :param tfa: The top fixed area.
+        :type tfa: int
+        :param vsa: The vertical scrolling area.
+        :type vsa: int
+        :param bfa: The bottom fixed area.
+        :type bfa: int
+        """
+        if tfa + vsa + bfa != self.height:
+            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
+        self._tfa = tfa
+        self._vsa = vsa
+        self._bfa = bfa
+        self._show()
+
+    def vscsad(self, y):
+        """
+        Set the vertical scroll start address.
+        
+        :param y: The vertical scroll start address.
+        :type y: int
+        """
+        self._scroll_y = y
+        self._show()
+
+    def deinit(self):
+        """
+        Deinitializes the pygame instance.
+        """
+        pg.quit()
+
+############### Class Specific Functions ################
+
+    def read(self):
+        """
+        Polls for an event and returns the event type and data.
+
+        :return: The event type and data.
+        :rtype: tuple
+        """
+        if event := pg.event.poll():
+            if event.type in Events.types:
+                return event
+        return None
 
     def _show(self, renderRect=None):
         """
@@ -218,88 +225,19 @@ class PGDisplay(_BaseDisplay):
 
         pg.display.flip()
 
-    def vscsad(self, y):
-        """
-        Set the vertical scroll start address.
-        
-        :param y: The vertical scroll start address.
-        :type y: int
-        """
-        self._scroll_y = y
-        self._show()
-
-    def vscrdef(self, tfa, vsa, bfa):
-        """
-        Set the vertical scroll definition.
-
-        :param tfa: The top fixed area.
-        :type tfa: int
-        :param vsa: The vertical scrolling area.
-        :type vsa: int
-        :param bfa: The bottom fixed area.
-        :type bfa: int
-        """
-        if tfa + vsa + bfa != self.height:
-            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
-        self._tfa = tfa
-        self._vsa = vsa
-        self._bfa = bfa
-        self._show()
-
-    @property
-    def power(self):
-        return -1
-
-    @power.setter
-    def power(self, value):
-        return
-
-    @property
-    def brightness(self):
-        return -1
-
-    @brightness.setter
-    def brightness(self, value):
-        return
-
-    def reset(self):
-        return
-
-    def hard_reset(self):
-        return
-
-    def soft_reset(self):
-        return
-
-    def sleep_mode(self, value):
-        return
-
-    def init(self, render_mode_full=False):
-        return
-
-    def set_render_mode_full(self, render_mode_full=False):
-        return
-
-    def deinit(self):
-        """
-        Deinitializes the pygame instance.
-        """
-        pg.quit()
-
-    def __del__(self):
-        """
-        Deinitializes the pygame instance.
-        """
-        self.deinit()
-
-    def read(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        if event := pg.event.poll():
-            if event.type in Events.types:
-                return event
-        return None
+    def _colorRGB(self, color):
+        if isinstance(color, int):
+            # convert color from int to bytes
+            if self.color_depth == 16:
+                # convert 16-bit int color to 2 bytes
+                color = [color & 0xFF, color >> 8]
+            else:
+                # convert 24-bit int color to 3 bytes
+                color = [color & 0xFF, (color >> 8) & 0xFF, color >> 16]
+        if len(color) == 2:
+            r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
+            g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
+            b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
+        else:
+            r, g, b = color
+        return (r, g, b)

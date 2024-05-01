@@ -10,6 +10,20 @@ class _BaseDisplay:
         # .poll_event() must be called periodically to check for the quit event.
         self.quit_func = lambda: print(".quit_func not set")
 
+    @property
+    def width(self):
+        """The width of the display in pixels."""
+        if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
+            return self._height
+        return self._width
+
+    @property
+    def height(self):
+        """The height of the display in pixels."""
+        if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
+            return self._width
+        return self._height
+
     def create_device(self, type, *args, **kwargs):
         """
         Create a device object.
@@ -66,3 +80,42 @@ class _BaseDisplay:
                         self.quit_func()
                     return event
         return None
+
+    def __del__(self):
+        """
+        Deinitializes the display instance.
+        """
+        self.deinit()
+
+    ######## Overridden functions ########
+
+    def set_render_mode_full(self, render_mode_full=False):
+        return
+
+    @property
+    def power(self):
+        return -1
+
+    @power.setter
+    def power(self, value):
+        return
+
+    @property
+    def brightness(self):
+        return -1
+
+    @brightness.setter
+    def brightness(self, value):
+        return
+
+    def reset(self):
+        return
+
+    def hard_reset(self):
+        return
+
+    def soft_reset(self):
+        return
+
+    def sleep_mode(self, value):
+        return

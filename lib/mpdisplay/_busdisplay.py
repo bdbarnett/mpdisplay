@@ -232,6 +232,34 @@ class BusDisplay(_BaseDisplay):
         self.set_render_mode_full(render_mode_full)
         self.fill_rect(0, 0, self.width, self.height, 0x0)
 
+    @property
+    def rotation(self):
+        """
+        The rotation of the display.
+
+        :return: The rotation of the display.
+        :rtype: int
+        """
+        return self._rotation
+
+    @rotation.setter
+    def rotation(self, value):
+        """
+        Set the rotation of the display.
+
+        :param value: The rotation to set.
+        :type value: int
+        """
+        self._rotation = value
+
+        # Set the display MADCTL bits for the given rotation.
+        self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
+        self.set_params(_MADCTL, self._param_mv[:1])
+
+        for device in self.devices:
+            if device.type == Devices.TOUCH:
+                device.rotation = value
+
     def blit(self, x, y, width, height, buf):
         """
         Blit a buffer to the display.
@@ -293,19 +321,50 @@ class BusDisplay(_BaseDisplay):
             for row in range(y, y + height):
                 self.blit(x, row, width, 1, memoryview(raw_data[:]))
 
-    @property
-    def width(self):
-        """The width of the display in pixels."""
-        if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
-            return self._height
-        return self._width
+    def vscrdef(self, tfa, vsa, bfa):
+        """
+        Set Vertical Scrolling Definition.
 
-    @property
-    def height(self):
-        """The height of the display in pixels."""
-        if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
-            return self._width
-        return self._height
+        To scroll a 135x240 display these values should be 40, 240, 40.
+        There are 40 lines above the display that are not shown followed by
+        240 lines that are shown followed by 40 more lines that are not shown.
+        You could write to these areas off display and scroll them into view by
+        changing the TFA, VSA and BFA values.
+
+        :param tfa: Top Fixed Area
+        :type tfa: int
+        :param vsa: Vertical Scrolling Area
+        :type vsa: int
+        :param bfa: Bottom Fixed Area
+        :type bfa: int
+        """
+        self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+
+    def vscsad(self, vssa):
+        """
+        Set Vertical Scroll Start Address of RAM.
+
+        Defines which line in the Frame Memory will be written as the first
+        line after the last line of the Top Fixed Area on the display.
+
+        Example:
+
+            for line in range(40, 280, 1):
+                tft.vscsad(line)
+                utime.sleep(0.01)
+
+        :param vssa: Vertical Scrolling Start Address
+        :type vssa: int
+        """
+        self.set_params(_VSCSAD, struct.pack(">H", vssa))
+
+    def deinit(self):
+        """
+        Deinitializes the display instance.  Not yet implemented.
+        """
+        pass
+
+############### Overridden Functions ################
 
     def set_render_mode_full(self, render_mode_full=False):
         """
@@ -328,46 +387,6 @@ class BusDisplay(_BaseDisplay):
         # Otherwise, set the window each time .blit() is called.
         else:
             self.set_window = self._set_window
-
-    def bus_swap_disable(self, value):
-        """
-        Disable byte swapping in the display bus.
-
-        If self.requires_bus_swap and the guest application is capable of byte swapping color data
-        check to see if byte swapping can be disabled in the display bus.  If so, disable it.
-
-        Guest applications that are capable of byte swapping should include:
-
-            # If byte swapping is required and the display bus is capable of having byte swapping disabled,
-            # disable it and set a flag so we can swap the color bytes as they are created.
-            if display_drv.requires_byte_swap:
-                swap_color_bytes = display_drv.bus_swap_disable(True)
-            else:
-                swap_color_bytes = False
-
-        :param value: Whether to disable byte swapping in the display bus.
-        :type value: bool
-        :return: True if the bus swap was disabled, False if it was not.
-        :rtype: bool
-        """
-        if self.requires_byte_swap and sys.implementation.name == "circuitpython":
-            self.requires_byte_swap = not value
-            return value
-        elif hasattr(self.display_bus, "enable_swap"):
-            self.display_bus.enable_swap(not value)
-            return value
-        return False
-
-    def register_callback(self, callback):
-        """
-        Register a callback function.
-        """
-        if hasattr(self.display_bus, "register_callback"):
-            self.display_bus.register_callback(callback)
-        else:
-            raise NotImplementedError(
-                "register_callback() not implemented in display_bus.  Set blocking = True"
-                )
 
     @property
     def power(self):
@@ -469,34 +488,6 @@ class BusDisplay(_BaseDisplay):
         self.set_params(_SWRESET)
         sleep_ms(150)
 
-    @property
-    def rotation(self):
-        """
-        The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
-        """
-        return self._rotation
-
-    @rotation.setter
-    def rotation(self, value):
-        """
-        Set the rotation of the display.
-
-        :param value: The rotation to set.
-        :type value: int
-        """
-        self._rotation = value
-
-        # Set the display MADCTL bits for the given rotation.
-        self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
-        self.set_params(_MADCTL, self._param_mv[:1])
-
-        for device in self.devices:
-            if device.type == Devices.TOUCH:
-                device.rotation = value
-
     def sleep_mode(self, value):
         """
         Enable or disable display sleep mode.
@@ -509,42 +500,47 @@ class BusDisplay(_BaseDisplay):
         else:
             self.set_params(_SLPOUT)
 
-    def vscrdef(self, tfa, vsa, bfa):
+############### Class Specific Functions ################
+
+    def bus_swap_disable(self, value):
         """
-        Set Vertical Scrolling Definition.
+        Disable byte swapping in the display bus.
 
-        To scroll a 135x240 display these values should be 40, 240, 40.
-        There are 40 lines above the display that are not shown followed by
-        240 lines that are shown followed by 40 more lines that are not shown.
-        You could write to these areas off display and scroll them into view by
-        changing the TFA, VSA and BFA values.
+        If self.requires_bus_swap and the guest application is capable of byte swapping color data
+        check to see if byte swapping can be disabled in the display bus.  If so, disable it.
 
-        :param tfa: Top Fixed Area
-        :type tfa: int
-        :param vsa: Vertical Scrolling Area
-        :type vsa: int
-        :param bfa: Bottom Fixed Area
-        :type bfa: int
+        Guest applications that are capable of byte swapping should include:
+
+            # If byte swapping is required and the display bus is capable of having byte swapping disabled,
+            # disable it and set a flag so we can swap the color bytes as they are created.
+            if display_drv.requires_byte_swap:
+                swap_color_bytes = display_drv.bus_swap_disable(True)
+            else:
+                swap_color_bytes = False
+
+        :param value: Whether to disable byte swapping in the display bus.
+        :type value: bool
+        :return: True if the bus swap was disabled, False if it was not.
+        :rtype: bool
         """
-        self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+        if self.requires_byte_swap and sys.implementation.name == "circuitpython":
+            self.requires_byte_swap = not value
+            return value
+        elif hasattr(self.display_bus, "enable_swap"):
+            self.display_bus.enable_swap(not value)
+            return value
+        return False
 
-    def vscsad(self, vssa):
+    def register_callback(self, callback):
         """
-        Set Vertical Scroll Start Address of RAM.
-
-        Defines which line in the Frame Memory will be written as the first
-        line after the last line of the Top Fixed Area on the display.
-
-        Example:
-
-            for line in range(40, 280, 1):
-                tft.vscsad(line)
-                utime.sleep(0.01)
-
-        :param vssa: Vertical Scrolling Start Address
-        :type vssa: int
+        Register a callback function.
         """
-        self.set_params(_VSCSAD, struct.pack(">H", vssa))
+        if hasattr(self.display_bus, "register_callback"):
+            self.display_bus.register_callback(callback)
+        else:
+            raise NotImplementedError(
+                "register_callback() not implemented in display_bus.  Set blocking = True"
+                )
 
     def invert_colors(self, value):
         """
