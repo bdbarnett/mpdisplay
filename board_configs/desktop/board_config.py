@@ -35,3 +35,4 @@ else:
     raise NotImplementedError(f"Unsupported implementation: {sys.implementation.name}")
 
 display_drv.quit_func = sys.exit
+display_drv.create_device(mpdisplay.Devices.MULTI, display_drv.read)
