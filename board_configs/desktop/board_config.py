@@ -16,23 +16,22 @@ if sys.implementation.name == "cpython":
         title=f"{sys.implementation.name} on {sys.platform}",
         window_flags=mpdisplay.pg.SHOWN,
         color_depth=16,
-        scale=1.0,
     )
 elif sys.implementation.name == "micropython" and sys.platform == "linux":
     # MicroPython Unix SDL2 display driver
     display_drv = mpdisplay.SDL2Display(
         width=320,
         height=480,
-        x=mpdisplay.SDL_WINDOWPOS_CENTERED,
-        y=mpdisplay.SDL_WINDOWPOS_CENTERED,
         title=f"{sys.implementation.name} on {sys.platform}",
         window_flags=mpdisplay.SDL_WINDOW_SHOWN,
-        render_flags=mpdisplay.SDL_RENDERER_ACCELERATED,
         color_depth=16,
+        x=mpdisplay.SDL_WINDOWPOS_CENTERED,
+        y=mpdisplay.SDL_WINDOWPOS_CENTERED,
+        render_flags=mpdisplay.SDL_RENDERER_ACCELERATED,
         scale=1.5,
     )
 else:
     raise NotImplementedError(f"Unsupported implementation: {sys.implementation.name}")
 
 display_drv.quit_func = sys.exit
-display_drv.create_device(mpdisplay.Devices.MULTI, display_drv.read)
+display_drv.create_device(mpdisplay.Devices.MULTI, display_drv.read, mpdisplay.Events.types)
