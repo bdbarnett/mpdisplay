@@ -118,7 +118,7 @@ class DisplayDriver:
         for device in display_drv.devices:
             if device.type in (Devices.TOUCH, Devices.ENCODER, Devices.KEYBOARD):
                 indev = lv.indev_create()
-                indev.set_disp(lv.display_get_default())
+                indev.set_disp(self.lv_display)
                 indev.set_group(lv.group_get_default())
                 device.user_data = indev
                 if device.type == Devices.TOUCH:
