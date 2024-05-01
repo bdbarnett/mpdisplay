@@ -44,6 +44,7 @@ class PGDisplay(_BaseDisplay):
         :param window_flags: The flags for creating the display window (default is pg.SHOWN).
         :type window_flags: int
         """
+        super().__init__()
         self._width = width
         self._height = height
         self._rotation = rotation

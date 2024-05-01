@@ -142,6 +142,7 @@ class BusDisplay(_BaseDisplay):
         :param reset_high: Whether the display resets when the pin is high (default is True).
         :type reset_high: bool, optional
         """
+        super().__init__()
         self.display_bus = display_bus
         self._width = width
         self._height = height

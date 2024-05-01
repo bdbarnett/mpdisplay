@@ -206,6 +206,7 @@ class SDL2Display(_BaseDisplay):
         :param render_flags: The flags for creating the renderer (default is SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC).
         :type render_flags: int
         """
+        super().__init__()
         self._width = width
         self._height = height
         self._rotation = rotation
