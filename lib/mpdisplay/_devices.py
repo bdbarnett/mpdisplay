@@ -12,7 +12,8 @@ REVERSE_Y = const(0b100)
 
 
 class Devices:
-    Unknown = const(0x00)   # Unknown device
+    Unknown = const(-1)     # Unknown device
+    MULTI = const(0x00)     # Multi-device
     TOUCH = const(0x01)     # Provides MOUSEBUTTONDOWN events when touched
     ENCODER = const(0x02)   # Provides MOUSEWHEEL events when turned, middle MOUSEBUTTONDOWN when pressed
     KEYBOARD = const(0x03)  # Provides KEYDOWN and KEYUP events when keys are pressed or released
@@ -20,6 +21,8 @@ class Devices:
 
     @staticmethod
     def create(type, *args, **kwargs):
+        if type == Devices.MULTI:
+            return MultiDevice(*args, **kwargs)
         if type == Devices.TOUCH:
             return TouchDevice(*args, **kwargs)
         elif type == Devices.ENCODER:
@@ -39,11 +42,12 @@ class _Device:
         self._data = data
         self._read2 = read2 if read2 else lambda: None
         self._data2 = data2
-        self.display = display
+        self._display = display
 
         self._state = None
         self._user_data = None  # User data that can be set and retrieved by applications such as lv_mpdisplay
         self._read_cb = None  # User read callback that can be set by applications such as lv_mpdisplay
+
 
     def set_read_cb(self, callback):
         if callable(callback):
@@ -74,9 +78,20 @@ class _Device:
     @display.setter
     def display(self, disp):
         self._display = disp
-        disp.register_device(self)
-        if self.type == Devices.TOUCH:
+        if disp is not None and self.type == Devices.TOUCH:
             self.rotation = disp.rotation
+
+class MultiDevice(_Device):
+    type = Devices.MULTI
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def read(self):
+        if (event := self._read()) is not None:
+            if event.type in Events.types:
+                return event
+        return None
 
 class TouchDevice(_Device):
     """
@@ -88,6 +103,7 @@ class TouchDevice(_Device):
         super().__init__(*args, **kwargs)
         if self._data is None:  # self._data is a rotation table
             self._data = _DEFAULT_TOUCH_ROTATION_TABLE
+
         self.rotation = self._display.rotation if self._display else 0
 
     @property
@@ -97,6 +113,7 @@ class TouchDevice(_Device):
     @rotation.setter
     def rotation(self, value):
         self._rotation = value % 360
+
         # _mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
         self._mask = self._data[self._rotation // 90]

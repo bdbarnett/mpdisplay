@@ -10,20 +10,26 @@ class _BaseDisplay:
         # .poll_event() must be called periodically to check for the quit event.
         self.quit_func = lambda: print(".quit_func not set")
 
-    def register_device(self, dev, *args, **kwargs):
+    def create_device(self, type, *args, **kwargs):
+        """
+        Create a device object.
+
+        :param type: The type of device to create.
+        :type dev: int
+        """
+        dev = Devices.create(type, *args, display=self, **kwargs)
+        self.register_device(dev)
+        return dev
+
+    def register_device(self, dev):
         """
         Register a device to be polled.
 
-        :param dev: The type of device to register or an instance of a device.
-        :type dev: int or _Device
+        :param dev: The device object to register.
+        :type dev: _Device
         """
-        if isinstance(dev, int):
-            dev = Devices.create(dev, *args, display=self, **kwargs)
-        else:
-            dev.display = self
-
+        dev.display = self
         self.devices.append(dev)
-        return dev
 
     def unregister_device(self, dev):
         """
@@ -56,7 +62,7 @@ class _BaseDisplay:
         for device in self.devices:
             if (event := device.read()) is not None:
                 if event.type in Events.types:
-                    if self._event.type == Events.QUIT:
+                    if event.type == Events.QUIT:
                         self.quit_func()
-                    return self._event
+                    return event
         return None

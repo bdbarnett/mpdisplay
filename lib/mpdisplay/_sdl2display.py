@@ -469,23 +469,17 @@ class SDL2Display(_BaseDisplay):
         """
         self.deinit()
 
-    def poll_event(self):
+    def read(self):
         """
         Polls for an event and returns the event type and data.
 
         :return: The event type and data.
         :rtype: tuple
         """
-        if (event := super().poll_event()) is not None:
-            return event
         if SDL_PollEvent(self._event):
             event_type = int.from_bytes(self._event[:4], 'little')
             if event_type in Events.types:
-                event = SDL_Event.from_bytes(self._event)
-                # print(f"{event=}")
-                if event.type == Events.QUIT:
-                    self.quit_func()
-                return event
+                return SDL_Event.from_bytes(self._event)
         return None
 
 
