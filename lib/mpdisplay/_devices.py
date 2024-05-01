@@ -1,5 +1,3 @@
-
-
 from micropython import const
 from ._events import Events
 
@@ -12,11 +10,13 @@ REVERSE_Y = const(0b100)
 
 
 class Devices:
-    Unknown = const(-1)     # Unknown device
-    MULTI = const(0x00)     # Multi-device
-    TOUCH = const(0x01)     # Provides MOUSEBUTTONDOWN events when touched
-    ENCODER = const(0x02)   # Provides MOUSEWHEEL events when turned, middle MOUSEBUTTONDOWN when pressed
-    KEYBOARD = const(0x03)  # Provides KEYDOWN and KEYUP events when keys are pressed or released
+    Unknown = const(-1)  # Unknown device
+    MULTI = const(0x00)  # Multi-device
+    TOUCH = const(
+        0x01
+    )  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
+    ENCODER = const(0x02)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
+    KEYBOARD = const(0x03)  # KEYDOWN and KEYUP events when keys are pressed or released
     JOYSTICK = const(0x04)  # Joystick Events (not implemented)
 
     @staticmethod
@@ -34,6 +34,7 @@ class Devices:
         else:
             raise ValueError("Unknown device type")
 
+
 class _Device:
     type = Devices.Unknown
 
@@ -45,9 +46,8 @@ class _Device:
         self._display = display
 
         self._state = None
-        self._user_data = None  # User data that can be set and retrieved by applications such as lv_mpdisplay
-        self._read_cb = None  # User read callback that can be set by applications such as lv_mpdisplay
-
+        self._user_data = None  # Can be set and retrieved by apps such as lv_mpdisplay
+        self._read_cb = None  # Read callback - can be set by apps such as lv_mpdisplay
 
     def set_read_cb(self, callback):
         if callable(callback):
@@ -66,7 +66,7 @@ class _Device:
     @property
     def user_data(self):
         return self._user_data
-    
+
     @user_data.setter
     def user_data(self, value):
         self._user_data = value
@@ -74,12 +74,13 @@ class _Device:
     @property
     def display(self):
         return self._display
-    
+
     @display.setter
     def display(self, disp):
         self._display = disp
         if disp is not None and self.type == Devices.TOUCH:
             self.rotation = disp.rotation
+
 
 class MultiDevice(_Device):
     type = Devices.MULTI
@@ -95,10 +96,12 @@ class MultiDevice(_Device):
                 return event
         return None
 
+
 class TouchDevice(_Device):
     """
     Only reports mouse button 1.
     """
+
     type = Devices.TOUCH
 
     def __init__(self, *args, **kwargs):
@@ -111,7 +114,7 @@ class TouchDevice(_Device):
     @property
     def rotation(self):
         return self._rotation
-    
+
     @rotation.setter
     def rotation(self, value):
         self._rotation = value % 360
@@ -138,17 +141,24 @@ class TouchDevice(_Device):
             last_pos = self._state
             # If it looks like a point, use it, otherwise get the first point out of the list / tuple
             (x, y, *_) = touched if isinstance(touched[0], int) else touched[0]
-            
+
             if self._mask & SWAP_XY:
                 x, y = y, x
             if self._mask & REVERSE_X:
                 x = self._display.width - x - 1
             if self._mask & REVERSE_Y:
                 y = self._display.height - y - 1
-            self._state = (x, y)  # Save the position for the next 
+            self._state = (x, y)
             if last_pos is not None:
                 last_x, last_y = last_pos
-                return Events.Motion(Events.MOUSEMOTION, self._state, (x-last_x, y-last_y), (1, 0, 0), False, None)
+                return Events.Motion(
+                    Events.MOUSEMOTION,
+                    self._state,
+                    (x - last_x, y - last_y),
+                    (1, 0, 0),
+                    False,
+                    None,
+                )
             else:
                 return Events.Button(Events.MOUSEBUTTONDOWN, self._state, 1, False, None)
         elif self._state is not None:
@@ -156,6 +166,7 @@ class TouchDevice(_Device):
             self._state = None
             return Events.Button(Events.MOUSEBUTTONUP, last_pos, 1, False, None)
         return None
+
 
 class EncoderDevice(_Device):
     type = Devices.ENCODER
@@ -171,7 +182,7 @@ class EncoderDevice(_Device):
         """
         super().__init__(*args, **kwargs)
         self._state = (0, False)  # (position, pressed)
-        self._switch_button = self._data if self._data else 2  # Default to middle mouse button
+        self._switch_button = (self._data if self._data else 2)  # Default to middle mouse button
 
     def read(self):
         # _read should return a running total of steps turned.  For instance, if the current
@@ -183,16 +194,23 @@ class EncoderDevice(_Device):
         pressed = self._read2()
         if pressed != last_pressed:
             self._state = (last_pos, pressed)
-            return Events.Button(Events.MOUSEBUTTONDOWN if pressed else Events.MOUSEBUTTONUP, (0, 0), self._switch_button, False, None)
+            return Events.Button(
+                Events.MOUSEBUTTONDOWN if pressed else Events.MOUSEBUTTONUP,
+                (0, 0),
+                self._switch_button,
+                False,
+                None,
+            )
 
         pos = self._read()
         if pos != last_pos:
             steps = pos - last_pos
             self._state = (pos, last_pressed)
-            if self._switch_button % 2 == 0:  # If the mouse button is even,
-                return Events.Wheel(Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None) # report on y
-            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None) # else report on x
+            if self._switch_button % 2 == 0:
+                return Events.Wheel(Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None)
+            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
         return None
+
 
 class KeyboardDevice(_Device):
     type = Devices.KEYBOARD

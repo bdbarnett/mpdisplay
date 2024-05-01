@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 
-'''
+"""
 busdisplay.py - BusDisplay class for MicroPython
-'''
+"""
 
 import struct
 import sys
@@ -16,11 +16,13 @@ if sys.implementation.name == "micropython":
     from machine import Pin
     from time import sleep_ms
     from micropython import alloc_emergency_exception_buf
+
     alloc_emergency_exception_buf(256)
     np = None
 elif sys.implementation.name == "circuitpython":
     import digitalio
     from time import sleep
+
     sleep_ms = lambda ms: sleep(ms / 1000)
     import ulab.numpy as np
 else:
@@ -46,25 +48,33 @@ _VSCSAD = const(0x37)
 # Instead of using them, we only change Bits 6 (column/horizontal) and 7 (page/vertical).
 _RGB = const(0x00)  # (Bit 3: 0=RGB order, 1=BGR order)
 _BGR = const(0x08)  # (Bit 3: 0=RGB order, 1=BGR order)
-_MADCTL_MH = const(0x04)  # Refresh 0=Left to Right, 1=Right to Left (Bit 2: Display Data Latch Order)
-_MADCTL_ML = const(0x10)  # Refresh 0=Top to Bottom, 1=Bottom to Top (Bit 4: Line Refresh Order)
-_MADCTL_MV = const(0x20)  # 0=Normal, 1=Row/column exchange (Bit 5: Page/Column Addressing Order)
-_MADCTL_MX = const(0x40)  # 0=Left to Right, 1=Right to Left (Bit 6: Column Address Order)
+_MADCTL_MH = const(
+    0x04
+)  # Refresh 0=Left to Right, 1=Right to Left (Bit 2: Display Data Latch Order)
+_MADCTL_ML = const(
+    0x10
+)  # Refresh 0=Top to Bottom, 1=Bottom to Top (Bit 4: Line Refresh Order)
+_MADCTL_MV = const(
+    0x20
+)  # 0=Normal, 1=Row/column exchange (Bit 5: Page/Column Addressing Order)
+_MADCTL_MX = const(
+    0x40
+)  # 0=Left to Right, 1=Right to Left (Bit 6: Column Address Order)
 _MADCTL_MY = const(0x80)  # 0=Top to Bottom, 1=Bottom to Top (Bit 7: Page Address Order)
 
 # MADCTL values for each of the rotation constants.
 _DEFAULT_ROTATION_TABLE = (
-    _MADCTL_MX,                            # mirrored = False, rotation = 0
-    _MADCTL_MV,                            # mirrored = False, rotation = 90
-    _MADCTL_MY,                            # mirrored = False, rotation = 180
+    _MADCTL_MX,  # mirrored = False, rotation = 0
+    _MADCTL_MV,  # mirrored = False, rotation = 90
+    _MADCTL_MY,  # mirrored = False, rotation = 180
     _MADCTL_MY | _MADCTL_MX | _MADCTL_MV,  # mirrored = False, rotation = 270
 )
 
 _MIRRORED_ROTATION_TABLE = (
-    0,                                     # mirrored = True, rotation = 0
-    _MADCTL_MV | _MADCTL_MX,               # mirrored = True, rotation = 90
-    _MADCTL_MX | _MADCTL_MY,               # mirrored = True, rotation = 180
-    _MADCTL_MV | _MADCTL_MY,               # mirrored = True, rotation = 270
+    0,  # mirrored = True, rotation = 0
+    _MADCTL_MV | _MADCTL_MX,  # mirrored = True, rotation = 90
+    _MADCTL_MX | _MADCTL_MY,  # mirrored = True, rotation = 180
+    _MADCTL_MV | _MADCTL_MY,  # mirrored = True, rotation = 270
 )
 
 
@@ -165,12 +175,15 @@ class BusDisplay(_BaseDisplay):
         self._power_pin = self._config_output_pin(power_pin, value=power_on_high)
         self._power_on_high = power_on_high
 
-        self._backlight_pin = self._config_output_pin(backlight_pin, value=backlight_on_high)
+        self._backlight_pin = self._config_output_pin(
+            backlight_pin, value=backlight_on_high
+        )
         self._backlight_on_high = backlight_on_high
 
         if self._backlight_pin is not None:
             try:
                 from machine import PWM
+
                 self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True
             except ImportError:
@@ -188,7 +201,9 @@ class BusDisplay(_BaseDisplay):
             self._send_cmd_data = display_bus.send
             self._blit = self.set_params
 
-        self.rotation_table = _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
+        self.rotation_table = (
+            _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
+        )
         self._param_buf = bytearray(4)
         self._param_mv = memoryview(self._param_buf)
 
@@ -219,7 +234,7 @@ class BusDisplay(_BaseDisplay):
     def init(self, render_mode_full=False):
         """
         Post initialization tasks may be added here.
-        
+
         This method may be overridden by subclasses to perform any post initialization.
         If it is overridden, it must call super().init() or set self._initialized = True.
 
@@ -364,7 +379,7 @@ class BusDisplay(_BaseDisplay):
         """
         pass
 
-############### Overridden Functions ################
+    ############### Overridden Functions ################
 
     def set_render_mode_full(self, render_mode_full=False):
         """
@@ -392,7 +407,7 @@ class BusDisplay(_BaseDisplay):
     def power(self):
         """
         The power state of the display.
-        
+
         :return: The power state of the display.
         :rtype: int
         """
@@ -409,7 +424,7 @@ class BusDisplay(_BaseDisplay):
     def power(self, value):
         """
         Set the power state of the display.
-        
+
         :param value: The power state to set.
         :type value: int
         """
@@ -456,9 +471,11 @@ class BusDisplay(_BaseDisplay):
                     if sys.implementation.name == "micropython":
                         self._backlight_pin.value(value > 0.5)
                     elif sys.implementation.name == "circuitpython":
-                        self._backlight_pin.value = (value > 0.5)
+                        self._backlight_pin.value = value > 0.5
             elif self._brightness_command is not None:
-                self.set_params(self._brightness_command, struct.pack("B", int(value * 255)))
+                self.set_params(
+                    self._brightness_command, struct.pack("B", int(value * 255))
+                )
 
     def reset(self):
         """
@@ -500,7 +517,7 @@ class BusDisplay(_BaseDisplay):
         else:
             self.set_params(_SLPOUT)
 
-############### Class Specific Functions ################
+    ############### Class Specific Functions ################
 
     def bus_swap_disable(self, value):
         """
@@ -540,7 +557,7 @@ class BusDisplay(_BaseDisplay):
         else:
             raise NotImplementedError(
                 "register_callback() not implemented in display_bus.  Set blocking = True"
-                )
+            )
 
     def invert_colors(self, value):
         """
@@ -685,7 +702,7 @@ class BusDisplay(_BaseDisplay):
     def _config_output_pin(self, pin, value=None):
         if pin is None:
             return None
-        
+
         if sys.implementation.name == "micropython":
             p = Pin(pin, Pin.OUT)
             if value is not None:

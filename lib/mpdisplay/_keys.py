@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 from micropython import const as _const
 
 # import pygame as _pg

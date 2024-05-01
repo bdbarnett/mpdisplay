@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 from sys import implementation, platform
 from ._basedisplay import _BaseDisplay
 from ._devices import Devices

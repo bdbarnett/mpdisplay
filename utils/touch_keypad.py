@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """
 touch_keypad.py - Matrix keypad helper for touch displays on MPDisplay
 
@@ -11,9 +14,9 @@ from touch_keypad import Keypad
 from board_config import display_drv
 
 keys = [1, 2, 3, "A", "B", "C", "play", "pause", "esc"]
-keypad = Keypad(display_drv, cols=3, rows=3)
+keypad = Keypad(display_drv, cols=3, rows=3, keys=keys)
 while True:
-    if key := matrix.read():
+    if key := keypad.read():
         print(key)
 """
 from mpdisplay import Events
