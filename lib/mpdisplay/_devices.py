@@ -86,10 +86,12 @@ class MultiDevice(_Device):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if self._data is None:
+            self._data = Events.types
 
     def read(self):
         if (event := self._read()) is not None:
-            if event.type in Events.types:
+            if event.type in self._data:
                 return event
         return None
 
