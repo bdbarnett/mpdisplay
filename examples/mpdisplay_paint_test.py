@@ -43,18 +43,24 @@ for i, color in enumerate(colors):
 while True:
     if not (e := display_drv.poll_event()):
         continue
-    if e.type == Events.MOUSEBUTTONDOWN and e.button == 1:
+    if e.type == Events.MOUSEBUTTONDOWN:
         x, y = e.pos
         last_selected = selected
-        if on_x_axis and y < block_size:
-            selected = x // block_size
-        elif not on_x_axis and x < block_size:
-            selected = y // block_size
-        else:
+        if on_x_axis and y < block_size or not on_x_axis and x < block_size:
+            if on_x_axis:
+                selected = x // block_size
+            else:
+                selected = y // block_size
+            if selected != last_selected:
+                draw_block(last_selected, colors[last_selected])
+                draw_block(selected, colors[selected])
+            if e.button == 3:
+                if on_x_axis:
+                    display_drv.fill_rect(0, block_size, display_drv.width, display_drv.height - block_size, colors[selected])
+                else:
+                    display_drv.fill_rect(block_size, 0, display_drv.width - block_size, display_drv.height, colors[selected])
+        elif e.button == 1:
             paint(x, y, colors[selected])
-        if selected != last_selected:
-            draw_block(last_selected, colors[last_selected])
-            draw_block(selected, colors[selected])
     elif e.type == Events.MOUSEMOTION and e.buttons[0] == 1:
         x, y = e.pos
         if (on_x_axis and y > block_size) or (not on_x_axis and x > block_size):
