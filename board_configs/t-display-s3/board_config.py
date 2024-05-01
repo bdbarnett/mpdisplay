@@ -60,5 +60,3 @@ display_drv = ST7789(
     power_on_high=True,
 )
 
-touch_read_func=lambda : None
-touch_rotation_table=None

@@ -51,8 +51,8 @@ def touch_read_func():
         return touches[0]['x'], touches[0]['y']
     return None
 
-display_drv.register_device(
+touch_dev = display_drv.create_device(
     type=Device_types.TOUCH,
-    callback=touch_read_func,
-    user_data=touch_rotation_table,
+    read=touch_read_func,
+    data=touch_rotation_table,
 )
