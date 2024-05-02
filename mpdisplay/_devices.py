@@ -14,7 +14,7 @@ class Devices:
     MULTI = const(0x00)  # Multi-device - all events in Events.types unless specified
     TOUCH = const( 0x01)  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
     ENCODER = const(0x02)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
-    KEYBOARD = const(0x03)  # KEYDOWN and KEYUP events when keys are pressed or released
+    KEYPAD = const(0x03)  # KEYDOWN and KEYUP events when keys are pressed or released
     JOYSTICK = const(0x04)  # Joystick Events (not implemented)
 
     @staticmethod
@@ -25,8 +25,8 @@ class Devices:
             return TouchDevice(*args, **kwargs)
         elif type == Devices.ENCODER:
             return EncoderDevice(*args, **kwargs)
-        elif type == Devices.KEYBOARD:
-            return KeyboardDevice(*args, **kwargs)
+        elif type == Devices.KEYPAD:
+            return KeypadDevice(*args, **kwargs)
         elif type == Devices.JOYSTICK:
             return JoystickDevice(*args, **kwargs)
         else:
@@ -210,8 +210,8 @@ class EncoderDevice(_Device):
         return None
 
 
-class KeyboardDevice(_Device):
-    type = Devices.KEYBOARD
+class KeypadDevice(_Device):
+    type = Devices.KEYPAD
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

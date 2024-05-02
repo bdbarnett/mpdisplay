@@ -127,8 +127,8 @@ class DisplayDriver:
                 elif device.type == Devices.ENCODER:
                     device.set_read_cb(self._encoder_cb)
                     indev.set_type(lv.INDEV_TYPE.ENCODER)
-                elif device.type == Devices.KEYBOARD:
-                    device.set_read_cb(self._keyboard_cb)
+                elif device.type == Devices.KEYPAD:
+                    device.set_read_cb(self._keypad_cb)
                     indev.set_type(lv.INDEV_TYPE.KEYPAD)
                 indev.set_read_cb(device.read_cb)
 
@@ -175,7 +175,7 @@ class DisplayDriver:
         elif event.type == Events.MOUSEBUTTONUP and event.button == 3:
             data.state = lv.INDEV_STATE.RELEASED
 
-    def _keyboard_cb(self, event, indev, data):
+    def _keypad_cb(self, event, indev, data):
         # LVGL hands us an object called data.  We just change the state attributes when necessary.
         if event is None:
             return
