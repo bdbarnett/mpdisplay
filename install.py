@@ -16,6 +16,3 @@ mip.install("github:bdbarnett/mpdisplay/utils", target=TARGET)
 
 # Install the mpdisplay examples
 mip.install("github:bdbarnett/mpdisplay/examples", target=TARGET)
-
-# Install the mpdisplay LVGL examples
-mip.install("github:bdbarnett/mpdisplay/examples/lvgl", target=TARGET)
