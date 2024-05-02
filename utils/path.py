@@ -7,4 +7,4 @@ import sys
 ###     python -i path.py
 if not 'lib' in sys.path:
     sys.path.append('lib')
-sys.path.extend(['romfonts', 'examples'])
+sys.path.extend(['drivers', 'romfonts', 'examples'])
