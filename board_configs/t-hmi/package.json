@@ -1,8 +1,8 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-hmi/board_config.py"],
-      ["lib/st7789.py", "github:bdbarnett/mpdisplay/display_drivers/st7789.py"],
-      ["lib/xpt2046.py", "github:bdbarnett/mpdisplay/touch_drivers/xpt2046.py"]
+      ["drivers/st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"],
+      ["drivers/xpt2046.py", "github:bdbarnett/mpdisplay/drivers/touch/xpt2046.py"]
     ],
     "version": "0.1"
   }

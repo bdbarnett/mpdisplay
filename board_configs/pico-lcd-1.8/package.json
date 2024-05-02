@@ -1,7 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/pico-lcd-1.8/board_config.py"],
-      ["lib/st7735r.py", "github:bdbarnett/mpdisplay/display_drivers/st7735r_1.py"]
+      ["drivers/st7735r.py", "github:bdbarnett/mpdisplay/drivers/display/st7735r_1.py"]
     ],
     "version": "0.1"
   }

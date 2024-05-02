@@ -1,8 +1,8 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/diy_esp32_ili9341_xpt2046/board_config.py"],
-      ["lib/ili9341.py", "github:bdbarnett/mpdisplay/display_drivers/ili9341.py"],
-      ["lib/ft6x36.py", "github:bdbarnett/mpdisplay/touch_drivers/xpt2046.py"]
+      ["drivers/ili9341.py", "github:bdbarnett/mpdisplay/drivers/display/ili9341.py"],
+      ["drivers/ft6x36.py", "github:bdbarnett/mpdisplay/drivers/touch/xpt2046.py"]
     ],
     "version": "0.1"
   }
