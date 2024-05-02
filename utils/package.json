@@ -2,7 +2,8 @@
     "urls": [
       ["lib/micropython.py", "github:bdbarnett/mpdisplay/utils/micropython.py"],
       ["lib/touch_keypad.py", "github:bdbarnett/mpdisplay/utils/touch_keypad.py"],
-      ["lib/wifi.py", "github:bdbarnett/mpdisplay/utils/wifi.py"]
+      ["lib/wifi.py", "github:bdbarnett/mpdisplay/utils/wifi.py"],
+      ["path.py", "github:bdbarnett/mpdisplay/utils/path.py"]
     ],
     "version": "0.1"
   }
