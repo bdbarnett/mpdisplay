@@ -10,17 +10,15 @@ REVERSE_Y = const(0b100)
 
 
 class Devices:
-    Unknown = const(-1)  # Unknown device
-    MULTI = const(0x00)  # Multi-device
-    TOUCH = const(
-        0x01
-    )  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
+    UNKNOWN = const(-1)  # Unknown device
+    MULTI = const(0x00)  # Multi-device - all events in Events.types unless specified
+    TOUCH = const( 0x01)  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
     ENCODER = const(0x02)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
     KEYBOARD = const(0x03)  # KEYDOWN and KEYUP events when keys are pressed or released
     JOYSTICK = const(0x04)  # Joystick Events (not implemented)
 
     @staticmethod
-    def create(type, *args, **kwargs):
+    def __call__(type, *args, **kwargs):
         if type == Devices.MULTI:
             return MultiDevice(*args, **kwargs)
         if type == Devices.TOUCH:
@@ -36,7 +34,7 @@ class Devices:
 
 
 class _Device:
-    type = Devices.Unknown
+    type = Devices.UNKNOWN
 
     def __init__(self, read, data=None, read2=None, data2=None, *, display=None):
         self._read = read
@@ -182,7 +180,7 @@ class EncoderDevice(_Device):
         """
         super().__init__(*args, **kwargs)
         self._state = (0, False)  # (position, pressed)
-        self._switch_button = (self._data if self._data else 2)  # Default to middle mouse button
+        self._data = self._data if self._data else 2  # Default to middle mouse button
 
     def read(self):
         # _read should return a running total of steps turned.  For instance, if the current
@@ -197,7 +195,7 @@ class EncoderDevice(_Device):
             return Events.Button(
                 Events.MOUSEBUTTONDOWN if pressed else Events.MOUSEBUTTONUP,
                 (0, 0),
-                self._switch_button,
+                self._data,
                 False,
                 None,
             )
@@ -206,7 +204,7 @@ class EncoderDevice(_Device):
         if pos != last_pos:
             steps = pos - last_pos
             self._state = (pos, last_pressed)
-            if self._switch_button % 2 == 0:
+            if self._data % 2 == 0:
                 return Events.Wheel(Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None)
             return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
         return None
