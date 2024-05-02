@@ -105,12 +105,23 @@ if [ ! -d $TARGET ]; then
     mkdir $TARGET
 fi
 
-cp -ur $REPO/mpdisplay/lib $TARGET/
-cp -ur $REPO/mpdisplay/examples $TARGET/
-cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
-cp -u $REPO/mpdisplay/utils/lvgl/lv_config.py $TARGET/
+# If $TARGET/lib directory does not exist, create it
+if [ ! -d $TARGET/lib ]; then
+    mkdir $TARGET/lib
+fi
 
-cp -ur $REPO/lcd_bus/* $TARGET/
+# If $TARGET/examples directory does not exist, create it
+if [ ! -d $TARGET/examples ]; then
+    mkdir $TARGET/examples
+fi
+
+cp -ur $REPO/mpdisplay/mpdisplay $TARGET/lib/
+cp -u $REPO/mpdisplay/path.py $TARGET/
+cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
+cp -u $REPO/mpdisplay/examples/*.py $TARGET/examples/
+cp -u $REPO/mpdisplay/examples/lvgl/lv_config.py $TARGET/
+
+cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 cp -ur $REPO/displaybuf/* $TARGET/
 cp -ur $REPO/console/* $TARGET/
 cp -ur $REPO/tft_graphics/* $TARGET/
