@@ -1,0 +1,6 @@
+{
+    "urls": [
+      ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/__init__.py"]
+    ],
+    "version": "0.1"
+  }
