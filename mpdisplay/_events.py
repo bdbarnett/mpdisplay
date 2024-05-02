@@ -30,7 +30,5 @@ class Events:
     Motion = namedtuple("Motion", "type pos rel buttons touch window")
     Button = namedtuple("Button", "type pos button touch window")
     Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple(
-        "Key", "type name key mod scancode window"
-    )  # SDL2 provides key `name`, PyGame provides `unicode`
-    # Use `key` and `mod` for portable code
+    Key = namedtuple( "Key", "type name key mod scancode window")  # SDL2 provides key `name`, PyGame provides `unicode`
+                                                                   # Use `key` and `mod` for portable code
