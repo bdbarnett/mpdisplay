@@ -1,0 +1,10 @@
+{
+    "urls": [
+      ["examples/mpdisplay_encoder_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_encoder_test.py"],
+      ["examples/mpdisplay_event_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_event_test.py"],
+      ["examples/mpdisplay_paint_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_paint_test.py"],
+      ["examples/mpdisplay_simpletest.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_simpletest.py"],
+      ["examples/mpdisplay_touch_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_touch_test.py"]
+    ],
+    "version": "0.1"
+  }
