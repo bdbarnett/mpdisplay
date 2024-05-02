@@ -4,7 +4,7 @@ from lcd_bus import RGBBus
 from busdisplay import BusDisplay
 from machine import I2C, Pin
 from cst8xx import CST8XX
-from mpdisplay import Device_types
+from mpdisplay import Devices
 
 display_bus = RGBBus(
     hsync=41,
@@ -71,7 +71,7 @@ touch_read_func = touch_drv.touches
 touch_rotation_table=None
 
 touch_dev = display_drv.create_device(
-    type=Device_types.TOUCH,
+    type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,
 )

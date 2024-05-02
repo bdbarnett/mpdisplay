@@ -4,7 +4,7 @@ from lcd_bus import I80Bus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-from mpdisplay import Device_types
+from mpdisplay import Devices
 
 display_rd_pin = Pin(7, Pin.OUT, value=1)
 
@@ -60,7 +60,7 @@ encoder_button = Pin(35, Pin.IN, Pin.PULL_UP)
 encoder_button_func = lambda : not encoder_button.value()
 
 encoder_dev = display_drv.create_device(
-    type=Device_types.ENCODER,
+    type=Devices.ENCODER,
     read=encoder_read_func,
     read2=encoder_button_func,
 )

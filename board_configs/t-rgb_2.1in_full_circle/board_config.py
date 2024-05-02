@@ -5,7 +5,7 @@ from st7701 import ST7701, LCDPins
 from machine import Pin, I2C
 from xl9535 import XL9535
 from cst8xx import CST8XX
-from mpdisplay import Device_types
+from mpdisplay import Devices
 
 
 display_bus = RGBBus(
@@ -90,7 +90,7 @@ touch_read_func = touch_drv.get_point
 touch_rotation_table=None
 
 touch_dev = display_drv.create_device(
-    type=Device_types.TOUCH,
+    type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,
 )

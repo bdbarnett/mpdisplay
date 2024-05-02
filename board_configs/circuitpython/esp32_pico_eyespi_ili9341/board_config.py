@@ -6,7 +6,7 @@ release_displays()
 from fourwire import FourWire
 from ili9341 import ILI9341
 from adafruit_focaltouch import Adafruit_FocalTouch
-from mpdisplay import Device_types
+from mpdisplay import Devices
 import board
 
 
@@ -52,7 +52,7 @@ def touch_read_func():
     return None
 
 touch_dev = display_drv.create_device(
-    type=Device_types.TOUCH,
+    type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,
 )

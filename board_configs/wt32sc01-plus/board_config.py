@@ -4,7 +4,7 @@ from lcd_bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
-from mpdisplay import Device_types
+from mpdisplay import Devices
 
 
 # The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both
@@ -56,7 +56,7 @@ touch_read_func=touch_drv.get_positions
 touch_rotation_table=None
 
 touch_dev = display_drv.create_device(
-    type=Device_types.TOUCH,
+    type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,
 )

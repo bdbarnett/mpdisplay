@@ -4,7 +4,7 @@ from lcd_bus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-from mpdisplay import Device_types
+from mpdisplay import Devices
 
 
 display_bus = SPIBus(
@@ -51,7 +51,7 @@ touch_read_func=touch_drv.touch_read
 touch_rotation_table=(0, 5, 6, 3)
 
 touch_dev = display_drv.register_device(
-    type=Device_types.TOUCH,
+    type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,
 )
