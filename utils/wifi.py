@@ -16,8 +16,11 @@ def connect(ssid, password):
         wlan.connect(ssid, password)
         tries = 0
         while tries < _retries:
+            print('.', end='')
             if wlan.isconnected():
                 print('\nNetwork config:', wlan.ifconfig(), '\n')
                 break
             tries += 1
+        else:
+            print('\nFailed to connect.\n')
     return wlan
