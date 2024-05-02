@@ -35,7 +35,7 @@ class _BaseDisplay:
         :param type: The type of device to create.
         :type dev: int
         """
-        dev = Devices(type, *args, display=self, **kwargs)
+        dev = Devices.create(type, *args, display=self, **kwargs)
         self.register_device(dev)
         return dev
 

@@ -7,7 +7,8 @@
       ["lib/mpdisplay/_events.py", "github:bdbarnett/mpdisplay/mpdisplay/_events.py"],
       ["lib/mpdisplay/_keys.py", "github:bdbarnett/mpdisplay/mpdisplay/_keys.py"],
       ["lib/mpdisplay/_pgdisplay.py", "github:bdbarnett/mpdisplay/mpdisplay/_pgdisplay.py"],
-      ["lib/mpdisplay/_sdl2display.py", "github:bdbarnett/mpdisplay/mpdisplay/_sdl2display.py"]
+      ["lib/mpdisplay/_sdl2display.py", "github:bdbarnett/mpdisplay/mpdisplay/_sdl2display.py"],
+      ["path.py", "github:bdbarnett/mpdisplay/path.py"]
     ],
     "version": "0.1"
   }

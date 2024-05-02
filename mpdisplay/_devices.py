@@ -18,7 +18,7 @@ class Devices:
     JOYSTICK = const(0x04)  # Joystick Events (not implemented)
 
     @staticmethod
-    def __call__(type, *args, **kwargs):
+    def create(type, *args, **kwargs):
         if type == Devices.MULTI:
             return MultiDevice(*args, **kwargs)
         if type == Devices.TOUCH:
