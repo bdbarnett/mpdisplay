@@ -11,7 +11,7 @@ REVERSE_Y = const(0b100)
 
 class Devices:
     UNKNOWN = const(-1)  # Unknown device
-    MULTI = const(0x00)  # Multi-device - all events in Events.types unless specified
+    EVENTS = const(0x00)  # Multi-device for SDL2 returns all events in Events.types unless specified
     TOUCH = const( 0x01)  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
     ENCODER = const(0x02)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
     KEYPAD = const(0x03)  # KEYDOWN and KEYUP events when keys are pressed or released
@@ -19,8 +19,8 @@ class Devices:
 
     @staticmethod
     def create(type, *args, **kwargs):
-        if type == Devices.MULTI:
-            return MultiDevice(*args, **kwargs)
+        if type == Devices.EVENTS:
+            return EventsDevice(*args, **kwargs)
         if type == Devices.TOUCH:
             return TouchDevice(*args, **kwargs)
         elif type == Devices.ENCODER:
@@ -80,8 +80,8 @@ class _Device:
             self.rotation = disp.rotation
 
 
-class MultiDevice(_Device):
-    type = Devices.MULTI
+class EventsDevice(_Device):
+    type = Devices.EVENTS
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
