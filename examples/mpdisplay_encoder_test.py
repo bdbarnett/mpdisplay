@@ -5,38 +5,36 @@ from board_config import display_drv
 from mpdisplay import Events
 
 color_byte = 1
-box_color = -1
+bg_color = 0xff00
 w = display_drv.width
 h = display_drv.height
 thickness = 10
-position = 0
+y_pos = h // 2
+x_pos = w // 2
+factor = -1  # change the sign to invert the direction
 
 def draw_line():
-    global color_byte
-
     color = color_byte << 8 | color_byte
-    display_drv.fill_rect(0, h-thickness, w, thickness, color)
+    display_drv.fill_rect(0, 0, x_pos, thickness, color)
+    display_drv.fill_rect(x_pos, 0, w-x_pos, thickness, bg_color)
 
-def draw_box():
-    display_drv.fill_rect(w//4, h//4, w//2, h//2, box_color)
-
+display_drv.vscsad(y_pos)
 draw_line()
-draw_box()
 
 while True:
     if not (e := display_drv.poll_event()):
         continue
     if e.type == Events.MOUSEWHEEL:
         if e.y != 0:
-            direction = 1 if e.y > 0 else -1
+            direction = factor if e.y > 0 else -factor
             delta = e.y * e.y * direction  # Quadratic acceleration
-            position += delta
-            display_drv.vscsad(position % display_drv.height)
+            y_pos = (y_pos + delta) % h
+            display_drv.vscsad(y_pos)
         if e.x != 0:
-            direction = 1 if e.x > 0 else -1
+            direction = factor if e.x > 0 else -factor
             delta = e.x * e.x * direction
-            box_color += delta
-            draw_box()
+            x_pos = (x_pos + delta) % w
+            draw_line()
     elif e.type == Events.MOUSEBUTTONDOWN:
         if e.button == 2:
             color_byte = color_byte << 1 & 0xFF
@@ -44,5 +42,5 @@ while True:
                 color_byte = 1
             draw_line()
         elif e.button == 3:
-            box_color = -1
-            draw_box()
+            bg_color = ~bg_color
+            draw_line()
