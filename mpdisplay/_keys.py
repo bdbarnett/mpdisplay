@@ -5,16 +5,19 @@ from micropython import const as _const
 
 # import pygame as _pg
 # _pg.init()
-# name = lambda x: _pg.key.name(x, use_compat=0)
+# keyname = lambda x: _pg.key.name(x, use_compat=0)
 # key = _pg.key.key_code
 
 # from ._sdl2display import SDL_GetKeyName as _SDL_GetKeyName, SDL_GetKeyFromName as _SDL_GetKeyFromName
-# name = _SDL_GetKeyName
+# keyname = _SDL_GetKeyName
 # key = _SDL_GetKeyFromName
 
 class Keys:
-    name = lambda x: Keys._keytable.get(x, "Unknown")
+    keyname = lambda x: Keys._keytable.get(x, "Unknown")
     key = lambda x: list(Keys._keytable.keys())[list(Keys._keytable.values()).index(x)]
+
+    modname = lambda x: Keys._modtable.get(x, "Unknown")
+    mod = lambda x: list(Keys._modtable.keys())[list(Keys._modtable.values()).index(x)]
 
     K_UNKNOWN = _const(0)
     K_BACKSPACE = _const(8)
@@ -520,4 +523,41 @@ class Keys:
         K_KBDILLUMUP: "KBDIllumUp",
         K_EJECT: "Eject",
         K_SLEEP: "Sleep",
+    }
+
+    # SDL_Keycode mod values (not complete)
+    KMOD_NONE = _const(0x0000)
+    KMOD_LSHIFT = _const(0x0001)
+    KMOD_RSHIFT = _const(0x0002)
+    KMOD_LCTRL = _const(0x0040)
+    KMOD_RCTRL = _const(0x0080)
+    KMOD_LALT = _const(0x0100)
+    KMOD_RALT = _const(0x0200)
+    KMOD_LGUI = _const(0x0400)
+    KMOD_RGUI = _const(0x0800)
+    KMOD_NUM = _const(0x1000)
+    KMOD_CAPS = _const(0x2000)
+    KMOD_MODE = _const(0x4000)
+    KMOD_CTRL = KMOD_LCTRL | KMOD_RCTRL
+    KMOD_SHIFT = KMOD_LSHIFT | KMOD_RSHIFT
+    KMOD_ALT = KMOD_LALT | KMOD_RALT
+    KMOD_GUI = KMOD_LGUI | KMOD_RGUI
+
+    _modtable = {
+        KMOD_NONE: "None",
+        KMOD_LSHIFT: "Left Shift",
+        KMOD_RSHIFT: "Right Shift",
+        KMOD_LCTRL: "Left Ctrl",
+        KMOD_RCTRL: "Right Ctrl",
+        KMOD_LALT: "Left Alt",
+        KMOD_RALT: "Right Alt",
+        KMOD_LGUI: "Left GUI",
+        KMOD_RGUI: "Right GUI",
+        KMOD_NUM: "Num Lock",
+        KMOD_CAPS: "Caps Lock",
+        KMOD_MODE: "Mode",
+        KMOD_CTRL: "Ctrl",
+        KMOD_SHIFT: "Shift",
+        KMOD_ALT: "Alt",
+        KMOD_GUI: "GUI",
     }

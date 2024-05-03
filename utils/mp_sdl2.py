@@ -86,24 +86,6 @@ SDL_BUTTON_LMASK = const(1 << 0)           # Left mouse button
 SDL_BUTTON_MMASK = const(1 << 1)           # Middle mouse button
 SDL_BUTTON_RMASK = const(1 << 2)           # Right mouse button
 
-# SDL_Keycode mod values (not complete)
-KMOD_NONE = const(0x0000)
-KMOD_LSHIFT = const(0x0001)
-KMOD_RSHIFT = const(0x0002)
-KMOD_LCTRL = const(0x0040)
-KMOD_RCTRL = const(0x0080)
-KMOD_LALT = const(0x0100)
-KMOD_RALT = const(0x0200)
-KMOD_LGUI = const(0x0400)
-KMOD_RGUI = const(0x0800)
-KMOD_NUM = const(0x1000)
-KMOD_CAPS = const(0x2000)
-KMOD_MODE = const(0x4000)
-KMOD_CTRL = KMOD_LCTRL | KMOD_RCTRL
-KMOD_SHIFT = KMOD_LSHIFT | KMOD_RSHIFT
-KMOD_ALT = KMOD_LALT | KMOD_RALT
-KMOD_GUI = KMOD_LGUI | KMOD_RGUI
-
 
 ###############################################################################
 #                          SDL2 functions                                     #
