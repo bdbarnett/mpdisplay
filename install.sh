@@ -66,15 +66,15 @@
 
 #### Set the following variables to your desired paths
 REPO=~/gh  # Path to clone repositories into
-TARGET=~/micropython  # Path to copy Python files
+TARGET=~/python  # Path to copy Python files
 
 #### Set to the executable you want to use for the test at the end of the script
-EXE=micropython  # micropython, python3 or python
+EXE=python3  # micropython, python3 or python
 
 ##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
-LAUNCH=mpdisplay_paint_test  # without .py extension
+LAUNCH=mpdisplay_paint  # without .py extension
 
 ######################## Download the repositories ###############################
 
@@ -144,5 +144,5 @@ rm $TARGET/LICENSE
 pushd $TARGET
 echo
 echo "Launching $LAUNCH"
-# $EXE -c "import path, $LAUNCH"
+$EXE -c "import path, $LAUNCH"
 popd
