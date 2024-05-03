@@ -15,6 +15,7 @@
 #
 # This script clones the following repositories into the $REPO directory:
 # - mpdisplay
+# - sdl2_lib
 # - lcd_bus
 # - displaybuf
 # - console
@@ -116,6 +117,7 @@ if [ ! -d $TARGET/examples ]; then
 fi
 
 cp -ur $REPO/mpdisplay/mpdisplay $TARGET/lib/
+cp -ur $REPO/mpdisplay/sdl2_lib $TARGET/lib/
 cp -u $REPO/mpdisplay/path.py $TARGET/
 cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
 cp -u $REPO/mpdisplay/examples/*.py $TARGET/examples/
@@ -142,5 +144,5 @@ rm $TARGET/LICENSE
 pushd $TARGET
 echo
 echo "Launching $LAUNCH"
-$EXE -c "import path, $LAUNCH"
+# $EXE -c "import path, $LAUNCH"
 popd

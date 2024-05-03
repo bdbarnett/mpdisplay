@@ -10,30 +10,20 @@ from sys import implementation
 if implementation.name == 'cpython':
     is_cpython = True
     import ctypes
-    from sdl2 import (
-        SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
-        SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor,
-        SDL_RenderClear, SDL_RenderPresent, SDL_RenderSetLogicalSize, SDL_SetWindowSize,
-        SDL_SetRenderTarget, SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy,
-        SDL_UpdateTexture, SDL_CreateTexture, SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGB888,
-        SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET, SDL_BLENDMODE_NONE, SDL_RENDERER_ACCELERATED,
-        SDL_RENDERER_PRESENTVSYNC, SDL_WINDOWPOS_CENTERED, SDL_WINDOW_SHOWN, SDL_Rect, SDL_INIT_EVERYTHING,
-        SDL_Event, SDL_BUTTON_LMASK, SDL_BUTTON_MMASK, SDL_BUTTON_RMASK, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP,
-        SDL_MOUSEMOTION, SDL_MOUSEWHEEL, SDL_KEYDOWN, SDL_KEYUP, SDL_GetKeyName
-    )
 else:
     is_cpython = False
-    from mp_sdl2 import (
-        SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
-        SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor,
-        SDL_RenderClear, SDL_RenderPresent, SDL_RenderSetLogicalSize, SDL_SetWindowSize,
-        SDL_SetRenderTarget, SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy,
-        SDL_UpdateTexture, SDL_CreateTexture, SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGB888,
-        SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET, SDL_BLENDMODE_NONE, SDL_RENDERER_ACCELERATED,
-        SDL_RENDERER_PRESENTVSYNC, SDL_WINDOWPOS_CENTERED, SDL_WINDOW_SHOWN, SDL_Rect, SDL_INIT_EVERYTHING,
-        SDL_Event, SDL_BUTTON_LMASK, SDL_BUTTON_MMASK, SDL_BUTTON_RMASK, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP,
-        SDL_MOUSEMOTION, SDL_MOUSEWHEEL, SDL_KEYDOWN, SDL_KEYUP, SDL_GetKeyName
-    )
+
+from sdl2_lib import (
+    SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
+    SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor,
+    SDL_RenderClear, SDL_RenderPresent, SDL_RenderSetLogicalSize, SDL_SetWindowSize,
+    SDL_SetRenderTarget, SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy,
+    SDL_UpdateTexture, SDL_CreateTexture, SDL_GetKeyName, SDL_Rect, SDL_Event, SDL_QUIT,
+    SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGB888, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET,
+    SDL_BLENDMODE_NONE, SDL_RENDERER_ACCELERATED, SDL_RENDERER_PRESENTVSYNC, SDL_WINDOWPOS_CENTERED,
+    SDL_WINDOW_SHOWN, SDL_INIT_EVERYTHING, SDL_BUTTON_LMASK, SDL_BUTTON_MMASK, SDL_BUTTON_RMASK,
+    SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL, SDL_KEYDOWN, SDL_KEYUP,
+)
 
 def retcheck(retvalue):
     # Check the return value of an SDL function and raise an exception if it's not 0
@@ -57,7 +47,7 @@ class SDL2Display(_BaseDisplay):
         scale=1,
         x=SDL_WINDOWPOS_CENTERED,
         y=SDL_WINDOWPOS_CENTERED,
-        title="MicroPython",
+        title="SDL2 Display",
         window_flags=SDL_WINDOW_SHOWN,
         render_flags=SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
     ):
@@ -105,8 +95,6 @@ class SDL2Display(_BaseDisplay):
         else:
             raise ValueError("Unsupported color_depth")
         
-        self._event = SDL_Event()
-
         retcheck(SDL_Init(SDL_INIT_EVERYTHING))
         self.win = SDL_CreateWindow(title.encode(), x, y, int(self.width*scale), int(self.height*scale), window_flags)
         if not self.win:
@@ -182,7 +170,10 @@ class SDL2Display(_BaseDisplay):
             raise ValueError("Buffer size does not match dimensions")
         blitRect = SDL_Rect(x, y, w, h)
         if is_cpython:
-            buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(buffer.obj)
+            if type(buffer) is memoryview:
+                buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(buffer.obj)
+            else:
+                buffer_array = (ctypes.c_ubyte * len(buffer)).from_buffer(buffer)
             buffer_ptr = ctypes.c_void_p(ctypes.addressof(buffer_array))
             retcheck(SDL_UpdateTexture(self.texture, blitRect, buffer_ptr, pitch))
         else:
@@ -258,8 +249,6 @@ class SDL2Display(_BaseDisplay):
         retcheck(SDL_DestroyWindow(self.win))
         retcheck(SDL_Quit())
 
-############### Class Specific Functions ################
-
     def _show(self, renderRect=None):
         """
         Show the display.  Automatically called after blitting or filling the display.
@@ -291,6 +280,18 @@ class SDL2Display(_BaseDisplay):
 
         retcheck(SDL_RenderPresent(self.renderer))
 
+
+class SDL2Events():
+    """
+    An implementation of an SDL2 event poller.
+    """
+    def __init__(self):
+        """
+        Initializes the SDL2Events instance.
+        """
+        super().__init__()
+        self._event = SDL_Event()
+
     def read(self):
         """
         Polls for an event and returns the event type and data.
@@ -301,7 +302,7 @@ class SDL2Display(_BaseDisplay):
         if SDL_PollEvent(self._event):
             if is_cpython:
                 if self._event.type in Events.types:
-                    return self._convert(self._event)
+                    return self._convert(SDL_Event(self._event))
             else:
                 if int.from_bytes(self._event[:4], 'little') in Events.types:
                     return self._convert(SDL_Event(self._event))
@@ -321,7 +322,8 @@ class SDL2Display(_BaseDisplay):
         elif e.type in (SDL_KEYDOWN, SDL_KEYUP):
             name = SDL_GetKeyName(e.key.keysym.sym)
             evt = Events.Key(e.type, name, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.scancode, e.key.windowID)
+        elif e.type == SDL_QUIT:
+            evt = Events.Quit(e.type)
         else:
             evt = Events.Unknown(e.type)
-
         return evt
