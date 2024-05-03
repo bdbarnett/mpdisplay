@@ -31,3 +31,4 @@ class Events:
     Button = namedtuple("Button", "type pos button touch window")
     Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
     Key = namedtuple( "Key", "type name key mod scancode window")
+    Quit = namedtuple( "Quit", "type")
