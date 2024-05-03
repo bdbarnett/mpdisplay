@@ -27,14 +27,13 @@ def update():
         dirlist = [x[0] for x in os.ilistdir()]
 
     # Check to see if each directory is on the filesystem and if so, add it to the path.
-    prefix = 'path.py:  Added'
-    postfix = ''
+    completed = []
     for directory in directories:
         if directory in dirlist and not directory in sys.path:
             sys.path.append(directory)
-            print(f"{prefix} {directory}", end='')
-            prefix = ','
-            postfix = ' to the path.\n'
-    print(postfix, end='')
+            completed.append(directory)
+
+    if completed:
+        print(f'path.py:  Added {completed} to sys.path.')
 
 update()
