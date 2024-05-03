@@ -9,7 +9,7 @@ busdisplay.py - BusDisplay class for MicroPython
 import struct
 import sys
 from micropython import const
-from . import _BaseDisplay, Events, Devices
+from . import _BaseDisplay, Devices
 
 
 if sys.implementation.name == "micropython":
