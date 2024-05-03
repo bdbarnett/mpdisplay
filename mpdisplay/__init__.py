@@ -9,7 +9,8 @@ from ._keys import Keys
 
 
 if implementation.name == "cpython":
-    from ._pgdisplay import *
+#     from ._pgdisplay import *
+    from ._sdl2display import *
 elif implementation.name == "circuitpython":
     from ._busdisplay import *
 elif implementation.name == "micropython":
