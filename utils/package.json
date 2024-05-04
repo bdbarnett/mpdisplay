@@ -1,9 +1,0 @@
-{
-    "urls": [
-      ["lib/lv_mpdisplay.py", "github:bdbarnett/mpdisplay/utils/lv_mpdisplay.py"],
-      ["lib/micropython.py", "github:bdbarnett/mpdisplay/utils/micropython.py"],
-      ["lib/touch_keypad.py", "github:bdbarnett/mpdisplay/utils/touch_keypad.py"],
-      ["lib/wifi.py", "github:bdbarnett/mpdisplay/utils/wifi.py"]
-    ],
-    "version": "0.1"
-  }

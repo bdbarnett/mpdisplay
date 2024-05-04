@@ -1,0 +1,25 @@
+{
+    "urls": [
+      ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/mpdisplay/__init__.py"],
+      ["lib/mpdisplay/_basedisplay.py", "github:bdbarnett/mpdisplay/mpdisplay/_basedisplay.py"],
+      ["lib/mpdisplay/_busdisplay.py", "github:bdbarnett/mpdisplay/mpdisplay/_busdisplay.py"],
+      ["lib/mpdisplay/_devices.py", "github:bdbarnett/mpdisplay/mpdisplay/_devices.py"],
+      ["lib/mpdisplay/_events.py", "github:bdbarnett/mpdisplay/mpdisplay/_events.py"],
+      ["lib/mpdisplay/_keys.py", "github:bdbarnett/mpdisplay/mpdisplay/_keys.py"],
+      ["lib/mpdisplay/_pgdisplay.py", "github:bdbarnett/mpdisplay/mpdisplay/_pgdisplay.py"],
+      ["lib/mpdisplay/_sdl2display.py", "github:bdbarnett/mpdisplay/mpdisplay/_sdl2display.py"],
+      ["examples/mpdisplay_encoder_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_encoder_test.py"],
+      ["examples/mpdisplay_event_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_event_test.py"],
+      ["examples/mpdisplay_paint_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_paint_test.py"],
+      ["examples/mpdisplay_simpletest.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_simpletest.py"],
+      ["examples/mpdisplay_touch_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_touch_test.py"],
+      ["examples/lv_touch_test.py", "github:bdbarnett/mpdisplay/examples/lv_touch_test.py"],
+      ["lib/lv_mpdisplay.py", "github:bdbarnett/mpdisplay/utils/lv_mpdisplay.py"],
+      ["lib/micropython.py", "github:bdbarnett/mpdisplay/utils/micropython.py"],
+      ["lib/touch_keypad.py", "github:bdbarnett/mpdisplay/utils/touch_keypad.py"],
+      ["lib/wifi.py", "github:bdbarnett/mpdisplay/utils/wifi.py"],
+      ["lv_config.py", "github:bdbarnett/mpdisplay/configs/lv_config.py"],
+      ["path.py", "github:bdbarnett/mpdisplay/configs/path.py"]
+    ],
+    "version": "0.1"
+  }

@@ -85,6 +85,7 @@ fi
 
 ##### Clone the repositories.  This will error if the repositories already exist.
 git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
+git clone https://github.com/bdbarnett/sdl2_lib.git $REPO/sdl2_lib
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
 git clone https://github.com/bdbarnett/displaybuf.git $REPO/displaybuf
 git clone https://github.com/bdbarnett/console.git $REPO/console
@@ -116,25 +117,43 @@ if [ ! -d $TARGET/examples ]; then
     mkdir $TARGET/examples
 fi
 
+cp -u $REPO/$BOARD_CONFIG $TARGET/
+
 cp -ur $REPO/mpdisplay/mpdisplay $TARGET/lib/
-cp -ur $REPO/mpdisplay/sdl2_lib $TARGET/lib/
-cp -u $REPO/mpdisplay/path.py $TARGET/
-cp -u $REPO/mpdisplay/utils/*.py $TARGET/lib/
-cp -u $REPO/mpdisplay/examples/*.py $TARGET/examples/
-cp -u $REPO/mpdisplay/examples/lvgl/lv_config.py $TARGET/
+cp -ur $REPO/mpdisplay/examples $TARGET/
+cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
+cp -u $REPO/mpdisplay/configs/* $TARGET/
+
+cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
-cp -ur $REPO/displaybuf/* $TARGET/
-cp -ur $REPO/console/* $TARGET/
-cp -ur $REPO/tft_graphics/* $TARGET/
-cp -ur $REPO/timer/* $TARGET/
-cp -ur $REPO/framebuf/* $TARGET/
-cp -ur $REPO/romfont/* $TARGET/
+
+cp -ur $REPO/tft_graphics/tft_graphics $TARGET/lib/
+cp -ur $REPO/tft_graphics/examples $TARGET/
+cp -ur $REPO/tft_graphics/romfonts $TARGET/
+
+cp -ur $REPO/timer/timer $TARGET/lib/
+cp -ur $REPO/timer/examples $TARGET/
+
+cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
+cp -ur $REPO/displaybuf/examples $TARGET/
+cp -u $REPO/displaybuf/configs/* $TARGET/
+
+cp -u $REPO/console/console.py $TARGET/lib/
+cp -ur $REPO/console/examples $TARGET/
+
+cp -u $REPO/framebuf/framebuf.py $TARGET/lib/
+cp -ur $REPO/framebuf/examples $TARGET/
+
+cp -u $REPO/romfont/romfont.py $TARGET/lib/
+cp -ur $REPO/romfont/examples $TARGET/
+
 cp -u $REPO/testris/testris.py $TARGET/examples/
+
 cp -u $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
+
 cp -ur $REPO/micropython-touch/gui $TARGET/lib/
 
-cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 rm $TARGET/README.md
 rm $TARGET/LICENSE
