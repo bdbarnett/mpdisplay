@@ -30,5 +30,3 @@ mip.install("github:bdbarnett/console", target=TARGET)
 mip.install("github:bdbarnett/timer", target=TARGET)
 
 mip.install("github:bdbarnett/testris", target=TARGET)
-
-mip.install("github:bdbarnett/testris", target=TARGET)
