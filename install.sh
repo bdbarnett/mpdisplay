@@ -138,6 +138,7 @@ cp -ur $REPO/framebuf/examples $TARGET/
 
 cp -u $REPO/romfont/romfont.py $TARGET/lib/
 cp -ur $REPO/romfont/examples $TARGET/
+cp -ur $REPO/romfont/romfonts $TARGET/
 
 cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
 cp -ur $REPO/displaybuf/examples $TARGET/
