@@ -71,10 +71,12 @@ TARGET=~/python  # Path to copy Python files
 #### Set to the executable you want to use for the test at the end of the script
 EXE=python3  # micropython, python3 or python
 
+
 ##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
 LAUNCH=mpdisplay_paint  # without .py extension
+
 
 ######################## Download the repositories ###############################
 
@@ -97,7 +99,8 @@ git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
 
-######################## Stage the files in $TARGET ##############################
+
+######################## Create the directory structure ##############################
 
 # Exit script immediately if any command exits with a non-zero status
 set -e
@@ -117,6 +120,8 @@ if [ ! -d $TARGET/examples ]; then
     mkdir $TARGET/examples
 fi
 
+######################## Stage the files in $TARGET ##############################
+
 cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 cp -ur $REPO/mpdisplay/mpdisplay $TARGET/lib/
@@ -128,35 +133,30 @@ cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 
-cp -ur $REPO/tft_graphics/tft_graphics $TARGET/lib/
-cp -ur $REPO/tft_graphics/examples $TARGET/
-cp -ur $REPO/tft_graphics/romfonts $TARGET/
-
-cp -ur $REPO/timer/timer $TARGET/lib/
-cp -ur $REPO/timer/examples $TARGET/
-
-cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
-cp -ur $REPO/displaybuf/examples $TARGET/
-cp -u $REPO/displaybuf/configs/* $TARGET/
-
-cp -u $REPO/console/console.py $TARGET/lib/
-cp -ur $REPO/console/examples $TARGET/
-
 cp -u $REPO/framebuf/framebuf.py $TARGET/lib/
 cp -ur $REPO/framebuf/examples $TARGET/
 
 cp -u $REPO/romfont/romfont.py $TARGET/lib/
 cp -ur $REPO/romfont/examples $TARGET/
 
-cp -u $REPO/testris/testris.py $TARGET/examples/
+cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
+cp -ur $REPO/displaybuf/examples $TARGET/
+cp -u $REPO/displaybuf/configs/* $TARGET/
 
-cp -u $REPO/adafruit_circuitpython_ticks/adafruit_ticks.py $TARGET/lib/
+cp -ur $REPO/tft_graphics/tft_graphics $TARGET/lib/
+cp -ur $REPO/tft_graphics/examples $TARGET/
+cp -ur $REPO/tft_graphics/romfonts $TARGET/
+
+cp -u $REPO/console/console.py $TARGET/lib/
+cp -ur $REPO/console/examples $TARGET/
+
+cp -ur $REPO/timer/timer $TARGET/lib/
+cp -ur $REPO/timer/examples $TARGET/
+
+cp -u $REPO/testris/testris.py $TARGET/examples/
 
 cp -ur $REPO/micropython-touch/gui $TARGET/lib/
 
-
-rm $TARGET/README.md
-rm $TARGET/LICENSE
 
 ######################## Launch the test app ####################################
 
