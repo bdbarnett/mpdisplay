@@ -14,6 +14,7 @@
       ["examples/mpdisplay_simpletest.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_simpletest.py"],
       ["examples/mpdisplay_touch_test.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_touch_test.py"],
       ["examples/lv_touch_test.py", "github:bdbarnett/mpdisplay/examples/lv_touch_test.py"],
+      ["lib/adafruit_ticks.py", "github:bdbarnett/mpdisplay/utils/adafruit_ticks.py"],
       ["lib/lv_mpdisplay.py", "github:bdbarnett/mpdisplay/utils/lv_mpdisplay.py"],
       ["lib/micropython.py", "github:bdbarnett/mpdisplay/utils/micropython.py"],
       ["lib/touch_keypad.py", "github:bdbarnett/mpdisplay/utils/touch_keypad.py"],

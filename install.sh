@@ -24,7 +24,6 @@
 # - framebuf
 # - romfont
 # - testris
-# - Adafruit_CircuitPython_Ticks
 # - micropython-touch
 #
 # It then copies the necessary files to their recommended locations in the
@@ -96,7 +95,6 @@ git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
 git clone https://github.com/bdbarnett/romfont.git $REPO/romfont
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
-git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks.git $REPO/adafruit_circuitpython_ticks
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
 
 
