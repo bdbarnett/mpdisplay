@@ -172,8 +172,10 @@ class SDL2Display(_BaseDisplay):
         if is_cpython:
             if type(buffer) is memoryview:
                 buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(buffer.obj)
-            else:
+            elif type(buffer) is bytearray:
                 buffer_array = (ctypes.c_ubyte * len(buffer)).from_buffer(buffer)
+            else:
+                raise ValueError(f"Buffer is of type {type(buffer)} instead of memoryview or bytearray")
             buffer_ptr = ctypes.c_void_p(ctypes.addressof(buffer_array))
             retcheck(SDL_UpdateTexture(self.texture, blitRect, buffer_ptr, pitch))
         else:
