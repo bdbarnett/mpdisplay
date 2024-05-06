@@ -56,7 +56,7 @@ class PGDisplay(_BaseDisplay):
         self.requires_byte_swap = False
         self._buffer = None
 
-        if scale is not None:
+        if scale is not None and scale != 1:
             print("Scaling is not implemented in PGDisplay.  Ignoring.")
         self._bytes_per_pixel = color_depth // 8
 
