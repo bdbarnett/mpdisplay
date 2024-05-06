@@ -86,14 +86,14 @@ class _BaseDisplay:
         """
         self._quit_func()
 
-    def create_device(self, type, *args, **kwargs):
+    def create_device(self, type=Devices.EVENT, **kwargs):
         """
         Create a device object.
 
         :param type: The type of device to create.
         :type dev: int
         """
-        dev = Devices.create(type, *args, display=self, **kwargs)
+        dev = Devices.create(type, display=self, **kwargs)
         self.register_device(dev)
         return dev
 
