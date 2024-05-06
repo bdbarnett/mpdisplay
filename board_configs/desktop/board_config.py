@@ -15,7 +15,7 @@ if hasattr(mpdisplay, "pg"):
 elif hasattr(mpdisplay, "sdl2"):
     BORDERLESS = mpdisplay.sdl2.SDL_WINDOW_BORDERLESS
 else:
-    raise ImportError("No supported display backend found.")
+    raise ImportError("No supported display backend found.\nThis board_config.py is for desktop platforms only.\nPlease install Pygame or SDL2.\n")
 
 display_drv = mpdisplay.DesktopDisplay(
     width=320,
