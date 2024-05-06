@@ -34,6 +34,6 @@ def update():
             completed.append(directory)
 
     if completed:
-        print(f'path.py:  Added {completed} to sys.path.')
+        print(f'path.py:  Added {completed} to sys.path.\n')
 
 update()
