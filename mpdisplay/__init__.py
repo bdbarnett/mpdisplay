@@ -31,7 +31,8 @@ if sys.implementation.name == "cpython":
         from ._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents, pg
     else:
         try:
-            from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents, sdl2
+            from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
+            import sdl2_lib as sdl2
         except Exception as e:
             print(f"MPDisplay: Error loading SDL2Display -- {e}")
             print("    Falling back to PGDisplay")
@@ -39,7 +40,8 @@ if sys.implementation.name == "cpython":
 elif sys.implementation.name == "micropython":
     if sys.platform == "linux":
         try:
-            from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents, sdl2
+            from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
+            import sdl2_lib as sdl2
         except Exception as e:
             print(f"MPDisplay:  Error loading SDL2Display -- {e}")
             print("    Falling back to PGDisplay")
