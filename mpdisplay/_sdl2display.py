@@ -96,7 +96,7 @@ class SDL2Display(_BaseDisplay):
             raise ValueError("Unsupported color_depth")
 
         retcheck(SDL_Init(SDL_INIT_EVERYTHING))
-        self.win = SDL_CreateWindow(self._title.encode(), x, y, int(self.width*scale), int(self.height*scale), self._window_flags)
+        self.win = SDL_CreateWindow(self._title.encode(), x, y, int(self.width*self._scale), int(self.height*self._scale), self._window_flags)
         if not self.win:
             raise RuntimeError(f"{SDL_GetError()}")
         self.renderer = SDL_CreateRenderer(self.win, -1, render_flags)
