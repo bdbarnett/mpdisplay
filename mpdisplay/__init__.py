@@ -9,14 +9,14 @@ from ._keys import Keys
 
 
 if implementation.name == "cpython":
-#     from ._pgdisplay import *
-    from ._sdl2display import *
+#     from ._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents
+    from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
 elif implementation.name == "circuitpython":
-    from ._busdisplay import *
+    from ._busdisplay import BusDisplay
 elif implementation.name == "micropython":
     if platform == "linux":
-        from ._sdl2display import *
+        from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
     else:
-        from ._busdisplay import *
+        from ._busdisplay import BusDisplay
 else:
     raise ImportError("unsupported Python implementation")

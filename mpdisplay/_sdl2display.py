@@ -6,13 +6,6 @@ An implementation of an SDL2 Bus library written in MicroPython.
 """
 
 from . import _BaseDisplay, Events
-from sys import implementation
-if implementation.name == 'cpython':
-    is_cpython = True
-    import ctypes
-else:
-    is_cpython = False
-
 from sdl2_lib import (
     SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
     SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor,
@@ -24,6 +17,13 @@ from sdl2_lib import (
     SDL_WINDOW_SHOWN, SDL_INIT_EVERYTHING, SDL_BUTTON_LMASK, SDL_BUTTON_MMASK, SDL_BUTTON_RMASK,
     SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL, SDL_KEYDOWN, SDL_KEYUP,
 )
+from sys import implementation
+if implementation.name == 'cpython':
+    import ctypes
+    is_cpython = True
+else:
+    is_cpython = False
+
 
 def retcheck(retvalue):
     # Check the return value of an SDL function and raise an exception if it's not 0
@@ -44,12 +44,12 @@ class SDL2Display(_BaseDisplay):
         height=240,
         rotation=0,
         color_depth=16,
-        scale=1,
-        x=SDL_WINDOWPOS_CENTERED,
-        y=SDL_WINDOWPOS_CENTERED,
         title="SDL2 Display",
+        scale=None,
         window_flags=SDL_WINDOW_SHOWN,
         render_flags=SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
+        x=SDL_WINDOWPOS_CENTERED,
+        y=SDL_WINDOWPOS_CENTERED,
     ):
         """
         Initializes the sdl2lcd instance with the given parameters.
@@ -62,28 +62,29 @@ class SDL2Display(_BaseDisplay):
         :type rotation: int
         :param color_depth: The color depth of the display (default is 16).
         :type color_depth: int
-        :param scale: The scale factor for the display (default is 1).
-        :type scale: int
-        :param x: The x-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
-        :type x: int
-        :param y: The y-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
-        :type y: int
         :param title: The title of the display window (default is "MicroPython").
         :type title: str
+        :param scale: The scale factor for the display (default is 1).
+        :type scale: int
         :param window_flags: The flags for creating the display window (default is SDL_WINDOW_SHOWN).
         :type window_flags: int
         :param render_flags: The flags for creating the renderer (default is SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC).
         :type render_flags: int
+        :param x: The x-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
+        :type x: int
+        :param y: The y-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
+        :type y: int
         """
+        print("MPDisplay: Using SDL2 display.")
         super().__init__()
         self._width = width
         self._height = height
         self._rotation = rotation
         self.color_depth = color_depth
-        self._scale = scale
-        self._tfa = self._bfa = 0  # Top and bottom fixed areas
-        self._scroll_y = None  # Scroll offset; set to None to disable scrolling
-        self.texture = None
+        self._title = title
+        self._window_flags = window_flags
+        self._scale = scale if scale else 1
+        self._buffer = None
 
         # Determine the pixel format
         if color_depth == 32:
@@ -94,61 +95,37 @@ class SDL2Display(_BaseDisplay):
             self._px_format = SDL_PIXELFORMAT_RGB565
         else:
             raise ValueError("Unsupported color_depth")
-        
+
         retcheck(SDL_Init(SDL_INIT_EVERYTHING))
-        self.win = SDL_CreateWindow(title.encode(), x, y, int(self.width*scale), int(self.height*scale), window_flags)
+        self.win = SDL_CreateWindow(self._title.encode(), x, y, int(self.width*scale), int(self.height*scale), self._window_flags)
         if not self.win:
             raise RuntimeError(f"{SDL_GetError()}")
-
         self.renderer = SDL_CreateRenderer(self.win, -1, render_flags)
         if not self.renderer:
             raise RuntimeError(f"{SDL_GetError()}")
-
-        self.requires_byte_swap = False
 
         self.init()
 
     def init(self):
         """
-        Initializes the sdl2lcd instance.
+        Initializes the sdl2lcd instance.  Called by __init__ and rotation setter.
         """
-        self._vsa = self.height - self._tfa - self._bfa  # Vertical scaling area
-        retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
-        retcheck(SDL_SetRenderDrawColor(self.renderer, 0, 0, 0, 255))
-        retcheck(SDL_RenderClear(self.renderer))
-        retcheck(SDL_RenderPresent(self.renderer))
-
-        self.texture = SDL_CreateTexture(
-            self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
-        if not self.texture:
-            raise RuntimeError(f"{SDL_GetError()}")
-        retcheck(SDL_SetTextureBlendMode(self.texture, SDL_BLENDMODE_NONE))
-
-    @property
-    def rotation(self):
-        """
-        The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
-        """
-        return self._rotation
-
-    @rotation.setter
-    def rotation(self, value):
-        """
-        Sets the rotation of the display.
-
-        :param value: The rotation of the display.
-        :type value: int
-        """
-        if value == self._rotation:
-            return
-        self._rotation = value
-
         retcheck(SDL_SetWindowSize(self.win, int(self.width*self._scale), int(self.height*self._scale)))
-        retcheck(SDL_DestroyTexture(self.texture))
-        self.init()
+        retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
+        # retcheck(SDL_SetRenderDrawColor(self.renderer, 0, 0, 0, 255))
+        # retcheck(SDL_RenderClear(self.renderer))
+        # retcheck(SDL_RenderPresent(self.renderer))
+
+        if self._buffer:
+            retcheck(SDL_DestroyTexture(self._buffer))
+        self._buffer = SDL_CreateTexture(
+            self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
+        if not self._buffer:
+            raise RuntimeError(f"{SDL_GetError()}")
+        retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
+        
+        super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
+        self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
     def blit(self, x, y, w, h, buffer):
         """
@@ -177,9 +154,9 @@ class SDL2Display(_BaseDisplay):
             else:
                 raise ValueError(f"Buffer is of type {type(buffer)} instead of memoryview or bytearray")
             buffer_ptr = ctypes.c_void_p(ctypes.addressof(buffer_array))
-            retcheck(SDL_UpdateTexture(self.texture, blitRect, buffer_ptr, pitch))
+            retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer_ptr, pitch))
         else:
-            retcheck(SDL_UpdateTexture(self.texture, blitRect, buffer, pitch))
+            retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer, pitch))
         self._show(blitRect)
 
     def fill_rect(self, x, y, w, h, color):
@@ -208,7 +185,7 @@ class SDL2Display(_BaseDisplay):
         else:
             r, g, b = color >> 16 & 0xFF, (color >> 8) & 0xFF, color & 0xFF
 
-        retcheck(SDL_SetRenderTarget(self.renderer, self.texture))  # Set the render target to the texture
+        retcheck(SDL_SetRenderTarget(self.renderer, self._buffer))  # Set the render target to the texture
         retcheck(SDL_SetRenderDrawColor(self.renderer, r, g, b, 255))  # Set the color to fill the rectangle
         retcheck(SDL_RenderFillRect(self.renderer, fillRect))  # Fill the rectangle on the texture
         retcheck(SDL_SetRenderTarget(self.renderer, None))  # Reset the render target back to the window
@@ -220,33 +197,32 @@ class SDL2Display(_BaseDisplay):
 
         :param tfa: The top fixed area.
         :type tfa: int
-        :param vsa: The vertical scrolling area.
+        :param vsa: The vertical scroll area.
         :type vsa: int
         :param bfa: The bottom fixed area.
         :type bfa: int
         """
-        if tfa + vsa + bfa != self.height:
-            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
-        self._tfa = tfa
-        self._vsa = vsa
-        self._bfa = bfa
+        super().vscrdef(tfa, vsa, bfa)
         self._show()
 
-    def vscsad(self, y):
+    def vscsad(self, y=None):
         """
         Set the vertical scroll start address.
         
         :param y: The vertical scroll start address.
         :type y: int
         """
-        self._scroll_y = y
-        self._show()
+        ret = super().vscsad(y)
+        if y is not None:
+            self._show()
+        else:
+            return ret
 
     def deinit(self):
         """
         Deinitializes the sdl2lcd instance.
         """
-        retcheck(SDL_DestroyTexture(self.texture))
+        retcheck(SDL_DestroyTexture(self._buffer))
         retcheck(SDL_DestroyRenderer(self.renderer))
         retcheck(SDL_DestroyWindow(self.win))
         retcheck(SDL_Quit())
@@ -258,40 +234,39 @@ class SDL2Display(_BaseDisplay):
         :param renderRect: The rectangle to render (default is None).
         :type renderRect: SDL_Rect
         """
-        if self._scroll_y == None:
-            retcheck(SDL_RenderCopy(self.renderer, self.texture, renderRect, renderRect))
+        if (y_start := self.vscsad()) == False:
+            retcheck(SDL_RenderCopy(self.renderer, self._buffer, renderRect, renderRect))
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
             if self._tfa > 0:
                 tfaRect = SDL_Rect(0, 0, self.width, self._tfa)
-                retcheck(SDL_RenderCopy(self.renderer, self.texture, tfaRect, tfaRect))
+                retcheck(SDL_RenderCopy(self.renderer, self._buffer, tfaRect, tfaRect))
 
-            vsaTopHeight = self._vsa + self._tfa - self._scroll_y
-            vsaTopSrcRect = SDL_Rect(0, self._scroll_y, self.width, vsaTopHeight)
+            vsaTopHeight = self._vsa + self._tfa - y_start
+            vsaTopSrcRect = SDL_Rect(0, y_start, self.width, vsaTopHeight)
             vsaTopDestRect = SDL_Rect(0, self._tfa, self.width, vsaTopHeight)
-            retcheck(SDL_RenderCopy(self.renderer, self.texture, vsaTopSrcRect, vsaTopDestRect))
+            retcheck(SDL_RenderCopy(self.renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect))
 
             vsaBtmHeight = self._vsa - vsaTopHeight
             vsaBtmSrcRect = SDL_Rect(0, self._tfa, self.width, vsaBtmHeight)
             vsaBtmDestRect = SDL_Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
-            retcheck(SDL_RenderCopy(self.renderer, self.texture, vsaBtmSrcRect, vsaBtmDestRect))
+            retcheck(SDL_RenderCopy(self.renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect))
 
             if self._bfa > 0:
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
-                retcheck(SDL_RenderCopy(self.renderer, self.texture, bfaRect, bfaRect))
+                retcheck(SDL_RenderCopy(self.renderer, self._buffer, bfaRect, bfaRect))
 
         retcheck(SDL_RenderPresent(self.renderer))
 
 
 class SDL2Events():
     """
-    An implementation of an SDL2 event poller.
+    A class to poll events in SDL2.
     """
     def __init__(self):
         """
         Initializes the SDL2Events instance.
         """
-        super().__init__()
         self._event = SDL_Event()
 
     def read(self):

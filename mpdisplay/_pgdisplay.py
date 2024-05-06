@@ -5,8 +5,8 @@
 An implementation of an LCD library written in Python using pygame
 """
 
-import pygame as pg
 from . import _BaseDisplay, Events
+import pygame as pg
 
 
 class PGDisplay(_BaseDisplay):
@@ -22,8 +22,8 @@ class PGDisplay(_BaseDisplay):
         height=240,
         rotation=0,
         color_depth=16,
-        scale=1,
         title="MPDisplay",
+        scale=None,
         window_flags=pg.SHOWN,
     ):
         """
@@ -37,67 +37,45 @@ class PGDisplay(_BaseDisplay):
         :type rotation: int
         :param color_depth: The color depth of the display (default is 16).
         :type color_depth: int
-        :param scale: The scale factor for the display (default is 1).
-        :type scale: int
         :param title: The title of the display window (default is "MicroPython").
         :type title: str
+        :param scale: The scale of the display (default is None).
+        :type scale: float
         :param window_flags: The flags for creating the display window (default is pg.SHOWN).
         :type window_flags: int
         """
+        print("MPDisplay: Using pygame display.")
         super().__init__()
         self._width = width
         self._height = height
         self._rotation = rotation
         self.color_depth = color_depth
-        self._scale = scale
         self._title = title
         self._window_flags = window_flags
-        self._tfa = self._bfa = 0  # Top and bottom fixed areas
+        self._scale = scale if scale else 1
+        self.requires_byte_swap = False
+        self._buffer = None
+
+        if scale is not None:
+            print("Scaling is not implemented in PGDisplay.  Ignoring.")
         self._bytes_per_pixel = color_depth // 8
 
-        self.requires_byte_swap = False
-
-#         pg.init()
+        pg.init()
 
         self.init()
 
     def init(self):
         """
-        Initializes the sdl2lcd instance.
+        Initializes the sdl2lcd instance.  Called by __init__ and rotation setter.
         """
-        self._scroll_y = None  # Scroll offset; set to None to disable scrolling
-        self._vsa = self.height - self._tfa - self._bfa  # Vertical scaling area
-        self.screen = pg.display.set_mode(size=(int(self.width*self._scale), int(self.height*self._scale)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
+        self._display = pg.display.set_mode(size=(int(self.width), int(self.height)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
         pg.display.set_caption(self._title)
-        self.screen.fill((0, 0, 0))
-        pg.display.flip()
 
-        self.frame_buffer = pg.Surface(size=self.screen.get_size(), depth=self.color_depth)
-        self.frame_buffer.fill((0, 0, 0))
-
-    @property
-    def rotation(self):
-        """
-        The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
-        """
-        return self._rotation
-
-    @rotation.setter
-    def rotation(self, value):
-        """
-        Sets the rotation of the display.
-
-        :param value: The rotation of the display.
-        :type value: int
-        """
-        if value == self._rotation:
-            return
-        self._rotation = value
-
-        self.init()
+        self._buffer = pg.Surface(size=self._display.get_size(), depth=self.color_depth)
+        self._buffer.fill((0, 0, 0))
+        
+        super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
+        self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
     def blit(self, x, y, w, h, buffer):
         """
@@ -120,7 +98,7 @@ class PGDisplay(_BaseDisplay):
             for j in range(w):
                 pixel_index = (i * w + j) * self._bytes_per_pixel
                 color = self._colorRGB(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
-                self.frame_buffer.set_at((x + j, y + i), color)
+                self._buffer.set_at((x + j, y + i), color)
         self._show(blitRect)
 
     def fill_rect(self, x, y, w, h, color):
@@ -142,7 +120,7 @@ class PGDisplay(_BaseDisplay):
         :type color: int
         """
         fillRect = pg.Rect(x, y, w, h)
-        self.frame_buffer.fill(self._colorRGB(color), fillRect)
+        self._buffer.fill(self._colorRGB(color), fillRect)
         self._show(fillRect)
 
     def vscrdef(self, tfa, vsa, bfa):
@@ -151,47 +129,32 @@ class PGDisplay(_BaseDisplay):
 
         :param tfa: The top fixed area.
         :type tfa: int
-        :param vsa: The vertical scrolling area.
+        :param vsa: The vertical scroll area.
         :type vsa: int
         :param bfa: The bottom fixed area.
         :type bfa: int
         """
-        if tfa + vsa + bfa != self.height:
-            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
-        self._tfa = tfa
-        self._vsa = vsa
-        self._bfa = bfa
+        super().vscrdef(tfa, vsa, bfa)
         self._show()
 
-    def vscsad(self, y):
+    def vscsad(self, y=None):
         """
         Set the vertical scroll start address.
         
         :param y: The vertical scroll start address.
         :type y: int
         """
-        self._scroll_y = y
-        self._show()
+        ret = super().vscsad(y)
+        if y is not None:
+            self._show()
+        else:
+            return ret
 
     def deinit(self):
         """
         Deinitializes the pygame instance.
         """
         pg.quit()
-
-############### Class Specific Functions ################
-
-    def read(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        if event := pg.event.poll():
-            if event.type in Events.types:
-                return event
-        return None
 
     def _show(self, renderRect=None):
         """
@@ -200,28 +163,28 @@ class PGDisplay(_BaseDisplay):
         :param renderRect: The rectangle to render (default is None).
         :type renderRect: pg.Rect
         """
-        if self._scroll_y == None:
+        if (y_start := self.vscsad()) == False:
             renderRect = pg.Rect(0, 0, self.width, self.height) if renderRect is None else renderRect
-            self.screen.blit(self.frame_buffer, renderRect, renderRect)
+            self._display.blit(self._buffer, renderRect, renderRect)
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
             if self._tfa > 0:
                 tfaRect = pg.Rect(0, 0, self.width, self._tfa)
-                self.screen.blit(self.frame_buffer, tfaRect, tfaRect)
+                self._display.blit(self._buffer, tfaRect, tfaRect)
 
-            vsaTopHeight = self._vsa + self._tfa - self._scroll_y
-            vsaTopSrcRect = pg.Rect(0, self._scroll_y, self.width, vsaTopHeight)
+            vsaTopHeight = self._vsa + self._tfa - y_start
+            vsaTopSrcRect = pg.Rect(0, y_start, self.width, vsaTopHeight)
             vsaTopDestRect = pg.Rect(0, self._tfa, self.width, vsaTopHeight)
-            self.screen.blit(self.frame_buffer, vsaTopDestRect, vsaTopSrcRect)
+            self._display.blit(self._buffer, vsaTopDestRect, vsaTopSrcRect)
 
             vsaBtmHeight = self._vsa - vsaTopHeight
             vsaBtmSrcRect = pg.Rect(0, self._tfa, self.width, vsaBtmHeight)
             vsaBtmDestRect = pg.Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
-            self.screen.blit(self.frame_buffer, vsaBtmDestRect, vsaBtmSrcRect)
+            self._display.blit(self._buffer, vsaBtmDestRect, vsaBtmSrcRect)
 
             if self._bfa > 0:
                 bfaRect = pg.Rect(0, self._tfa + self._vsa, self.width, self._bfa)
-                self.screen.blit(self.frame_buffer, bfaRect, bfaRect)
+                self._display.blit(self._buffer, bfaRect, bfaRect)
 
         pg.display.flip()
 
@@ -241,3 +204,20 @@ class PGDisplay(_BaseDisplay):
         else:
             r, g, b = color
         return (r, g, b)
+
+
+class PGEvents():
+    """
+    A class to poll events in pygame.
+    """
+    def read(self):
+        """
+        Polls for an event and returns the event type and data.
+
+        :return: The event type and data.
+        :rtype: tuple
+        """
+        if event := pg.event.poll():
+            if event.type in Events.types:
+                return event
+        return None

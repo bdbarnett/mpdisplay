@@ -5,27 +5,24 @@ Tested with CPython on Linux, Windows and ChromeOS.
 Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
-import mpdisplay
+from mpdisplay import DesktopDisplay, DesktopEvents
+# from mpdisplay._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents
+from mpdisplay import Devices, Events
 import sys
 
-display_drv = mpdisplay.SDL2Display(
+display_drv = DesktopDisplay(
     width=320,
     height=480,
-    title=f"{sys.implementation.name} on {sys.platform}",
-    window_flags=mpdisplay.SDL_WINDOW_SHOWN,
+    rotation=0,
     color_depth=16,
-    x=mpdisplay.SDL_WINDOWPOS_CENTERED,
-    y=mpdisplay.SDL_WINDOWPOS_CENTERED,
-    render_flags=mpdisplay.SDL_RENDERER_ACCELERATED,
-    scale=1.5,
+    title=f"{sys.implementation.name} on {sys.platform}",
+    scale=1,
 )
 
-display_drv.quit_func = sys.exit
-
-events_drv = mpdisplay.SDL2Events()
+events_drv = DesktopEvents()
 
 events_dev = display_drv.create_device(
-    type=mpdisplay.Devices.EVENTS,
+    type=Devices.EVENTS,
     read=events_drv.read,
-    data=mpdisplay.Events.types
+    data=Events.types
     )
