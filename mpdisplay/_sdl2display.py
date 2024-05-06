@@ -75,7 +75,7 @@ class SDL2Display(_BaseDisplay):
         :param y: The y-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
         :type y: int
         """
-        print("MPDisplay: Using SDL2 display.")
+        print("MPDisplay: Using SDL2.\n")
         super().__init__()
         self._width = width
         self._height = height

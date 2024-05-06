@@ -44,7 +44,7 @@ class PGDisplay(_BaseDisplay):
         :param window_flags: The flags for creating the display window (default is pg.SHOWN).
         :type window_flags: int
         """
-        print("MPDisplay: Using pygame display.")
+        print("MPDisplay: Using pygame.\n")
         super().__init__()
         self._width = width
         self._height = height
@@ -57,7 +57,8 @@ class PGDisplay(_BaseDisplay):
         self._buffer = None
 
         if scale is not None and scale != 1:
-            print("Scaling is not implemented in PGDisplay.  Ignoring.")
+            print("MPDisplay:  Setting window flags to SCALED.\n")
+            self._window_flags |= pg.SCALED
         self._bytes_per_pixel = color_depth // 8
 
         pg.init()
