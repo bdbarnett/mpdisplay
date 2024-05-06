@@ -26,7 +26,7 @@ class PGDisplay(_BaseDisplay):
         window_flags=pg.SHOWN,
     ):
         """
-        Initializes the sdl2lcd instance with the given parameters.
+        Initializes the display instance with the given parameters.
 
         :param width: The width of the display (default is 320).
         :type width: int
