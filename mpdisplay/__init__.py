@@ -24,14 +24,14 @@ If no display drivers are available, an ImportError will be raised.
 """
 
 import sys
+import os
 from ._basedisplay import _BaseDisplay
 from ._devices import Devices
 from ._events import Events
 from ._keys import Keys
-from os import getenv
 
 
-if envsetting := getenv("MPDISPLAY"):
+if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDISPLAY")):
     if envsetting == "SDL2Display":
         import sdl2_lib as sdl2
         from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
