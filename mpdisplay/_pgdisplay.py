@@ -65,6 +65,8 @@ class PGDisplay(_BaseDisplay):
 
         self.init()
 
+    ############### Required API Methods ################
+
     def init(self):
         """
         Initializes the sdl2lcd instance.  Called by __init__ and rotation setter.
@@ -124,6 +126,14 @@ class PGDisplay(_BaseDisplay):
         self._buffer.fill(self._colorRGB(color), fillRect)
         self._show(fillRect)
 
+    def deinit(self):
+        """
+        Deinitializes the pygame instance.
+        """
+        pg.quit()
+
+    ############### API Method Overrides ################
+
     def vscrdef(self, tfa, vsa, bfa):
         """
         Set the vertical scroll definition.
@@ -138,24 +148,20 @@ class PGDisplay(_BaseDisplay):
         super().vscrdef(tfa, vsa, bfa)
         self._show()
 
-    def vscsad(self, y=None):
+    def vscsad(self, vssa=None):
         """
         Set the vertical scroll start address.
         
-        :param y: The vertical scroll start address.
-        :type y: int
+        :param vssa: The vertical scroll start address.
+        :type vssa: int
         """
-        ret = super().vscsad(y)
-        if y is not None:
+        if vssa is not None:
+            super().vscsad(vssa)
             self._show()
         else:
-            return ret
+            return super().vscsad()
 
-    def deinit(self):
-        """
-        Deinitializes the pygame instance.
-        """
-        pg.quit()
+    ############### Class Specific Methods ##############
 
     def _show(self, renderRect=None):
         """
@@ -211,6 +217,12 @@ class PGEvents():
     """
     A class to poll events in pygame.
     """
+    def __init__(self):
+        """
+        Initializes the PGEvents instance.
+        """
+        pg.init()
+
     def read(self):
         """
         Polls for an event and returns the event type and data.

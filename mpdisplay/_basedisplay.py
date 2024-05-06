@@ -6,9 +6,10 @@ from sys import exit  # default for self.quit
 
 
 class _BaseDisplay:
+
     def __init__(self):
         self.devices = []  # List of devices to poll
-        self._scroll_y = False  # False means no vertical scroll
+        self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
 
         # Function to call when the window close button is clicked.
@@ -16,6 +17,8 @@ class _BaseDisplay:
         # function that cleans up resources and calls `sys.exit()`.
         # .poll_event() must be called periodically to check for the quit event.
         self.quit = exit
+
+    ############### Common API Methods ################
 
     @property
     def width(self):
@@ -53,38 +56,11 @@ class _BaseDisplay:
             return
         self._rotation = value
 
+        for device in self.devices:
+            if device.type == Devices.TOUCH:
+                device.rotation = value
+
         self.init()
-
-    def vscrdef(self, tfa, vsa, bfa):
-        """
-        Set the vertical scroll definition.  Should be overridden by the
-        subclass and called as super().vscrdef(tfa, vsa, bfa).
-
-        :param tfa: The top fixed area.
-        :type tfa: int
-        :param vsa: The vertical scrolling area.
-        :type vsa: int
-        :param bfa: The bottom fixed area.
-        :type bfa: int
-        """
-        if tfa + vsa + bfa != self.height:
-            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
-        self._tfa = tfa
-        self._vsa = vsa
-        self._bfa = bfa
-
-    def vscsad(self, y=None):
-        """
-        Set the vertical scroll start address.  Should be overridden by the
-        subclass and called as super().vscsad(y).
-        
-        :param y: The vertical scroll start address.
-        :type y: int
-        """
-        if y is not None:
-            self._scroll_y = y
-        else:
-            return self._scroll_y
 
     def create_device(self, type, *args, **kwargs):
         """
@@ -149,7 +125,38 @@ class _BaseDisplay:
         """
         self.deinit()
 
-    ######## Overridden functions ########
+    ############### Overriden API Methods ################
+
+    def vscrdef(self, tfa, vsa, bfa):
+        """
+        Set the vertical scroll definition.  Should be overridden by the
+        subclass and called as super().vscrdef(tfa, vsa, bfa).
+
+        :param tfa: The top fixed area.
+        :type tfa: int
+        :param vsa: The vertical scrolling area.
+        :type vsa: int
+        :param bfa: The bottom fixed area.
+        :type bfa: int
+        """
+        if tfa + vsa + bfa != self.height:
+            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
+        self._tfa = tfa
+        self._vsa = vsa
+        self._bfa = bfa
+
+    def vscsad(self, vssa=None):
+        """
+        Set the vertical scroll start address.  Should be overridden by the
+        subclass and called as super().vscsad(y).
+        
+        :param y: The vertical scroll start address.
+        :type y: int
+        """
+        if vssa is not None:
+            self._vssa = vssa
+        else:
+            return self._vssa
 
     def set_render_mode_full(self, render_mode_full=False):
         return

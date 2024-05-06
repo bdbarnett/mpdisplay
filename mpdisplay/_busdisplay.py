@@ -228,10 +228,12 @@ class BusDisplay(_BaseDisplay):
             )
         self.brightness = brightness
         if invert:
-            self.invert_colors(True)
+            self._invert_colors(True)
         self._colmod()
 
-    def init(self, render_mode_full=False):
+    ############### Required API Methods ################
+
+    def init(self, render_mode_full=None):
         """
         Post initialization tasks may be added here.
 
@@ -243,37 +245,14 @@ class BusDisplay(_BaseDisplay):
         :type render_mode_full: bool, optional
         """
         self._initialized = True
-        self.rotation = self._rotation
-        self.set_render_mode_full(render_mode_full)
-        self.fill_rect(0, 0, self.width, self.height, 0x0)
-
-    @property
-    def rotation(self):
-        """
-        The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
-        """
-        return self._rotation
-
-    @rotation.setter
-    def rotation(self, value):
-        """
-        Set the rotation of the display.
-
-        :param value: The rotation to set.
-        :type value: int
-        """
-        self._rotation = value
+        if render_mode_full is not None:
+            self.set_render_mode_full(render_mode_full)
 
         # Set the display MADCTL bits for the given rotation.
-        self._param_buf[0] = self._madctl(self.bgr, value, self.rotation_table)
+        self._param_buf[0] = self._madctl(self.bgr, self._rotation, self.rotation_table)
         self.set_params(_MADCTL, self._param_mv[:1])
 
-        for device in self.devices:
-            if device.type == Devices.TOUCH:
-                device.rotation = value
+        self.fill_rect(0, 0, self.width, self.height, 0x0)
 
     def blit(self, x, y, width, height, buf):
         """
@@ -336,6 +315,14 @@ class BusDisplay(_BaseDisplay):
             for row in range(y, y + height):
                 self.blit(x, row, width, 1, memoryview(raw_data[:]))
 
+    def deinit(self):
+        """
+        Deinitializes the display instance.  Not yet implemented.
+        """
+        pass
+
+    ############### API Method Overrides ################
+
     def vscrdef(self, tfa, vsa, bfa):
         """
         Set Vertical Scrolling Definition.
@@ -353,33 +340,23 @@ class BusDisplay(_BaseDisplay):
         :param bfa: Bottom Fixed Area
         :type bfa: int
         """
+        super().vscrdef(tfa, vsa, bfa)
         self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
-    def vscsad(self, vssa):
+    def vscsad(self, vssa=None):
         """
-        Set Vertical Scroll Start Address of RAM.
-
-        Defines which line in the Frame Memory will be written as the first
-        line after the last line of the Top Fixed Area on the display.
-
-        Example:
-
-            for line in range(40, 280, 1):
-                tft.vscsad(line)
-                utime.sleep(0.01)
-
-        :param vssa: Vertical Scrolling Start Address
+        Set the vertical scroll start address.
+        
+        :param vssa: The vertical scroll start address.
         :type vssa: int
         """
-        self.set_params(_VSCSAD, struct.pack(">H", vssa))
-
-    def deinit(self):
-        """
-        Deinitializes the display instance.  Not yet implemented.
-        """
-        pass
-
-    ############### Overridden Functions ################
+        if vssa is not None:
+            super().vscsad(vssa)
+            if vssa is False:
+                vssa = 0
+            self.set_params(_VSCSAD, struct.pack(">H", vssa))
+        else:
+            return super().vscsad()
 
     def set_render_mode_full(self, render_mode_full=False):
         """
@@ -517,7 +494,18 @@ class BusDisplay(_BaseDisplay):
         else:
             self.set_params(_SLPOUT)
 
-    ############### Class Specific Functions ################
+    ############### Class Specific Methods ##############
+
+    def set_params(self, cmd, params=None, *args, **kwargs):
+        """
+        Send cmd and parameters to the display.
+
+        :param cmd: The command to send.
+        :type cmd: int
+        :param params: The parameters to send.
+        :type params: bytes
+        """
+        self._send_cmd_data(cmd, params)
 
     def bus_swap_disable(self, value):
         """
@@ -559,7 +547,7 @@ class BusDisplay(_BaseDisplay):
                 "register_callback() not implemented in display_bus.  Set blocking = True"
             )
 
-    def invert_colors(self, value):
+    def _invert_colors(self, value):
         """
         Invert the colors of the display.
 
@@ -570,17 +558,6 @@ class BusDisplay(_BaseDisplay):
             self.set_params(_INVON)
         else:
             self.set_params(_INVOFF)
-
-    def set_params(self, cmd, params=None, *args, **kwargs):
-        """
-        Send cmd and parameters to the display.
-
-        :param cmd: The command to send.
-        :type cmd: int
-        :param params: The parameters to send.
-        :type params: bytes
-        """
-        self._send_cmd_data(cmd, params)
 
     def _pass(*_, **__):
         """Do nothing.  Used to replace self.set_window when render_mode_full is True."""
