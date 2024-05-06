@@ -5,9 +5,7 @@ Tested with CPython on Linux, Windows and ChromeOS.
 Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
-from mpdisplay import DesktopDisplay, DesktopEvents
-# from mpdisplay._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents
-from mpdisplay import Devices, Events
+from mpdisplay import DesktopDisplay, DesktopEvents, Devices, Events
 import sys
 
 display_drv = DesktopDisplay(
@@ -22,7 +20,7 @@ display_drv = DesktopDisplay(
 events_drv = DesktopEvents()
 
 events_dev = display_drv.create_device(
-    type=Devices.EVENTS,
+    type=Devices.EVENT,
     read=events_drv.read,
     data=Events.types
     )
