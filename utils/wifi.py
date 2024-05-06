@@ -5,7 +5,8 @@ Usage:
     import wifi
     wlan = wifi.connect(SSID, PASSWORD)
 '''
-_retries = 10
+from time import sleep_ms
+_retries = 100
 
 def connect(ssid, password):
     import network
@@ -18,9 +19,12 @@ def connect(ssid, password):
         while tries < _retries:
             print('.', end='')
             if wlan.isconnected():
-                print('\nNetwork config:', wlan.ifconfig(), '\n')
+                print('\nConnection established.\nNetwork config:', wlan.ifconfig(), '\n')
                 break
+            sleep_ms(100)
             tries += 1
         else:
             print('\nFailed to connect.\n')
+    else:
+        print('\nAlready connected.\nNetwork config:', wlan.ifconfig(), '\n')
     return wlan
