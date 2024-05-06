@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-An implementation of an SDL2 Bus library written in MicroPython.
+An implementation of an LCD library written in Python using SDL2
 """
 
 from . import _BaseDisplay, Events
@@ -33,11 +33,10 @@ def retcheck(retvalue):
 
 class SDL2Display(_BaseDisplay):
     '''
-    A class to create and manage the SDL2 window and renderer and emulate an LCD.
+    A class to emulate an LCD using SDL2.
     Provides scrolling and rotation functions similar to an LCD.  The .texture
     object functions as the LCD's internal memory.
     '''
-
     def __init__(
         self,
         width=320,
@@ -52,7 +51,7 @@ class SDL2Display(_BaseDisplay):
         y=SDL_WINDOWPOS_CENTERED,
     ):
         """
-        Initializes the sdl2lcd instance with the given parameters.
+        Initializes the display instance with the given parameters.
 
         :param width: The width of the display (default is 320).
         :type width: int
@@ -110,15 +109,12 @@ class SDL2Display(_BaseDisplay):
 
     def init(self):
         """
-        Initializes the sdl2lcd instance.  Called by __init__ and rotation setter.
+        Initializes the display instance.  Called by __init__ and rotation setter.
         """
         retcheck(SDL_SetWindowSize(self.win, int(self.width*self._scale), int(self.height*self._scale)))
         retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
-        # retcheck(SDL_SetRenderDrawColor(self.renderer, 0, 0, 0, 255))
-        # retcheck(SDL_RenderClear(self.renderer))
-        # retcheck(SDL_RenderPresent(self.renderer))
 
-        if self._buffer:
+        if self._buffer is not None:
             retcheck(SDL_DestroyTexture(self._buffer))
         self._buffer = SDL_CreateTexture(
             self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
