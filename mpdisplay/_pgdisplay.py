@@ -15,7 +15,6 @@ class PGDisplay(_BaseDisplay):
     Provides scrolling and rotation functions similar to an LCD.  The .texture
     object functions as the LCD's internal memory.
     '''
-
     def __init__(
         self,
         width=320,
@@ -53,12 +52,12 @@ class PGDisplay(_BaseDisplay):
         self._title = title
         self._window_flags = window_flags
         self._scale = scale if scale else 1
-        self.requires_byte_swap = False
         self._buffer = None
 
         if scale is not None and scale != 1:
-            print("MPDisplay:  Setting window flags to SCALED.\n")
+            print("MPDisplay:  Setting window flags to SCALED.  Experimental.\n")
             self._window_flags |= pg.SCALED
+
         self._bytes_per_pixel = color_depth // 8
 
         pg.init()
@@ -69,7 +68,7 @@ class PGDisplay(_BaseDisplay):
 
     def init(self):
         """
-        Initializes the sdl2lcd instance.  Called by __init__ and rotation setter.
+        Initializes the display instance.  Called by __init__ and rotation setter.
         """
         self._display = pg.display.set_mode(size=(int(self.width), int(self.height)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
         pg.display.set_caption(self._title)
