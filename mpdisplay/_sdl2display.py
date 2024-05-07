@@ -44,7 +44,7 @@ class SDL2Display(_BaseDisplay):
         rotation=0,
         color_depth=16,
         title="SDL2 Display",
-        scale=None,
+        scale=1.0,
         window_flags=SDL_WINDOW_SHOWN,
         render_flags=SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
         x=SDL_WINDOWPOS_CENTERED,
@@ -82,7 +82,7 @@ class SDL2Display(_BaseDisplay):
         self.color_depth = color_depth
         self._title = title
         self._window_flags = window_flags
-        self._scale = scale if scale else 1
+        self._scale = scale
         self._buffer = None
 
         # Determine the pixel format
@@ -96,14 +96,14 @@ class SDL2Display(_BaseDisplay):
             raise ValueError("Unsupported color_depth")
 
         retcheck(SDL_Init(SDL_INIT_EVERYTHING))
-        self.win = SDL_CreateWindow(self._title.encode(), x, y, int(self.width*self._scale), int(self.height*self._scale), self._window_flags)
-        if not self.win:
+        self._window = SDL_CreateWindow(self._title.encode(), x, y, int(self.width*self._scale), int(self.height*self._scale), self._window_flags)
+        if not self._window:
             raise RuntimeError(f"{SDL_GetError()}")
-        self.renderer = SDL_CreateRenderer(self.win, -1, render_flags)
-        if not self.renderer:
+        self._renderer = SDL_CreateRenderer(self._window, -1, render_flags)
+        if not self._renderer:
             raise RuntimeError(f"{SDL_GetError()}")
         
-        self._buffer = SDL_CreateTexture(self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
+        self._buffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
         if not self._buffer:
             raise RuntimeError(f"{SDL_GetError()}")
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
@@ -116,8 +116,8 @@ class SDL2Display(_BaseDisplay):
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        retcheck(SDL_SetWindowSize(self.win, int(self.width*self._scale), int(self.height*self._scale)))
-        retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
+        retcheck(SDL_SetWindowSize(self._window, int(self.width*self._scale), int(self.height*self._scale)))
+        retcheck(SDL_RenderSetLogicalSize(self._renderer, self.width, self.height))
         
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
@@ -180,10 +180,10 @@ class SDL2Display(_BaseDisplay):
         else:
             r, g, b = color >> 16 & 0xFF, (color >> 8) & 0xFF, color & 0xFF
 
-        retcheck(SDL_SetRenderTarget(self.renderer, self._buffer))  # Set the render target to the texture
-        retcheck(SDL_SetRenderDrawColor(self.renderer, r, g, b, 255))  # Set the color to fill the rectangle
-        retcheck(SDL_RenderFillRect(self.renderer, fillRect))  # Fill the rectangle on the texture
-        retcheck(SDL_SetRenderTarget(self.renderer, None))  # Reset the render target back to the window
+        retcheck(SDL_SetRenderTarget(self._renderer, self._buffer))  # Set the render target to the texture
+        retcheck(SDL_SetRenderDrawColor(self._renderer, r, g, b, 255))  # Set the color to fill the rectangle
+        retcheck(SDL_RenderFillRect(self._renderer, fillRect))  # Fill the rectangle on the texture
+        retcheck(SDL_SetRenderTarget(self._renderer, None))  # Reset the render target back to the window
         self._show(fillRect)
 
     def deinit(self):
@@ -191,8 +191,8 @@ class SDL2Display(_BaseDisplay):
         Deinitializes the sdl2lcd instance.
         """
         retcheck(SDL_DestroyTexture(self._buffer))
-        retcheck(SDL_DestroyRenderer(self.renderer))
-        retcheck(SDL_DestroyWindow(self.win))
+        retcheck(SDL_DestroyRenderer(self._renderer))
+        retcheck(SDL_DestroyWindow(self._window))
         retcheck(SDL_Quit())
 
     ############### API Method Overrides ################
@@ -249,14 +249,15 @@ class SDL2Display(_BaseDisplay):
             return
 
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
-            print(f"{angle=}")
             if implementation.name == 'cpython':
-                tempBuffer = SDL_CreateTexture(self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+                # print("Before.")
+                tempBuffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+                # print("After.")
                 if not tempBuffer:
                     raise RuntimeError(f"{SDL_GetError()}")
-                print("Before retcheck(SDL_SetTextureBlendMode(tempBuffer, SDL_BLENDMODE_NONE))")
+
                 retcheck(SDL_SetTextureBlendMode(tempBuffer, SDL_BLENDMODE_NONE))
-                retcheck(SDL_SetRenderTarget(self.renderer, tempBuffer))
+                retcheck(SDL_SetRenderTarget(self._renderer, tempBuffer))
                 if abs(angle) != 180:
                     dstrect = SDL_Rect(
                         (self.height - self.width) // 2,
@@ -266,13 +267,13 @@ class SDL2Display(_BaseDisplay):
                     )
                 else:
                     dstrect = None
-                retcheck(SDL_RenderCopyEx(self.renderer, self._buffer, None, dstrect, angle, None, 0))
-                retcheck(SDL_SetRenderTarget(self.renderer, None))
+                retcheck(SDL_RenderCopyEx(self._renderer, self._buffer, None, dstrect, angle, None, 0))
+                retcheck(SDL_SetRenderTarget(self._renderer, None))
                 retcheck(SDL_DestroyTexture(self._buffer))
                 self._buffer = tempBuffer
             else:
                 retcheck(SDL_DestroyTexture(self._buffer))
-                self._buffer = SDL_CreateTexture(self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+                self._buffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
                 if not self._buffer:
                     raise RuntimeError(f"{SDL_GetError()}")
                 retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
@@ -295,28 +296,28 @@ class SDL2Display(_BaseDisplay):
         :type renderRect: SDL_Rect
         """
         if (y_start := self.vscsad()) == False:
-            retcheck(SDL_RenderCopy(self.renderer, self._buffer, renderRect, renderRect))
+            retcheck(SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect))
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
             if self._tfa > 0:
                 tfaRect = SDL_Rect(0, 0, self.width, self._tfa)
-                retcheck(SDL_RenderCopy(self.renderer, self._buffer, tfaRect, tfaRect))
+                retcheck(SDL_RenderCopy(self._renderer, self._buffer, tfaRect, tfaRect))
 
             vsaTopHeight = self._vsa + self._tfa - y_start
             vsaTopSrcRect = SDL_Rect(0, y_start, self.width, vsaTopHeight)
             vsaTopDestRect = SDL_Rect(0, self._tfa, self.width, vsaTopHeight)
-            retcheck(SDL_RenderCopy(self.renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect))
+            retcheck(SDL_RenderCopy(self._renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect))
 
             vsaBtmHeight = self._vsa - vsaTopHeight
             vsaBtmSrcRect = SDL_Rect(0, self._tfa, self.width, vsaBtmHeight)
             vsaBtmDestRect = SDL_Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
-            retcheck(SDL_RenderCopy(self.renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect))
+            retcheck(SDL_RenderCopy(self._renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect))
 
             if self._bfa > 0:
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
-                retcheck(SDL_RenderCopy(self.renderer, self._buffer, bfaRect, bfaRect))
+                retcheck(SDL_RenderCopy(self._renderer, self._buffer, bfaRect, bfaRect))
 
-        retcheck(SDL_RenderPresent(self.renderer))
+        retcheck(SDL_RenderPresent(self._renderer))
 
 
 class SDL2Events():

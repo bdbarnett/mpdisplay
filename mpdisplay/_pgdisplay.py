@@ -22,7 +22,7 @@ class PGDisplay(_BaseDisplay):
         rotation=0,
         color_depth=16,
         title="MPDisplay",
-        scale=None,
+        scale=1.0,
         window_flags=pg.SHOWN,
     ):
         """
@@ -51,16 +51,16 @@ class PGDisplay(_BaseDisplay):
         self.color_depth = color_depth
         self._title = title
         self._window_flags = window_flags
-        self._scale = scale if scale else 1
+        self._scale = scale
         self._buffer = None
 
-        if scale is not None and scale != 1:
-            print("MPDisplay:  Setting window flags to SCALED.  Experimental.\n")
-            self._window_flags |= pg.SCALED
 
         self._bytes_per_pixel = color_depth // 8
 
         pg.init()
+
+        self._buffer = pg.Surface(size=(self._width * self._scale, self._height * self._scale), depth=self.color_depth)
+        self._buffer.fill((0, 0, 0))
 
         self.init()
 
@@ -70,12 +70,9 @@ class PGDisplay(_BaseDisplay):
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        self._display = pg.display.set_mode(size=(int(self.width), int(self.height)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
+        self._window = pg.display.set_mode(size=(int(self.width), int(self.height)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
         pg.display.set_caption(self._title)
 
-        self._buffer = pg.Surface(size=self._display.get_size(), depth=self.color_depth)
-        self._buffer.fill((0, 0, 0))
-        
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
@@ -160,6 +157,42 @@ class PGDisplay(_BaseDisplay):
         else:
             return super().vscsad()
 
+    @property
+    def rotation(self):
+        """
+        The rotation of the display.
+
+        :return: The rotation of the display.
+        :rtype: int
+        """
+        return super().rotation
+
+    @rotation.setter
+    def rotation(self, value):
+        """
+        Sets the rotation of the display.
+
+        Makes sure the rotation is not a multiple of 360, creates a new texture to use as the buffer and
+        copies the old one, applying rotation with SDL_RenderCopyEx.  Destroys the old buffer.
+
+        :param value: The rotation of the display.
+        :type value: int
+        """
+        if value == self._rotation:
+            return
+
+        if (angle := (value % 360) - (self._rotation % 360)) != 0:
+                tempBuffer = pygame.transform.rotate(self._buffer, -angle)
+                self._buffer = tempBuffer
+
+        self._rotation = value
+
+        for device in self.devices:
+            if device.type == Devices.TOUCH:
+                device.rotation = value
+
+        self.init()
+
     ############### Class Specific Methods ##############
 
     def _show(self, renderRect=None):
@@ -170,27 +203,32 @@ class PGDisplay(_BaseDisplay):
         :type renderRect: pg.Rect
         """
         if (y_start := self.vscsad()) == False:
-            renderRect = pg.Rect(0, 0, self.width, self.height) if renderRect is None else renderRect
-            self._display.blit(self._buffer, renderRect, renderRect)
+            if renderRect is not None:
+                x, y, w, h = renderRect
+                renderRect = pg.Rect(x*self._scale, y*self._scale, w*self._scale, h*self._scale)
+                dest = renderRect
+            else:
+                dest = (0, 0)
+            self._window.blit(pygame.transform.scale_by(self._buffer, self._scale), dest, renderRect)
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
             if self._tfa > 0:
                 tfaRect = pg.Rect(0, 0, self.width, self._tfa)
-                self._display.blit(self._buffer, tfaRect, tfaRect)
+                self._window.blit(self._buffer, tfaRect, tfaRect)
 
             vsaTopHeight = self._vsa + self._tfa - y_start
             vsaTopSrcRect = pg.Rect(0, y_start, self.width, vsaTopHeight)
             vsaTopDestRect = pg.Rect(0, self._tfa, self.width, vsaTopHeight)
-            self._display.blit(self._buffer, vsaTopDestRect, vsaTopSrcRect)
+            self._window.blit(self._buffer, vsaTopDestRect, vsaTopSrcRect)
 
             vsaBtmHeight = self._vsa - vsaTopHeight
             vsaBtmSrcRect = pg.Rect(0, self._tfa, self.width, vsaBtmHeight)
             vsaBtmDestRect = pg.Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
-            self._display.blit(self._buffer, vsaBtmDestRect, vsaBtmSrcRect)
+            self._window.blit(self._buffer, vsaBtmDestRect, vsaBtmSrcRect)
 
             if self._bfa > 0:
                 bfaRect = pg.Rect(0, self._tfa + self._vsa, self.width, self._bfa)
-                self._display.blit(self._buffer, bfaRect, bfaRect)
+                self._window.blit(self._buffer, bfaRect, bfaRect)
 
         pg.display.flip()
 

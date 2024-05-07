@@ -1,14 +1,13 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
-from ._devices import Devices, Events
+from ._devices import Devices, DeviceController, Events
 from sys import exit  # default for self.quit
 
 
-class _BaseDisplay:
+class _BaseDisplay(DeviceController):
 
     def __init__(self):
-        self.devices = []  # List of devices to poll
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
 
@@ -95,63 +94,6 @@ class _BaseDisplay:
         :type color: int
         """
         self.fill_rect(0, 0, self.width, self.height, color)
-
-    def create_device(self, type=Devices.EVENT, **kwargs):
-        """
-        Create a device object.
-
-        :param type: The type of device to create.
-        :type dev: int
-        """
-        dev = Devices.create(type, display=self, **kwargs)
-        self.register_device(dev)
-        return dev
-
-    def register_device(self, dev):
-        """
-        Register a device to be polled.
-
-        :param dev: The device object to register.
-        :type dev: _Device
-        """
-        dev.display = self
-        self.devices.append(dev)
-
-    def unregister_device(self, dev):
-        """
-        Unregister a device.
-
-        :param dev: The device object to unregister.
-        :type dev: _Device
-        """
-        if dev in self.devices:
-            self.devices.remove(dev)
-            dev.display = None
-
-    def poll_event(self):
-        """
-        Provides a similar interface to PyGame's and SDL2's event queues.
-        The returned event is a namedtuple from the Events class.
-        The type of event is in the .type field.
-
-        Currently returns as soon as an event is found and begins with the first
-        device registered the next time called, placing priority on the first
-        device registered.  Register less frequently fired or higher priority devices
-        first if you have problems with this.  This may change in the future.
-
-        It is recommended to run poll_event repeatedly until all events have been
-        processed on a timed schedule.  For instance, schedule the following on a recurring basis:
-
-            while (event := display_drv.poll_event()):
-                ...
-        """
-        for device in self.devices:
-            if (event := device.read()) is not None:
-                if event.type in Events.types:
-                    if event.type == Events.QUIT:
-                        self.quit()
-                    return event
-        return None
 
     def __del__(self):
         """
