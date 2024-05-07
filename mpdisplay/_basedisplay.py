@@ -54,6 +54,7 @@ class _BaseDisplay:
         """
         if value == self._rotation:
             return
+
         self._rotation = value
 
         for device in self.devices:

@@ -5,11 +5,11 @@
 An implementation of an LCD library written in Python using SDL2
 """
 
-from . import _BaseDisplay, Events
+from . import _BaseDisplay, Events, Devices
 from sdl2_lib import (
     SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
-    SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor,
-    SDL_RenderClear, SDL_RenderPresent, SDL_RenderSetLogicalSize, SDL_SetWindowSize,
+    SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor, SDL_Point,
+    SDL_RenderClear, SDL_RenderPresent, SDL_RenderSetLogicalSize, SDL_SetWindowSize, SDL_RenderCopyEx,
     SDL_SetRenderTarget, SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy,
     SDL_UpdateTexture, SDL_CreateTexture, SDL_GetKeyName, SDL_Rect, SDL_Event, SDL_QUIT,
     SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGB888, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET,
@@ -102,6 +102,11 @@ class SDL2Display(_BaseDisplay):
         self.renderer = SDL_CreateRenderer(self.win, -1, render_flags)
         if not self.renderer:
             raise RuntimeError(f"{SDL_GetError()}")
+        
+        self._buffer = SDL_CreateTexture(self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
+        if not self._buffer:
+            raise RuntimeError(f"{SDL_GetError()}")
+        retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
         self.init()
 
@@ -113,14 +118,6 @@ class SDL2Display(_BaseDisplay):
         """
         retcheck(SDL_SetWindowSize(self.win, int(self.width*self._scale), int(self.height*self._scale)))
         retcheck(SDL_RenderSetLogicalSize(self.renderer, self.width, self.height))
-
-        if self._buffer is not None:
-            retcheck(SDL_DestroyTexture(self._buffer))
-        self._buffer = SDL_CreateTexture(
-            self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
-        if not self._buffer:
-            raise RuntimeError(f"{SDL_GetError()}")
-        retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
         
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
@@ -226,6 +223,69 @@ class SDL2Display(_BaseDisplay):
             self._show()
         else:
             return super().vscsad()
+
+    @property
+    def rotation(self):
+        """
+        The rotation of the display.
+
+        :return: The rotation of the display.
+        :rtype: int
+        """
+        return super().rotation
+
+    @rotation.setter
+    def rotation(self, value):
+        """
+        Sets the rotation of the display.
+
+        Makes sure the rotation is not a multiple of 360, creates a new texture to use as the buffer and
+        copies the old one, applying rotation with SDL_RenderCopyEx.  Destroys the old buffer.
+
+        :param value: The rotation of the display.
+        :type value: int
+        """
+        if value == self._rotation:
+            return
+
+        if (angle := (value % 360) - (self._rotation % 360)) != 0:
+            print(f"{angle=}")
+            if implementation.name == 'cpython':
+                tempBuffer = SDL_CreateTexture(self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+                if not tempBuffer:
+                    raise RuntimeError(f"{SDL_GetError()}")
+                print("Before retcheck(SDL_SetTextureBlendMode(tempBuffer, SDL_BLENDMODE_NONE))")
+                retcheck(SDL_SetTextureBlendMode(tempBuffer, SDL_BLENDMODE_NONE))
+                retcheck(SDL_SetRenderTarget(self.renderer, tempBuffer))
+                if abs(angle) != 180:
+                    dstrect = SDL_Rect(
+                        (self.height - self.width) // 2,
+                        (self.width - self.height) // 2,
+                        self.width,
+                        self.height
+                    )
+                else:
+                    dstrect = None
+                retcheck(SDL_RenderCopyEx(self.renderer, self._buffer, None, dstrect, angle, None, 0))
+                retcheck(SDL_SetRenderTarget(self.renderer, None))
+                retcheck(SDL_DestroyTexture(self._buffer))
+                self._buffer = tempBuffer
+            else:
+                retcheck(SDL_DestroyTexture(self._buffer))
+                self._buffer = SDL_CreateTexture(self.renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+                if not self._buffer:
+                    raise RuntimeError(f"{SDL_GetError()}")
+                retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
+
+
+
+        self._rotation = value
+
+        for device in self.devices:
+            if device.type == Devices.TOUCH:
+                device.rotation = value
+
+        self.init()
 
     ############### Class Specific Methods ##############
 

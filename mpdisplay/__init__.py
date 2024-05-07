@@ -46,12 +46,17 @@ else:
     try:
         import sdl2_lib as sdl2
         from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
-    except:
+    except Exception as e:
+        print(f"MPDisplay: Error -- {e}")
+        print("MPDisplay: SDL2Display not available.  Trying Pygame...")
         try:
             import pygame as pg
             from ._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents
-        except:
+        except Exception as e:
+            print(f"MPDisplay: Error -- {e}")
+            print("MPDisplay: Pygame not available. Trying BusDisplay...")
             try:
                 from ._busdisplay import BusDisplay
-            except:
+            except Exception as e:
+                print(f"MPDisplay: Error -- {e}")
                 raise ImportError("MPDisplay: No display drivers available")
