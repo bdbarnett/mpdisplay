@@ -277,8 +277,6 @@ class SDL2Display(_BaseDisplay):
                     raise RuntimeError(f"{SDL_GetError()}")
                 retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
-
-
         self._rotation = value
 
         for device in self.devices:
