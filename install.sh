@@ -126,6 +126,7 @@ cp -ur $REPO/mpdisplay/mpdisplay $TARGET/lib/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/
+cp -u $REPO/mpdisplay/install.py $TARGET/
 
 cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
