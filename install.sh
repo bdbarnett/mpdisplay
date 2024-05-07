@@ -74,7 +74,8 @@ EXE=python3  # micropython, python3 or python
 ##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
-LAUNCH=mpdisplay_paint  # without .py extension
+#LAUNCH=mpdisplay_paint  # without .py extension
+LAUNCH=romfont_simpletest  # without .py extension
 
 
 ######################## Download the repositories ###############################
