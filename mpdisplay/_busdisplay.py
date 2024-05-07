@@ -43,23 +43,17 @@ _SLPOUT = const(0x11)
 _VSCRDEF = const(0x33)
 _VSCSAD = const(0x37)
 
+# fmt: off
+
 # MIPI DCS MADCTL bits
 # Bits 0 (Flip Vertical) and 1 (Flip Horizontal) affect how the display is refreshed, not how frame memory is written.
 # Instead of using them, we only change Bits 6 (column/horizontal) and 7 (page/vertical).
 _RGB = const(0x00)  # (Bit 3: 0=RGB order, 1=BGR order)
 _BGR = const(0x08)  # (Bit 3: 0=RGB order, 1=BGR order)
-_MADCTL_MH = const(
-    0x04
-)  # Refresh 0=Left to Right, 1=Right to Left (Bit 2: Display Data Latch Order)
-_MADCTL_ML = const(
-    0x10
-)  # Refresh 0=Top to Bottom, 1=Bottom to Top (Bit 4: Line Refresh Order)
-_MADCTL_MV = const(
-    0x20
-)  # 0=Normal, 1=Row/column exchange (Bit 5: Page/Column Addressing Order)
-_MADCTL_MX = const(
-    0x40
-)  # 0=Left to Right, 1=Right to Left (Bit 6: Column Address Order)
+_MADCTL_MH = const(0x04)  # Refresh 0=Left to Right, 1=Right to Left (Bit 2: Display Data Latch Order)
+_MADCTL_ML = const(0x10)  # Refresh 0=Top to Bottom, 1=Bottom to Top (Bit 4: Line Refresh Order)
+_MADCTL_MV = const(0x20)  # 0=Normal, 1=Row/column exchange (Bit 5: Page/Column Addressing Order)
+_MADCTL_MX = const(0x40)  # 0=Left to Right, 1=Right to Left (Bit 6: Column Address Order)
 _MADCTL_MY = const(0x80)  # 0=Top to Bottom, 1=Bottom to Top (Bit 7: Page Address Order)
 
 # MADCTL values for each of the rotation constants.
@@ -76,7 +70,7 @@ _MIRRORED_ROTATION_TABLE = (
     _MADCTL_MX | _MADCTL_MY,  # mirrored = True, rotation = 180
     _MADCTL_MV | _MADCTL_MY,  # mirrored = True, rotation = 270
 )
-
+# fmt: on
 
 class BusDisplay(_BaseDisplay):
     """
@@ -161,6 +155,7 @@ class BusDisplay(_BaseDisplay):
         self._rotation = rotation
         self.color_depth = color_depth
         self.bgr = bgr
+        self._invert = invert
         self.requires_byte_swap = reverse_bytes_in_word
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
@@ -168,6 +163,13 @@ class BusDisplay(_BaseDisplay):
         self._brightness_command = brightness_command
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
+
+        self.rotation_table = (
+            _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
+        )
+
+        self._param_buf = bytearray(4)
+        self._param_mv = memoryview(self._param_buf)
 
         self._reset_pin = self._config_output_pin(reset_pin, value=not reset_high)
         self._reset_high = reset_high
@@ -183,15 +185,16 @@ class BusDisplay(_BaseDisplay):
         if self._backlight_pin is not None:
             try:
                 from machine import PWM
-
                 self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True
             except ImportError:
                 # PWM not implemented on this platform or Pin
                 self._backlight_is_pwm = False
 
+        # Define the set_window method.  May be overriden by set_render_mode_full.
         self.set_window = self._set_window
 
+        # Define the _send_cmd_data and _blit methods based on the display bus capabilities.
         if hasattr(display_bus, "tx_color"):
             # lcd_bus and mp_lcd_bus use tx_color and tx_param to send color data and parameters
             self._send_cmd_data = display_bus.tx_param
@@ -201,12 +204,7 @@ class BusDisplay(_BaseDisplay):
             self._send_cmd_data = display_bus.send
             self._blit = self.set_params
 
-        self.rotation_table = (
-            _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
-        )
-        self._param_buf = bytearray(4)
-        self._param_mv = memoryview(self._param_buf)
-
+        # Initialize the display bus if necessary
         if hasattr(display_bus, "init"):
             display_bus.init(
                 self._width,
@@ -216,20 +214,28 @@ class BusDisplay(_BaseDisplay):
                 self.requires_byte_swap,
             )
 
-        self._initialized = False
+        # Run the display driver init_sequence.
         if type(init_sequence) is bytes:
             self._init_bytes(init_sequence)
         elif type(init_sequence) is list or type(init_sequence) is tuple:
             self._init_list(init_sequence)
+
+        # Run the display driver init() method, which also gets called by rotation.setter
+        # This should run immediately after _init_bytes() or _init_list() but before
+        # sending other commands such as _INVON, _INVOFF, _COLMOD, brightness, etc.
+        self._initialized = False
         self.init()
         if not self._initialized:
-            raise RuntimeError(
-                "Display driver init() must call super().init() or set self._initialized = True"
-            )
+            raise RuntimeError("Display driver init() must call super().init()")
+
+        # Set COLMOD (color mode) based on color_depth
+        pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
+        self._param_buf[0] = pixel_formats[self.color_depth]
+        self.set_params(_COLMOD, self._param_mv[:1])
+
         self.brightness = brightness
-        if invert:
-            self._invert_colors(True)
-        self._colmod()
+
+        self.fill_rect(0, 0, self.width, self.height, 0x0)
 
     ############### Required API Methods ################
 
@@ -248,11 +254,19 @@ class BusDisplay(_BaseDisplay):
         if render_mode_full is not None:
             self.set_render_mode_full(render_mode_full)
 
+        # Convert from degrees to one quarter rotations.  Wrap at the number of entries in the rotations table.
+        # For example, rotation = 90 -> index = 1.  With 4 entries in the rotation table, rotation = 540 -> index = 2
+        index = (self._rotation // 90) % len(self.rotation_table)
+
         # Set the display MADCTL bits for the given rotation.
-        self._param_buf[0] = self._madctl(self.bgr, self._rotation, self.rotation_table)
+        self._param_buf[0] = self.rotation_table[index] | _BGR if self.bgr else _RGB
         self.set_params(_MADCTL, self._param_mv[:1])
 
-        self.fill_rect(0, 0, self.width, self.height, 0x0)
+        # Set the display inversion mode
+        if self._invert:
+            self.set_params(_INVON)
+        else:
+            self.set_params(_INVOFF)
 
     def blit(self, x, y, width, height, buf):
         """
@@ -547,17 +561,13 @@ class BusDisplay(_BaseDisplay):
                 "register_callback() not implemented in display_bus.  Set blocking = True"
             )
 
-    def _invert_colors(self, value):
+    def invert_colors(self, value):
         """
         Invert the colors of the display.
 
         :param value: If True, invert the colors of the display. If False, do not invert the colors of the display.
         :type value: bool
         """
-        if value:
-            self.set_params(_INVON)
-        else:
-            self.set_params(_INVOFF)
 
     def _pass(*_, **__):
         """Do nothing.  Used to replace self.set_window when render_mode_full is True."""
@@ -592,33 +602,6 @@ class BusDisplay(_BaseDisplay):
         self._param_buf[2] = (y2 >> 8) & 0xFF
         self._param_buf[3] = y2 & 0xFF
         self.set_params(self._set_row_command, self._param_mv[:4])
-
-    @staticmethod
-    def _madctl(bgr, rotation, rotations):
-        """
-        Return the MADCTL value for the given rotation.
-
-        :param bgr: Whether the display uses BGR color order.
-        :type bgr: bool
-        :param rotation: The rotation of the display.
-        :type rotation: int
-        :param rotations: The rotation table.
-        :type rotations: tuple
-        :return: The MADCTL value for the given rotation.
-        :rtype: int
-        """
-        # Convert from degrees to one quarter rotations.  Wrap at the number of entries in the rotations table.
-        # For example, rotation = 90 -> index = 1.  With 4 entries in the rotation table, rotation = 540 -> index = 2
-        index = (rotation // 90) % len(rotations)
-        return rotations[index] | _BGR if bgr else _RGB
-
-    def _colmod(self):
-        """
-        Set the color mode for the display.
-        """
-        pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
-        self._param_buf[0] = pixel_formats[self.color_depth]
-        self.set_params(_COLMOD, self._param_mv[:1])
 
     def _init_bytes(self, init_sequence):
         """
