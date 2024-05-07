@@ -86,6 +86,15 @@ class _BaseDisplay:
         """
         self._quit_func()
 
+    def fill(self, color):
+        """
+        Fill the display with a color.
+
+        :param color: The color to fill the display with.
+        :type color: int
+        """
+        self.fill_rect(0, 0, self.width, self.height, color)
+
     def create_device(self, type=Devices.EVENT, **kwargs):
         """
         Create a device object.
