@@ -27,10 +27,10 @@ display_drv = mpdisplay.DesktopDisplay(
     scale=1.5,
 )
 
-events_drv = mpdisplay.DesktopEvents()
+events_drv = mpdisplay.EventQueue()
 
 events_dev = display_drv.create_device(
-    type=mpdisplay.Devices.EVENT,
+    type=mpdisplay.Devices.QUEUE,
     read=events_drv.read,
-    data=mpdisplay.Events.types
+    data=mpdisplay.Events.filter,
     )
