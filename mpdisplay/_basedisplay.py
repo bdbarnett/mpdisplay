@@ -101,6 +101,19 @@ class _BaseDisplay(DevicePoller):
         """
         self.fill_rect(0, 0, self.width, self.height, color)
 
+    def pixel(self, x, y, color):
+        """
+        Set a pixel on the display.
+
+        :param x: The x-coordinate of the pixel.
+        :type x: int
+        :param y: The y-coordinate of the pixel.
+        :type y: int
+        :param color: The color of the pixel.
+        :type color: int
+        """
+        self.fill_rect(x, y, 1, 1, color)
+
     def __del__(self):
         """
         Deinitializes the display instance.
