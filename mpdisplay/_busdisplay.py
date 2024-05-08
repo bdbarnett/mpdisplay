@@ -263,10 +263,7 @@ class BusDisplay(_BaseDisplay):
         self.set_params(_MADCTL, self._param_mv[:1])
 
         # Set the display inversion mode
-        if self._invert:
-            self.set_params(_INVON)
-        else:
-            self.set_params(_INVOFF)
+        self.invert_colors(self._invert)
 
     def blit(self, x, y, width, height, buf):
         """
@@ -568,6 +565,10 @@ class BusDisplay(_BaseDisplay):
         :param value: If True, invert the colors of the display. If False, do not invert the colors of the display.
         :type value: bool
         """
+        if value:
+            self.set_params(_INVON)
+        else:
+            self.set_params(_INVOFF)
 
     def _pass(*_, **__):
         """Do nothing.  Used to replace self.set_window when render_mode_full is True."""

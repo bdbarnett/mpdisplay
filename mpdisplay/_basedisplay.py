@@ -159,6 +159,9 @@ class _BaseDisplay(DevicePoller):
     def brightness(self, value):
         return
 
+    def invert_colors(self, value):
+        return
+
     def reset(self):
         return
 
