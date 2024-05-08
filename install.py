@@ -21,7 +21,7 @@ print("")
 mip.install("github:bdbarnett/framebuf", target=TARGET)
 print("")
 
-mip.install("github:bdbarnett/romfont", target=TARGET)
+mip.install("github:bdbarnett/binfont", target=TARGET)
 print("")
 
 mip.install("github:bdbarnett/displaybuf", target=TARGET)

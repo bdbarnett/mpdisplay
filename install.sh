@@ -22,7 +22,7 @@
 # - tft_graphics
 # - timer
 # - framebuf
-# - romfont
+# - binfont
 # - testris
 # - micropython-touch
 #
@@ -94,7 +94,7 @@ git clone https://github.com/bdbarnett/console.git $REPO/console
 git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
-git clone https://github.com/bdbarnett/romfont.git $REPO/romfont
+git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
 
@@ -136,9 +136,9 @@ cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 cp -u $REPO/framebuf/framebuf.py $TARGET/lib/
 cp -ur $REPO/framebuf/examples $TARGET/
 
-cp -u $REPO/romfont/romfont.py $TARGET/lib/
-cp -ur $REPO/romfont/examples $TARGET/
-cp -ur $REPO/romfont/romfonts $TARGET/
+cp -u $REPO/binfont/binfont.py $TARGET/lib/
+cp -ur $REPO/binfont/examples $TARGET/
+cp -ur $REPO/binfont/romfonts $TARGET/
 
 cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
 cp -ur $REPO/displaybuf/examples $TARGET/
