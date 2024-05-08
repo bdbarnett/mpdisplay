@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+
 """
 MPDisplay is a module that provides a display interface for various environments. It allows you to interact with different display devices and handle events.
 
@@ -16,7 +17,7 @@ Note: Make sure to install the required dependencies for the chosen display clas
 Usage:
 - Import the module: `import mpdisplay`
 - Create an instance of the display: `display_drv = mpdisplay.DesktopDisplay()`
-- Create a device driver instance: `events_drv = mpdisplay.DesktopEvents()`
+- Create a device driver instance: `events_drv = mpdisplay.EventQueue()`
 - Create a device registration with the display: `events_dev = display_drv.create_device(read=events_drv.read)`
 - Use display_drv to interact with the display and all registered devices.
 
@@ -31,32 +32,36 @@ from ._events import Events
 from ._keys import Keys
 
 
-if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDISPLAY")):
+if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDisplay")):
     if envsetting == "SDL2Display":
+        print("MPDisplay: Using SDL2Display per MPDisplay environment variable.\n")
         import sdl2_lib as sdl2
-        from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
+        from ._sdl2display import SDL2Display as DesktopDisplay, SDL2EventQueue as EventQueue
     elif envsetting == "PGDisplay":
+        print("MPDisplay: Using PGDisplay per MPDisplay environment variable.\n")
         import pygame as pg
-        from ._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents, pg
+        from ._pgdisplay import PGDisplay as DesktopDisplay, PGEventQueue as EventQueue, pg
     elif envsetting == "BusDisplay":
+        print("MPDisplay: Using BusDisplay per MPDisplay environment variable.\n")
         from ._busdisplay import BusDisplay
     else:
         raise ImportError(f"unsupported environment setting MPDISPLAY={envsetting}")
 else:
     try:
-        import sdl2_lib as sdl2
-        from ._sdl2display import SDL2Display as DesktopDisplay, SDL2Events as DesktopEvents
+        from ._busdisplay import BusDisplay
     except Exception as e:
-        print(f"MPDisplay: Error -- {e}")
-        print("MPDisplay: SDL2Display not available.  Trying Pygame...")
+        print(f"MPDisplay: {e}")
+        print("MPDisplay: Trying SDL2Display...")
         try:
-            import pygame as pg
-            from ._pgdisplay import PGDisplay as DesktopDisplay, PGEvents as DesktopEvents
+            import sdl2_lib as sdl2
+            from ._sdl2display import SDL2Display as DesktopDisplay, SDL2EventQueue as EventQueue
         except Exception as e:
-            print(f"MPDisplay: Error -- {e}")
-            print("MPDisplay: Pygame not available. Trying BusDisplay...")
+            print(f"MPDisplay: {e}")
+            print("MPDisplay: Trying Pygame...")
             try:
-                from ._busdisplay import BusDisplay
+                import pygame as pg
+                from ._pgdisplay import PGDisplay as DesktopDisplay, PGEventQueue as EventQueue
             except Exception as e:
-                print(f"MPDisplay: Error -- {e}")
+                print(f"MPDisplay: {e}")
                 raise ImportError("MPDisplay: No display drivers available")
+

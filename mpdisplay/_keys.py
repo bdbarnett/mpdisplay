@@ -1,16 +1,13 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+
+"""
+Keys class for MPDisplay.
+"""
+
 from micropython import const as _const
 
-# import pygame as _pg
-# _pg.init()
-# keyname = lambda x: _pg.key.name(x, use_compat=0)
-# key = _pg.key.key_code
-
-# from ._sdl2display import SDL_GetKeyName as _SDL_GetKeyName, SDL_GetKeyFromName as _SDL_GetKeyFromName
-# keyname = _SDL_GetKeyName
-# key = _SDL_GetKeyFromName
 
 class Keys:
     keyname = lambda x: Keys._keytable.get(x, "Unknown")

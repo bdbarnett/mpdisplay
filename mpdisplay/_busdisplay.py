@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-busdisplay.py - BusDisplay class for MicroPython
+BusDisplay class for MicroPython and CircuitPython.
 """
 
 import struct
@@ -26,7 +26,7 @@ elif sys.implementation.name == "circuitpython":
     sleep_ms = lambda ms: sleep(ms / 1000)
     import ulab.numpy as np
 else:
-    raise NotImplementedError("Unsupported implementation")
+    raise ImportError("BusDisplay is not supported on this platform.")
 
 
 # MIPI DCS (Display Command Set) Command Constants

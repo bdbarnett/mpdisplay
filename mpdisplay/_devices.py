@@ -1,3 +1,11 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
+
+"""
+Device classes for MPDisplay.
+"""
+
 from micropython import const
 from ._events import Events
 
@@ -11,31 +19,32 @@ REVERSE_Y = const(0b100)
 
 class Devices:
     UNKNOWN = const(-1)  # Unknown device
-    EVENT = const(0x00)  # Event device for SDL2 returns all events in Events.types unless specified
-    TOUCH = const( 0x01)  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
-    ENCODER = const(0x02)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
-    KEYPAD = const(0x03)  # KEYDOWN and KEYUP events when keys are pressed or released
-    JOYSTICK = const(0x04)  # Joystick Events (not implemented)
+    POLLER = const(0x00)  # Poller device for polling multiple devices
+    QUEUE = const(0x01)  # Queue device for SDL2 and Pygame returns all events in Events.filter unless specified
+    TOUCH = const( 0x02)  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
+    ENCODER = const(0x03)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
+    KEYPAD = const(0x04)  # KEYDOWN and KEYUP events when keys are pressed or released
+    JOYSTICK = const(0x05)  # Joystick Events (not implemented)
 
     @staticmethod
     def create(type, *args, **kwargs):
-        if type == Devices.EVENT:
-            return EventDevice(*args, **kwargs)
+        if type == Devices.POLLER:
+            return DevicePoller(*args, **kwargs)
+        if type == Devices.QUEUE:
+            return QueueDevice(*args, **kwargs)
         if type == Devices.TOUCH:
             return TouchDevice(*args, **kwargs)
-        elif type == Devices.ENCODER:
+        if type == Devices.ENCODER:
             return EncoderDevice(*args, **kwargs)
-        elif type == Devices.KEYPAD:
+        if type == Devices.KEYPAD:
             return KeypadDevice(*args, **kwargs)
-        elif type == Devices.JOYSTICK:
+        if type == Devices.JOYSTICK:
             return JoystickDevice(*args, **kwargs)
-        else:
-            raise ValueError("Unknown device type")
+        raise ValueError("Unknown device type")
 
 
 class _Device:
     type = Devices.UNKNOWN
-    _responses = Events.types
 
     def __init__(self, read=None, data=None, read2=None, data2=None, *, display=None):
         self._event_callbacks = dict()
@@ -50,11 +59,12 @@ class _Device:
         self._user_data = None  # Can be set and retrieved by apps such as lv_mpdisplay
         self._read_cb = None  # Read callback - can be set by apps such as lv_mpdisplay
 
-    def read(self):
-        if (event := self._read()) is not None:
-            if event.type in Events.types:
+    def poll_event(self):
+        if (event := self._poll()) is not None:
+            if event.type in Events.filter:
                 if event.type == Events.QUIT:
-                    self.quit()
+                    if self._display:
+                        self._display.quit()
                 if event_type_dict := self._event_callbacks.get(event.type):
                     for callback_list in event_type_dict.values():
                         for func in callback_list:
@@ -74,7 +84,7 @@ class _Device:
         self._event_callbacks[event_type] = event_type_dict
 
     def unsubscribe(self, listener, callback, event_type):
-        if event_type_dict := self._event_callbacks.get(device_type):
+        if event_type_dict := self._event_callbacks.get(event_type):
             if callback_list := event_type_dict.get(listener):
                 callback_list.pop(callback)
 
@@ -111,17 +121,26 @@ class _Device:
             self._read_cb(self.read(), *args)
 
 
-class EventDevice(_Device):
-    type = Devices.EVENT
+class QueueDevice(_Device):
+    type = Devices.QUEUE
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self._data is None:
-            self._data = Events.types
+            self._data = Events.filter
+        if hasattr(self._display, "touch_scale"):
+            self.scale = self._display.touch_scale
+        else:
+            self.scale = 1
 
-    def _read(self):
+    def _poll(self):
         if (event := self._read()) is not None:
             if event.type in self._data:
+                if (scale := self.scale) != 1:
+                    if event.type in (Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP):
+                        event.pos = (int(event.pos[0] // scale), int(event.pos[1] // scale))
+                        if event.type == Events.MOUSEMOTION:
+                            event.rel = (event.rel[0] // scale, event.rel[1] // scale)
                 return event
         return None
 
@@ -130,7 +149,6 @@ class TouchDevice(_Device):
     """
     Only reports mouse button 1.
     """
-
     type = Devices.TOUCH
 
     def __init__(self, *args, **kwargs):
@@ -152,7 +170,7 @@ class TouchDevice(_Device):
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
         self._mask = self._data[self._rotation // 90]
 
-    def _read(self):
+    def _poll(self):
         # _read should return None, a point as a tuple (x, y), a point as a list [x, y] or
         # a tuple / list of points ((x1, y1), (x2, y2)), [(x1, y1), (x2, y2)], ([x1, y1], [x2, y2]),
         # or [[x1, y1], [x2, y2]].  If it doesn't, create a wrapper around your driver's read function
@@ -213,7 +231,7 @@ class EncoderDevice(_Device):
         self._state = (0, False)  # (position, pressed)
         self._data = self._data if self._data else 2  # Default to middle mouse button
 
-    def _read(self):
+    def _poll(self):
         # _read should return a running total of steps turned.  For instance, if the current
         # position is 800 and it is moved 5 right then 3 left, the callback should return 802.
         # The event returned will have the delta, 2 in this example.
@@ -248,7 +266,7 @@ class KeypadDevice(_Device):
         super().__init__(*args, **kwargs)
         self._state = set()
 
-    def _read(self):
+    def _poll(self):
         # _read should return a list, tuple or set of keys pressed or None if no keys are pressed.
         # The keys should be integers representing the key code.  The callback should return
         # all keys currently pressed.  If a key is held down, it should be returned in every call to
@@ -274,13 +292,15 @@ class JoystickDevice(_Device):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def _read(self):
+    def _poll(self):
         raise NotImplementedError("JoystickDevice.read() not implemented")
 
 
-class DeviceController:
+class DevicePoller(_Device):
+    type = Devices.POLLER
+
     def __init__(self):
-        super().__init()
+        super().__init__()
         self.devices = []  # List of devices to poll
         self._device_callbacks = dict()
 
@@ -314,7 +334,7 @@ class DeviceController:
         else:
             super().unsubscribe(listener, callback, event_type)
 
-    def create_device(self, type=Devices.EVENT, **kwargs):
+    def create_device(self, type=Devices.QUEUE, **kwargs):
         """
         Create a device object.
 
@@ -346,16 +366,15 @@ class DeviceController:
             self.devices.remove(dev)
             dev.display = None
 
-    def _read(self):
+    def _poll(self):
         """
 
         """
         for device in self.devices:
-            if (event := device.read()) is not None:
-                if event.type in Events.types:
-                    if device_type_dict := self._device_callbacks.get(device.type):
-                        for callback_list in device_type_dict.values():
-                            for func in device_type_dict.values():
-                                func(event)
-                    return event
+            if (event := device.poll_event()) is not None:
+                if device_type_dict := self._device_callbacks.get(device.type):
+                    for callback_list in device_type_dict.values():
+                        for func in callback_list():
+                            func(event)
+                return event
         return None

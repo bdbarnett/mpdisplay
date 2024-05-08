@@ -1,6 +1,11 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+
+"""
+Events class for MPDisplay.
+"""
+
 from collections import namedtuple
 from micropython import const
 
@@ -15,7 +20,7 @@ class Events:
     MOUSEBUTTONUP = const(0x402)  # Mouse button released
     MOUSEWHEEL = const(0x403)  # Mouse wheel motion
 
-    types = [
+    filter = [
         QUIT,
         KEYDOWN,
         KEYUP,

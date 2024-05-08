@@ -1,11 +1,12 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+
 """
-An implementation of an LCD library written in Python using pygame
+PGDisplay class for CPython.
 """
 
-from . import _BaseDisplay, Events
+from . import _BaseDisplay, Events, Devices
 import pygame as pg
 
 
@@ -43,7 +44,6 @@ class PGDisplay(_BaseDisplay):
         :param window_flags: The flags for creating the display window (default is pg.SHOWN).
         :type window_flags: int
         """
-        print("MPDisplay: Using pygame.\n")
         super().__init__()
         self._width = width
         self._height = height
@@ -52,6 +52,7 @@ class PGDisplay(_BaseDisplay):
         self._title = title
         self._window_flags = window_flags
         self._scale = scale
+        self.touch_scale = scale
         self._buffer = None
 
 
@@ -59,7 +60,7 @@ class PGDisplay(_BaseDisplay):
 
         pg.init()
 
-        self._buffer = pg.Surface(size=(self._width * self._scale, self._height * self._scale), depth=self.color_depth)
+        self._buffer = pg.Surface(size=(self._width, self._height), depth=self.color_depth)
         self._buffer.fill((0, 0, 0))
 
         self.init()
@@ -70,7 +71,7 @@ class PGDisplay(_BaseDisplay):
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        self._window = pg.display.set_mode(size=(int(self.width), int(self.height)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
+        self._window = pg.display.set_mode(size=(int(self.width * self._scale), int(self.height * self._scale)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
         pg.display.set_caption(self._title)
 
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
@@ -182,7 +183,7 @@ class PGDisplay(_BaseDisplay):
             return
 
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
-                tempBuffer = pygame.transform.rotate(self._buffer, -angle)
+                tempBuffer = pg.transform.rotate(self._buffer, -angle)
                 self._buffer = tempBuffer
 
         self._rotation = value
@@ -202,33 +203,41 @@ class PGDisplay(_BaseDisplay):
         :param renderRect: The rectangle to render (default is None).
         :type renderRect: pg.Rect
         """
+        s = self._scale
+        buffer = pg.transform.scale_by(self._buffer, s)
         if (y_start := self.vscsad()) == False:
             if renderRect is not None:
                 x, y, w, h = renderRect
-                renderRect = pg.Rect(x*self._scale, y*self._scale, w*self._scale, h*self._scale)
+                renderRect = pg.Rect(x*s, y*s, w*s, h*s)
                 dest = renderRect
             else:
                 dest = (0, 0)
-            self._window.blit(pygame.transform.scale_by(self._buffer, self._scale), dest, renderRect)
+            self._window.blit(buffer, dest, renderRect)
         else:
-            # Ignore renderRect and render the entire texture to the window in four steps
-            if self._tfa > 0:
-                tfaRect = pg.Rect(0, 0, self.width, self._tfa)
-                self._window.blit(self._buffer, tfaRect, tfaRect)
+            # Ignore renderRect and render the entire buffer to the window in four steps
+            y_start *= s
+            tfa = self._tfa * s
+            vsa = self._vsa * s
+            bfa = self._bfa * s
+            width = self.width * s
 
-            vsaTopHeight = self._vsa + self._tfa - y_start
-            vsaTopSrcRect = pg.Rect(0, y_start, self.width, vsaTopHeight)
-            vsaTopDestRect = pg.Rect(0, self._tfa, self.width, vsaTopHeight)
-            self._window.blit(self._buffer, vsaTopDestRect, vsaTopSrcRect)
+            if tfa > 0:
+                tfaRect = pg.Rect(0, 0, width, tfa)
+                self._window.blit(buffer, tfaRect, tfaRect)
 
-            vsaBtmHeight = self._vsa - vsaTopHeight
-            vsaBtmSrcRect = pg.Rect(0, self._tfa, self.width, vsaBtmHeight)
-            vsaBtmDestRect = pg.Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
-            self._window.blit(self._buffer, vsaBtmDestRect, vsaBtmSrcRect)
+            vsaTopHeight = vsa + tfa - y_start
+            vsaTopSrcRect = pg.Rect(0, y_start, width, vsaTopHeight)
+            vsaTopDestRect = pg.Rect(0, tfa, width, vsaTopHeight)
+            self._window.blit(buffer, vsaTopDestRect, vsaTopSrcRect)
 
-            if self._bfa > 0:
-                bfaRect = pg.Rect(0, self._tfa + self._vsa, self.width, self._bfa)
-                self._window.blit(self._buffer, bfaRect, bfaRect)
+            vsaBtmHeight = vsa - vsaTopHeight
+            vsaBtmSrcRect = pg.Rect(0, tfa, width, vsaBtmHeight)
+            vsaBtmDestRect = pg.Rect(0, tfa + vsaTopHeight, width, vsaBtmHeight)
+            self._window.blit(buffer, vsaBtmDestRect, vsaBtmSrcRect)
+
+            if bfa > 0:
+                bfaRect = pg.Rect(0, tfa + vsa, width, bfa)
+                self._window.blit(buffer, bfaRect, bfaRect)
 
         pg.display.flip()
 
@@ -250,7 +259,7 @@ class PGDisplay(_BaseDisplay):
         return (r, g, b)
 
 
-class PGEvents():
+class PGEventQueue():
     """
     A class to poll events in pygame.
     """
@@ -268,6 +277,6 @@ class PGEvents():
         :rtype: tuple
         """
         if event := pg.event.poll():
-            if event.type in Events.types:
+            if event.type in Events.filter:
                 return event
         return None

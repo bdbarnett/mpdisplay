@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+
 """
-An implementation of an LCD library written in Python using SDL2
+SDL2Display class for MicroPython on Linux and CPython on available platforms.
 """
 
 from . import _BaseDisplay, Events, Devices
@@ -74,7 +75,6 @@ class SDL2Display(_BaseDisplay):
         :param y: The y-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
         :type y: int
         """
-        print("MPDisplay: Using SDL2.\n")
         super().__init__()
         self._width = width
         self._height = height
@@ -320,7 +320,7 @@ class SDL2Display(_BaseDisplay):
         retcheck(SDL_RenderPresent(self._renderer))
 
 
-class SDL2Events():
+class SDL2EventQueue():
     """
     A class to poll events in SDL2.
     """
@@ -339,7 +339,7 @@ class SDL2Events():
         """
         if SDL_PollEvent(self._event):
             if is_cpython:
-                if self._event.type in Events.types:
+                if self._event.type in Events.filter:
                     return self._convert(SDL_Event(self._event))
             else:
                 if int.from_bytes(self._event[:4], 'little') in Events.types:

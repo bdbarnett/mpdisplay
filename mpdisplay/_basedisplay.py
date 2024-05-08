@@ -1,13 +1,19 @@
-# SPDX-FileCopyrightText: 2024 Brad Barnett
+# SPDX-FileCopyrightText: 2024 Brad Barnett and Kevin Schlosser
 #
 # SPDX-License-Identifier: MIT
-from ._devices import Devices, DeviceController, Events
+
+"""
+_BaseDisplay class for all display drivers to inherit from.
+"""
+
+from ._devices import Devices, DevicePoller
 from sys import exit  # default for self.quit
 
 
-class _BaseDisplay(DeviceController):
+class _BaseDisplay(DevicePoller):
 
     def __init__(self):
+        super().__init__()
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
 
