@@ -65,3 +65,4 @@ else:
                 print(f"MPDisplay: {e}")
                 raise ImportError("MPDisplay: No display drivers available")
 
+print("MPDisplay: display driver loaded.")
