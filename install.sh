@@ -6,12 +6,27 @@
 # the files is git, which is preinstalled on nearly all Linux distros, including WSL.
 #
 # To use MPDisplay in desktop operating systems, you will need either Pygame (which
-# also installs SDL2, or just SDL2 by itself.  Here is how you get them:
+# also installs SDL2, or just SDL2 by itself.  Here is how you get them on Ubuntu under WSL:
 #
 #     sudo apt update  && sudo apt upgrade
 #     sudo apt install python3-pygame
 #                   OR
 #     sudo apt install libsdl2-2.0-0
+#
+# Python3 is installed on nearly all Linux Distros.  If your distro has a package
+# for MicroPython, like Ubuntu does on WSL, you may get it with:
+#
+#     sudo apt install micropython
+#
+# After downloading, switch to the directory your files are staged in and launch your python.
+# For instance:
+#
+#     cd ~/micropython
+#     micropython -i path.py
+#             OR
+#     python3 -i path.py
+#
+# You may than import any of the examples, such as 'import paint'
 #
 # Usage:
 #     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.sh
