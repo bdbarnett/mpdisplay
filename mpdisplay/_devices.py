@@ -45,6 +45,7 @@ class Devices:
 
 class _Device:
     type = Devices.UNKNOWN
+    responses = Events.filter
 
     def __init__(self, read=None, data=None, read2=None, data2=None, *, display=None):
         self._event_callbacks = dict()
@@ -72,21 +73,23 @@ class _Device:
                 return event
         return None
 
-    def subscribe(self, listener, callback, event_type):
+    def subscribe(self, listener, callback, event_types):
         if not callable(callback):
             raise ValueError("callback is not callable.")
-        if event_type not in self._responses:
-            raise ValueError("the specified event_type is not a response from this device")
-        event_type_dict = self._event_callbacks.get(event_type, dict)
-        callback_list = event_type_dict.get(listener, list)
-        callback_list.append(callback)
-        event_type_dict[listener] = callback_list
-        self._event_callbacks[event_type] = event_type_dict
+        for event_type in event_types:
+            if event_type not in self.responses:
+                raise ValueError("the specified event_type is not a response from this device")
+            event_type_dict = self._event_callbacks.get(event_type, dict())
+            callback_set = event_type_dict.get(listener, set())
+            callback_set.add(callback)
+            event_type_dict[listener] = callback_set
+            self._event_callbacks[event_type] = event_type_dict
 
-    def unsubscribe(self, listener, callback, event_type):
-        if event_type_dict := self._event_callbacks.get(event_type):
-            if callback_list := event_type_dict.get(listener):
-                callback_list.pop(callback)
+    def unsubscribe(self, listener, callback, event_types):
+        for event_type in event_types:
+            if event_type_dict := self._event_callbacks.get(event_type):
+                if callback_set := event_type_dict.get(listener):
+                    callback_set.remove(callback)
 
     @property
     def user_data(self):
@@ -304,35 +307,35 @@ class DevicePoller(_Device):
         self.devices = []  # List of devices to poll
         self._device_callbacks = dict()
 
-    def subscribe(self, listener, callback, event_type=None, device_type=None):
+    def subscribe(self, listener, callback, event_types=None, device_types=None):
         if not callable(callback):
             raise ValueError("callback is not callable.")
-        if event_type not in self._responses:
-            raise ValueError("the specified event_type is not a response from this device")
-        if device_type is not None and event_type is not None:
+        if device_types is not None and event_types is not None:
             raise ValueError("set one of device_type or event_type but not both.")
-        if device_type is None and event_type is None:
+        if device_types is None and event_types is None:
             raise ValueError("set one of device_type or event_type but not both.")
-        if device_type is not None:
-            device_type_dict = self._device_callbacks.get(device_type, dict)
-            callback_list = device_type_dict.get(listener, list)
-            callback_list.append(callback)
-            device_type_dict[listener] = callback_list
-            self._device_callbacks[device_type] = device_type_dict
+        if device_types is not None:
+            for device_type in device_types:
+                device_type_dict = self._device_callbacks.get(device_type, dict())
+                callback_set = device_type_dict.get(listener, set())
+                callback_set.add(callback)
+                device_type_dict[listener] = callback_set
+                self._device_callbacks[device_type] = device_type_dict
         else:
-            super().subscribe(listener, callback, event_type)
+            super().subscribe(listener, callback, event_types)
 
-    def unsubscribe(self, listener, callback, event_type=None, device_type=None):
-        if device_type is not None and event_type is not None:
+    def unsubscribe(self, listener, callback, event_types=None, device_types=None):
+        if device_types is not None and event_types is not None:
             raise ValueError("set one of device_type or event_type but not both.")
-        if device_type is None and event_type is None:
+        if device_types is None and event_types is None:
             raise ValueError("set one of device_type or event_type but not both.")
-        if device_type is not None:
-            if device_type_dict := self._device_callbacks.get(device_type):
-                if callback_list := device_type_dict.get(listener):
-                    callback_list.pop(callback)
+        if device_types is not None:
+            for device_type in device_types:
+                if device_type_dict := self._device_callbacks.get(device_type):
+                    if callback_set := device_type_dict.get(listener):
+                        callback_set.remove(callback)
         else:
-            super().unsubscribe(listener, callback, event_type)
+            super().unsubscribe(listener, callback, event_types)
 
     def create_device(self, type=Devices.QUEUE, **kwargs):
         """
