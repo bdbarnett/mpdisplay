@@ -112,7 +112,7 @@ class _BaseDisplay(DevicePoller):
         :param color: The color of the pixel.
         :type color: int
         """
-        self.fill_rect(x, y, 1, 1, color)
+        self.blit(x, y, 1, 1, color)
 
     def __del__(self):
         """
