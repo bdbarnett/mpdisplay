@@ -2,6 +2,17 @@
 
 # Installation script for MPDisplay and several libraries that use it.
 #
+# Prerequisites:  The only prerequisites to use this script to download and stage
+# the files is git, which is preinstalled on nearly all Linux distros, including WSL.
+#
+# To use MPDisplay in desktop operating systems, you will need either Pygame (which
+# also installs SDL2, or just SDL2 by itself.  Here is how you get them:
+#
+#     sudo apt update  && sudo apt upgrade
+#     sudo apt install python3-pygame
+#                   OR
+#     sudo apt install libsdl2-2.0-0
+#
 # Usage:
 #     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.sh
 #     chmod u+x install.sh
