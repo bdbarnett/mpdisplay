@@ -342,7 +342,7 @@ class SDL2EventQueue():
                 if self._event.type in Events.filter:
                     return self._convert(SDL_Event(self._event))
             else:
-                if int.from_bytes(self._event[:4], 'little') in Events.types:
+                if int.from_bytes(self._event[:4], 'little') in Events.filter:
                     return self._convert(SDL_Event(self._event))
         return None
 
