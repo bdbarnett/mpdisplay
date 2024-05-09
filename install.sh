@@ -163,7 +163,7 @@ cp -ur $REPO/micropython-touch/gui $TARGET/lib/
 
 pushd $TARGET
 echo
-echo "Launching $LAUNCH"
+# echo "Launching $LAUNCH"
 echo
-$EXE -c "import path, $LAUNCH"
+# $EXE -c "import path, $LAUNCH"
 popd
