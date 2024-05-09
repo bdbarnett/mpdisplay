@@ -19,6 +19,11 @@ class Events:
     MOUSEBUTTONDOWN = const(0x401)  # Mouse button pressed
     MOUSEBUTTONUP = const(0x402)  # Mouse button released
     MOUSEWHEEL = const(0x403)  # Mouse wheel motion
+    JOYAXISMOTION = const(0x600)  # Joystick axis motion
+    JOYBALLMOTION = const(0x601)  # Joystick trackball motion
+    JOYHATMOTION = const(0x602)  # Joystick hat position change
+    JOYBUTTONDOWN = const(0x603)  # Joystick button pressed
+    JOYBUTTONUP = const(0x604)  # Joystick button released
 
     filter = [
         QUIT,
