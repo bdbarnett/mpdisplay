@@ -19,7 +19,7 @@ REVERSE_Y = const(0b100)
 
 class Devices:
     UNKNOWN = const(-1)  # Unknown device
-    POLLER = const(0x00)  # Poller device for polling multiple devices
+    POLLER = const(0x00)  # Device poller for polling multiple devices
     QUEUE = const(0x01)  # Queue device for SDL2 and Pygame returns all events in Events.filter unless specified
     TOUCH = const( 0x02)  # MOUSEBUTTONDOWN when touched, MOUSEMOTION when moved, MOUSEBUTTONUP when released
     ENCODER = const(0x03)  # MOUSEWHEEL events when turned, MOUSEBUTTONDOWN when pressed
@@ -92,14 +92,6 @@ class _Device:
                     callback_set.remove(callback)
 
     @property
-    def user_data(self):
-        return self._user_data
-
-    @user_data.setter
-    def user_data(self, value):
-        self._user_data = value
-
-    @property
     def display(self):
         return self._display
 
@@ -109,6 +101,14 @@ class _Device:
         if disp is not None and self.type == Devices.TOUCH:
             self.rotation = disp.rotation
 
+    @property
+    def user_data(self):
+        return self._user_data
+
+    @user_data.setter
+    def user_data(self, value):
+        self._user_data = value
+
     def set_read_cb(self, callback):
         if callable(callback):
             self._read_cb = callback
@@ -117,11 +117,12 @@ class _Device:
 
     def read_cb(self, *args):
         """
-        Used by lv_mpdisplay or other applications to call the saved _read_cb with the current reading
-        and optional arguments.
+        Used by lv_mpdisplay or other applications.
+        Polls itself and passes the result to the read callback function
+        saved by .set_read_cb().
         """
         if self._read_cb:
-            self._read_cb(self.read(), *args)
+            self._read_cb(self.poll_event(), *args)
 
 
 class QueueDevice(_Device):
