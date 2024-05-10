@@ -114,6 +114,36 @@ class _BaseDisplay(DevicePoller):
         """
         self.blit(x, y, 1, 1, bytearray(color.to_bytes(2, "little")))
 
+    def color565(self, r, g, b):
+        """
+        Convert RGB values to a 16-bit color value.
+
+        :param r: The red value.
+        :type r: int
+        :param g: The green value.
+        :type g: int
+        :param b: The blue value.
+        :type b: int
+        :return: The 16-bit color value.
+        :rtype: int
+        """
+        return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
+    
+    def color888(self, r, g, b):
+        """
+        Convert RGB values to a 24-bit color value.
+
+        :param r: The red value.
+        :type r: int
+        :param g: The green value.
+        :type g: int
+        :param b: The blue value.
+        :type b: int
+        :return: The 24-bit color value.
+        :rtype: int
+        """
+        return (r << 16) | (g << 8) | b
+
     def __del__(self):
         """
         Deinitializes the display instance.
