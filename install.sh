@@ -159,7 +159,7 @@ cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 
-cp -u $REPO/framebuf/framebuf.py $TARGET/lib/
+cp -u $REPO/framebuf/framebuf*.py $TARGET/lib/
 cp -ur $REPO/framebuf/examples $TARGET/
 
 cp -u $REPO/binfont/binfont.py $TARGET/lib/
