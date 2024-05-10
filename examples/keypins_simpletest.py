@@ -28,7 +28,7 @@ print(f"{buttons.fire.keyname=}\n")
 
 # Subscribe the to the display driver so _KeyPin states are updated
 # on KEYDOWN and KEYUP events when display_drv.poll_event() is called.
-display_drv.subscribe(buttons, buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
+display_drv.subscribe(buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
 
 print(f"Press any of these keys:  {[button.keyname for button in buttons]}")
 while True:
