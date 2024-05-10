@@ -1,7 +1,12 @@
+#!/usr/bin/micropython -i
 import mip
+import sys
 
 
 TARGET = "."
+LAUNCH = "calculator"
+
+print("\nInstalling the mpdisplay library and optional libraries and examples.\n")
 
 # Install sdl2_lib.  Comment out this line if you are only using lcd_bus.
 mip.install("github:bdbarnett/sdl2_lib", target=TARGET)
@@ -40,9 +45,14 @@ mip.install("github:bdbarnett/testris", target=TARGET)
 print("")
 
 
-# Install your board_config.  Modify the path to match your board_config.
-print("You must now install your board_config.  Type the following, substituting `desktop` with your board",
-"""
-    mip.install("github:bdbarnett/mpdisplay/board_configs/desktop", target=".")
-""", "\n")
+# Install your board_config or prompt to install it.
+if sys.platform == "linux":
+    mip.install("github:bdbarnett/mpdisplay/board_configs/desktop", target=TARGET)
+    print(f"\nInstallation complete.  To run the {LAUNCH} example, type the following:")
+else:
+    print(f"You must now install your board_config before running the {LAUNCH} example.\n",
+          "Type the following, substituting `desktop` with your board:\n",
+        f"""   mip.install("github:bdbarnett/mpdisplay/board_configs/desktop", target={TARGET})""")
 
+print("    import path")
+print(f"    import {LAUNCH}\n")
