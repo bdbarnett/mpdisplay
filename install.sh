@@ -182,7 +182,7 @@ cp -ur $REPO/timer/examples $TARGET/
 
 cp -u $REPO/testris/testris.py $TARGET/examples/
 
-cp -ur $REPO/micropython-touch/gui $TARGET/lib/
+cp -ur $REPO/micropython-touch/gui $TARGET/
 
 
 ######################## Launch the test app ####################################
