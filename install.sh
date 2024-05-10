@@ -135,21 +135,11 @@ if [ ! -d $TARGET ]; then
     mkdir $TARGET
 fi
 
-# If $TARGET/lib directory does not exist, create it
-if [ ! -d $TARGET/lib ]; then
-    mkdir $TARGET/lib
-fi
-
-# If $TARGET/examples directory does not exist, create it
-if [ ! -d $TARGET/examples ]; then
-    mkdir $TARGET/examples
-fi
-
 ######################## Stage the files in $TARGET ##############################
 
 cp -u $REPO/$BOARD_CONFIG $TARGET/
 
-cp -ur $REPO/mpdisplay/mpdisplay $TARGET/lib/
+cp -ur $REPO/mpdisplay/lib $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/
