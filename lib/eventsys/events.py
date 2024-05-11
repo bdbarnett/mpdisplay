@@ -9,7 +9,7 @@ Events class for MPDisplay's Event System
 from collections import namedtuple
 from micropython import const
 
-_USER_TYPE_BASE = const(0x8000)
+_USER_TYPE_BASE = 0x8000
 
 class Events:
     # Event types (from SDL2 / PyGame, not complete)
