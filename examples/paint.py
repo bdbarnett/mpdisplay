@@ -7,16 +7,16 @@ from mpdisplay import Events
 
 display_drv.rotation = 90
 
-rgb565 = lambda r, g, b: ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
-WHITE = rgb565(255, 255, 255)
-RED = rgb565(255, 0, 0)
-GREEN = rgb565(0, 255, 0)
-BLUE = rgb565(0, 0, 255)
-CYAN = rgb565(0, 255, 255)
-MAGENTA = rgb565(255, 0, 255)
-YELLOW = rgb565(255, 255, 0)
-BLACK = rgb565(0, 0, 0)
-GRAY = rgb565(128, 128, 128)
+color565 = display_drv.color565
+WHITE = color565(255, 255, 255)
+RED = color565(255, 0, 0)
+GREEN = color565(0, 255, 0)
+BLUE = color565(0, 0, 255)
+CYAN = color565(0, 255, 255)
+MAGENTA = color565(255, 0, 255)
+YELLOW = color565(255, 255, 0)
+BLACK = color565(0, 0, 0)
+GRAY = color565(128, 128, 128)
 colors = [WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, BLACK]
 
 on_x_axis = display_drv.width < display_drv.height

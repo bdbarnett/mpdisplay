@@ -114,21 +114,6 @@ class _BaseDisplay(Broker):
         """
         self.blit(x, y, 1, 1, bytearray(color.to_bytes(2, "little")))
 
-    def color565(self, r, g, b):
-        """
-        Convert RGB values to a 16-bit color value.
-
-        :param r: The red value.
-        :type r: int
-        :param g: The green value.
-        :type g: int
-        :param b: The blue value.
-        :type b: int
-        :return: The 16-bit color value.
-        :rtype: int
-        """
-        return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
-    
     def color888(self, r, g, b):
         """
         Convert RGB values to a 24-bit color value.
@@ -143,6 +128,71 @@ class _BaseDisplay(Broker):
         :rtype: int
         """
         return (r << 16) | (g << 8) | b
+
+    def color565(self, r, g=0, b=0):
+        """
+        Convert RGB values to a 16-bit color value.
+
+        :param r: The red value.
+        :type r: int
+        :param g: The green value.
+        :type g: int
+        :param b: The blue value.
+        :type b: int
+        :return: The 16-bit color value.
+        :rtype: int
+        """
+        if isinstance(r, (tuple, list)):
+            r, g, b = r[:3]
+        return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
+
+    def color565_swapped(self, r, g=0, b=0):
+        # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
+        # ggbbbbbb rrrrrggg
+        if isinstance(r, (tuple, list)):
+            r, g, b = r[:3]
+        color = self.color565(r, g, b)
+        return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
+
+    def color_wheel(self, pos):
+        """
+        Get a color from the color wheel.
+
+        :param pos: The position on the color wheel.
+        :type pos: int
+        :return: The color value.
+        :rtype: int
+        """
+        pos = 255 - pos
+        if pos < 85:
+            return self.color565(255 - pos * 3, 0, pos * 3)
+        if pos < 170:
+            pos -= 85
+            return self.color565(0, pos * 3, 255 - pos * 3)
+        pos -= 170
+        return self.color565(pos * 3, 255 - pos * 3, 0)
+
+    def color332(self, r, g, b):
+        # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
+        # rrrgggbb
+        return (r & 0xe0) | ((g >> 3) & 0x1c) | (b >> 6)
+
+    def color_rgb(self, color):
+        if isinstance(color, int):
+            # convert color from int to bytes
+            if self.color_depth == 16:
+                # convert 16-bit int color to 2 bytes
+                color = (color & 0xFF, color >> 8)
+            else:
+                # convert 24-bit int color to 3 bytes
+                color = (color & 0xFF, (color >> 8) & 0xFF, color >> 16)
+        if len(color) == 2:
+            r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
+            g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
+            b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
+        else:
+            r, g, b = color
+        return (r, g, b)
 
     def __del__(self):
         """

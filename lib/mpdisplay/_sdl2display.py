@@ -173,12 +173,7 @@ class SDL2Display(_BaseDisplay):
         :type color: int
         """
         fillRect = SDL_Rect(x, y, w, h)
-        if self.color_depth == 16:
-            r = (color >> 8) & 0xF8 | (color >> 13) & 0x7  # 5 bit to 8 bit red
-            g = (color >> 3) & 0xFC | (color >> 9) & 0x3  # 6 bit to 8 bit green
-            b = (color << 3) & 0xF8 | (color >> 2) & 0x7  # 5 bit to 8 bit blue
-        else:
-            r, g, b = color >> 16 & 0xFF, (color >> 8) & 0xFF, color & 0xFF
+        r, g, b = self.color_rgb(color)
 
         retcheck(SDL_SetRenderTarget(self._renderer, self._buffer))  # Set the render target to the texture
         retcheck(SDL_SetRenderDrawColor(self._renderer, r, g, b, 255))  # Set the color to fill the rectangle

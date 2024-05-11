@@ -97,7 +97,7 @@ class PGDisplay(_BaseDisplay):
         for i in range(h):
             for j in range(w):
                 pixel_index = (i * w + j) * self._bytes_per_pixel
-                color = self._colorRGB(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
+                color = self.color_rgb(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
                 self._buffer.set_at((x + j, y + i), color)
         self._show(blitRect)
 
@@ -120,7 +120,7 @@ class PGDisplay(_BaseDisplay):
         :type color: int
         """
         fillRect = pg.Rect(x, y, w, h)
-        self._buffer.fill(self._colorRGB(color), fillRect)
+        self._buffer.fill(self.color_rgb(color), fillRect)
         self._show(fillRect)
 
     def deinit(self):
@@ -240,23 +240,6 @@ class PGDisplay(_BaseDisplay):
                 self._window.blit(buffer, bfaRect, bfaRect)
 
         pg.display.flip()
-
-    def _colorRGB(self, color):
-        if isinstance(color, int):
-            # convert color from int to bytes
-            if self.color_depth == 16:
-                # convert 16-bit int color to 2 bytes
-                color = [color & 0xFF, color >> 8]
-            else:
-                # convert 24-bit int color to 3 bytes
-                color = [color & 0xFF, (color >> 8) & 0xFF, color >> 16]
-        if len(color) == 2:
-            r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
-            g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
-            b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
-        else:
-            r, g, b = color
-        return (r, g, b)
 
 
 class PGEventQueue():
