@@ -20,13 +20,14 @@ Usage:
     display_drv.subscribe(buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
 
     while True:
-        _ = display_drv.poll_event()
+        _ = display_drv.poll()
         for button in buttons:
             if button.value() == True:
                 print(f"{button.name} ({button.keyname}) pressed")
 """
 
 from mpdisplay import Events, Keys
+
 
 class KeyPins:
     def __init__(self, **kwargs):
@@ -38,7 +39,9 @@ class KeyPins:
 
     def __call__(self, event):
         if event.key in self._keypins.values():
-            button = [name for name, key in self._keypins.items() if key == event.key][0]
+            button = [name for name, key in self._keypins.items() if key == event.key][
+                0
+            ]
             if event.type == Events.KEYDOWN:
                 getattr(self, button).value(True)
             elif event.type == Events.KEYUP:
@@ -46,16 +49,16 @@ class KeyPins:
 
     def __getitem__(self, name):
         return getattr(self, name)
-    
+
     def __iter__(self):
         return iter(self._objects.values())
-    
+
     def __len__(self):
         return len(self._keypins)
-    
+
     def __repr__(self):
         return repr(self._objects)
-    
+
     def __str__(self):
         return str(self._keypins)
 
@@ -74,7 +77,7 @@ class _KeyPin:
             self._value = value
             # print(f'setting {self.name} = {self._value}')
         return self._value
-    
+
     @property
     def keyname(self):
         return Keys.keyname(self.key)

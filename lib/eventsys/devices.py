@@ -11,7 +11,7 @@ to receive events.
 Devices can be created with Devices.create() or by calling the
 constructor of the device class directly.  Devices can be
 subscribed to with .subscribe() and unsubscribed from with
-.unsubscribe().  Devices can be polled for events with .poll_event().
+.unsubscribe().  Devices can be polled for events with .poll().
 Devices can be registered with a broker device with .register_device()
 and unregistered with .unregister_device().  Devices can be chained
 together by setting the .broker property of a device to another device.
@@ -43,17 +43,17 @@ class Devices:
     UNDEFINED = const(-1)
     BROKER = const(0x00)
     QUEUE = const(0x01)
-    TOUCH = const( 0x02)
+    TOUCH = const(0x02)
     ENCODER = const(0x03)
     KEYPAD = const(0x04)
     JOYSTICK = const(0x05)
 
     @staticmethod
     def create(type, *args, **kwargs):
-        if (cls := _mapping.get(type)):
+        if cls := _mapping.get(type):
             return cls(*args, **kwargs)
         raise ValueError("Invalid device type")
-    
+
     @staticmethod
     def new_type(type_name: str, responses: list[int]):
         """
@@ -81,7 +81,9 @@ class Devices:
             raise ValueError("all responses must be integers")
 
         if hasattr(Devices, type_name):
-            raise ValueError(f"Device type {type_name} already exists in Devices class.")
+            raise ValueError(
+                f"Device type {type_name} already exists in Devices class."
+            )
         class_name = type_name[0].upper() + type_name[1:].lower() + "Device"
         if class_name in [cls.__name__ for cls in _mapping.values()]:
             raise ValueError(f"Device class {class_name} already exists.")
@@ -110,7 +112,7 @@ class _Device:
         self._user_data = None  # Can be set and retrieved by apps such as lv_mpdisplay
         self._read_cb = None  # Read callback - can be set by apps such as lv_mpdisplay
 
-    def poll_event(self):
+    def poll(self):
         if (event := self._poll()) is not None:
             if event.type in Events.filter:
                 if event.type == Events.QUIT:
@@ -127,7 +129,9 @@ class _Device:
             raise ValueError("callback is not callable.")
         for event_type in event_types:
             if event_type not in self.responses:
-                raise ValueError("the specified event_type is not a response from this device")
+                raise ValueError(
+                    "the specified event_type is not a response from this device"
+                )
             callback_set = self._event_callbacks.get(event_type, set())
             callback_set.add(callback)
             self._event_callbacks[event_type] = callback_set
@@ -168,7 +172,7 @@ class _Device:
         saved by .set_read_cb().
         """
         if self._read_cb:
-            self._read_cb(self.poll_event(), *args)
+            self._read_cb(self.poll(), *args)
 
 
 class Broker(_Device):
@@ -241,7 +245,7 @@ class Broker(_Device):
 
     def _poll(self):
         for device in self.devices:
-            if (event := device.poll_event()) is not None:
+            if (event := device.poll()) is not None:
                 if callback_list := self._device_callbacks.get(device.type):
                     for func in callback_list():
                         func(event)
@@ -266,8 +270,15 @@ class QueueDevice(_Device):
         if (event := self._read()) is not None:
             if event.type in self._data:
                 if (scale := self.scale) != 1:
-                    if event.type in (Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP):
-                        event.pos = (int(event.pos[0] // scale), int(event.pos[1] // scale))
+                    if event.type in (
+                        Events.MOUSEMOTION,
+                        Events.MOUSEBUTTONDOWN,
+                        Events.MOUSEBUTTONUP,
+                    ):
+                        event.pos = (
+                            int(event.pos[0] // scale),
+                            int(event.pos[1] // scale),
+                        )
                         if event.type == Events.MOUSEMOTION:
                             event.rel = (event.rel[0] // scale, event.rel[1] // scale)
                 return event
@@ -278,8 +289,9 @@ class TouchDevice(_Device):
     """
     Only reports mouse button 1.
     """
+
     type = Devices.TOUCH
-    responses = (Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN,  Events.MOUSEBUTTONUP)
+    responses = (Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -337,7 +349,9 @@ class TouchDevice(_Device):
                     None,
                 )
             else:
-                return Events.Button(Events.MOUSEBUTTONDOWN, self._state, 1, False, None)
+                return Events.Button(
+                    Events.MOUSEBUTTONDOWN, self._state, 1, False, None
+                )
         elif self._state is not None:
             last_pos = self._state
             self._state = None
@@ -385,8 +399,12 @@ class EncoderDevice(_Device):
             steps = pos - last_pos
             self._state = (pos, last_pressed)
             if self._data % 2 == 0:
-                return Events.Wheel(Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None)
-            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
+                return Events.Wheel(
+                    Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None
+                )
+            return Events.Wheel(
+                Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None
+            )
         return None
 
 
@@ -420,8 +438,13 @@ class KeypadDevice(_Device):
 
 class JoystickDevice(_Device):
     type = Devices.JOYSTICK
-    responses = (Events.JOYAXISMOTION, Events.JOYBALLMOTION, Events.JOYHATMOTION,
-                 Events.JOYBUTTONDOWN, Events.JOYBUTTONUP)
+    responses = (
+        Events.JOYAXISMOTION,
+        Events.JOYBALLMOTION,
+        Events.JOYHATMOTION,
+        Events.JOYBUTTONDOWN,
+        Events.JOYBUTTONUP,
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

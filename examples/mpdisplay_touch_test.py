@@ -1,19 +1,23 @@
-'''
+"""
 mpdisplay_touch_test.py - Touch rotation test for mpdisplay
 Tests the touch driver and finds the correct rotation masks for the touch screen.
 Sets the rotation to each of 4 possible values and asks the user to touch the rectangle in each of the 4 corners.
 Then it prints the touch_rotation_table that should be set in board_config.py.
-'''
+"""
+
 from board_config import display_drv
 from mpdisplay import Events
 
 if hasattr(display_drv, "set_device_data"):
     from mpdisplay import Device_types
+
     demo = False
 else:
     demo = True
-    print("\nThis display driver does not need touch rotations\n",
-          "   but you can still use this app for testing purposes.")
+    print(
+        "\nThis display driver does not need touch rotations\n",
+        "   but you can still use this app for testing purposes.",
+    )
 
 FG_COLOR = -1  # white
 BG_COLOR = 0  # black
@@ -22,10 +26,12 @@ SWAP_XY = 0b001
 REVERSE_X = 0b010
 REVERSE_Y = 0b100
 
+
 def set_rotation_table(table):
     for device in display_drv._devices:
         if device.type == Device_types.TOUCH:
             display_drv.set_device_data(device.id, table)
+
 
 def loop():
     display_drv.fill_rect(0, 0, display_drv.width - 1, display_drv.height - 1, BG_COLOR)
@@ -45,16 +51,34 @@ def loop():
 
         for y in range(2):
             for x in range(2):
-                display_drv.fill_rect(x * half_width, y * half_height, half_width-1, half_height-1, FG_COLOR)
+                display_drv.fill_rect(
+                    x * half_width,
+                    y * half_height,
+                    half_width - 1,
+                    half_height - 1,
+                    FG_COLOR,
+                )
                 touched_point = None
                 while not touched_point:
-                    event = display_drv.poll_event()
-                    if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
+                    event = display_drv.poll()
+                    if (
+                        event
+                        and event.type == Events.MOUSEBUTTONDOWN
+                        and event.button == 1
+                    ):
                         touched_point = event.pos
-                zone = (touched_point[1] // half_height) * 2 + (touched_point[0] // half_width)
+                zone = (touched_point[1] // half_height) * 2 + (
+                    touched_point[0] // half_width
+                )
                 touched_zones.append(zone)
                 print(f"{touched_point=} in {zone=}")
-                display_drv.fill_rect(x * half_width, y * half_height, half_width-1, half_height-1, BG_COLOR)
+                display_drv.fill_rect(
+                    x * half_width,
+                    y * half_height,
+                    half_width - 1,
+                    half_height - 1,
+                    BG_COLOR,
+                )
 
         if touched_zones == [0, 1, 2, 3]:
             mask = 0b0
@@ -86,6 +110,7 @@ def loop():
         print("Demo complete.")
     print(f"    touch_rotation_table = {tuple(touch_rotation_table)}")
     return True
+
 
 if not demo:
     set_rotation_table((0, 0, 0, 0))

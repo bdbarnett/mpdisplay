@@ -1,11 +1,12 @@
 """
 A simple test of an encoder in MPDisplay.
 """
+
 from board_config import display_drv
 from mpdisplay import Events
 
 color_byte = 1
-bg_color = 0xff00
+bg_color = 0xFF00
 w = display_drv.width
 h = display_drv.height
 thickness = 10
@@ -13,16 +14,18 @@ y_pos = h // 2
 x_pos = w // 2
 factor = -1  # change the sign to invert the direction
 
+
 def draw_line():
     color = color_byte << 8 | color_byte
     display_drv.fill_rect(0, 0, x_pos, thickness, color)
-    display_drv.fill_rect(x_pos, 0, w-x_pos, thickness, bg_color)
+    display_drv.fill_rect(x_pos, 0, w - x_pos, thickness, bg_color)
+
 
 display_drv.vscsad(y_pos)
 draw_line()
 
 while True:
-    if not (e := display_drv.poll_event()):
+    if not (e := display_drv.poll()):
         continue
     if e.type == Events.MOUSEWHEEL:
         if e.y != 0:

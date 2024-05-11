@@ -21,20 +21,21 @@ while True:
 """
 from mpdisplay import Events
 
-class Keypad():
+
+class Keypad:
     def __init__(self, display_drv, cols=3, rows=3, keys=None):
-        self._keys = keys if keys else [i+1 for i in range(cols*rows)]
+        self._keys = keys if keys else [i + 1 for i in range(cols * rows)]
         self._display_drv = display_drv
         self._cols = cols
         self._rows = rows
 
     def read(self):
-        event = self._display_drv.poll_event()
+        event = self._display_drv.poll()
         if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             col = x // (self._display_drv.width // self._cols)
             row = y // (self._display_drv.height // self._rows)
-            key = self._keys[row*self._cols + col]
+            key = self._keys[row * self._cols + col]
             return key
 
         if event and event.type == Events.KEYDOWN:

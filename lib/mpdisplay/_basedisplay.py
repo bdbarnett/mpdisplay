@@ -20,7 +20,7 @@ class _BaseDisplay(Broker):
         # Function to call when the window close button is clicked.
         # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a
         # function that cleans up resources and calls `sys.exit()`.
-        # .poll_event() must be called periodically to check for the quit event.
+        # .poll() must be called periodically to check for the quit event.
         self.quit_func = exit
 
     ############### Common API Methods ################
@@ -74,7 +74,7 @@ class _BaseDisplay(Broker):
         The function to call when the window close button is clicked.
         """
         return self._quit_func
-    
+
     @quit_func.setter
     def quit_func(self, value):
         """
@@ -175,7 +175,7 @@ class _BaseDisplay(Broker):
     def color332(self, r, g, b):
         # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
         # rrrgggbb
-        return (r & 0xe0) | ((g >> 3) & 0x1c) | (b >> 6)
+        return (r & 0xE0) | ((g >> 3) & 0x1C) | (b >> 6)
 
     def color_rgb(self, color):
         if isinstance(color, int):
@@ -215,7 +215,9 @@ class _BaseDisplay(Broker):
         :type bfa: int
         """
         if tfa + vsa + bfa != self.height:
-            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
+            raise ValueError(
+                "Sum of top, scroll and bottom areas must equal screen height"
+            )
         self._tfa = tfa
         self._vsa = vsa
         self._bfa = bfa
@@ -224,7 +226,7 @@ class _BaseDisplay(Broker):
         """
         Set the vertical scroll start address.  Should be overridden by the
         subclass and called as super().vscsad(y).
-        
+
         :param y: The vertical scroll start address.
         :type y: int
         """
