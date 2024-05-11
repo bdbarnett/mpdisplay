@@ -94,7 +94,7 @@ class Devices:
 
 
 class _Device:
-    type = Devices.UNKNOWN
+    type = Devices.UNDEFINED
     responses = Events.filter
     _broker = None
 
