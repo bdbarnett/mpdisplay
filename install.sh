@@ -49,6 +49,7 @@
 # - timer
 # - framebuf
 # - binfont
+# - playing_cards
 # - testris
 # - micropython-touch
 #
@@ -121,6 +122,7 @@ git clone https://github.com/bdbarnett/direct_draw.git $REPO/direct_draw
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
 git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
+git clone https://github.com/bdbarnett/playing_cards.git $REPO/playing_cards
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
 
@@ -169,6 +171,9 @@ cp -ur $REPO/console/examples $TARGET/
 
 cp -ur $REPO/timer/timer $TARGET/lib/
 cp -ur $REPO/timer/examples $TARGET/
+
+cp -u $REPO/playing_cards/playing_cards.py $TARGET/lib/
+cp -ur $REPO/playing_cards/examples $TARGET/
 
 cp -u $REPO/testris/testris.py $TARGET/examples/
 
