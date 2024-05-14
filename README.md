@@ -14,7 +14,7 @@ MPDisplay provides display, touch and encoder drivers as well as framework, conf
 [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  MPDisplay works with the mp_lcd_bus bus drivers in LVGL_MicroPython.
 
 ## TFT Graphics
-[TFT Graphics](https://github.com/bdbarnett/tft_graphics) is a port I created of Russ Hughes's st7789mpy_py library to demonstrate MPDisplay's usefullness with other libraries.  It is fully functional and very powerful.  It includes all the examples provided in the original library.  It draws directly to the screen, only creating small buffers for individual characters in text or for bitmap images.
+[TFT Graphics](https://github.com/bdbarnett/direct_draw) is a port I created of Russ Hughes's st7789mpy_py library to demonstrate MPDisplay's usefullness with other libraries.  It is fully functional and very powerful.  It includes all the examples provided in the original library.  It draws directly to the screen, only creating small buffers for individual characters in text or for bitmap images.
 
 ## DisplayBuffer
 [DisplayBuffer](https://github.com/bdbarnett/displaybuffer) is a class I wrote based on the drivers Peter Hinch wrote in Nano-GUI and Micro-GUI.  I initially wrote it to make MPDisplay compatible with those libraries, but it is very useful on its own.  It is a framebuffer based on the number of pixels on the display, but can be sized to 2 bytes per pixel, 1 byte per pixel or 2 pixels per byte depending on whether the user wants all 65k (RGB565), only 256 (RGB332) or even only 16 (RGB565 in a lookup table) colors.
@@ -60,7 +60,7 @@ If you have LVGL compiled into MicroPython, also get:
 
 To use Nano-GUI or Micro-GUI, [see DisplayBuffer](https://github.com/bdbarnett/displaybuffer)
 
-To use [TFT_Graphics](https://github.com/bdbarnett/tft_graphics), see its directions.
+To use [direct_draw](https://github.com/bdbarnett/direct_draw), see its directions.
 
 
 # Suggested filesystem structure

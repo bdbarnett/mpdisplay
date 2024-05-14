@@ -32,7 +32,7 @@ print("")
 mip.install("github:bdbarnett/displaybuf", target=TARGET)
 print("")
 
-mip.install("github:bdbarnett/tft_graphics", target=TARGET)
+mip.install("github:bdbarnett/direct_draw", target=TARGET)
 print("")
 
 mip.install("github:bdbarnett/console", target=TARGET)

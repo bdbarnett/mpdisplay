@@ -45,7 +45,7 @@
 # - lcd_bus
 # - displaybuf
 # - console
-# - tft_graphics
+# - direct_draw
 # - timer
 # - framebuf
 # - binfont
@@ -117,7 +117,7 @@ git clone https://github.com/bdbarnett/sdl2_lib.git $REPO/sdl2_lib
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
 git clone https://github.com/bdbarnett/displaybuf.git $REPO/displaybuf
 git clone https://github.com/bdbarnett/console.git $REPO/console
-git clone https://github.com/bdbarnett/tft_graphics.git $REPO/tft_graphics
+git clone https://github.com/bdbarnett/direct_draw.git $REPO/direct_draw
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
 git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
@@ -160,9 +160,9 @@ cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
 cp -ur $REPO/displaybuf/examples $TARGET/
 cp -u $REPO/displaybuf/configs/* $TARGET/
 
-cp -ur $REPO/tft_graphics/tft_graphics $TARGET/lib/
-cp -ur $REPO/tft_graphics/examples $TARGET/
-cp -ur $REPO/tft_graphics/romfonts $TARGET/
+cp -ur $REPO/direct_draw/direct_draw $TARGET/lib/
+cp -ur $REPO/direct_draw/examples $TARGET/
+cp -ur $REPO/direct_draw/romfonts $TARGET/
 
 cp -u $REPO/console/console.py $TARGET/lib/
 cp -ur $REPO/console/examples $TARGET/
