@@ -41,6 +41,9 @@ print("")
 mip.install("github:bdbarnett/timer", target=TARGET)
 print("")
 
+mip.install("github:bdbarnett/playing_cards", target=TARGET)
+print("")
+
 mip.install("github:bdbarnett/testris", target=TARGET)
 print("")
 
