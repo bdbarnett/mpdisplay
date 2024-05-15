@@ -47,7 +47,7 @@
 # - console
 # - direct_draw
 # - timer
-# - framebuf
+# - framebuf_plus
 # - binfont
 # - playing_cards
 # - testris
@@ -116,12 +116,12 @@ fi
 git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
 git clone https://github.com/bdbarnett/sdl2_lib.git $REPO/sdl2_lib
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
-git clone https://github.com/bdbarnett/displaybuf.git $REPO/displaybuf
-git clone https://github.com/bdbarnett/console.git $REPO/console
-git clone https://github.com/bdbarnett/direct_draw.git $REPO/direct_draw
-git clone https://github.com/bdbarnett/timer.git $REPO/timer
-git clone https://github.com/bdbarnett/framebuf.git $REPO/framebuf
+git clone https://github.com/bdbarnett/framebuf_plus.git $REPO/framebuf_plus
 git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
+git clone https://github.com/bdbarnett/displaybuf.git $REPO/displaybuf
+git clone https://github.com/bdbarnett/direct_draw.git $REPO/direct_draw
+git clone https://github.com/bdbarnett/console.git $REPO/console
+git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/playing_cards.git $REPO/playing_cards
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
@@ -151,8 +151,8 @@ cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 
-cp -u $REPO/framebuf/framebuf*.py $TARGET/lib/
-cp -ur $REPO/framebuf/examples $TARGET/
+cp -u $REPO/framebuf_plus/framebuf*.py $TARGET/lib/
+cp -ur $REPO/framebuf_plus/examples $TARGET/
 
 cp -u $REPO/binfont/binfont.py $TARGET/lib/
 cp -ur $REPO/binfont/examples $TARGET/
