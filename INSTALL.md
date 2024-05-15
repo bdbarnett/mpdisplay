@@ -28,7 +28,7 @@ set MPDisplay=PGDisplay
 
 ### To connect your microcontroller to wifi:
 
-Copy [wifi.py](utils/wifi.py) from the [utils](utils) folder and save it in the `lib` folder of your microcontroller.  Type the following at the REPL (or add it to your boot.py) to connect:
+Copy [wifi.py](utils/wifi.py) from the [utils](utils) directory and save it in the `lib` directory of your microcontroller.  Type the following at the REPL (or add it to your boot.py) to connect:
 
 ```
 import wifi
@@ -71,7 +71,7 @@ chmod u+x install_all.sh
 
 ## For CPython on Windows
 
-There is no native installer for Windows, but the above directions for CPython on Unix / Linux work under Windows Subsytem for Linux (WSL).  I recommended you get Ubuntu 24.04 LTS (the latest release) from the [Microsoft Store](https://apps.microsoft.com/detail/9nz3klhxdjp5).  You may simply download the files under WSL and then copy / move them to a directory visible to the Command Prompt.  Instead, I create a `mp` folder in my my Windows user profile directory, then create a symbolic link to it in my Linux home directory.  My Windows username is brad, so I type the following at the bash prompt before running the `install_all.sh` script in WSL:
+There is no native installer for Windows, but the above directions for CPython on Unix / Linux work under Windows Subsytem for Linux (WSL).  I recommended you get Ubuntu 24.04 LTS (the latest release) from the [Microsoft Store](https://apps.microsoft.com/detail/9nz3klhxdjp5).  You may simply download the files under WSL and then copy / move them to a directory visible to the Command Prompt.  Instead, I create a `mp` directory in my my Windows user profile directory, then create a symbolic link to it in my Linux home directory.  My Windows username is brad, so I type the following at the bash prompt before running the `install_all.sh` script in WSL:
 
 ```
 mkdir /mnt/c/Users/brad/mp
