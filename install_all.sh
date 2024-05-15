@@ -92,7 +92,7 @@
 
 #### Set the following variables to your desired paths
 REPO=~/gh  # Path to clone repositories into
-TARGET=~/micropython  # Path to copy Python files
+TARGET=~/mp  # Path to copy Python files
 
 #### Set to the executable you want to use for the test at the end of the script
 EXE=python3  # micropython, python3 or python
