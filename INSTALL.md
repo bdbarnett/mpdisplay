@@ -78,7 +78,7 @@ mkdir /mnt/c/Users/brad/mp
 ln -s /mnt/c/Users/brad/mp/ ~/
 ```
 
-Then, in WSL I can:
+After performing the directions under CPython on Unix, in WSL I can:
 ```
 cd ~/mp
 python3 -i path.py  # or python -i path.py or micropython -i path.py
