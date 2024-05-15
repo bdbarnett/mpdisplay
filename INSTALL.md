@@ -24,9 +24,9 @@ To do that in Windows:
 set MPDisplay=PGDisplay
 ```
 
-## For wifi capable microntrollers or MicroPython on Unix / Linux
+## For MicroPython on Unix / Linux or wifi capable microntrollers
 
-- To connect your microcontroller to wifi:
+### To connect your microcontroller to wifi:
 
 Copy [wifi.py](utils/wifi.py) from the [utils](utils) folder and save it in the `lib` folder of your microcontroller.  Type the following at the REPL (or add it to your boot.py) to connect:
 
@@ -35,7 +35,7 @@ import wifi
 wlan = wifi.connect("YOURSSID", "YOURPASSWORD")
 ```
 
-- Once your microcontroller is connected to wifi, or for MicroPython on Unix / Linux
+### Once your microcontroller is connected to wifi, or for MicroPython on Unix / Linux
 
 Note, MIP and it's dependencies must be "frozen" into your MicroPython executable or firmware.  It is by default, but some packages, such as the MicroPython package in Ubuntu 24.04 LTS, do not include MIP.
 
