@@ -21,7 +21,7 @@
 # After downloading, switch to the directory your files are staged in and launch your python.
 # For instance:
 #
-#     cd ~/micropython
+#     cd ~/mp
 #     micropython -i path.py
 #             OR
 #     python3 -i path.py
@@ -29,10 +29,10 @@
 # You may than import any of the examples, such as 'import paint'
 #
 # Usage:
-#     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.sh
+#     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install_all.sh
+#     (edit install_all.sh to set the $REPO, $TARGET and $EXE variables below)
 #     chmod u+x install.sh
-#     (edit install.sh to set the $REPO, $TARGET and $EXE variables below)
-#     ./install.sh
+#     ./install_all.sh
 #
 # After installation, you may use the files in the $TARGET directory to 
 # transfer to your MicroPython or CircuitPython device.  You will need
@@ -145,7 +145,7 @@ cp -ur $REPO/mpdisplay/lib $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/
-cp -u $REPO/mpdisplay/install.py $TARGET/
+cp -u $REPO/mpdisplay/install_all.py $TARGET/
 
 cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
