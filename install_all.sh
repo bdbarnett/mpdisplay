@@ -116,6 +116,7 @@ fi
 git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
 git clone https://github.com/bdbarnett/sdl2_lib.git $REPO/sdl2_lib
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
+git clone https://github.com/bdbarnett/shapes.git $REPO/shapes
 git clone https://github.com/bdbarnett/framebuf_plus.git $REPO/framebuf_plus
 git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
 git clone https://github.com/bdbarnett/displaybuf.git $REPO/displaybuf
@@ -150,6 +151,9 @@ cp -u $REPO/mpdisplay/install_all.py $TARGET/
 cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
+
+cp -ur $REPO/shapes/shapes $TARGET/lib/
+cp -ur $REPO/shapes/examples $TARGET/
 
 cp -u $REPO/framebuf_plus/framebuf*.py $TARGET/lib/
 cp -ur $REPO/framebuf_plus/examples $TARGET/

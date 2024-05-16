@@ -5,6 +5,7 @@
         ["github:bdbarnett/mpdisplay", "main"],
         ["github:bdbarnett/sdl2_lib", "main"],
         ["github:bdbarnett/lcd_bus", "main"],
+        ["github:bdbarnett/shapes", "main"],
         ["github:bdbarnett/framebuf_plus", "main"],
         ["github:bdbarnett/binfont", "main"],
         ["github:bdbarnett/displaybuf", "main"],

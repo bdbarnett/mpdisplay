@@ -23,6 +23,9 @@ print("")
 
 ### Optional libraries and examples.  Comment out any that you do not want to install. ###
 
+mip.install("github:bdbarnett/shapes", target=TARGET)
+print("")
+
 mip.install("github:bdbarnett/framebuf_plus", target=TARGET)
 print("")
 
