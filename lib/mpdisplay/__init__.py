@@ -29,7 +29,7 @@ import os
 from eventsys.devices import Devices, Broker
 from eventsys.events import Events
 from eventsys.keys import Keys
-from ._basedisplay import _BaseDisplay
+from ._basedisplay import _BaseDisplay, Area
 
 
 if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDisplay")):
