@@ -43,12 +43,12 @@
 # - mpdisplay
 # - sdl2_lib
 # - lcd_bus
+# - tools
 # - displaybuf
 # - console
 # - direct_draw
 # - timer
 # - framebuf_plus
-# - binfont
 # - playing_cards
 # - testris
 # - micropython-touch
@@ -116,9 +116,8 @@ fi
 git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
 git clone https://github.com/bdbarnett/sdl2_lib.git $REPO/sdl2_lib
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
-git clone https://github.com/bdbarnett/shapes.git $REPO/shapes
+git clone https://github.com/bdbarnett/tools.git $REPO/tools
 git clone https://github.com/bdbarnett/framebuf_plus.git $REPO/framebuf_plus
-git clone https://github.com/bdbarnett/binfont.git $REPO/binfont
 git clone https://github.com/bdbarnett/displaybuf.git $REPO/displaybuf
 git clone https://github.com/bdbarnett/direct_draw.git $REPO/direct_draw
 git clone https://github.com/bdbarnett/console.git $REPO/console
@@ -152,23 +151,19 @@ cp -ur $REPO/sdl2_lib/sdl2_lib $TARGET/lib/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 
-cp -ur $REPO/shapes/shapes $TARGET/lib/
-cp -ur $REPO/shapes/examples $TARGET/
+cp -ur $REPO/tools/tools $TARGET/lib/
+cp -ur $REPO/tools/examples $TARGET/
+cp -ur $REPO/tools/romfonts $TARGET/
 
 cp -u $REPO/framebuf_plus/framebuf*.py $TARGET/lib/
 cp -ur $REPO/framebuf_plus/examples $TARGET/
-
-cp -u $REPO/binfont/binfont.py $TARGET/lib/
-cp -ur $REPO/binfont/examples $TARGET/
-cp -ur $REPO/binfont/romfonts $TARGET/
 
 cp -ur $REPO/displaybuf/displaybuf $TARGET/lib/
 cp -ur $REPO/displaybuf/examples $TARGET/
 cp -u $REPO/displaybuf/configs/* $TARGET/
 
-cp -ur $REPO/direct_draw/direct_draw $TARGET/lib/
+cp -u $REPO/direct_draw/direct_draw.py $TARGET/lib/
 cp -ur $REPO/direct_draw/examples $TARGET/
-cp -ur $REPO/direct_draw/romfonts $TARGET/
 
 cp -u $REPO/console/console.py $TARGET/lib/
 cp -ur $REPO/console/examples $TARGET/
