@@ -4,7 +4,7 @@ A full installation of MPDisplay, required libraries for specific platforms, and
 
 ## Prerequisites:
 - There are no prerequisites for MicroPython or CircuitPython on microcontrollers
-- For MicroPython or CPython on Unix / Linux / ChromeOS, install SDL2 and Pygame:
+- For MicroPython or CPython on Unix / Linux / ChromeOS / Single Board Computers, install SDL2 and Pygame:
 ```
 sudo apt update && sudo apt upgrade
 sudo apt install libsdl2-2.0-0
@@ -13,7 +13,7 @@ sudo apt install python3-pygame
 - For CPython on Windows, install SDL2 and Pygame:
     - Save the `SDL2.dll` file extracted from `SDL2-2.??.?-win32-x??.zip` downloaded from [SDL Releases](https://github.com/libsdl-org/SDL/releases/) to your `C:\Windows\System32\` directory
     - install Pygame by entering `pip install pygame` or `pip3 install pygame` at the Command Prompt
-- Although the author has not tested the following yet, you should be able to use SPI and I2C LCDs on single board computers (SBC) such as the Raspberry Pi 4 and 5 by installing [Adafruit Blinka DisplayIO](https://github.com/adafruit/Adafruit_Blinka_Displayio).  Note, if you are using an HDMI display on an SBC, see the requirements for CPython on Unix / Linux above.
+- Although I have not tested this yet, you should be able to use SPI and I2C LCDs on single board computers (SBC) such as the Raspberry Pi 4 and 5 by installing [Adafruit Blinka DisplayIO](https://github.com/adafruit/Adafruit_Blinka_Displayio).  Note, if you are using an HDMI display on an SBC, see the requirements for CPython on Unix / Linux above instead.
 
 Note, MPDisplay attempts to use SDL2 before Pygame.  If both are installed and you want to force it to use Pygame, set the environment variable `MPDisplay=PGDisplay`.  I found this necessary on my Chromebook because SDL2 doesn't behave the same way on it for some reason.  To do that in bash:
 ```
