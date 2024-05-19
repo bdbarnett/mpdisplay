@@ -144,11 +144,11 @@ class DisplayDriver:
         # what converts from the C_Array object the binding passes into a
         # memoryview object that can be passed to the bus drivers
         self.display_drv.blit(
+            color_p.__dereference__(width * height * self._color_size),
             area.x1,
             area.y1,
             width,
             height,
-            color_p.__dereference__(width * height * self._color_size),
         )
         if self._blocking:
             self.lv_display.flush_ready()

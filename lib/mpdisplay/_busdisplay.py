@@ -194,15 +194,15 @@ class BusDisplay(_BaseDisplay):
         # Define the set_window method.  May be overriden by set_render_mode_full.
         self.set_window = self._set_window
 
-        # Define the _send_cmd_data and _blit methods based on the display bus capabilities.
+        # Define the _tx_param and _tx_color methods based on the display bus capabilities.
         if hasattr(display_bus, "tx_color"):
             # lcd_bus and mp_lcd_bus use tx_color and tx_param to send color data and parameters
-            self._send_cmd_data = display_bus.tx_param
-            self._blit = display_bus.tx_color
+            self._tx_param = display_bus.tx_param
+            self._tx_color = display_bus.tx_color
         else:
             # CircuitPython uses send() to send color data and parameters
-            self._send_cmd_data = display_bus.send
-            self._blit = self.set_params
+            self._tx_param = display_bus.send
+            self._tx_color = self.set_params
 
         # Initialize the display bus if necessary
         if hasattr(display_bus, "init"):
@@ -265,7 +265,7 @@ class BusDisplay(_BaseDisplay):
         # Set the display inversion mode
         self.invert_colors(self._invert)
 
-    def blit(self, x, y, width, height, buf):
+    def blit(self, buf, x, y, width, height):
         """
         Blit a buffer to the display.
 
@@ -294,7 +294,7 @@ class BusDisplay(_BaseDisplay):
         y2 = y1 + height - 1
 
         self.set_window(x1, y1, x2, y2)
-        self._blit(self._write_ram_command, buf, x1, y1, x2, y2)
+        self._tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
 
     def fill_rect(self, x, y, width, height, color):
         """
@@ -320,11 +320,11 @@ class BusDisplay(_BaseDisplay):
         if height > width:
             raw_data = struct.pack("<H", color) * height
             for col in range(x, x + width):
-                self.blit(col, y, 1, height, memoryview(raw_data[:]))
+                self.blit(memoryview(raw_data[:]), col, y, 1, height)
         else:
             raw_data = struct.pack("<H", color) * width
             for row in range(y, y + height):
-                self.blit(x, row, width, 1, memoryview(raw_data[:]))
+                self.blit(memoryview(raw_data[:]), x, row, width, 1)
 
     def deinit(self):
         """
@@ -516,7 +516,7 @@ class BusDisplay(_BaseDisplay):
         :param params: The parameters to send.
         :type params: bytes
         """
-        self._send_cmd_data(cmd, params)
+        self._tx_param(cmd, params)
 
     def bus_swap_disable(self, value):
         """

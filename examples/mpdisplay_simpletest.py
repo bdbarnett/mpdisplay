@@ -21,15 +21,15 @@ alloc_buffer = lambda size: memoryview(bytearray(size))
 
 # Define RGB565 colors
 BLACK = 0x0000
-WHITE = 0xffff
-MAGENTA = 0xf81f
-CYAN = 0x07ff
-YELLOW = 0xffe0
-PURPLE = 0x780f
-GREEN = 0x07e0
-BLUE = 0x001f
-RED = 0xf800
-ORANGE = 0xfda0
+WHITE = 0xFFFF
+MAGENTA = 0xF81F
+CYAN = 0x07FF
+YELLOW = 0xFFE0
+PURPLE = 0x780F
+GREEN = 0x07E0
+BLUE = 0x001F
+RED = 0xF800
+ORANGE = 0xFDA0
 
 # Define the blocks
 bytes_per_pixel = 2
@@ -37,14 +37,27 @@ block_width = 64
 block_height = 64
 block_bytes = block_width * block_height * bytes_per_pixel
 blocks = []
-blocks_per_screen = (display_drv.width * display_drv.height) // (block_width * block_height)
+blocks_per_screen = (display_drv.width * display_drv.height) // (
+    block_width * block_height
+)
 # Create the blocks
 # for pixel_color in [1 << (x + 8) | 1 << x for x in range(8)]:
-for pixel_color in [BLACK, WHITE, MAGENTA, CYAN, YELLOW, PURPLE, GREEN, BLUE, RED, ORANGE]:
+for pixel_color in [
+    BLACK,
+    WHITE,
+    MAGENTA,
+    CYAN,
+    YELLOW,
+    PURPLE,
+    GREEN,
+    BLUE,
+    RED,
+    ORANGE,
+]:
     block = alloc_buffer(block_bytes)
     for i in range(0, block_bytes, bytes_per_pixel):
-        block[i] = pixel_color & 0xff if not needs_swap else pixel_color >> 8
-        block[i+1] = pixel_color >> 8 if not needs_swap else pixel_color & 0xff
+        block[i] = pixel_color & 0xFF if not needs_swap else pixel_color >> 8
+        block[i + 1] = pixel_color >> 8 if not needs_swap else pixel_color & 0xFF
     blocks.append(block)
 
 # Maximum start positions of blocks
@@ -62,11 +75,12 @@ start = ticks_ms()
 while True:
     for _ in range(blocks_per_screen):
         display_drv.blit(
+            random.choice(blocks),  # buffer
             random.randint(0, max_x),  # x position
             random.randint(0, max_y),  # y position
-            block_width,                # width
-            block_height,                # height
-            random.choice(blocks))     # buffer
+            block_width,  # width
+            block_height,
+        )  # height
     count += blocks_per_screen
     elapsed = ticks_diff(ticks_ms(), start)
     print(f"\x08\x08\x08\x08{(count * 1000 // elapsed):4}", end="")

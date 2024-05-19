@@ -77,7 +77,7 @@ class PGDisplay(_BaseDisplay):
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
-    def blit(self, x, y, w, h, buffer):
+    def blit(self, buffer, x, y, w, h):
         """
         Blits a buffer to the display.
         
