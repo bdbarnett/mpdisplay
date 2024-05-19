@@ -112,7 +112,7 @@ class _BaseDisplay(Broker):
         :param color: The color of the pixel.
         :type color: int
         """
-        self.blit(bytearray(color.to_bytes(2, "little")), x, y, 1, 1)
+        self.blit_rect(bytearray(color.to_bytes(2, "little")), x, y, 1, 1)
 
     def color888(self, r, g, b):
         """

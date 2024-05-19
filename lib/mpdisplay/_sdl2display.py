@@ -122,7 +122,7 @@ class SDL2Display(_BaseDisplay):
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
-    def blit(self, buffer, x, y, w, h):
+    def blit_rect(self, buffer, x, y, w, h):
         """
         Blits a buffer to the display.
         
@@ -134,7 +134,7 @@ class SDL2Display(_BaseDisplay):
         :type w: int
         :param h: The height of the display.
         :type h: int
-        :param buffer: The buffer to blit to the display.
+        :param buffer: The buffer to blit_rect to the display.
         :type buffer: bytearray
         """
         pitch = int(w * self.color_depth // 8)

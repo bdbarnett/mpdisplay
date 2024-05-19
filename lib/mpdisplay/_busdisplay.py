@@ -247,7 +247,7 @@ class BusDisplay(_BaseDisplay):
         If it is overridden, it must call super().init() or set self._initialized = True.
 
         :param render_mode_full: Whether to set the display to render the full screen each
-         time the .blit() method is called (default is False).
+         time the .blit_rect() method is called (default is False).
         :type render_mode_full: bool, optional
         """
         self._initialized = True
@@ -265,7 +265,7 @@ class BusDisplay(_BaseDisplay):
         # Set the display inversion mode
         self.invert_colors(self._invert)
 
-    def blit(self, buf, x, y, width, height):
+    def blit_rect(self, buf, x, y, width, height):
         """
         Blit a buffer to the display.
 
@@ -320,11 +320,11 @@ class BusDisplay(_BaseDisplay):
         if height > width:
             raw_data = struct.pack("<H", color) * height
             for col in range(x, x + width):
-                self.blit(memoryview(raw_data[:]), col, y, 1, height)
+                self.blit_rect(memoryview(raw_data[:]), col, y, 1, height)
         else:
             raw_data = struct.pack("<H", color) * width
             for row in range(y, y + height):
-                self.blit(memoryview(raw_data[:]), x, row, width, 1)
+                self.blit_rect(memoryview(raw_data[:]), x, row, width, 1)
 
     def deinit(self):
         """
@@ -375,19 +375,19 @@ class BusDisplay(_BaseDisplay):
 
         This method sets the render mode of the display. If the render_mode_full
         parameter is True, the display will be set to render the full screen each
-        time the .blit() method is called. Otherwise, the window will be set each
-        time the .blit() method is called.
+        time the .blit_rect() method is called. Otherwise, the window will be set each
+        time the .blit_rect() method is called.
 
         :param render_mode_full: Whether to set the display to render the full screen
-         each time the .blit() method is called (default is False).
+         each time the .blit_rect() method is called (default is False).
         :type render_mode_full: bool, optional
         """
         # If rendering the full screen, set the window now
-        # and pass each time .blit() is called.
+        # and pass each time .blit_rect() is called.
         if render_mode_full:
             self._set_window(0, 0, self.width, self.height)
             self.set_window = self._pass
-        # Otherwise, set the window each time .blit() is called.
+        # Otherwise, set the window each time .blit_rect() is called.
         else:
             self.set_window = self._set_window
 

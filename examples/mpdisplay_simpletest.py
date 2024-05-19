@@ -74,7 +74,7 @@ count = 0
 start = ticks_ms()
 while True:
     for _ in range(blocks_per_screen):
-        display_drv.blit(
+        display_drv.blit_rect(
             random.choice(blocks),  # buffer
             random.randint(0, max_x),  # x position
             random.randint(0, max_y),  # y position

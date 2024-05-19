@@ -143,7 +143,7 @@ class DisplayDriver:
         # we have to use the __dereference__ method because this method is
         # what converts from the C_Array object the binding passes into a
         # memoryview object that can be passed to the bus drivers
-        self.display_drv.blit(
+        self.display_drv.blit_rect(
             color_p.__dereference__(width * height * self._color_size),
             area.x1,
             area.y1,
