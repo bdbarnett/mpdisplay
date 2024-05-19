@@ -6,7 +6,6 @@ from ._area import Area
 
 # drawing primitives provided by the canvas
 
-
 def fill_rect(canvas, x, y, w, h, c):
     canvas.fill_rect(x, y, w, h, c)
     x2 = x + w
@@ -21,11 +20,12 @@ def pixel(canvas, x, y, c):
     canvas.pixel(x, y, c)
     return Area(x, y, 1, 1)
 
-# drawing primitives provided by this module
-
 def fill(canvas, c):
-    fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
+    canvas.fill(c)
     return Area(0, 0, canvas.width, canvas.height)
+
+
+# drawing primitives provided by this module
 
 def hline(canvas, x, y, w, c):
     fill_rect(canvas, x, y, w, 1, c)

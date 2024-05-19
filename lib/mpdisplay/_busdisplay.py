@@ -295,6 +295,7 @@ class BusDisplay(_BaseDisplay):
 
         self.set_window(x1, y1, x2, y2)
         self._tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
+        super().blit_rect(buf, x, y, width, height)
 
     def fill_rect(self, x, y, width, height, color):
         """
@@ -325,6 +326,7 @@ class BusDisplay(_BaseDisplay):
             raw_data = struct.pack("<H", color) * width
             for row in range(y, y + height):
                 self.blit_rect(memoryview(raw_data[:]), x, row, width, 1)
+        super().fill_rect(x, y, width, height, color)
 
     def deinit(self):
         """

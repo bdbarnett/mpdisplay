@@ -153,6 +153,7 @@ class SDL2Display(_BaseDisplay):
         else:
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer, pitch))
         self._show(blitRect)
+        super().blit_rect(buffer, x, y, w, h)
 
     def fill_rect(self, x, y, w, h, color):
         """
@@ -180,6 +181,7 @@ class SDL2Display(_BaseDisplay):
         retcheck(SDL_RenderFillRect(self._renderer, fillRect))  # Fill the rectangle on the texture
         retcheck(SDL_SetRenderTarget(self._renderer, None))  # Reset the render target back to the window
         self._show(fillRect)
+        super().fill_rect(x, y, w, h, color)
 
     def deinit(self):
         """
