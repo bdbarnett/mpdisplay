@@ -25,7 +25,7 @@ import time
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 
 
 def between(left, right, along):
@@ -39,14 +39,14 @@ def color_wheel(position):
     position = (255 - position) % 255
 
     if position < 85:
-        return pallette.color565(255 - position * 3, 0, position * 3)
+        return palette.color565(255 - position * 3, 0, position * 3)
 
     if position < 170:
         position -= 85
-        return pallette.color565(0, position * 3, 255 - position * 3)
+        return palette.color565(0, position * 3, 255 - position * 3)
 
     position -= 170
-    return pallette.color565(position * 3, 255 - position * 3, 0)
+    return palette.color565(position * 3, 255 - position * 3, 0)
 
 
 def main():
@@ -68,7 +68,7 @@ def main():
 
     tft.vscrdef(tfa, height, bfa)  # set scroll area
     tft.vscsad(scroll + tfa)  # set scroll position
-    tft.fill(pallette.BLACK)  # clear screen
+    tft.fill(palette.BLACK)  # clear screen
 
     half = (height >> 1) - 1  # half the height of the dislay
     interval = 0  # steps between new points
@@ -94,7 +94,7 @@ def main():
             increment = 1 / interval  # increment per step
 
         # clear the first column of the display and scroll it
-        tft.vline(scroll, 0, height, pallette.BLACK)
+        tft.vline(scroll, 0, height, palette.BLACK)
         tft.vscsad(scroll + tfa)
 
         # get the next point between last_y and current_y

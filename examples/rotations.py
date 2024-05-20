@@ -24,7 +24,7 @@ number and the color of the display background.
 import time
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import vga1_16x16 as font
 
 
@@ -66,14 +66,14 @@ def main():
     tft = tft_config.config(tft_config.WIDE)
 
     colors = (
-        ("Red", pallette.RED, pallette.WHITE),
-        ("Green", pallette.GREEN, pallette.BLACK),
-        ("Blue", pallette.BLUE, pallette.WHITE),
-        ("Black", pallette.BLACK, pallette.WHITE),
-        ("White", pallette.WHITE, pallette.BLACK),
-        ("Yellow", pallette.YELLOW, pallette.BLACK),
-        ("Cyan", pallette.CYAN, pallette.BLACK),
-        ("Magenta", pallette.MAGENTA, pallette.BLACK),
+        ("Red", palette.RED, palette.WHITE),
+        ("Green", palette.GREEN, palette.BLACK),
+        ("Blue", palette.BLUE, palette.WHITE),
+        ("Black", palette.BLACK, palette.WHITE),
+        ("White", palette.WHITE, palette.BLACK),
+        ("Yellow", palette.YELLOW, palette.BLACK),
+        ("Cyan", palette.CYAN, palette.BLACK),
+        ("Magenta", palette.MAGENTA, palette.BLACK),
     )
 
     color_idx = 0
@@ -87,7 +87,7 @@ def main():
 
             tft.fill(bg)
 
-            tft.rect(0, 0, width, height, pallette.WHITE)
+            tft.rect(0, 0, width, height, palette.WHITE)
             center_on(tft, font, "Rotation", height // 3 - font.HEIGHT // 2, fg, bg)
             center_on(tft, font, str(rotation), height // 2 - font.HEIGHT // 2, fg, bg)
             center_on(

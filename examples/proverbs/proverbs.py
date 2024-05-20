@@ -30,7 +30,7 @@ import utime
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import proverbs_20 as font20
 import proverbs_30 as font30
 
@@ -43,14 +43,14 @@ def color_wheel(WheelPos):
     WheelPos = (255 - WheelPos) % 255
 
     if WheelPos < 85:
-        return pallette.color565(255 - WheelPos * 3, 0, WheelPos * 3)
+        return palette.color565(255 - WheelPos * 3, 0, WheelPos * 3)
 
     if WheelPos < 170:
         WheelPos -= 85
-        return pallette.color565(0, WheelPos * 3, 255 - WheelPos * 3)
+        return palette.color565(0, WheelPos * 3, 255 - WheelPos * 3)
 
     WheelPos -= 170
-    return pallette.color565(WheelPos * 3, 255 - WheelPos * 3, 0)
+    return palette.color565(WheelPos * 3, 255 - WheelPos * 3, 0)
 
 
 def main():
@@ -78,7 +78,7 @@ def main():
             proverb_lines = proverb.split("，")
             half_lines_height = len(proverb_lines) * line_height // 2
 
-            tft.fill(pallette.BLACK)
+            tft.fill(palette.BLACK)
 
             for count, proverb_line in enumerate(proverb_lines):
                 half_length = tft.write_width(font, proverb_line) // 2

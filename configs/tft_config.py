@@ -1,7 +1,9 @@
 from board_config import display_drv
 from sys import implementation
+
 if implementation.name == "esp32":
     from machine import freq
+
     freq(240_000_000)
 
 
@@ -15,10 +17,11 @@ else:
     WIDE = display_drv.rotation
     TALL = display_drv.rotation + 90
 
-SCROLL = WIDE      # orientation for scroll.py
-FEATHERS = TALL    # orientation for feathers.py
+SCROLL = WIDE  # orientation for scroll.py
+FEATHERS = TALL  # orientation for feathers.py
 
-class Pallette:
+
+class Palette:
     color565 = display_drv.color565
 
     BLACK = color565(0, 0, 0)
@@ -30,10 +33,12 @@ class Pallette:
     YELLOW = color565(255, 255, 0)
     WHITE = color565(255, 255, 255)
 
+
 def deinit(tft, display_off=False):
     tft.deinit()
     if display_off:
         BL.value(0)
+
 
 def config(rotation=None, buffer_size=0, options=0):
     if rotation is not None:

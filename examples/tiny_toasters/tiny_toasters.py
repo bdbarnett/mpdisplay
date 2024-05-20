@@ -34,7 +34,7 @@ import random
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import tiny_toasters_bitmaps as toast_bitmaps
 
 TOASTER_FRAMES = [0, 1, 2, 3]
@@ -113,7 +113,7 @@ def main():
         def clear(self):
             """clear above and behind sprite"""
             tft.fill_rect(
-                self.col, self.row - 1, self.width, self.dir_row + 1, pallette.BLACK
+                self.col, self.row - 1, self.width, self.dir_row + 1, palette.BLACK
             )
 
             tft.fill_rect(
@@ -121,13 +121,13 @@ def main():
                 self.row,
                 -self.dir_col,
                 self.height,
-                pallette.BLACK,
+                palette.BLACK,
             )
 
         def erase(self):
             """erase last position of sprite"""
             tft.fill_rect(
-                self.last_col, self.last_row, self.width, self.height, pallette.BLACK
+                self.last_col, self.last_row, self.width, self.height, palette.BLACK
             )
 
         def move(self, sprites):

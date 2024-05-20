@@ -28,7 +28,7 @@ import chango_32 as font_32
 import chango_64 as font_64
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 
 gc.collect()
 
@@ -39,13 +39,13 @@ def main():
     tft = tft_config.config(tft_config.WIDE)
 
     row = 0
-    tft.write(font_16, "abcdefghijklmnopqrst", 0, row, pallette.RED)
+    tft.write(font_16, "abcdefghijklmnopqrst", 0, row, palette.RED)
     row += font_16.HEIGHT
 
-    tft.write(font_32, "abcdefghij", 0, row, pallette.GREEN)
+    tft.write(font_32, "abcdefghij", 0, row, palette.GREEN)
     row += font_32.HEIGHT
 
-    tft.write(font_64, "abcd", 0, row, pallette.BLUE)
+    tft.write(font_64, "abcd", 0, row, palette.BLUE)
     row += font_64.HEIGHT
 
 

@@ -26,7 +26,7 @@ from time import sleep
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import vga2_bold_16x32 as font
 
 
@@ -67,16 +67,16 @@ def main():
                 )
                 for idx in range(3)
             ]
-            color = pallette.color565(rgb_color)
+            color = palette.color565(rgb_color)
             tft.hline(0, row, tft.width, color)
 
         name = names[i]
         text_x = (tft.width - font.WIDTH * len(name)) // 2
         text_y = start_row + (end_row - start_row - font.HEIGHT) // 2
-        tft.text(font, name, text_x, text_y, pallette.WHITE, color)
+        tft.text(font, name, text_x, text_y, palette.WHITE, color)
 
     while True:
-        for color in [pallette.RED, pallette.GREEN, pallette.BLUE]:
+        for color in [palette.RED, palette.GREEN, palette.BLUE]:
             for x in range(tft.width):
                 tft.pixel(x, 0, color)
                 tft.pixel(x, tft.height - 1, color)

@@ -26,7 +26,7 @@ import utime
 import tft_config
 import tft_buttons as Buttons
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 
 
 tft = tft_config.config(tft_config.WIDE)
@@ -150,13 +150,13 @@ def main():
         Update active missiles and handle asteroid hits.
         """
         for missile in list(missiles):  # for each missile
-            missile.draw(pallette.BLACK)  # erase old missile
+            missile.draw(palette.BLACK)  # erase old missile
             if missile.counter > 0:  # if counter > 0 missile is active
                 missile.move()  # update missile position
 
                 for roid in list(roids):  # for each roid
                     if missile.collision(roid):  # check if missile collides with roid
-                        roid.draw(pallette.BLACK)  # erase the roid
+                        roid.draw(palette.BLACK)  # erase the roid
                         if roid.counter > 0:  # if roid is not the smallest size
                             roids.append(  # add first smaller roid
                                 create_roid(
@@ -181,7 +181,7 @@ def main():
                         missile.counter = 0
 
                 if missile.counter > 0:  # if the missile has life left
-                    missile.draw(pallette.WHITE)  # draw missile
+                    missile.draw(palette.WHITE)  # draw missile
                     missile.counter -= 1  # reduce missile life
                 else:
 
@@ -214,7 +214,7 @@ def main():
             ship.velocity_y = 0.0
 
         ship.move()  # move the ship and draw it
-        ship.draw(pallette.WHITE)
+        ship.draw(palette.WHITE)
 
     def update_roids():
         """
@@ -224,12 +224,12 @@ def main():
         not_hit = True
 
         for roid in roids:  # for each roid, erase, move then draw
-            roid.draw(pallette.BLACK)
+            roid.draw(palette.BLACK)
             roid.move()
-            roid.draw(pallette.WHITE)
+            roid.draw(palette.WHITE)
 
             if roid.collision(ship):  # check for roid/ship collision
-                ship.draw(pallette.BLACK)  # erase ship
+                ship.draw(palette.BLACK)  # erase ship
                 ship.velocity_x = 0.0  # stop movement
                 ship.velocity_y = 0.0
 
@@ -246,15 +246,15 @@ def main():
         """
         ship.counter += 1
         if ship.counter % 2 == 0:
-            tft.polygon(explosion_poly, ship.x, ship.y, pallette.BLACK, 0.785398)
-            tft.polygon(explosion_poly, ship.x, ship.y, pallette.WHITE)
+            tft.polygon(explosion_poly, ship.x, ship.y, palette.BLACK, 0.785398)
+            tft.polygon(explosion_poly, ship.x, ship.y, palette.WHITE)
         else:
-            tft.polygon(explosion_poly, ship.x, ship.y, pallette.WHITE, 0.785398)
-            tft.polygon(explosion_poly, ship.x, ship.y, pallette.BLACK)
+            tft.polygon(explosion_poly, ship.x, ship.y, palette.WHITE, 0.785398)
+            tft.polygon(explosion_poly, ship.x, ship.y, palette.BLACK)
 
         if ship.counter > 25:
             # erase explosion, move ship to center and stop explosion
-            tft.polygon(explosion_poly, ship.x, ship.y, pallette.BLACK)
+            tft.polygon(explosion_poly, ship.x, ship.y, palette.BLACK)
             # move ship to center
             ship.x = width >> 1
             ship.y = height >> 1
@@ -264,7 +264,7 @@ def main():
         return False
 
     # enable display and clear screen
-    tft.fill(pallette.BLACK)
+    tft.fill(palette.BLACK)
     width = tft.width
     height = tft.height
 
@@ -335,7 +335,7 @@ def main():
         update_missiles()
 
         # Erase the ship
-        ship.draw(pallette.BLACK)
+        ship.draw(palette.BLACK)
 
         if ship_alive:
             # if left button pressed

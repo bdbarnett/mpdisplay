@@ -71,7 +71,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
         self.palette = BoolPalette(
             format
         )  # a 2-value color palette for rendering monochrome glyphs
-        # with ssd.blit(glyph_buf, x, y, key=-1, pallette=ssd.pallette)
+        # with ssd.blit(glyph_buf, x, y, key=-1, palette=ssd.palette)
 
         # If byte swapping is required and the display bus is capable of having byte swapping disabled,
         # disable it and set a flag so we can swap the color bytes as they are created.

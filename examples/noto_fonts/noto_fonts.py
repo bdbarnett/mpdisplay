@@ -26,7 +26,7 @@ The fonts were converted from True Type fonts using the
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import NotoSans_32 as noto_sans
 import NotoSerif_32 as noto_serif
 import NotoSansMono_32 as noto_mono
@@ -35,7 +35,7 @@ import NotoSansMono_32 as noto_mono
 def main():
     """main"""
 
-    def center(font, string, row, color=pallette.WHITE):
+    def center(font, string, row, color=palette.WHITE):
         """
         Centers the given string horizontally on the screen at the specified row.
 
@@ -43,7 +43,7 @@ def main():
             font: The font to use for rendering the string.
             string: The string to be centered.
             row: The row where the string will be displayed.
-            color: The color of the string (default: pallette.WHITE).
+            color: The color of the string (default: palette.WHITE).
 
         Returns:
             None
@@ -59,15 +59,15 @@ def main():
     row = 16
 
     # center the name of the first font, using the font
-    center(noto_sans, "NotoSans", row, pallette.RED)
+    center(noto_sans, "NotoSans", row, palette.RED)
     row += noto_sans.HEIGHT
 
     # center the name of the second font, using the font
-    center(noto_serif, "NotoSerif", row, pallette.GREEN)
+    center(noto_serif, "NotoSerif", row, palette.GREEN)
     row += noto_serif.HEIGHT
 
     # center the name of the third font, using the font
-    center(noto_mono, "NotoSansMono", row, pallette.BLUE)
+    center(noto_mono, "NotoSansMono", row, palette.BLUE)
     row += noto_mono.HEIGHT
 
 

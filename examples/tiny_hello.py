@@ -25,13 +25,13 @@ import time
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import vga1_8x8 as font
 
 tft = tft_config.config(tft_config.WIDE)
 
 
-def center(text, fg=pallette.WHITE, bg=pallette.BLACK):
+def center(text, fg=palette.WHITE, bg=palette.BLACK):
     """
     Centers the given text on the display.
     """
@@ -50,10 +50,10 @@ def main():
     """
     The big show!
     """
-    for color in [pallette.RED, pallette.GREEN, pallette.BLUE]:
+    for color in [palette.RED, palette.GREEN, palette.BLUE]:
         tft.fill(color)
-        tft.rect(0, 0, tft.width, tft.height, pallette.WHITE)
-        center("Hello!", pallette.WHITE, color)
+        tft.rect(0, 0, tft.width, tft.height, palette.WHITE)
+        center("Hello!", palette.WHITE, color)
         time.sleep(1)
 
     while True:
@@ -69,12 +69,12 @@ def main():
                     "Hello!",
                     random.randint(0, col_max),
                     random.randint(0, row_max),
-                    pallette.color565(
+                    palette.color565(
                         random.getrandbits(8),
                         random.getrandbits(8),
                         random.getrandbits(8),
                     ),
-                    pallette.color565(
+                    palette.color565(
                         random.getrandbits(8),
                         random.getrandbits(8),
                         random.getrandbits(8),

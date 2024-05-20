@@ -25,7 +25,7 @@ import random
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import vga2_bold_16x32 as font
 
 
@@ -50,12 +50,12 @@ def main():
                     "Hello",
                     random.randint(0, col_max),
                     random.randint(0, row_max),
-                    pallette.color565(
+                    palette.color565(
                         random.getrandbits(8),
                         random.getrandbits(8),
                         random.getrandbits(8),
                     ),
-                    pallette.color565(
+                    palette.color565(
                         random.getrandbits(8),
                         random.getrandbits(8),
                         random.getrandbits(8),

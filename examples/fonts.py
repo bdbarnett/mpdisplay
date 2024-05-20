@@ -28,7 +28,7 @@ import utime
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import vga2_8x8 as font1
 import vga2_8x16 as font2
 import vga2_bold_16x16 as font3
@@ -41,12 +41,12 @@ def main():
 
     while True:
         for font in (font1, font2, font3, font4):
-            tft.fill(pallette.BLUE)
+            tft.fill(palette.BLUE)
             line = 0
             col = 0
 
             for char in range(font.FIRST, font.LAST):
-                tft.text(font, chr(char), col, line, pallette.WHITE, pallette.BLUE)
+                tft.text(font, chr(char), col, line, palette.WHITE, palette.BLUE)
                 col += font.WIDTH
                 if col > tft.width - font.WIDTH:
                     col = 0
@@ -54,7 +54,7 @@ def main():
 
                     if line > tft.height - font.HEIGHT:
                         utime.sleep(3)
-                        tft.fill(pallette.BLUE)
+                        tft.fill(palette.BLUE)
                         line = 0
                         col = 0
 

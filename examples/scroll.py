@@ -27,7 +27,7 @@ import random
 
 import tft_config
 
-pallette = tft_config.Pallette
+palette = tft_config.Palette
 import vga2_bold_16x16 as font
 
 
@@ -39,13 +39,13 @@ def main():
     bfa = tft_config.BFA  # bottom free area when scrolling
     tft.vscrdef(tfa, 240, bfa)
 
-    tft.fill(pallette.BLUE)
+    tft.fill(palette.BLUE)
     scroll = 0
     character = 0
     col = tft.width // 2 - 5 * font.WIDTH // 2
 
     while True:
-        tft.fill_rect(0, scroll, tft.width, 1, pallette.BLUE)
+        tft.fill_rect(0, scroll, tft.width, 1, palette.BLUE)
 
         if scroll % font.HEIGHT == 0:
             tft.text(
@@ -53,8 +53,8 @@ def main():
                 f"x{character:02x} {chr(character)}",
                 col,
                 (scroll + last_line) % tft.height,
-                pallette.WHITE,
-                pallette.BLUE,
+                palette.WHITE,
+                palette.BLUE,
             )
 
             character = character + 1 if character < 256 else 0
