@@ -5,10 +5,10 @@ The color index goes from -4 to 5, where -4 is the darkest shade and 5 is the li
 
 
 Usage:
-    from lib.primitives.palette import palette
+    from lib.primitives.palette import get_palette
 
     # Load the Material Design palette in 16-bit color depth
-    material_design = palette("material_design", 16)
+    material_design = get_palette("material_design", 16)
 
     # to access the primary colors:
     primary_color_1 = material_design.red.s50  # shade 50
