@@ -4,7 +4,7 @@
           ["examples/binfont_simpletest.py", "github:bdbarnett/mpdisplay/examples/binfont_simpletest.py"],
           ["examples/binfont_simpletest2.py", "github:bdbarnett/mpdisplay/examples/binfont_simpletest2.py"],
           ["examples/binfont_simpletest3.py", "github:bdbarnett/mpdisplay/examples/binfont_simpletest3.py"],
-          ["examples/calculator.py", "github:bdbarnett/framebuf/mpdisplay/calculator.py"],
+          ["examples/calculator.py", "github:bdbarnett/mpdisplay/examples/calculator.py"],
           ["examples/chango/__init__.py", "github:bdbarnett/mpdisplay/examples/chango/__init__.py"],
           ["examples/chango/chango.py", "github:bdbarnett/mpdisplay/examples/chango/chango.py"],
           ["examples/chango/chango_16.py", "github:bdbarnett/mpdisplay/examples/chango/chango_16.py"],
