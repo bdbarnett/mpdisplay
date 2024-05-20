@@ -12,10 +12,6 @@ print("\nInstalling the mpdisplay library and optional libraries and examples.\n
 mip.install("github:bdbarnett/mpdisplay", target=TARGET)
 print("")
 
-# Install sdl2_lib.  Comment out this line if you are only using lcd_bus.
-mip.install("github:bdbarnett/sdl2_lib", target=TARGET)
-print("")
-
 # Install lcd_bus.  Comment out this line if you are only using sdl2_lib.
 mip.install("github:bdbarnett/lcd_bus", target=TARGET)
 print("")
@@ -23,25 +19,10 @@ print("")
 
 ### Optional libraries and examples.  Comment out any that you do not want to install. ###
 
-mip.install("github:bdbarnett/shapes", target=TARGET)
-print("")
-
-mip.install("github:bdbarnett/framebuf_plus", target=TARGET)
-print("")
-
-mip.install("github:bdbarnett/binfont", target=TARGET)
-print("")
-
-mip.install("github:bdbarnett/displaybuf", target=TARGET)
-print("")
-
-mip.install("github:bdbarnett/direct_draw", target=TARGET)
+mip.install("github:bdbarnett/timer", target=TARGET)
 print("")
 
 mip.install("github:bdbarnett/console", target=TARGET)
-print("")
-
-mip.install("github:bdbarnett/timer", target=TARGET)
 print("")
 
 mip.install("github:bdbarnett/playing_cards", target=TARGET)

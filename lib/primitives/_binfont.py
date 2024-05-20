@@ -13,45 +13,56 @@ from ._area import Area
 
 # Default font file to use if none is specified.
 # Should be 8x8 to keep framebuf.py compatible with MicroPython framebuf module
-_FONTS ={
-    8: "fonts/binfont_8x8.bin",
-    14: "fonts/binfont_8x14.bin",
-    16: "fonts/binfont_8x16.bin",
+_FONTS = {
+    8: "romfonts/binfont_8x8.bin",
+    14: "romfonts/binfont_8x14.bin",
+    16: "romfonts/binfont_8x16.bin",
 }
 _DEFAULT_FONT = _FONTS[8]
 
 
-def text(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=None):
+def text(
+    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=None
+):
     """Place text on the canvas.  Breaks on \n to next line.
 
     Does not break on line going off canvas.
     """
-    if not hasattr(canvas, "_textfont") \
-        or (font_file is not None and canvas._textfont.font_file != font_file) \
-            or (font_height is not None and canvas._textfont.font_height != font_height):
+    if (
+        not hasattr(canvas, "_textfont")
+        or (font_file is not None and canvas._textfont.font_file != font_file)
+        or (font_height is not None and canvas._textfont.font_height != font_height)
+    ):
         # load the font!
         canvas._textfont = BinFont(font_file, font_height)
 
     return canvas._textfont.text(canvas, s, x, y, c, scale, inverted)
 
-def btext(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16):
+
+def btext(
+    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16
+):
     """Place text on the screen.  Breaks on \n to next line.
 
     Does not break on line going off screen.
     """
-    if not hasattr(canvas, "_btextfont") \
-        or (font_file is not None and canvas._btextfont.font_file != font_file) \
-            or (font_height is not None and canvas._btextfont.font_height != font_height):
+    if (
+        not hasattr(canvas, "_btextfont")
+        or (font_file is not None and canvas._btextfont.font_file != font_file)
+        or (font_height is not None and canvas._btextfont.font_height != font_height)
+    ):
         # load the font!
         canvas._btextfont = BinFont(font_file, font_height)
 
     return canvas._btextfont.text(canvas, s, x, y, c, scale, inverted)
+
 
 def bfont_width(canvas):
     """Return the width of the font in pixels."""
     if hasattr(canvas, "_btextfont"):
         return canvas._btextfont.font_width
     return 0
+
 
 def bfont_height(canvas):
     """Return the height of the font in pixels."""
@@ -74,9 +85,15 @@ class BinFont:
         # - x bytes: font data, in ASCII order covering 128 or all 256 characters.
         #            Each character should have a byte for each pixel row of
         #            data (i.e. a 8x8 font has 8 bytes per character).
-        self.font_file = font_file if font_file else _FONTS.get(font_height, _DEFAULT_FONT)
+        self.font_file = (
+            font_file if font_file else _FONTS.get(font_height, _DEFAULT_FONT)
+        )
         self.font_name = self.font_file.split("/")[-1].split(".bin")[0]
-        self._font_height = font_height if font_height is not None else int(self.font_name.split("x")[-1])
+        self._font_height = (
+            font_height
+            if font_height is not None
+            else int(self.font_name.split("x")[-1])
+        )
         self._font_width = 8
 
         # Open the font file.
@@ -85,7 +102,10 @@ class BinFont:
             self._font = open(self.font_file, "rb")
             # simple font file validation check based on expected file size
             filesize = os.stat(self.font_file)[6]
-            if filesize != 256 * self.font_height and filesize != 128 * self.font_height:
+            if (
+                filesize != 256 * self.font_height
+                and filesize != 128 * self.font_height
+            ):
                 raise RuntimeError(
                     f"Invalid font file: {self.font_file} is {filesize} bytes, expected {256 * self.font_height}"
                 )
@@ -140,8 +160,16 @@ class BinFont:
                 # Draw a pixel for each bit that's flipped on.
                 if (line >> (self.font_width - char_x - 1)) & 0x1:
                     canvas.fill_rect(
-                        x + char_x * scale if not inverted else x + (self._font_width - char_x - 1) * scale,
-                        y + char_y * scale if not inverted else y + (self._font_height - char_y - 1) * scale,
+                        (
+                            x + char_x * scale
+                            if not inverted
+                            else x + (self._font_width - char_x - 1) * scale
+                        ),
+                        (
+                            y + char_y * scale
+                            if not inverted
+                            else y + (self._font_height - char_y - 1) * scale
+                        ),
                         scale,
                         scale,
                         color,
@@ -159,15 +187,28 @@ class BinFont:
             for i, char in enumerate(chunk):
                 char_x = x + (i * self.font_width * scale)
                 if (
-                    char_x + (self.font_width * scale) > 0
-                    and char_x < canvas.width if hasattr(canvas, "width") else True
-                    and char_y + (self.font_height * scale) > 0
-                    and char_y < canvas.height if hasattr(canvas, "height") else True
+                    char_x + (self.font_width * scale) > 0 and char_x < canvas.width
+                    if hasattr(canvas, "width")
+                    else (
+                        True
+                        and char_y + (self.font_height * scale) > 0
+                        and char_y < canvas.height
+                        if hasattr(canvas, "height")
+                        else True
+                    )
                 ):
                     last_x = char_x + (self.font_width * scale)
-                    self.draw_char(char, char_x, char_y, canvas, color, scale=scale, inverted=inverted)
+                    self.draw_char(
+                        char,
+                        char_x,
+                        char_y,
+                        canvas,
+                        color,
+                        scale=scale,
+                        inverted=inverted,
+                    )
             char_y += self.font_height * scale
-        return Area(x, y, last_x-x, char_y-y)
+        return Area(x, y, last_x - x, char_y - y)
 
     def text_width(self, text, scale=1):
         """Return the pixel width of the specified text message."""

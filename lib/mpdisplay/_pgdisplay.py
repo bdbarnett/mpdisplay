@@ -168,7 +168,7 @@ class PGDisplay(_BaseDisplay):
         :return: The rotation of the display.
         :rtype: int
         """
-        return super().rotation
+        return self._rotation
 
     @rotation.setter
     def rotation(self, value):
@@ -181,6 +181,8 @@ class PGDisplay(_BaseDisplay):
         :param value: The rotation of the display.
         :type value: int
         """
+        value = self._rotation_helper(value)
+        
         if value == self._rotation:
             return
 

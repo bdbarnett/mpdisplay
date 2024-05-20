@@ -1,6 +1,8 @@
 from ._area import Area
 from ._binfont import BinFont, text, btext, bfont_width, bfont_height
 from . import _shapes as shapes
+from .tools import bitmap, pbitmap, write, write_width, text as ttext
+
 
 
 class BasicShapes:
@@ -12,7 +14,12 @@ class BasicShapes:
     rect = shapes.rect
     ellipse = shapes.ellipse
     poly = shapes.poly
-    text = text
+
+    def text(self, first_arg, *args, **kwargs):
+        if isinstance(first_arg, (str, bytes)):
+            return text(self, first_arg, *args, **kwargs)
+        else:
+            return ttext(self, first_arg, *args, **kwargs)
 
 class ExtendedShapes():
     # Used by framebuf_plus.py
@@ -24,11 +31,15 @@ class ExtendedShapes():
     btext = btext
     bfont_width = bfont_width
     bfont_height = bfont_height
+    bitmap = bitmap
+    pbitmap = pbitmap
+    write = write
+    write_width = write_width
 
 class DisplayShapes(BasicShapes, ExtendedShapes):
     # Used by MPDisplay
     # Does not include fill_rect, fill, pixel
-    pass # This class is just a collection of methods, no need to instantiate it
+    pass
 
 class Shapes(BasicShapes, ExtendedShapes):
     # Can be used by the end-user

@@ -229,7 +229,7 @@ class SDL2Display(_BaseDisplay):
         :return: The rotation of the display.
         :rtype: int
         """
-        return super().rotation
+        return self._rotation
 
     @rotation.setter
     def rotation(self, value):
@@ -242,6 +242,9 @@ class SDL2Display(_BaseDisplay):
         :param value: The rotation of the display.
         :type value: int
         """
+
+        value = self._rotation_helper(value)
+
         if value == self._rotation:
             return
 
@@ -276,7 +279,7 @@ class SDL2Display(_BaseDisplay):
                 retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
         self._rotation = value
-
+        
         for device in self.devices:
             if device.type == Devices.TOUCH:
                 device.rotation = value

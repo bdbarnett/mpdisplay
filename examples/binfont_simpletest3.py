@@ -6,21 +6,23 @@ Draws to a DisplayBuffer and only updates the area that has changed.
 """
 
 from board_config import display_drv
-from tools import BinFont
+from primitives import BinFont
 import random
 from displaybuf import DisplayBuffer
+
 display = DisplayBuffer(display_drv)
 
 
 BPP = display.color_depth // 8  # Bytes per pixel
 
 
-def write(font, text, x, y, fg_color, bg_color, scale):
+def write(font, string, x, y, fg_color, bg_color, scale):
     """
     Write text to the display.
     """
-    dirty = font.text(text, x, y, display, fg_color, scale)
+    dirty = font.text(display, string, x, y, fg_color, scale)
     display.show(dirty)
+
 
 def main():
     """
@@ -28,11 +30,11 @@ def main():
     """
     write_text = "Hello!"
     text_len = len(write_text)
-    iterations = 8
+    iterations = 32
 
-    font1 = BinFont("romfonts/vga_8x8.bin", 8, 8)
-    font2 = BinFont("romfonts/vga_8x14.bin", 8, 14)
-    font3 = BinFont("romfonts/vga_8x16.bin", 8, 16)
+    font1 = BinFont("romfonts/binfont_8x8.bin")
+    font2 = BinFont("romfonts/binfont_8x14.bin")
+    font3 = BinFont("romfonts/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.font_width for font in fonts])
@@ -52,7 +54,7 @@ def main():
 
             for _ in range(iterations):
                 write(
-                    fonts[random.randint(0, 1)],
+                    fonts[random.randint(0, len(fonts) - 1)],
                     write_text,
                     random.randint(0, col_max),
                     random.randint(0, row_max),

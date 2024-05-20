@@ -7,7 +7,7 @@ _BaseDisplay class for all display drivers to inherit from.
 """
 
 from . import Broker, Devices
-from shapes import DisplayShapes, Area
+from primitives import DisplayShapes, Area
 from sys import exit  # default for self.quit
 
 
@@ -58,9 +58,8 @@ class _BaseDisplay(Broker, DisplayShapes):
         :param value: The rotation of the display.
         :type value: int
         """
-        # if the value is not a multiple of 90, it is in quarter turns
-        if value % 90 != 0:
-            value = value * 90
+
+        value = self._rotation_helper(value)
 
         if value == self._rotation:
             return
@@ -72,6 +71,18 @@ class _BaseDisplay(Broker, DisplayShapes):
                 device.rotation = value
 
         self.init()
+
+    def _rotation_helper(self, value):
+        """
+        Helper function to set the rotation of the display.
+
+        :param value: The rotation of the display.
+        :type value: int
+        """
+        # if the value is not a multiple of 90, it is in quarter turns
+        if value % 90 != 0:
+            value = value * 90
+        return value
 
     @property
     def quit_func(self):

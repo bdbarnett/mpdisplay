@@ -51,7 +51,7 @@ def loop(
     display_drv.hline(0, 0, WIDTH, BLACK)
     display_drv.vline(0, 0, HEIGHT, BLACK)
 
-    scroll_range = range(HEIGHT) if scroll else [0]
+    scroll_range = range(HEIGHT) if scroll else []
     for _ in scroll_range:
         display_drv.scroll(0, 1)
 

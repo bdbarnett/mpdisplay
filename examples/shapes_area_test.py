@@ -15,9 +15,11 @@ or as a function argument:
 """
 
 from board_config import display_drv
-from shapes import shapes
+from primitives import shapes
 
 
 dirty = shapes.circle(display_drv, 120, 120, 50, display_drv.color565(255, 0, 0), True)
-dirty += shapes.ellipse(display_drv, 100, 85, 50, 30, display_drv.color565(0, 255, 0), True, 0b1111)
+dirty += shapes.ellipse(
+    display_drv, 100, 85, 50, 30, display_drv.color565(0, 255, 0), True, 0b1111
+)
 shapes.rect(display_drv, *dirty, display_drv.color565(0, 0, 255))

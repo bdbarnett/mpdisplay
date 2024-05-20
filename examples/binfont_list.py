@@ -9,7 +9,7 @@ The script iterates through the font files, creates a framebuffer, and renders t
 The rendered font is then displayed on the display driver.
 """
 from board_config import display_drv
-from binfont import BinFont
+from primitives import BinFont
 from framebuf import FrameBuffer, RGB565
 import os
 
@@ -27,7 +27,8 @@ def main():
         font_files = []
         for file in os.listdir(directory):
             if file.endswith(".bin"):
-                font_files.append(os.path.join(directory, file))
+                file_path = "/".join([directory, file])
+                font_files.append(file_path)
         return font_files
 
     font_files = gather_font_files(directory)
@@ -50,10 +51,10 @@ def main():
         buffer = bytearray(display_drv.width * font_height * 2)
         fb = FrameBuffer(buffer, display_drv.width, font_height, RGB565)
         fb.fill(bg_color)
-        text = "".join([chr(i) for i in range(65, 91)]) + ": " + font_name
-        font.text(text, 0, 0, fb, fg_color, scale)
+        string = "".join([chr(i) for i in range(65, 91)]) + ": " + font_name
+        font.text(fb, string, 0, 0, fg_color, scale)
         display_drv.blit_rect(
-            0, y_pos % display_drv.height, display_drv.width, font_height, buffer
+            buffer, 0, y_pos % display_drv.height, display_drv.width, font_height
         )
         y_pos += font_height
         if y_pos > display_drv.height:

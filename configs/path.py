@@ -15,7 +15,7 @@ Does not work for nested directories.
 '''
 def update():
     # Edit this list to include the directories you want to add to the path.
-    directories = ('lib', 'drivers', 'examples', 'fonts', 'romfonts')
+    directories = ('lib', 'drivers', 'examples', 'romfonts')
 
     import sys
     import os
