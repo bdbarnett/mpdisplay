@@ -15,7 +15,7 @@ Usage:
     # OR
     palette = display_drv.get_palette()
 
-    # to the primary variant of a color family by name:
+    # to access the primary variant of a color family by name:
     x = palette.RED
     x = palette.BLACK
 
@@ -40,8 +40,8 @@ Usage:
     x = palette.red.accents.A100
     x = palette.red.accents.A700
 
-    # to iterate over all colors:
-        for x in palette:  # iterate over all 256 colors
+    # to iterate over all 256 colors:
+        for x in palette:
             pass
             
     # to iterate over all shades in a family:

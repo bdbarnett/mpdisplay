@@ -1,14 +1,25 @@
 """
-This module contains the Material Design color palette as a class object.
+This module contains the cool wheel color palette as a class object.
 
 
 Usage:
     from primitives.palettes import get_palette
-    palette = get_palette(name="material_design", color_depth=16, swapped=False)
+    palette = get_palette(name="wheel", color_depth=16, swapped=False)
 
     # OR
     from board_config import display_drv
-    palette = display_drv.get_palette(name="material_design", color_depth=16, swapped=False)
+    palette = display_drv.get_palette(name="wheel", color_depth=16, swapped=False)
+    # OR
+    palette = display_drv.get_palette()
+
+    # to access the 32 named colors directly:
+    x = palette.RED
+    x = palette.BLACK
+
+    # to iterate over all 256 colors:
+        for x in palette:
+            pass
+
 """
 from ._palette import Palette as _Palette
 
