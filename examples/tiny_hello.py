@@ -25,7 +25,7 @@ import time
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import vga1_8x8 as font
 
 tft = tft_config.config(tft_config.WIDE)

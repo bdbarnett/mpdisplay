@@ -28,7 +28,7 @@ import chango_32 as font_32
 import chango_64 as font_64
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 
 gc.collect()
 

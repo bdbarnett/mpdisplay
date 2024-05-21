@@ -1,8 +1,14 @@
 from ._area import Area
-from ._binfont import BinFont, text, btext, bfont_width, bfont_height
+from ._binfont import BinFont, text as atext, btext, bfont_width, bfont_height
 from . import _shapes as shapes
 from .tools import bitmap, pbitmap, write, write_width, text as ttext
+from .palettes import get_palette
 
+def text(canvas, first_arg, *args, **kwargs):
+    if isinstance(first_arg, (str, bytes)):
+        return atext(canvas, first_arg, *args, **kwargs)
+    else:
+        return ttext(canvas, first_arg, *args, **kwargs)
 
 
 class BasicShapes:
@@ -14,14 +20,10 @@ class BasicShapes:
     rect = shapes.rect
     ellipse = shapes.ellipse
     poly = shapes.poly
+    text = text
 
-    def text(self, first_arg, *args, **kwargs):
-        if isinstance(first_arg, (str, bytes)):
-            return text(self, first_arg, *args, **kwargs)
-        else:
-            return ttext(self, first_arg, *args, **kwargs)
 
-class ExtendedShapes():
+class ExtendedShapes:
     # Used by framebuf_plus.py
     # Does not include hline, vline, line, rect, ellipse, poly
     arc = shapes.arc
@@ -36,10 +38,12 @@ class ExtendedShapes():
     write = write
     write_width = write_width
 
-class DisplayShapes(BasicShapes, ExtendedShapes):
+
+class DisplayPrimitives(BasicShapes, ExtendedShapes):
     # Used by MPDisplay
     # Does not include fill_rect, fill, pixel
-    pass
+    get_palette = get_palette
+
 
 class Shapes(BasicShapes, ExtendedShapes):
     # Can be used by the end-user

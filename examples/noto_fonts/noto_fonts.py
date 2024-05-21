@@ -26,7 +26,7 @@ The fonts were converted from True Type fonts using the
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import NotoSans_32 as noto_sans
 import NotoSerif_32 as noto_serif
 import NotoSansMono_32 as noto_mono

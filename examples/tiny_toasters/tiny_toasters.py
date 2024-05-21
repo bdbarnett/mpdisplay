@@ -34,7 +34,7 @@ import random
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import tiny_toasters_bitmaps as toast_bitmaps
 
 TOASTER_FRAMES = [0, 1, 2, 3]

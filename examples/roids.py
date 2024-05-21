@@ -22,11 +22,11 @@ Asteroids style game demo using polygons.
 
 import math
 import random
-import utime
+import time
 import tft_config
 import tft_buttons as Buttons
 
-palette = tft_config.Palette
+palette = tft_config.palette
 
 
 tft = tft_config.config(tft_config.WIDE)
@@ -318,7 +318,7 @@ def main():
     missile_max = 8
     missile_life = 20
     missile_rate = 200
-    missile_last = utime.ticks_ms()
+    missile_last = time.ticks_ms()
     missile_poly = [(-1, -1), (1, -1), (1, 1), (-1, 1), (-1, -1)]
     missiles = []
 
@@ -326,7 +326,7 @@ def main():
 
     # game loop
     while True:
-        last_frame = utime.ticks_ms()
+        last_frame = time.ticks_ms()
 
         # add roids if there are none
         if len(roids) == 0:
@@ -409,7 +409,7 @@ def main():
             ship_alive = not_hit
 
         # wait until frame time expires
-        while utime.ticks_ms() - last_frame < frame_time:
+        while time.ticks_ms() - last_frame < frame_time:
             pass
 
 

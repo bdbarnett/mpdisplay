@@ -22,12 +22,12 @@ Only works with fonts with heights that are even multiples of the screen height,
 
 """
 
-import utime
+import time
 import random
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import vga2_bold_16x16 as font
 
 
@@ -37,7 +37,7 @@ def main():
     last_line = tft.height - font.HEIGHT
     tfa = tft_config.TFA  # top free area when scrolling
     bfa = tft_config.BFA  # bottom free area when scrolling
-    tft.vscrdef(tfa, 240, bfa)
+    tft.vscrdef(tfa, tft.height - tfa - bfa, bfa)
 
     tft.fill(palette.BLUE)
     scroll = 0
@@ -65,7 +65,7 @@ def main():
         if scroll == tft.height:
             scroll = 0
 
-        utime.sleep(0.01)
+        time.sleep(0.01)
 
 
 main()

@@ -22,7 +22,7 @@ Draws lines and rectangles in random colors at random locations on the display.
 import random
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 
 
 def main():

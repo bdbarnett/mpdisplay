@@ -7,11 +7,11 @@ _BaseDisplay class for all display drivers to inherit from.
 """
 
 from . import Broker, Devices
-from primitives import DisplayShapes, Area
+from primitives import DisplayPrimitives, Area
 from sys import exit  # default for self.quit
 
 
-class _BaseDisplay(Broker, DisplayShapes):
+class _BaseDisplay(Broker, DisplayPrimitives):
 
     def __init__(self):
         super().__init__()

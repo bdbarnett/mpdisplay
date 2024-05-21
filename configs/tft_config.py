@@ -21,23 +21,13 @@ SCROLL = WIDE  # orientation for scroll.py
 FEATHERS = TALL  # orientation for feathers.py
 
 
-class Palette:
-    color565 = display_drv.color565
-
-    BLACK = color565(0, 0, 0)
-    RED = color565(255, 0, 0)
-    GREEN = color565(0, 255, 0)
-    BLUE = color565(0, 0, 255)
-    CYAN = color565(0, 255, 255)
-    MAGENTA = color565(255, 0, 255)
-    YELLOW = color565(255, 255, 0)
-    WHITE = color565(255, 255, 255)
+palette = display_drv.get_palette()
 
 
-def deinit(tft, display_off=False):
-    tft.deinit()
+def deinit(display_drv, display_off=False):
+    display_drv.deinit()
     if display_off:
-        BL.value(0)
+        display_drv.brightness = 0
 
 
 def config(rotation=None, buffer_size=0, options=0):

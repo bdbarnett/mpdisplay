@@ -26,7 +26,7 @@ from time import sleep
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import vga2_bold_16x32 as font
 
 

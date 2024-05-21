@@ -24,7 +24,7 @@ number and the color of the display background.
 import time
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import vga1_16x16 as font
 
 

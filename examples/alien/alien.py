@@ -30,7 +30,7 @@ import time
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import alien_bitmap as alien
 
 SPEED_X = 3

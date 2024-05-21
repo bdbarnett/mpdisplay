@@ -24,11 +24,11 @@ https://www.youtube.com/watch?v=2cnAhEucPD4
 
 """
 
-import utime
+import time
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import vga2_8x8 as font1
 import vga2_8x16 as font2
 import vga2_bold_16x16 as font3
@@ -53,12 +53,12 @@ def main():
                     line += font.HEIGHT
 
                     if line > tft.height - font.HEIGHT:
-                        utime.sleep(3)
+                        time.sleep(3)
                         tft.fill(palette.BLUE)
                         line = 0
                         col = 0
 
-            utime.sleep(3)
+            time.sleep(3)
 
 
 main()

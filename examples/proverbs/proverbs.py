@@ -26,11 +26,11 @@ The fonts were converted from True Type fonts using the
 
 """
 
-import utime
+import time
 
 import tft_config
 
-palette = tft_config.Palette
+palette = tft_config.palette
 import proverbs_20 as font20
 import proverbs_30 as font30
 
@@ -94,7 +94,7 @@ def main():
             wheel = (wheel + 5) % 256
 
             # pause to slow down scrolling
-            utime.sleep(5)
+            time.sleep(5)
 
 
 main()
