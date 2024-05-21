@@ -1,4 +1,17 @@
 #!/usr/bin/micropython -i
+"""
+Downloads and installs the mpdisplay library and optional libraries and examples.
+Treats each library as a separate module, so that you can comment out any that you do not want to install.
+
+To run this script, copy it to your board and run it with micropython.  For example:
+    
+        import install_all
+
+Another way to get a full install without control over which optional packages are installed
+is the following command line:
+
+    import mip; mip.install("github:bdbarnett/mpdisplay/install_all.json", target=".")
+"""
 import mip
 import sys
 
