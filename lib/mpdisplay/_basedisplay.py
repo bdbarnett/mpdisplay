@@ -189,24 +189,6 @@ class _BaseDisplay(Broker, DisplayPrimitives):
         color = self.color565(r, g, b)
         return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
 
-    def color_wheel(self, pos):
-        """
-        Get a color from the color wheel.
-
-        :param pos: The position on the color wheel.
-        :type pos: int
-        :return: The color value.
-        :rtype: int
-        """
-        pos = 255 - pos
-        if pos < 85:
-            return self.color565(255 - pos * 3, 0, pos * 3)
-        if pos < 170:
-            pos -= 85
-            return self.color565(0, pos * 3, 255 - pos * 3)
-        pos -= 170
-        return self.color565(pos * 3, 255 - pos * 3, 0)
-
     def color332(self, r, g, b):
         # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
         # rrrgggbb

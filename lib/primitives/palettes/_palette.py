@@ -12,15 +12,11 @@ class Palette:
         self._name = name
         self._color_depth = color_depth
         self._needs_swap = swapped
-        if colors is not None:
-            self._colors = colors
-        else:
-            raise ValueError("No colors memoryview provided")
+        self._colors = colors
 
     def __getitem__(self, index):
-        if not -1 < index < len(self):
-            raise IndexError("Index out of range")
-
+        while index < 0:
+            index += 256
         r, g, b = self._colors[index*3:index*3+3]
         if self._color_depth == 24:
             return r << 16 | g << 8 | b
