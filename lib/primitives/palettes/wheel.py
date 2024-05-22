@@ -33,7 +33,7 @@ class Palette(_Palette):
         super().__init__(name, color_depth, swapped)
 
         # Define all 27 colors that are combinations of 0, 127, 255
-        # plus add dark_gray, light_gray, brown, tan, and gold
+        # plus add dark_grey, light_grey, brown, tan, and gold
         # for a total of 32 colors
         self.BLACK = self.color565(0, 0, 0)
         self.DARK_BLUE = self.color565(0, 0, 127)
@@ -48,7 +48,7 @@ class Palette(_Palette):
         self.PURPLE = self.color565(127, 0, 127)
         self.INDIGO = self.color565(127, 0, 255)
         self.OLIVE = self.color565(127, 127, 0)
-        self.GRAY = self.color565(127, 127, 127)
+        self.GREY = self.color565(127, 127, 127)
         self.LIGHT_PURPLE = self.color565(127, 127, 255)
         self.LIME = self.color565(127, 255, 0)
         self.LIGHT_GREEN = self.color565(127, 255, 127)
@@ -62,8 +62,8 @@ class Palette(_Palette):
         self.YELLOW = self.color565(255, 255, 0)
         self.LIGHT_YELLOW = self.color565(255, 255, 127)
         self.WHITE = self.color565(255, 255, 255)
-        self.DARK_GRAY = self.color565(63, 63, 63)
-        self.LIGHT_GRAY = self.color565(191, 191, 191)
+        self.DARK_GREY = self.color565(63, 63, 63)
+        self.LIGHT_GREY = self.color565(191, 191, 191)
         self.BROWN = self.color565(127, 63, 0)
         self.TAN = self.color565(191, 127, 63)
         self.GOLD = self.color565(255, 191, 127)
