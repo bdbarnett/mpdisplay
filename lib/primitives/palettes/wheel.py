@@ -61,12 +61,12 @@ class CWPalette(_Palette):
         self.DARK_GREY = self.color565(64, 64, 64)
         self.MAROON = self.color565(128, 0, 0)
         self.DEEP_PINK = self.color565(255, 0, 128)
-        self.LIGHT_PURPLE = self.color565(128, 128, 255)
+        self.LIGHT_RED = self.color565(255, 64, 64)
         self.DARK_BLUE = self.color565(0, 0, 128)
         self.DARK_GREEN = self.color565(0, 128, 0)
-        self.OLIVE = self.color565(128, 128, 0)
-        self.MAGENTA = self.color565(255, 0, 255)
         self.SALMON = self.color565(255, 128, 128)
+        self.MAGENTA = self.color565(255, 0, 255)
+        self.LIGHT_MAGENTA = self.color565(255, 64, 255)
         self.LIGHT_CYAN = self.color565(128, 255, 255)
 
     def __getitem__(self, index):
