@@ -28,14 +28,13 @@ from framebuf import (
     GS4_HMSB,
     GS8,
 )
-from primitives import ExtendedShapes, Area, BinFont
+from primitives import ExtendedShapes, Area
 import math
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
     def __init__(self, buffer, width, height, *args, **kwargs):
         super().__init__(buffer, width, height, *args, **kwargs)
-        self._bfont = None
         self.width = width
         self.height = height
 
