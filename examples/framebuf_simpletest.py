@@ -25,9 +25,9 @@ CYAN = color565(0, 255, 255)
 MAGENTA = color565(255, 0, 255)
 YELLOW = color565(255, 255, 0)
 BLACK = color565(0, 0, 0)
-LTGRAY = color565(192, 192, 192)
-GRAY = color565(128, 128, 128)
-DKGRAY = color565(64, 64, 64)
+LIGHT_GREY = color565(192, 192, 192)
+GREY = color565(128, 128, 128)
+DARK_GREY = color565(64, 64, 64)
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])
@@ -41,7 +41,7 @@ def loop(
     for y in y_range:
         fb.fill(BLACK)
         fb.poly(0, y, poly, YELLOW, True)
-        fb.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LTGRAY)
+        fb.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LIGHT_GREY)
         fb.line(0, 0, WIDTH - 1, HEIGHT - 1, GREEN)
         fb.rect(0, 0, 15, 15, RED, True)
         fb.rect(WIDTH - 15, HEIGHT - 15, 15, 15, BLUE, True)

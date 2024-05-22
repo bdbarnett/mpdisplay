@@ -49,15 +49,18 @@ names =[
 line_height = 10
 
 i = 0
-def show_palette():
+def main():
     global i
     for family in families:
         if i >= display_drv.height:
             display_drv.vscsad((line_height + i) % display_drv.height)
         for j, color in enumerate(family):
-            display_drv.hline(0, (i + j) % display_drv.height, display_drv.width, color)
+            display_drv.hline(0, (i + j) % display_drv.height, display_drv.width, family[0])
         display_drv.text(family._name, 0, (1 + i) % display_drv.height, ~family[0])
         i += line_height
 
-while True:
-    show_palette()
+def loop():
+    while True:
+        main()
+
+main()

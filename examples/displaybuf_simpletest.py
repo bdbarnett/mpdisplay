@@ -20,10 +20,12 @@ CYAN = color565(0, 255, 255)
 MAGENTA = color565(255, 0, 255)
 YELLOW = color565(255, 255, 0)
 BLACK = color565(0, 0, 0)
-LTGRAY = color565(192, 192, 192)
-GRAY = color565(96, 96, 96)
-DKGRAY = color565(64, 64, 64)
-GRAY = color565(128, 128, 128, GRAY)  # Example of how to redefine a color in the lookup table
+LIGHT_GREY = color565(192, 192, 192)
+GREY = color565(96, 96, 96)
+DARK_GREY = color565(64, 64, 64)
+GREY = color565(
+    128, 128, 128, GREY
+)  # Example of how to redefine a color in the lookup table
 if ssd.colors_registered:  # Will be 0 if not using lookup tables / GS4_HMSB mode.
     print(f"{ssd.colors_registered} colors registered.")
 
@@ -37,14 +39,16 @@ def loop(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
     for y in y_range:
         ssd.fill(BLACK)
         ssd.poly(0, y, poly, YELLOW, True)
-        ssd.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LTGRAY)
+        ssd.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LIGHT_GREY)
         ssd.line(0, 0, WIDTH - 1, HEIGHT - 1, GREEN)
         ssd.rect(0, 0, 15, 15, RED, True)
         ssd.rect(WIDTH - 15, HEIGHT - 15, 15, 15, BLUE, True)
         ssd.hline(WIDTH // 8, HEIGHT // 2, WIDTH * 3 // 4, MAGENTA)
         ssd.vline(WIDTH // 2, HEIGHT // 4, HEIGHT // 2, CYAN)
         ssd.pixel(WIDTH // 2, HEIGHT * 1 // 8, WHITE)
-        ssd.ellipse(WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, BLACK, True, 0b1111)
+        ssd.ellipse(
+            WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, BLACK, True, 0b1111
+        )
         ssd.text(text1, (WIDTH - FONT_WIDTH * len(text1)) // 2, HEIGHT // 2 - 8, WHITE)
         ssd.text(text2, (WIDTH - FONT_WIDTH * len(text2)) // 2, HEIGHT // 2, WHITE)
         ssd.show()
@@ -56,6 +60,7 @@ def loop(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
     for _ in scroll_range:
         ssd.scroll(1, 1)
         ssd.show()
+
 
 launch = lambda: loop(animate=True)
 wipe = lambda: loop(scroll=True)

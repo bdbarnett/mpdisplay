@@ -26,19 +26,8 @@ BTN_HEIGHT = ROW_HEIGHT - PAD_X2
 LINE_WIDTH = WIDTH - PAD_X2
 LINE_HEIGHT = (ROW_HEIGHT - PAD_X2) // 2
 
-# Define the colors
-color565 = display_drv.color565
-WHITE = color565(255, 255, 255)
-LTGRAY = color565(192, 192, 192)
-GRAY = color565(128, 128, 128)
-DKGRAY = color565(64, 64, 64)
-BLACK = color565(0, 0, 0)
-RED = color565(255, 0, 0)
-GREEN = color565(0, 255, 0)
-BLUE = color565(0, 0, 255)
-CYAN = color565(0, 255, 255)
-MAGENTA = color565(255, 0, 255)
-YELLOW = color565(255, 255, 0)
+# Get the palette
+pal = display_drv.get_palette(name="wheel")
 
 # fmt: off
 # Define the button labels
@@ -69,18 +58,18 @@ keypad = Keypad(display_drv, COLS, ROWS, button_offset + button_codes)
 # Function to draw a button
 def draw_button(xpos, ypos, label, pressed=False):
     if pressed:
-        fgcolor, btncolor = WHITE, BLUE
+        fgcolor, btncolor = pal.WHITE, pal.BLUE
     else:
         if label in "0123456789.":
-            fgcolor, btncolor = BLACK, WHITE
+            fgcolor, btncolor = pal.BLACK, pal.WHITE
         elif label in "+-*/":
-            fgcolor, btncolor = BLACK, DKGRAY
+            fgcolor, btncolor = pal.BLACK, pal.AMBER
         elif label == "=":
-            fgcolor, btncolor = BLACK, GRAY
+            fgcolor, btncolor = pal.BLACK, pal.BLUE
         else:
-            fgcolor, btncolor = BLACK, LTGRAY
+            fgcolor, btncolor = pal.BLACK, pal.BLUE_GREY
 
-    button_fb.fill(BLACK)
+    button_fb.fill(pal.BLACK)
     button_fb.roundrect(
         PAD, PAD, BTN_WIDTH - PAD_X2, BTN_HEIGHT - PAD_X2, PAD_X4, btncolor, True
     )
@@ -97,16 +86,16 @@ def draw_button(xpos, ypos, label, pressed=False):
 # Function to display the result line right justified
 def show_result(result):
     x_start = LINE_WIDTH - (len(str(result)) * FONT_WIDTH + PAD_X2)
-    line_fb.fill(BLACK)
-    line_fb.btext(str(result), x_start, PAD, WHITE)
+    line_fb.fill(pal.BLACK)
+    line_fb.btext(str(result), x_start, PAD, pal.WHITE)
     display_drv.blit_rect(line_ba, PAD, PAD, LINE_WIDTH, LINE_HEIGHT)
 
 
 # Function to display the input line right justified
 def show_input(input):
     x_start = LINE_WIDTH - (len(input) * FONT_WIDTH + PAD_X2)
-    line_fb.fill(BLACK)
-    line_fb.btext(input, x_start, PAD, YELLOW)
+    line_fb.fill(pal.BLACK)
+    line_fb.btext(input, x_start, PAD, pal.YELLOW)
     display_drv.blit_rect(line_ba, PAD, LINE_HEIGHT + PAD, LINE_WIDTH, LINE_HEIGHT)
 
 
@@ -117,11 +106,11 @@ button_ba = bytearray(BTN_WIDTH * BTN_HEIGHT * BPP)
 button_fb = FrameBuffer(button_ba, BTN_WIDTH, BTN_HEIGHT, RGB565)
 
 # Clear the screen
-display_drv.fill(BLACK)
+display_drv.fill(pal.BLACK)
 
 # Draw the Window
-display_drv.fill_rect(0, 0, WIDTH, ROW_HEIGHT, DKGRAY)
-display_drv.fill_rect(PAD // 2, PAD // 2, WIDTH - PAD, ROW_HEIGHT - PAD, LTGRAY)
+display_drv.fill_rect(0, 0, WIDTH, ROW_HEIGHT, pal.LIGHT_BLUE)
+display_drv.fill_rect(PAD // 2, PAD // 2, WIDTH - PAD, ROW_HEIGHT - PAD, pal.BLUE_GREY)
 
 # Draw the buttons, saving their positions.
 button_pos = dict()

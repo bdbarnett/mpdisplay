@@ -3,6 +3,8 @@
 _colors = (
     # black
     b"\x00\x00\x00"
+    # white
+    b"\xFF\xFF\xFF"
     # red
     b"\xFF\xEB\xEE"  # 50
     b"\xFF\xCD\xD2"  # 100
@@ -276,14 +278,13 @@ _colors = (
     b"\x45\x5A\x64"  # 700
     b"\x37\x47\x4F"  # 800
     b"\x26\x32\x38"  # 900
-    # white
-    b"\xFF\xFF\xFF"
 )
 
 COLORS = memoryview(_colors)
 
 FAMILIES = [
     "black",
+    "white",
     "red",
     "pink",
     "purple",
@@ -303,29 +304,28 @@ FAMILIES = [
     "brown",
     "grey",
     "blue_grey",
-    "white",
 ]
 
 LENGTHS = [
     1,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    14,
-    10,
-    10,
-    10,
     1,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    10,
+    10,
+    10,
 ]

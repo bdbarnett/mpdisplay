@@ -17,7 +17,7 @@ CYAN = color565(0, 255, 255)
 MAGENTA = color565(255, 0, 255)
 YELLOW = color565(255, 255, 0)
 BLACK = color565(0, 0, 0)
-GRAY = color565(128, 128, 128)
+GREY = color565(128, 128, 128)
 colors = [WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, BLACK]
 
 on_x_axis = display_drv.width < display_drv.height
@@ -30,7 +30,7 @@ selected = 0
 def draw_block(index, color):
     x, y = (index * block_size, 0) if on_x_axis else (0, index * block_size)
     if index == selected:
-        display_drv.fill_rect(x, y, block_size, block_size, GRAY)
+        display_drv.fill_rect(x, y, block_size, block_size, GREY)
         display_drv.fill_rect(
             x + selected_pad,
             y + selected_pad,

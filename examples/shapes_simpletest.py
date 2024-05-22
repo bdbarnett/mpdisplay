@@ -21,9 +21,9 @@ CYAN = color565(0, 255, 255)
 MAGENTA = color565(255, 0, 255)
 YELLOW = color565(255, 255, 0)
 BLACK = color565(0, 0, 0)
-LTGRAY = color565(192, 192, 192)
-GRAY = color565(128, 128, 128)
-DKGRAY = color565(64, 64, 64)
+LIGHT_GREY = color565(192, 192, 192)
+GREY = color565(128, 128, 128)
+DARK_GREY = color565(64, 64, 64)
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])
@@ -36,7 +36,12 @@ def loop(animate=False, poly=triangle):
         shapes.fill(display_drv, BLACK)
         shapes.poly(display_drv, 0, y, poly, YELLOW, True)
         shapes.fill_rect(
-            display_drv, WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LTGRAY
+            display_drv,
+            WIDTH // 6,
+            HEIGHT // 3,
+            WIDTH * 2 // 3,
+            HEIGHT // 3,
+            LIGHT_GREY,
         )
         shapes.line(display_drv, 0, 0, WIDTH - 1, HEIGHT - 1, GREEN)
         shapes.rect(display_drv, 0, 0, 15, 15, RED, True)

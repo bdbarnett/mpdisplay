@@ -113,7 +113,7 @@ class Family(_Palette):
                 yield self[i]
 
 
-class Palette(_Palette):
+class MDPalette(_Palette):
     """
     A class to represent the Material Design color palette.
     """

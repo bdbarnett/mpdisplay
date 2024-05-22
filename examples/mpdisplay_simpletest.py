@@ -19,9 +19,9 @@ CYAN = color565(0, 255, 255)
 MAGENTA = color565(255, 0, 255)
 YELLOW = color565(255, 255, 0)
 BLACK = color565(0, 0, 0)
-LTGRAY = color565(192, 192, 192)
-GRAY = color565(128, 128, 128)
-DKGRAY = color565(64, 64, 64)
+LIGHT_GREY = color565(192, 192, 192)
+GREY = color565(128, 128, 128)
+DARK_GREY = color565(64, 64, 64)
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])
@@ -35,7 +35,9 @@ def loop(
     for y in y_range:
         display_drv.fill(BLACK)
         display_drv.poly(0, y, poly, YELLOW, True)
-        display_drv.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LTGRAY)
+        display_drv.fill_rect(
+            WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LIGHT_GREY
+        )
         display_drv.line(0, 0, WIDTH - 1, HEIGHT - 1, GREEN)
         display_drv.rect(0, 0, 15, 15, RED, True)
         display_drv.rect(WIDTH - 15, HEIGHT - 15, 15, 15, BLUE, True)
@@ -45,8 +47,12 @@ def loop(
         display_drv.ellipse(
             WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, BLACK, True, 0b1111
         )
-        display_drv.text(text1, (WIDTH - FONT_WIDTH * len(text1)) // 2, HEIGHT // 2 - 8, WHITE)
-        display_drv.text(text2, (WIDTH - FONT_WIDTH * len(text2)) // 2, HEIGHT // 2, WHITE)
+        display_drv.text(
+            text1, (WIDTH - FONT_WIDTH * len(text1)) // 2, HEIGHT // 2 - 8, WHITE
+        )
+        display_drv.text(
+            text2, (WIDTH - FONT_WIDTH * len(text2)) // 2, HEIGHT // 2, WHITE
+        )
 
     display_drv.hline(0, 0, WIDTH, BLACK)
     display_drv.vline(0, 0, HEIGHT, BLACK)
