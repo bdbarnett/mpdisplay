@@ -4,11 +4,11 @@ This module contains the cool wheel color palette as a class object.
 
 Usage:
     from primitives.palettes import get_palette
-    palette = get_palette(name="wheel", color_depth=16, swapped=False)
+    palette = get_palette(name="wheel", color_depth=16, swapped=False, length=256)
 
     # OR
     from board_config import display_drv
-    palette = display_drv.get_palette(name="wheel", color_depth=16, swapped=False)
+    palette = display_drv.get_palette(name="wheel", color_depth=16, swapped=False, length=256)
     # OR
     palette = display_drv.get_palette()
 
@@ -16,7 +16,7 @@ Usage:
     x = palette.RED
     x = palette.BLACK
 
-    # to iterate over all 256 colors:
+    # to iterate over all available colors:
         for x in palette:
             pass
 
@@ -29,12 +29,15 @@ class CWPalette(_Palette):
     A class to represent a color wheel as a palette.
     """
 
-    def __init__(self, name="", color_depth=16, swapped=False):
+    def __init__(self, name="", color_depth=16, swapped=False, length=256):
         super().__init__(name, color_depth, swapped)
 
-        # Define all 27 colors that are combinations of 0, 127, 255
-        # plus add dark_grey, light_grey, brown, tan, and gold
-        # for a total of 32 colors
+        self._length = length
+        self._bounds = self._length - 1
+        self._one_third = self._length // 3
+        self._two_thirds = 2 * self._length // 3
+        self._spacing = 256 * 3 / self._length
+
         self.BLACK = self.color565(0, 0, 0)
         self.WHITE = self.color565(255, 255, 255)
         self.RED = self.color565(255, 0, 0)
@@ -71,17 +74,17 @@ class CWPalette(_Palette):
 
     def __getitem__(self, index):
         while index < 0:
-            index += 256
+            index += self._length
 
-        index = 255 - index
-        if index < 85:
-            r, g, b = (255 - index * 3, 0, index * 3)
-        elif index < 170:
-            index -= 85
-            r, g, b = (0, index * 3, 255 - index * 3)
+        index = self._bounds - index
+        if index < self._one_third:
+            r, g, b = (255 - int(index * self._spacing), 0, int(index * self._spacing))
+        elif index < self._two_thirds:
+            index -= self._one_third
+            r, g, b = (0, int(index * self._spacing), 255 - int(index * self._spacing))
         else:
-            index -= 170
-            r, g, b = (index * 3, 255 - index * 3, 0)
+            index -= self._two_thirds
+            r, g, b = (int(index * self._spacing), 255 - int(index * self._spacing), 0)
 
         if self._color_depth == 24:
             return r << 16 | g << 8 | b
@@ -91,4 +94,4 @@ class CWPalette(_Palette):
             raise ValueError("Invalid color depth")
 
     def __len__(self):
-        return 256
+        return self._length
