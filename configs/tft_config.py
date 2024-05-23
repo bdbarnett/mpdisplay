@@ -6,6 +6,12 @@ if implementation.name == "esp32":
 
     freq(240_000_000)
 
+BUFFERED = False
+
+if BUFFERED:
+    from displaybuf import DisplayBuffer
+    from timer import Timer
+
 
 TFA = 0
 BFA = 0
@@ -33,4 +39,9 @@ def deinit(display_drv, display_off=False):
 def config(rotation=None, buffer_size=0, options=0):
     if rotation is not None:
         display_drv.rotation = rotation
+        if BUFFERED:
+            display = DisplayBuffer(display_drv)
+            tim = Timer()
+            tim.init(mode=Timer.PERIODIC, period=33, callback=display.show) 
+            return display
     return display_drv
