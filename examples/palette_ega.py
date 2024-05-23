@@ -10,9 +10,13 @@ def main():
     global i
     for index in range(32):
         color_a = palette[index]
-        name_a = f"{index}"
+        name_a = f"{index} "
+        if index in palette.names:
+            name_a += palette.names[index]
         color_b = palette[index + 32]
-        name_b = f"{index+32}"
+        name_b = f"{index+32} "
+        if index + 32 in palette.names:
+            name_b += palette.names[index + 32]
         if i >= display_drv.height:
             display_drv.vscsad((line_height + i) % display_drv.height)
         display_drv.fill_rect(0, i % display_drv.height, display_drv.width//2, line_height, color_a)

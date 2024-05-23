@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 from ._palette import Palette as _Palette
-from ._ega import COLORS
+from ._ega import COLORS, NAMES
 
 class EGAPalette(_Palette):
     """
@@ -16,6 +16,8 @@ class EGAPalette(_Palette):
         self._define_named_colors()
 
     def _define_named_colors(self):
+
+        self.names = NAMES
 
         # EGA 16 colors
         self.BLACK = self[0]
