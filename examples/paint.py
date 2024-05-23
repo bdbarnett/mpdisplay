@@ -8,17 +8,8 @@ from mpdisplay import Events
 
 display_drv.rotation = 90
 
-color565 = display_drv.color565
-WHITE = color565(255, 255, 255)
-RED = color565(255, 0, 0)
-GREEN = color565(0, 255, 0)
-BLUE = color565(0, 0, 255)
-CYAN = color565(0, 255, 255)
-MAGENTA = color565(255, 0, 255)
-YELLOW = color565(255, 255, 0)
-BLACK = color565(0, 0, 0)
-GREY = color565(128, 128, 128)
-colors = [WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, BLACK]
+pal = display_drv.get_palette()
+colors = [pal.WHITE, pal.RED, pal.GREEN, pal.BLUE, pal.CYAN, pal.MAGENTA, pal.YELLOW, pal.BLACK]
 
 on_x_axis = display_drv.width < display_drv.height
 block_size = min(display_drv.width, display_drv.height) // len(colors)
@@ -30,7 +21,7 @@ selected = 0
 def draw_block(index, color):
     x, y = (index * block_size, 0) if on_x_axis else (0, index * block_size)
     if index == selected:
-        display_drv.fill_rect(x, y, block_size, block_size, GREY)
+        display_drv.fill_rect(x, y, block_size, block_size, pal.GREY)
         display_drv.fill_rect(
             x + selected_pad,
             y + selected_pad,

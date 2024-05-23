@@ -22,6 +22,9 @@ else:
 FG_COLOR = -1  # white
 BG_COLOR = 0  # black
 
+text = "Touch here"
+text_width = len(text) * 8
+
 SWAP_XY = 0b001
 REVERSE_X = 0b010
 REVERSE_Y = 0b100
@@ -51,12 +54,20 @@ def loop():
 
         for y in range(2):
             for x in range(2):
-                display_drv.fill_rect(
-                    x * half_width,
-                    y * half_height,
-                    half_width - 1,
-                    half_height - 1,
+                display_drv.roundrect(
+                    x * half_width + 10,
+                    y * half_height + 10,
+                    half_width - 20,
+                    half_height - 20,
+                    10,
                     FG_COLOR,
+                    True,
+                )
+                display_drv.btext(
+                    text,
+                    x * half_width + ((half_width - text_width) // 2),
+                    y * half_height + ((half_height - 8) // 2),
+                    BG_COLOR,
                 )
                 touched_point = None
                 while not touched_point:

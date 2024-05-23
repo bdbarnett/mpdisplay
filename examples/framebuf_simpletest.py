@@ -15,48 +15,37 @@ BPP = display_drv.color_depth // 8  # Bytes per pixel
 ba = bytearray(WIDTH * HEIGHT * BPP)
 fb = FrameBuffer(ba, WIDTH, HEIGHT, RGB565)
 
-# Define colors
-color565 = display_drv.color565
-WHITE = color565(255, 255, 255)
-RED = color565(255, 0, 0)
-GREEN = color565(0, 255, 0)
-BLUE = color565(0, 0, 255)
-CYAN = color565(0, 255, 255)
-MAGENTA = color565(255, 0, 255)
-YELLOW = color565(255, 255, 0)
-BLACK = color565(0, 0, 0)
-LIGHT_GREY = color565(192, 192, 192)
-GREY = color565(128, 128, 128)
-DARK_GREY = color565(64, 64, 64)
+# Define color palette
+pal = display_drv.get_palette()
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])
 
 
 # Main loop
-def loop(
+def main(
     scroll=False, animate=False, text1="framebuf", text2="simpletest", poly=triangle
 ):
     y_range = range(HEIGHT - 1, -1, -1) if animate else [HEIGHT - 1]
     for y in y_range:
-        fb.fill(BLACK)
-        fb.poly(0, y, poly, YELLOW, True)
-        fb.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LIGHT_GREY)
-        fb.line(0, 0, WIDTH - 1, HEIGHT - 1, GREEN)
-        fb.rect(0, 0, 15, 15, RED, True)
-        fb.rect(WIDTH - 15, HEIGHT - 15, 15, 15, BLUE, True)
-        fb.hline(WIDTH // 8, HEIGHT // 2, WIDTH * 3 // 4, MAGENTA)
-        fb.vline(WIDTH // 2, HEIGHT // 4, HEIGHT // 2, CYAN)
-        fb.pixel(WIDTH // 2, HEIGHT * 1 // 8, WHITE)
+        fb.fill(pal.BLACK)
+        fb.poly(0, y, poly, pal.YELLOW, True)
+        fb.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, pal.GREY)
+        fb.line(0, 0, WIDTH - 1, HEIGHT - 1, pal.GREEN)
+        fb.rect(0, 0, 15, 15, pal.RED, True)
+        fb.rect(WIDTH - 15, HEIGHT - 15, 15, 15, pal.BLUE, True)
+        fb.hline(WIDTH // 8, HEIGHT // 2, WIDTH * 3 // 4, pal.MAGENTA)
+        fb.vline(WIDTH // 2, HEIGHT // 4, HEIGHT // 2, pal.CYAN)
+        fb.pixel(WIDTH // 2, HEIGHT * 1 // 8, pal.WHITE)
         fb.ellipse(
-            WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, BLACK, True, 0b1111
+            WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, pal.BLACK, True, 0b1111
         )
-        fb.text(text1, (WIDTH - FONT_WIDTH * len(text1)) // 2, HEIGHT // 2 - 8, WHITE)
-        fb.text(text2, (WIDTH - FONT_WIDTH * len(text2)) // 2, HEIGHT // 2, WHITE)
+        fb.text(text1, (WIDTH - FONT_WIDTH * len(text1)) // 2, HEIGHT // 2 - 8, pal.WHITE)
+        fb.text(text2, (WIDTH - FONT_WIDTH * len(text2)) // 2, HEIGHT // 2, pal.WHITE)
         display_drv.blit_rect(ba, 0, 0, WIDTH, HEIGHT)
 
-    fb.hline(0, 0, WIDTH, BLACK)
-    fb.vline(0, 0, HEIGHT, BLACK)
+    fb.hline(0, 0, WIDTH, pal.BLACK)
+    fb.vline(0, 0, HEIGHT, pal.BLACK)
 
     scroll_range = range(min(WIDTH, HEIGHT)) if scroll else [0]
     for _ in scroll_range:
@@ -64,8 +53,8 @@ def loop(
         display_drv.blit_rect(ba, 0, 0, WIDTH, HEIGHT)
 
 
-launch = lambda: loop(animate=True)
+launch = lambda: main(animate=True)
 
-wipe = lambda: loop(scroll=True)
+wipe = lambda: main(scroll=True)
 
-loop()
+main()

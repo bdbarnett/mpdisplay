@@ -31,9 +31,11 @@ def main():
     """
     The big show!
     """
+    pal = display_drv.get_palette()
+
     write_text = "Hello!"
     text_len = len(write_text)
-    iterations = 1024
+    iterations = 512
 
     font1 = BinFont("romfonts/binfont_8x8.bin")
     font2 = BinFont("romfonts/binfont_8x14.bin")
@@ -61,16 +63,8 @@ def main():
                     write_text,
                     random.randint(0, col_max),
                     random.randint(0, row_max),
-                    display_drv.color565(
-                        random.getrandbits(8),
-                        random.getrandbits(8),
-                        random.getrandbits(8),
-                    ),
-                    display_drv.color565(
-                        random.getrandbits(8),
-                        random.getrandbits(8),
-                        random.getrandbits(8),
-                    ),
+                    pal[random.randint(0, len(pal) - 1)],
+                    pal[random.randint(0, len(pal) - 1)],
                     scale,
                 )
 

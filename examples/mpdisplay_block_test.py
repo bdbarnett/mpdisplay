@@ -19,17 +19,8 @@ else:
 # Define how buffers are allocated
 alloc_buffer = lambda size: memoryview(bytearray(size))
 
-# Define RGB565 colors
-BLACK = 0x0000
-WHITE = 0xFFFF
-MAGENTA = 0xF81F
-CYAN = 0x07FF
-YELLOW = 0xFFE0
-PURPLE = 0x780F
-GREEN = 0x07E0
-BLUE = 0x001F
-RED = 0xF800
-ORANGE = 0xFDA0
+# Define color palette
+pal = display_drv.get_palette(swapped=needs_swap)
 
 # Define the blocks
 bytes_per_pixel = 2
@@ -42,22 +33,11 @@ blocks_per_screen = (display_drv.width * display_drv.height) // (
 )
 # Create the blocks
 # for pixel_color in [1 << (x + 8) | 1 << x for x in range(8)]:
-for pixel_color in [
-    BLACK,
-    WHITE,
-    MAGENTA,
-    CYAN,
-    YELLOW,
-    PURPLE,
-    GREEN,
-    BLUE,
-    RED,
-    ORANGE,
-]:
+for pixel_color in [pal.BLACK, pal.RED, pal.GREEN, pal.BLUE, pal.CYAN, pal.MAGENTA, pal.YELLOW, pal.WHITE]:
     block = alloc_buffer(block_bytes)
     for i in range(0, block_bytes, bytes_per_pixel):
-        block[i] = pixel_color & 0xFF if not needs_swap else pixel_color >> 8
-        block[i + 1] = pixel_color >> 8 if not needs_swap else pixel_color & 0xFF
+        block[i] = pixel_color & 0xFF
+        block[i + 1] = pixel_color >> 8
     blocks.append(block)
 
 # Maximum start positions of blocks

@@ -31,7 +31,7 @@ if ssd.colors_registered:  # Will be 0 if not using lookup tables / GS4_HMSB mod
 
 
 # Main loop
-def loop(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
+def main(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
     WIDTH = ssd.width
     HEIGHT = ssd.height
     poly = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])
@@ -39,7 +39,7 @@ def loop(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
     for y in y_range:
         ssd.fill(BLACK)
         ssd.poly(0, y, poly, YELLOW, True)
-        ssd.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, LIGHT_GREY)
+        ssd.fill_rect(WIDTH // 6, HEIGHT // 3, WIDTH * 2 // 3, HEIGHT // 3, GREY)
         ssd.line(0, 0, WIDTH - 1, HEIGHT - 1, GREEN)
         ssd.rect(0, 0, 15, 15, RED, True)
         ssd.rect(WIDTH - 15, HEIGHT - 15, 15, 15, BLUE, True)
@@ -62,7 +62,7 @@ def loop(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
         ssd.show()
 
 
-launch = lambda: loop(animate=True)
-wipe = lambda: loop(scroll=True)
+launch = lambda: main(animate=True)
+wipe = lambda: main(scroll=True)
 
-loop()
+main()
