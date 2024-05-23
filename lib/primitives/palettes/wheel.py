@@ -29,10 +29,11 @@ class CWPalette(_Palette):
     A class to represent a color wheel as a palette.
     """
 
-    def __init__(self, name="", color_depth=16, swapped=False, length=256, saturation=None, value=None):
+    def __init__(self, name="", color_depth=16, swapped=False, length=256, cache=True, saturation=1.0, value=None):
         super().__init__(name, color_depth, swapped)
 
         self._length = length
+        self._cache = dict() if cache else None
 
         if saturation is None and value is None:
             self._mode = "wheel"
@@ -53,17 +54,26 @@ class CWPalette(_Palette):
         while index < 0:
             index += self._length  # wrap around
 
+        if self._cache is not None:
+            if index in self._cache:
+                return self._cache[index]
+
         if self._mode == "wheel":
             r, g, b = self._wheel_to_rgb(index)
         else:
             r, g, b = self._hsv_to_rgb(index / self._length, self._saturation, self._value)
 
         if self._color_depth == 24:
-            return r << 16 | g << 8 | b
+            color = r << 16 | g << 8 | b
         elif self._color_depth == 16:
-            return self.color565(r, g, b)
+            color = self.color565(r, g, b)
         else:
             raise ValueError("Invalid color depth")
+        
+        if self._cache is not None:
+            self._cache[index] = color
+
+        return color
 
     def __len__(self):
         return self._length
@@ -93,51 +103,65 @@ class CWPalette(_Palette):
         t = int(255 * v * (1.0 - s * (1.0 - f)))
         v = int(255 * v)
         i = i % 6
-        if i == 0:
+        if i == 0:  # red
             return v, t, p
-        if i == 1:
+        if i == 1:  # yellow
             return q, v, p
-        if i == 2:
+        if i == 2:  # green
             return p, v, t
-        if i == 3:
+        if i == 3:  # cyan
             return p, q, v
-        if i == 4:
+        if i == 4:  # blue
             return t, p, v
-        if i == 5:
+        if i == 5:  # magenta
             return v, p, q
         return 0, 0, 0
 
     def _define_named_colors(self):
-        self.BLACK = self.color565(0, 0, 0)
-        self.WHITE = self.color565(255, 255, 255)
-        self.RED = self.color565(255, 0, 0)
-        self.PINK = self.color565(255, 128, 255)
-        self.PURPLE = self.color565(128, 0, 128)
-        self.DEEP_PURPLE = self.color565(64, 0, 128)
-        self.INDIGO = self.color565(128, 0, 255)
-        self.BLUE = self.color565(0, 0, 255)
-        self.LIGHT_BLUE = self.color565(0, 128, 255)
-        self.CYAN = self.color565(0, 255, 255)
-        self.TEAL = self.color565(0, 128, 128)
-        self.GREEN = self.color565(0, 255, 0)
-        self.LIGHT_GREEN = self.color565(128, 255, 128)
-        self.LIME = self.color565(128, 255, 0)
-        self.YELLOW = self.color565(255, 255, 0)
-        self.AMBER = self.color565(255, 192, 64)
-        self.ORANGE = self.color565(255, 128, 0)
-        self.DEEP_ORANGE = self.color565(255, 128, 64)
-        self.BROWN = self.color565(128, 64, 0)
-        self.GREY = self.color565(128, 128, 128)
-        self.BLUE_GREY = self.color565(64, 96, 128)
+        # Comments show the names from the "12 major color wheel colors".
+        # The second color name in the comments is the palette family from.
+        # Material Design.  An asterisk denote the color name exists in EGA.
 
-        self.LIGHT_GREY = self.color565(192, 192, 192)
-        self.DARK_GREY = self.color565(64, 64, 64)
-        self.MAROON = self.color565(128, 0, 0)
-        self.DEEP_PINK = self.color565(255, 0, 128)
-        self.LIGHT_RED = self.color565(255, 64, 64)
-        self.DARK_BLUE = self.color565(0, 0, 128)
-        self.DARK_GREEN = self.color565(0, 128, 0)
-        self.SALMON = self.color565(255, 128, 128)
-        self.MAGENTA = self.color565(255, 0, 255)
-        self.LIGHT_MAGENTA = self.color565(255, 64, 255)
-        self.LIGHT_CYAN = self.color565(128, 255, 255)
+        # Monochrome colors with only 0, 127 and 255 as RGB values:
+        self.BLACK = self.color565(0, 0, 0)  # *
+        self.WHITE = self.color565(255, 255, 255)  # *
+        self.GREY = self.color565(127, 127, 127)   # (Grey)
+
+        # The 12 major color wheel colors:
+        self.RED = self.color565(255, 0, 0)  # * Red (Red)
+        self.ORANGE = self.color565(255, 127, 0)  # Orange (Orange)
+        self.YELLOW = self.color565(255, 255, 0)  # * Yellow (Yellow)
+        self.LIME = self.color565(127, 255, 0)  # Chartreuse (Lime)
+        self.GREEN = self.color565(0, 255, 0)  # * Green (Green)
+        self.SPRING_GREEN = self.color565(0, 255, 127)  # Spring Green
+        self.CYAN = self.color565(0, 255, 255)  # * Cyan (Cyan)
+        self.AZURE = self.color565(0, 127, 255)  # Azure
+        self.BLUE = self.color565(0, 0, 255)  # * Blue (Blue)
+        self.INDIGO = self.color565(127, 0, 255)  # Violet (Indigo)
+        self.MAGENTA = self.color565(255, 0, 255)  # * Magenta
+        self.ROSE = self.color565(255, 0, 127)  # Rose
+
+        # The other 12 colors that have only 0, 127 and 255 as RGB values:
+        self.TEAL = self.color565(0, 127, 127)  # (Teal)
+        self.PURPLE = self.color565(127, 0, 127)  # (Purple)
+        self.PINK = self.color565(255, 127, 255)  # (Pink)
+        self.LIGHT_GREEN = self.color565(127, 255, 127)  # * (Light Green)
+        self.LIGHT_BLUE = self.color565(127, 127, 255)  # * (Light Blue)
+        self.LIGHT_CYAN = self.color565(127, 255, 255)  # * Light Cyan
+        self.LIGHT_YELLOW = self.color565(255, 255, 127)  # Light Yellow
+        self.DARK_RED = self.color565(127, 0, 0)  # Dark Red
+        self.DARK_BLUE = self.color565(0, 0, 127)  # Dark Blue
+        self.SKY_BLUE = self.color565(0, 127, 255)  # Sky Blue
+        self.OLIVE = self.color565(127, 127, 0)  # Olive
+        self.SALMON = self.color565(255, 127, 127)  # Salmon
+
+        # Other colors rounding out the 32 named colors:
+        self.BROWN = self.color565(127, 63, 0)  # * (Brown)
+        self.LIGHT_GREY = self.color565(191, 191, 191) # *
+        self.DARK_GREY = self.color565(63, 63, 63) # *
+        self.AMBER = self.color565(255, 191, 0)  # (Amber)
+        self.BLUE_GREY = self.color565(63, 95, 127)  # (Blue Grey)
+
+        # EGA colors that aren't defined:
+        self.LIGHT_RED = self.color565(255, 63, 63)
+        self.LIGHT_MAGENTA = self.color565(255, 63, 255)
