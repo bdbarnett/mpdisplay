@@ -28,6 +28,7 @@ except ImportError:
 
 import gc
 import sys
+from primitives import Area  # for blit_rect and _show16
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
@@ -116,7 +117,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
         gc.collect()
 
     def _show16(self, area=None):
-        if area is not None:
+        if isinstance(area, Area):
             x, y, w, h = area
             for row in range(y, y + h):
                 buffer_begin = (row * self.width + x) * 2
@@ -206,6 +207,24 @@ class DisplayBuffer(framebuf.FrameBuffer):
         DisplayBuffer.lut[offset] = c & 0xFF  # Set the lower 8 bits of the color
         DisplayBuffer.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
         return idx  # Return the index of the registered color
+
+    def blit_rect(self, buf, x, y, w, h):
+        """
+        Blit a rectangular area from a buffer to the bisplaybuffer.
+        :param buf: Buffer containing the data to blit
+        :param x: X coordinate of the top-left corner of the area
+        :param y: Y coordinate of the top-left corner of the area
+        :param w: Width of the area
+        :param h: Height of the area
+        """
+        # copy bytes from buf to self._buffer, one row at a time
+        for row in range(h):
+            start = (row * w)
+            self._mvb[(y + row) * self.width + x : (y + row) * self.width + x + w] = buf[
+                start : start + w
+            ]
+        return Area(x, y, w, h)
+
 
 
 class BoolPalette(framebuf.FrameBuffer):
