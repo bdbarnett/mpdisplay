@@ -13,25 +13,6 @@ class EGAPalette(_Palette):
     def __init__(self, name="", color_depth=16, swapped=False, colors=COLORS):
         super().__init__(name, color_depth, swapped, colors)
 
-        # Custom colors
-        self.PINK = self[47]
-        self.PURPLE = self[41]
-        self.DEEP_PURPLE = self[40]
-        self.INDIGO = self[29]
-        self.TEAL = self[24]
-        self.LIME = self[34]
-        self.AMBER = self[46]
-        self.ORANGE = self[38]
-        self.DEEP_ORANGE = self[52]
-        self.GREY = self[48]  # closer to olive
-        self.BLUE_GREY = self[17]
-
-        self.MAROON = self[32]
-        self.DEEP_PINK = self[45]
-        self.DARK_BLUE = self[8]
-        self.DARK_GREEN = self[16]
-        self.SALMON = self[39]
-
         self._define_named_colors()
 
     def _define_named_colors(self):
