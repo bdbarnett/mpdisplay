@@ -7,12 +7,19 @@ from array import array  # for defining a polygon
 from primitives import shapes, text
 
 
+# If byte swapping is required and the display bus is capable of having byte swapping disabled,
+# disable it and set a flag so we can swap the color bytes as they are created.
+if display_drv.requires_byte_swap:
+    needs_swap = display_drv.bus_swap_disable(True)
+else:
+    needs_swap = False
+
 WIDTH = display_drv.width
 HEIGHT = display_drv.height
 FONT_WIDTH = 8
 
 # Define color palette
-pal = display_drv.get_palette()
+pal = display_drv.get_palette(swapped=needs_swap)
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])

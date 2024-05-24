@@ -1,6 +1,13 @@
 from board_config import display_drv
 
-palette = display_drv.get_palette(name="wheel", color_depth=16)
+# If byte swapping is required and the display bus is capable of having byte swapping disabled,
+# disable it and set a flag so we can swap the color bytes as they are created.
+if display_drv.requires_byte_swap:
+    needs_swap = display_drv.bus_swap_disable(True)
+else:
+    needs_swap = False
+
+palette = display_drv.get_palette(name="wheel", color_depth=16, swapped=needs_swap)
 
 colors = [
     palette.AMBER,
@@ -76,10 +83,9 @@ names = [
     "Yellow",
 ]
 
-line_height = 10
+line_height = 18
 
 i = 0
-
 
 def main():
     global i
@@ -89,7 +95,7 @@ def main():
         display_drv.fill_rect(
             0, i % display_drv.height, display_drv.width, line_height, color
         )
-        display_drv.text(name, 0, (1 + i) % display_drv.height, ~color)
+        display_drv.btext(name, 0, (1 + i) % display_drv.height, ~color)
         i += line_height
 
 

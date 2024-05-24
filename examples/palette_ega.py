@@ -1,8 +1,15 @@
 from board_config import display_drv
 
-palette = display_drv.get_palette(name="ega", color_depth=16)
+# If byte swapping is required and the display bus is capable of having byte swapping disabled,
+# disable it and set a flag so we can swap the color bytes as they are created.
+if display_drv.requires_byte_swap:
+    needs_swap = display_drv.bus_swap_disable(True)
+else:
+    needs_swap = False
 
-line_height = 10
+palette = display_drv.get_palette(name="ega", color_depth=16, swapped=needs_swap)
+
+line_height = max([display_drv.height // (len(palette) // 2), 10])
 
 i = 0
 

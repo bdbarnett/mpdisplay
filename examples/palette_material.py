@@ -1,6 +1,13 @@
 from board_config import display_drv
 
-palette = display_drv.get_palette(name="material_design", color_depth=16)
+# If byte swapping is required and the display bus is capable of having byte swapping disabled,
+# disable it and set a flag so we can swap the color bytes as they are created.
+if display_drv.requires_byte_swap:
+    needs_swap = display_drv.bus_swap_disable(True)
+else:
+    needs_swap = False
+
+palette = display_drv.get_palette(name="material_design", color_depth=16, swapped=needs_swap)
 
 families =[
     palette.red,
@@ -46,7 +53,7 @@ names =[
     "blue_grey",
 ]
 
-line_height = 10
+line_height = 30
 
 i = 0
 def main():
@@ -55,8 +62,8 @@ def main():
         if i >= display_drv.height:
             display_drv.vscsad((line_height + i) % display_drv.height)
         for j, color in enumerate(family):
-            display_drv.hline(0, (i + j) % display_drv.height, display_drv.width, family[0])
-        display_drv.text(family._name, 0, (1 + i) % display_drv.height, ~family[0])
+            display_drv.fill_rect(0, (i + j*3) % display_drv.height, display_drv.width, 3, color)
+        display_drv.btext(family._name, 0, (1 + i) % display_drv.height, palette.BLACK)
         i += line_height
 
 def loop():
