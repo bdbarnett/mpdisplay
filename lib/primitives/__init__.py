@@ -28,7 +28,7 @@ class ExtendedShapes:
     # Does not include hline, vline, line, rect, ellipse, poly
     arc = shapes.arc
     circle = shapes.circle
-    roundrect = shapes.roundrect
+    round_rect = shapes.round_rect
     polygon = shapes.polygon
     atext = atext
     btext = btext

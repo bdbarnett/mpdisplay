@@ -54,7 +54,7 @@ def loop():
 
         for y in range(2):
             for x in range(2):
-                display_drv.roundrect(
+                display_drv.round_rect(
                     x * half_width + 10,
                     y * half_height + 10,
                     half_width - 20,

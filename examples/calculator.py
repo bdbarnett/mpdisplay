@@ -70,7 +70,7 @@ def draw_button(xpos, ypos, label, pressed=False):
             fgcolor, btncolor = pal.BLACK, pal.BLUE_GREY
 
     button_fb.fill(pal.BLACK)
-    button_fb.roundrect(
+    button_fb.round_rect(
         PAD, PAD, BTN_WIDTH - PAD_X2, BTN_HEIGHT - PAD_X2, PAD_X4, btncolor, True
     )
     button_fb.btext(label, PAD_X3, PAD_X3, fgcolor)

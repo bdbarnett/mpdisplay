@@ -40,7 +40,7 @@ def circle(canvas, x, y, r, c, f=False, m=0b1111):
     ellipse(canvas, x, y, r, r, c, f, m)
     return Area(x - r, y - r, r * 2, r * 2)
 
-def roundrect(canvas, x, y, w, h, r, c, f=False, m=0b1111):
+def round_rect(canvas, x, y, w, h, r, c, f=False, m=0b1111):
     if w < 2 * r:
         r = w // 2
     if h < 2 * r:
