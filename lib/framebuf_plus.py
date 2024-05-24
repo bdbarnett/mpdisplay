@@ -174,6 +174,9 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         max_y = max([v[1] for v in vertices])
         return Area(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1)
 
-    def text(self, s, x, y, c=1, **kwargs):
-        super().text(s, x, y, c, **kwargs)
-        return Area(x, y, len(s) * 8, 8)
+    def text(self, first_arg, *args, **kwargs):
+        if isinstance(first_arg, (str, bytes)):
+            return self.atext(first_arg, *args, **kwargs)
+        else:
+            return self.ttext(first_arg, *args, **kwargs)
+

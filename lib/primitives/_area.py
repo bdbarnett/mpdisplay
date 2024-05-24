@@ -26,6 +26,9 @@ class Area:
             max(self.y + self.h, other.y + other.h) - min(self.y, other.y)
         )
     
+    def __len__(self):
+        return 4
+
     def __iter__(self):
         return iter((self.x, self.y, self.w, self.h))
 

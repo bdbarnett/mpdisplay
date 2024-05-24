@@ -28,7 +28,7 @@ except ImportError:
 
 import gc
 import sys
-from primitives import Area  # for blit_rect and _show16
+from primitives import Area  # for _show16
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
@@ -66,9 +66,12 @@ class DisplayBuffer(framebuf.FrameBuffer):
 
     def __init__(self, display_drv, format=framebuf.RGB565, stride=8):
         self.display_drv = display_drv
+        self.vscrdef = display_drv.vscrdef
+        self.vscsad = display_drv.vscsad
         self.height = display_drv.height
         self.width = display_drv.width
         self.color_depth = display_drv.color_depth
+        BPP = self.color_depth // 8
         self.palette = BoolPalette(
             format
         )  # a 2-value color palette for rendering monochrome glyphs
@@ -95,17 +98,20 @@ class DisplayBuffer(framebuf.FrameBuffer):
         # allocate the buffer.  Also create the line buffer and lut if needed.
         gc.collect()
         if format == DisplayBuffer.RGB565:
-            self._buffer = bytearray(self.width * self.height * 2)
+            self._buffer_depth = 16
+            self._buffer = bytearray(self.width * self.height * BPP)
             self.show = self._show16
         elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 != None:
+            self._buffer_depth = 8
             self._stride = stride
-            self._bounce_buf = alloc_buffer(self.width * self._stride * 2)
+            self._bounce_buf = alloc_buffer(self.width * self._stride * BPP)
             self._buffer = bytearray(self.width * self.height)
             self.show = self._show8
         elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB != None:
+            self._buffer_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
-            self._bounce_buf = alloc_buffer(self.width * self._stride * 2)
+            self._bounce_buf = alloc_buffer(self.width * self._stride * BPP)
             self._buffer = bytearray(self.width * self.height // 2)
             self.show = self._show4
         else:
@@ -150,7 +156,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             self.display_drv.blit_rect(bb, 0, chunks * lines, wd, remainder)
 
     def _show4(self, area=None):
-        # Note:  area is ignored for now in _show8
+        # Note:  area is ignored for now in _show4
         # Convert the 4 bit index values to 16 bit RGB565 values using a lookup table
         # and then copy the line to the display, line by line.
         clut = DisplayBuffer.lut
@@ -218,13 +224,21 @@ class DisplayBuffer(framebuf.FrameBuffer):
         :param h: Height of the area
         """
         # copy bytes from buf to self._buffer, one row at a time
-        for row in range(h):
-            start = (row * w)
-            self._mvb[(y + row) * self.width + x : (y + row) * self.width + x + w] = buf[
-                start : start + w
-            ]
-        return Area(x, y, w, h)
 
+        BPP = self._buffer_depth // 8
+
+        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
+            raise ValueError("The provided x, y, w, h values are out of range")
+
+        if len(buf) != w * h * BPP:
+            print(f"len(buf)={len(buf)} w={w} h={h} self.color_depth={self.color_depth}")
+            raise ValueError("The source buffer is not the correct size")
+
+        for row in range(h):
+            start = row * w * BPP
+            dest = ((y + row) * self.width + x) * BPP
+            self._buffer[dest : dest + w * BPP] = buf[start : start + w * BPP]
+        return Area(x, y, w, h)
 
 
 class BoolPalette(framebuf.FrameBuffer):

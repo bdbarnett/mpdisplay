@@ -30,7 +30,9 @@ class ExtendedShapes:
     circle = shapes.circle
     roundrect = shapes.roundrect
     polygon = shapes.polygon
+    atext = atext
     btext = btext
+    ttext = ttext
     bfont_width = bfont_width
     bfont_height = bfont_height
     bitmap = bitmap
