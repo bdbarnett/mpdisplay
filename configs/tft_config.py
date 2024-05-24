@@ -23,8 +23,8 @@ else:
     WIDE = display_drv.rotation
     TALL = display_drv.rotation + 90
 
-SCROLL = WIDE  # orientation for scroll.py
-FEATHERS = TALL  # orientation for feathers.py
+SCROLL = TALL  # orientation for scroll.py
+FEATHERS = WIDE  # orientation for feathers.py
 
 
 palette = display_drv.get_palette()
