@@ -3,28 +3,37 @@ wifi.py - connect to wifi
 
 Usage:
     import wifi
-    wlan = wifi.connect(SSID, PASSWORD)
+    wifi.radio.connect('ssid', 'password')
 '''
+import network
 from time import sleep_ms
-_retries = 100
+_retries = 25
 
-def connect(ssid, password):
-    import network
-    wlan = network.WLAN(network.STA_IF)
-    if not wlan.active() or not wlan.isconnected():
-        wlan.active(True)
-        print('Connecting to:', ssid, end=' ')
-        wlan.connect(ssid, password)
-        tries = 0
-        while tries < _retries:
-            print('.', end='')
-            if wlan.isconnected():
-                print('\nConnection established.\nNetwork config:', wlan.ifconfig(), '\n')
-                break
-            sleep_ms(100)
-            tries += 1
+class Radio:
+    def __init__(self):
+        self._wlan = network.WLAN(network.STA_IF)
+
+    def connect(self, ssid, password):
+        if not self._wlan.active() or not self._wlan.isconnected():
+            self._wlan.active(True)
+            print('Connecting to:', ssid, end=' ')
+            self._wlan.connect(ssid, password)
+            tries = 0
+            while tries < _retries:
+                print('.', end='')
+                if self._wlan.isconnected():
+                    print('\nConnection established.\nNetwork config:', self._wlan.ifconfig(), '\n')
+                    break
+                sleep_ms(100)
+                tries += 1
+            else:
+                print('\nFailed to connect.\n')
         else:
-            print('\nFailed to connect.\n')
-    else:
-        print('\nAlready connected.\nNetwork config:', wlan.ifconfig(), '\n')
-    return wlan
+            print('\nAlready connected.\nNetwork config:', self._wlan.ifconfig(), '\n')
+        return self._wlan
+    
+    @property
+    def ipv4_address(self):
+        return self._wlan.ifconfig()[0]
+
+radio = Radio()
