@@ -35,7 +35,7 @@ def main():
 
     write_text = "Hello!"
     text_len = len(write_text)
-    iterations = 512
+    iterations = 32
 
     font1 = BinFont("romfonts/binfont_8x8.bin")
     font2 = BinFont("romfonts/binfont_8x14.bin")
@@ -57,7 +57,7 @@ def main():
             if col_max < 0 or row_max < 0:
                 raise RuntimeError("This font is too big to display on this screen.")
 
-            for _ in range(iterations // scale):
+            for _ in range(iterations):
                 write(
                     fonts[random.randint(0, len(fonts) - 1)],
                     write_text,
