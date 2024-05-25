@@ -182,33 +182,28 @@ class BinFont:
             string = "".join(reversed(string))
 
         char_y = y
-        last_x = x
+        largest_x = 0  # the last x position reached on the longest line
         for chunk in string.split("\n"):
+            last_x = x  # the last x position reached on the current line
             for i, char in enumerate(chunk):
                 char_x = x + (i * self.font_width * scale)
-                if (
-                    char_x + (self.font_width * scale) > 0 and char_x < canvas.width
-                    if hasattr(canvas, "width")
-                    else (
-                        True
-                        and char_y + (self.font_height * scale) > 0
-                        and char_y < canvas.height
-                        if hasattr(canvas, "height")
-                        else True
-                    )
-                ):
-                    last_x = char_x + (self.font_width * scale)
-                    self.draw_char(
-                        char,
-                        char_x,
-                        char_y,
-                        canvas,
-                        color,
-                        scale=scale,
-                        inverted=inverted,
-                    )
+                if char_x < canvas.width if hasattr(canvas, "width") else True:
+                    if char_y < canvas.height if hasattr(canvas, "height") else True:
+                        if char_x + (self.font_width * scale) > 0:
+                            if char_y + (self.font_height * scale) > 0:
+                                self.draw_char(
+                                    char,
+                                    char_x,
+                                    char_y,
+                                    canvas,
+                                    color,
+                                    scale=scale,
+                                    inverted=inverted,
+                                )
+                                last_x = char_x + (self.font_width * scale)
+            largest_x = max([largest_x, last_x])  # update the largest x position
             char_y += self.font_height * scale
-        return Area(x, y, last_x - x, char_y - y)
+        return Area(x, y, largest_x - x, char_y - y)
 
     def text_width(self, text, scale=1):
         """Return the pixel width of the specified text message."""
