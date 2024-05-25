@@ -43,7 +43,7 @@ display_drv = ILI9341(
 
 i2c = board.I2C()
 touch_drv = Adafruit_FocalTouch(i2c)
-touch_rotation_table=(6, 3, 0, 5),
+touch_rotation_table=(6, 3, 0, 5)
 
 def touch_read_func():
     touches = touch_drv.touches
