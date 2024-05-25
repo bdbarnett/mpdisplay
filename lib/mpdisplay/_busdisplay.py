@@ -568,9 +568,9 @@ class BusDisplay(_BaseDisplay):
         :type value: bool
         """
         if value:
-            self.set_params(_INVON)
+            self.set_params(_INVON, b"")
         else:
-            self.set_params(_INVOFF)
+            self.set_params(_INVOFF, b"")
 
     def _pass(*_, **__):
         """Do nothing.  Used to replace self.set_window when render_mode_full is True."""
