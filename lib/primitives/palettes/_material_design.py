@@ -1,5 +1,4 @@
 
-
 _colors = (
     # black
     b"\x00\x00\x00"
@@ -280,8 +279,6 @@ _colors = (
     b"\x26\x32\x38"  # 900
 )
 
-COLORS = memoryview(_colors)
-
 FAMILIES = [
     "black",
     "white",
@@ -329,3 +326,5 @@ LENGTHS = [
     10,
     10,
 ]
+
+COLORS = memoryview(_colors)

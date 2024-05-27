@@ -55,7 +55,7 @@ Usage:
 
 """
 
-from ._palette import Palette as _Palette
+from ._palette import MappedPalette as _Palette
 from ._material_design import COLORS, FAMILIES, LENGTHS
 
 
@@ -64,14 +64,14 @@ class Accents(_Palette):
     A class to represent the accent colors.
     """
 
-    accents = ["A100", "A200", "A400", "A700"]
+    _accents = ["A100", "A200", "A400", "A700"]
 
-    def __init__(self, name, color_depth, swapped, colors, add_names=True):
-        super().__init__(name, color_depth, swapped, colors)
+    def __init__(self, name, color_depth, swapped, color_map):
+        super().__init__(name, color_depth, swapped, color_map)
 
-        if add_names:
-            for i, accent in enumerate(self.accents):
-                setattr(self, accent, self[i])
+    def _define_named_colors(self):
+        for i, accent in enumerate(self._accents):
+            setattr(self, accent, self[i])
 
 
 class Family(_Palette):
@@ -79,18 +79,17 @@ class Family(_Palette):
     A class to represent the color variants.
     """
 
-    shades = ["S50", "S100", "S200", "S300", "S400", "S500", "S600", "S700", "S800", "S900"]
+    _shades = ["S50", "S100", "S200", "S300", "S400", "S500", "S600", "S700", "S800", "S900"]
 
-    def __init__(self, name, color_depth, swapped, colors, add_names=True):
-        super().__init__(name, color_depth, swapped, colors)
+    def __init__(self, name, color_depth, swapped, color_map):
+        super().__init__(name, color_depth, swapped, color_map)
 
-        if add_names:
-            if len(self) > 1:
-                for i, shade in enumerate(self.shades):
-                    setattr(self, shade, self[i - 5])
-
+    def _define_named_colors(self):
+        if len(self) > 1:
+            for i, shade in enumerate(self._shades):
+                setattr(self, shade, self[i - 5])
         if len(self) > 10:
-            self.accents = Accents(name + "_accents", color_depth, swapped, colors[-4 * 3 :], add_names)
+            self.accents = Accents(self._name + "_accents", self._color_depth, self._swapped, self._color_map[-4 * 3 :])
 
     def __getitem__(self, index):
         """Return the color variant as an integer with the number of bits specified in the color depth."""
@@ -118,17 +117,13 @@ class MDPalette(_Palette):
     A class to represent the Material Design color palette.
     """
 
-    def __init__(self, name="", color_depth=16, swapped=False, colors=COLORS, add_names=True):
-        super().__init__(name, color_depth, swapped, colors)
+    def __init__(self, name="", color_depth=16, swapped=False, color_map=COLORS):
+        super().__init__(name, color_depth, swapped, color_map)
+        self._name = name if name else "MaterialDesign"
 
+    def _define_named_colors(self):
         index = 0
         for name, length in zip(FAMILIES, LENGTHS):
-            setattr(
-                self,
-                name,
-                Family(name, color_depth, swapped, colors[index : index + length * 3], add_names),
-            )
+            setattr(self, name, Family(name, self._color_depth, self._swapped, self._color_map[index : index + length * 3]))
             setattr(self, name.upper(), getattr(self, name)[0])
             index += length * 3
-
-        self.MAGENTA = 0xFF00FF if color_depth == 24 else 0x1FF8 if self._needs_swap else 0xF81F
