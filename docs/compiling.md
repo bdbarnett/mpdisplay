@@ -62,21 +62,21 @@ To build the **base** ESP32_GENERIC_S3 variant:
 cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 clean
 make -j BOARD=ESP32_GENERIC_S3 submodules
-make -j BOARD=ESP32_GENERIC_S3 USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
+make -j BOARD=ESP32_GENERIC_S3 USER_C_MODULES=../../../../../ext_mod/lcd_bus/micropython.cmake
 ```
 To build the **SPIRAM** ESP32_GENERIC_S3 variant:
 ```
 cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM clean
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM submodules
-make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
+make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM USER_C_MODULES=../../../../../ext_mod/lcd_bus/micropython.cmake
 ```
 To build the **SPIRAM_OCT** ESP32_GENERIC_S3 variant:
 ```
 cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT clean
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT submodules
-make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
+make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT USER_C_MODULES=../../../../../ext_mod/lcd_bus/micropython.cmake
 ```
 
 Flash the firmware to your board
