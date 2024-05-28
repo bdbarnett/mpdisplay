@@ -1,6 +1,6 @@
 Compiling and testing MicroPython & mp_lcd_bus with WSL
 =======================================================
-The following is my method of compiling and testing MPDisplay with [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) for ESP32-S3 boards.  I use Ubuntu under Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.  This is not a full tutorial.  I documented it for my own reference and decided to post it online in case it my be useful to someone else.  See the official directions on the [MicroPython repository](https://github.com/micropython/micropython/tree/master/ports/esp32).  There are several Linux packages that will need to be installed beforehand using `sudo apt install`.  
+The following is my method of compiling and testing MPDisplay with @kdschlosser's [mp_lcd_bus](https://github.com/bdbarnett/mp_lcd_bus) for ESP32-S3 boards.  I use Ubuntu under Windows Subsystem for Linux (WSL).  Your method will be different if you have a different build environment.  This is not a full tutorial.  I documented it for my own reference and decided to post it online in case it my be useful to someone else.  See the official directions on the [MicroPython repository](https://github.com/micropython/micropython/tree/master/ports/esp32).  There are several Linux packages that will need to be installed beforehand using `sudo apt install`.  
 
 Download and install `esptool.exe` for use in WSL (once only)
 -------------------------------------------------------------
@@ -46,7 +46,7 @@ make -C mpy-cross
 cd ..
 
 # Download mp_lcd_bus
-git clone https://github.com/kdschlosser/
+git clone https://github.com/bdbarnett/mp_lcd_bus/
 ```
 
 Build MicroPython with mp_lcd_bus
@@ -62,21 +62,21 @@ To build the **base** ESP32_GENERIC_S3 variant:
 cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 clean
 make -j BOARD=ESP32_GENERIC_S3 submodules
-make -j BOARD=ESP32_GENERIC_S3 USER_C_MODULES=../../../../../ext_mod/lcd_bus/micropython.cmake
+make -j BOARD=ESP32_GENERIC_S3 USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
 ```
 To build the **SPIRAM** ESP32_GENERIC_S3 variant:
 ```
 cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM clean
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM submodules
-make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM USER_C_MODULES=../../../../../ext_mod/lcd_bus/micropython.cmake
+make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
 ```
 To build the **SPIRAM_OCT** ESP32_GENERIC_S3 variant:
 ```
 cd ~/gh/micropython/ports/esp32
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT clean
 make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT submodules
-make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT USER_C_MODULES=../../../../../ext_mod/lcd_bus/micropython.cmake
+make -j BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT USER_C_MODULES=../../../../mp_lcd_bus/micropython.cmake
 ```
 
 Flash the firmware to your board
