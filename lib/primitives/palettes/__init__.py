@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 
-def get_palette(sender=None, name="material_design", **kwargs):
+def get_palette(sender=None, name="cube", **kwargs):
     if name == "wheel":
         from .wheel import WheelPalette as Palette
     elif name == "material_design":
