@@ -113,3 +113,4 @@ mip.install("github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE", target="
 
 import mpdisplay_simpletest
 ```
+https://stackoverflow.com/questions/29306032/fork-subdirectory-of-repo-as-a-different-repo-in-github
