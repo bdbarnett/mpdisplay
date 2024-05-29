@@ -211,7 +211,7 @@ class BusDisplay(_BaseDisplay):
                 self._height,
                 self.color_depth,
                 self._width * self._height * self.color_depth // 8,
-                self.requires_byte_swap,
+                False, # disable bus byte swapping because it swaps in place
             )
 
         # Run the display driver init_sequence.
@@ -285,9 +285,11 @@ class BusDisplay(_BaseDisplay):
         :param buf: The buffer containing the pixel data to be written to the display.
         :type buf: memoryview
         """
-        if self.requires_byte_swap and sys.implementation.name == "circuitpython":
-            npbuf = np.frombuffer(buf, dtype=np.uint16)
-            npbuf.byteswap(inplace=True)
+        if self.requires_byte_swap:
+            if np is not None:
+                self._swap_bytes_numpy(buf, width * height)
+            else:
+                self._swap_bytes(buf, width * height)
         x1 = x + self._colstart
         x2 = x1 + width - 1
         y1 = y + self._rowstart
@@ -522,7 +524,7 @@ class BusDisplay(_BaseDisplay):
 
     def bus_swap_disable(self, value):
         """
-        Disable byte swapping in the display bus.
+        Disable byte swapping in the display driver.
 
         If self.requires_bus_swap and the guest application is capable of byte swapping color data
         check to see if byte swapping can be disabled in the display bus.  If so, disable it.
@@ -541,13 +543,9 @@ class BusDisplay(_BaseDisplay):
         :return: True if the bus swap was disabled, False if it was not.
         :rtype: bool
         """
-        if self.requires_byte_swap and sys.implementation.name == "circuitpython":
-            self.requires_byte_swap = not value
-            return value
-        elif hasattr(self.display_bus, "enable_swap"):
-            self.display_bus.enable_swap(not value)
-            return value
-        return False
+        self.requires_byte_swap = not value
+        print(f"Display Driver byte swapping: {self.requires_byte_swap}")
+        return value
 
     def register_callback(self, callback):
         """
@@ -676,3 +674,31 @@ class BusDisplay(_BaseDisplay):
             if value is not None:
                 p.value = value
         return p
+
+    @micropython.viper
+    def _swap_bytes(self, buf: ptr8, buf_size_px: int):
+        """
+        Swap the bytes in a buffer of RGB565 data.
+
+        :param buf: Buffer of RGB565 data
+        :type buf: ptr8
+        :param buf_size_px: Size of the buffer in pixels
+        :type buf_size_px: int
+        """
+        for i in range(0, buf_size_px * 2, 2):
+            tmp = buf[i]
+            buf[i] = buf[i + 1]
+            buf[i + 1] = tmp
+
+    def _swap_bytes_numpy(self, buf, buf_size_px):
+        """
+        Swap the bytes in a buffer of RGB565 data using numpy.
+
+        :param buf: Buffer of RGB565 data
+        :type buf: memoryview
+        :param buf_size_px: Size of the buffer in pixels
+        :type buf_size_px: int
+        """
+        # buf[::2], buf[1::2] = buf[1::2], buf[::2]
+        npbuf = np.frombuffer(buf, dtype=np.uint16)
+        npbuf.byteswap(inplace=True)
