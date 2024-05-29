@@ -30,12 +30,11 @@ class CubePalette(_Palette):
     size specifies the number of values per color channel.
     """
     def __init__(self, name="", color_depth=16, swapped=False, cached=True, size=5):
-        super().__init__(name, color_depth, swapped, cached)
-
         self._size = size
         self._length = size ** 3
         self._values = [round(i * (255 / (size - 1)) + .25) for i in range(size)]
-        self._name = name if name else f"Cube{len(self)}"
+        name = name if name else f"Cube{len(self)}"
+        super().__init__(name, color_depth, swapped, cached)
 
     def _get_rgb(self, index):
         z = index % self._size

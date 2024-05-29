@@ -147,6 +147,8 @@ class Palette:
 
     def _define_named_colors(self):
         for color, name in NAMES.items():
+            if self._color_depth == 16:
+                color = self.color565(color)
             setattr(self, name.replace(" ", "_").upper(), color)
 
     @property
