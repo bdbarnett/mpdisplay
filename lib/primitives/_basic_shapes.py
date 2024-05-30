@@ -4,28 +4,30 @@
 from ._area import Area
 
 
-# drawing primitives provided by the canvas
-
 def fill_rect(canvas, x, y, w, h, c):
-    canvas.fill_rect(x, y, w, h, c)
+    BPP = canvas.color_depth // 8
     x2 = x + w
     y2 = y + h
     top = min(y, y2)
     left = min(x, x2)
     bottom = max(y, y2)
     right = max(x, x2)
+    canvas.fill_rect(x, y, w, h, c)
+    # for i in range(y, y + h):
+    #     begin = (i * canvas.width + left) * BPP
+    #     end = begin + w * BPP
+    #     canvas._buffer[begin : end] = c.to_bytes(BPP, "little") * w
     return Area(left, top, right - left, bottom - top)
 
 def pixel(canvas, x, y, c):
+#    BPP = canvas.color_depth // 8
+#    canvas._buffer[(y * canvas.width + x) * BPP : (y * canvas.width + x + 1) * BPP] = c.to_bytes(BPP, "little")
     canvas.pixel(x, y, c)
     return Area(x, y, 1, 1)
 
 def fill(canvas, c):
-    canvas.fill(c)
+    fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
     return Area(0, 0, canvas.width, canvas.height)
-
-
-# drawing primitives provided by this module
 
 def hline(canvas, x, y, w, c):
     fill_rect(canvas, x, y, w, 1, c)
@@ -49,7 +51,7 @@ def line(canvas, x, y, x2, y2, c):
     sy = -1 if y > y2 else 1
     err = dx - dy
     while True:
-        pixel(canvas, x, y, c)
+        canvas.pixel(x, y, c)
         if x == x2 and y == y2:
             break
         e2 = 2 * err

@@ -89,3 +89,29 @@ def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
         canvas.line(rotated[i - 1][0], rotated[i - 1][1], rotated[i][0], rotated[i][1], color)
     # fmt: on
     return Area(left, top, right - left, bottom - top)
+
+def blit_rect(canvas, buf, x, y, w, h):
+    """
+    Blit a rectangular area from a buffer to the canvas.
+    :param buf: Buffer containing the data to blit
+    :param x: X coordinate of the top-left corner of the area
+    :param y: Y coordinate of the top-left corner of the area
+    :param w: Width of the area
+    :param h: Height of the area
+    """
+    # copy bytes from buf to self._buffer, one row at a time
+
+    BPP = canvas.color_depth // 8
+
+    if x < 0 or y < 0 or x + w > canvas.width or y + h > canvas.height:
+        raise ValueError("The provided x, y, w, h values are out of range")
+
+    if len(buf) != w * h * BPP:
+        print(f"len(buf)={len(buf)} w={w} h={h} self.color_depth={canvas.color_depth}")
+        raise ValueError("The source buffer is not the correct size")
+
+    for row in range(h):
+        start = row * w * BPP
+        dest = ((y + row) * canvas.width + x) * BPP
+        canvas._buffer[dest : dest + w * BPP] = buf[start : start + w * BPP]
+    return Area(x, y, w, h)

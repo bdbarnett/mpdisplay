@@ -6,7 +6,7 @@
 SDL2Display class for MicroPython on Linux and CPython on available platforms.
 """
 
-from . import _BaseDisplay, Events, Devices
+from . import _BaseDisplay, Events, Devices, Area
 from sdl2_lib import (
     SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
     SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor, SDL_Point,
@@ -153,7 +153,7 @@ class SDL2Display(_BaseDisplay):
         else:
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer, pitch))
         self._show(blitRect)
-        super().blit_rect(buffer, x, y, w, h)
+        return Area(x, y, w, h)
 
     def fill_rect(self, x, y, w, h, color):
         """
@@ -181,7 +181,7 @@ class SDL2Display(_BaseDisplay):
         retcheck(SDL_RenderFillRect(self._renderer, fillRect))  # Fill the rectangle on the texture
         retcheck(SDL_SetRenderTarget(self._renderer, None))  # Reset the render target back to the window
         self._show(fillRect)
-        super().fill_rect(x, y, w, h, color)
+        return Area(x, y, w, h)
 
     def deinit(self):
         """

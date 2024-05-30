@@ -217,45 +217,6 @@ class _BaseDisplay(Broker, DisplayPrimitives):
         """
         self.deinit()
 
-    ############### Overriden API Methods ################
-    def blit_rect(self, buffer, x, y, width, height):
-        # should be overridden and called upon completion as
-        # super().blit_rect(buffer, x, y, width, height)
-        """
-        Blit a buffer to the display.
-
-        :param buffer: The buffer to blit to the display.
-        :type buffer: bytearray
-        :param x: The x-coordinate of the display.
-        :type x: int
-        :param y: The y-coordinate of the display.
-        :type y: int
-        :param width: The width of the display.
-        :type width: int
-        :param height: The height of the display.
-        :type height: int
-        """
-        return Area(x, y, width, height)
-
-    def fill_rect(self, x, y, width, height, color):
-        # should be overridden and called upon completion as
-        # super().fill_rect(x, y, width, height, color)
-        """
-        Fill a rectangle on the display with a color.
-
-        :param x: The x-coordinate of the rectangle.
-        :type x: int
-        :param y: The y-coordinate of the rectangle.
-        :type y: int
-        :param width: The width of the rectangle.
-        :type width: int
-        :param height: The height of the rectangle.
-        :type height: int
-        :param color: The color to fill the rectangle with.
-        :type color: int
-        """
-        return Area(x, y, width, height)
-
     def vscrdef(self, tfa, vsa, bfa):
         """
         Set the vertical scroll definition.  Should be overridden by the

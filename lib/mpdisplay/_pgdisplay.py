@@ -6,7 +6,7 @@
 PGDisplay class for CPython.
 """
 
-from . import _BaseDisplay, Events, Devices
+from . import _BaseDisplay, Events, Devices, Area
 import pygame as pg
 
 
@@ -100,7 +100,7 @@ class PGDisplay(_BaseDisplay):
                 color = self.color_rgb(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
                 self._buffer.set_at((x + j, y + i), color)
         self._show(blitRect)
-        super().blit_rect(buffer, x, y, w, h)
+        return Area(x, y, w, h)
 
     def fill_rect(self, x, y, w, h, color):
         """
@@ -123,7 +123,7 @@ class PGDisplay(_BaseDisplay):
         fillRect = pg.Rect(x, y, w, h)
         self._buffer.fill(self.color_rgb(color), fillRect)
         self._show(fillRect)
-        super().fill_rect(x, y, w, h, color)
+        return Area(x, y, w, h)
 
     def deinit(self):
         """

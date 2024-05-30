@@ -56,7 +56,7 @@ class MVLSBFormat:
         """Set a given pixel to a color."""
         index = (y >> 3) * framebuf._stride + x
         offset = y & 0x07
-        framebuf._buf[index] = (framebuf._buf[index] & ~(0x01 << offset)) | (
+        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
             (color != 0) << offset
         )
 
@@ -65,7 +65,7 @@ class MVLSBFormat:
         """Get the color of a given pixel"""
         index = (y >> 3) * framebuf._stride + x
         offset = y & 0x07
-        return (framebuf._buf[index] >> offset) & 0x01
+        return (framebuf._buffer[index] >> offset) & 0x01
 
     @staticmethod
     def fill(framebuf, color):
@@ -74,8 +74,8 @@ class MVLSBFormat:
             fill = 0xFF
         else:
             fill = 0x00
-        for i in range(len(framebuf._buf)):  # pylint: disable=consider-using-enumerate
-            framebuf._buf[i] = fill
+        for i in range(len(framebuf._buffer)):  # pylint: disable=consider-using-enumerate
+            framebuf._buffer[i] = fill
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
@@ -86,8 +86,8 @@ class MVLSBFormat:
             index = (y >> 3) * framebuf._stride + x
             offset = y & 0x07
             for w_w in range(width):
-                framebuf._buf[index + w_w] = (
-                    framebuf._buf[index + w_w] & ~(0x01 << offset)
+                framebuf._buffer[index + w_w] = (
+                    framebuf._buffer[index + w_w] & ~(0x01 << offset)
                 ) | ((color != 0) << offset)
             y += 1
             height -= 1
@@ -107,7 +107,7 @@ class MHMSBFormat:
         """Set a given pixel to a color."""
         index = (y * framebuf._stride + x) // 8
         offset = 7 - x & 0x07
-        framebuf._buf[index] = (framebuf._buf[index] & ~(0x01 << offset)) | (
+        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
             (color != 0) << offset
         )
 
@@ -116,7 +116,7 @@ class MHMSBFormat:
         """Get the color of a given pixel"""
         index = (y * framebuf._stride + x) // 8
         offset = 7 - x & 0x07
-        return (framebuf._buf[index] >> offset) & 0x01
+        return (framebuf._buffer[index] >> offset) & 0x01
 
     @staticmethod
     def fill(framebuf, color):
@@ -125,8 +125,8 @@ class MHMSBFormat:
             fill = 0xFF
         else:
             fill = 0x00
-        for i in range(len(framebuf._buf)):  # pylint: disable=consider-using-enumerate
-            framebuf._buf[i] = fill
+        for i in range(len(framebuf._buffer)):  # pylint: disable=consider-using-enumerate
+            framebuf._buffer[i] = fill
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
@@ -137,7 +137,7 @@ class MHMSBFormat:
             offset = 7 - _x & 0x07
             for _y in range(y, y + height):
                 index = (_y * framebuf._stride + _x) // 8
-                framebuf._buf[index] = (framebuf._buf[index] & ~(0x01 << offset)) | (
+                framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
                     (color != 0) << offset
                 )
 
@@ -154,13 +154,13 @@ class RGB565Format:
     def set_pixel(framebuf, x, y, color):
         """Set a given pixel to a color."""
         index = (y * framebuf._stride + x) * 2
-        framebuf._buf[index : index + 2] = (color & 0xFFFF).to_bytes(2, "little")
+        framebuf._buffer[index : index + 2] = (color & 0xFFFF).to_bytes(2, "little")
 
     @staticmethod
     def get_pixel(framebuf, x, y):
         """Get the color of a given pixel"""
         index = (y * framebuf._stride + x) * 2
-        lobyte, hibyte = framebuf._buf[index : index + 2]
+        lobyte, hibyte = framebuf._buffer[index : index + 2]
         r = hibyte & 0xF8
         g = ((hibyte & 0x07) << 5) | ((lobyte & 0xE0) >> 5)
         b = (lobyte & 0x1F) << 3
@@ -172,11 +172,11 @@ class RGB565Format:
         rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
         if np:
             rgb565_color_int = int.from_bytes(rgb565_color, "little")
-            arr = np.frombuffer(framebuf._buf, dtype=np.uint16)
+            arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
             arr[:] = rgb565_color_int
         else:
-            for i in range(0, len(framebuf._buf), 2):
-                framebuf._buf[i : i + 2] = rgb565_color
+            for i in range(0, len(framebuf._buffer), 2):
+                framebuf._buffer[i : i + 2] = rgb565_color
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
@@ -186,7 +186,7 @@ class RGB565Format:
         rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
         if np:
             rgb565_color_int = int.from_bytes(rgb565_color, "little")
-            arr = np.frombuffer(framebuf._buf, dtype=np.uint16)
+            arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
             for _y in range(y, y + height):
                 arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = (
                     rgb565_color_int
@@ -196,7 +196,7 @@ class RGB565Format:
                 offset2 = _y * framebuf._stride
                 for _x in range(2 * x, 2 * (x + width), 2):
                     index = offset2 + _x
-                    framebuf._buf[index : index + 2] = rgb565_color
+                    framebuf._buffer[index : index + 2] = rgb565_color
 
 
 class GS2HMSBFormat:
@@ -208,19 +208,19 @@ class GS2HMSBFormat:
     def set_pixel(framebuf, x, y, color):
         """Set a given pixel to a color."""
         index = (y * framebuf._stride + x) >> 2
-        pixel = framebuf._buf[index]
+        pixel = framebuf._buffer[index]
 
         shift = (x & 0b11) << 1
         mask = 0b11 << shift
         color = (color & 0b11) << shift
 
-        framebuf._buf[index] = color | (pixel & (~mask))
+        framebuf._buffer[index] = color | (pixel & (~mask))
 
     @staticmethod
     def get_pixel(framebuf, x, y):
         """Get the color of a given pixel"""
         index = (y * framebuf._stride + x) >> 2
-        pixel = framebuf._buf[index]
+        pixel = framebuf._buffer[index]
 
         shift = (x & 0b11) << 1
         return (pixel >> shift) & 0b11
@@ -234,7 +234,7 @@ class GS2HMSBFormat:
         else:
             fill = 0x00
 
-        framebuf._buf = [fill for i in range(len(framebuf._buf))]
+        framebuf._buffer = [fill for i in range(len(framebuf._buffer))]
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
@@ -274,7 +274,7 @@ class FrameBuffer(BasicShapes):
 
     def __init__(self, buffer, width, height, format, stride=None):
         # pylint: disable=too-many-arguments
-        self._buf = buffer
+        self._buffer = buffer
         self.width = width
         self.height = height
         self._stride = stride
@@ -364,13 +364,13 @@ class FrameBuffer(BasicShapes):
             # Iterate over each column in the appropriate order (right to left for xstep > 0, left to right for xstep < 0)
             if xstep > 0:
                 for i in range(bytes_per_row - 1, (xstep * BPP) - 1, -1):
-                    self._buf[new_offset + i] = self._buf[offset + i - (xstep * BPP)]
+                    self._buffer[new_offset + i] = self._buffer[offset + i - (xstep * BPP)]
             elif xstep < 0:
                 for i in range(-xstep * BPP, bytes_per_row):
-                    self._buf[new_offset + i] = self._buf[offset + i + (xstep * BPP)]
+                    self._buffer[new_offset + i] = self._buffer[offset + i + (xstep * BPP)]
             else:
                 # If there is no x shift, copy the row as is
-                self._buf[new_offset : new_offset + bytes_per_row] = self._buf[
+                self._buffer[new_offset : new_offset + bytes_per_row] = self._buffer[
                     offset : offset + bytes_per_row
                 ]
 

@@ -27,7 +27,7 @@ LINE_WIDTH = WIDTH - PAD_X2
 LINE_HEIGHT = (ROW_HEIGHT - PAD_X2) // 2
 
 # Get the palette
-pal = display_drv.get_palette(name="wheel")
+pal = display_drv.get_palette(name="material_design")
 
 # fmt: off
 # Define the button labels

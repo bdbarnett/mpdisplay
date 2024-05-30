@@ -30,6 +30,8 @@ from eventsys.devices import Devices, Broker
 from eventsys.events import Events
 from eventsys.keys import Keys
 from ._basedisplay import _BaseDisplay
+from ._fbdisplay import FBDisplay
+from primitives import Area
 
 
 if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDisplay")):
@@ -64,5 +66,3 @@ else:
             except Exception as e:
                 print(f"MPDisplay: {e}")
                 raise ImportError("MPDisplay: No display drivers available")
-
-print("MPDisplay: display driver loaded.")

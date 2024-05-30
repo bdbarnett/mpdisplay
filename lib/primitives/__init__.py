@@ -13,7 +13,9 @@ def text(canvas, first_arg, *args, **kwargs):
 
 class BasicShapes:
     # Used by framebuf.py
-    # Does not include fill_rect, fill, pixel
+#    fill_rect = shapes.fill_rect
+    fill = shapes.fill
+#    pixel = shapes.pixel
     hline = shapes.hline
     vline = shapes.vline
     line = shapes.line
@@ -25,11 +27,12 @@ class BasicShapes:
 
 class ExtendedShapes:
     # Used by framebuf_plus.py
-    # Does not include hline, vline, line, rect, ellipse, poly
+    # Does not include shapes from BasicShapes
     arc = shapes.arc
     circle = shapes.circle
     round_rect = shapes.round_rect
     polygon = shapes.polygon
+    blit_rect = shapes.blit_rect
     atext = atext
     btext = btext
     ttext = ttext
@@ -41,15 +44,11 @@ class ExtendedShapes:
     write_width = write_width
 
 
-class DisplayPrimitives(BasicShapes, ExtendedShapes):
-    # Used by MPDisplay
-    # Does not include fill_rect, fill, pixel
-    get_palette = get_palette
-
-
 class Shapes(BasicShapes, ExtendedShapes):
     # Can be used by the end-user
-    # Includes fill_rect, fill, pixel
-    fill_rect = shapes.fill_rect
-    fill = shapes.fill
-    pixel = shapes.pixel
+    pass
+
+
+class DisplayPrimitives(Shapes):
+    # Used by MPDisplay
+    get_palette = get_palette

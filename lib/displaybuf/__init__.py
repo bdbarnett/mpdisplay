@@ -70,8 +70,8 @@ class DisplayBuffer(framebuf.FrameBuffer):
         self.vscsad = display_drv.vscsad
         self.height = display_drv.height
         self.width = display_drv.width
-        self.color_depth = display_drv.color_depth
-        BPP = self.color_depth // 8
+        self._color_depth = display_drv.color_depth
+        BPP = self._color_depth // 8
         self.palette = BoolPalette(
             format
         )  # a 2-value color palette for rendering monochrome glyphs
@@ -213,33 +213,6 @@ class DisplayBuffer(framebuf.FrameBuffer):
         DisplayBuffer.lut[offset] = c & 0xFF  # Set the lower 8 bits of the color
         DisplayBuffer.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
         return idx  # Return the index of the registered color
-
-    def blit_rect(self, buf, x, y, w, h):
-        """
-        Blit a rectangular area from a buffer to the bisplaybuffer.
-        :param buf: Buffer containing the data to blit
-        :param x: X coordinate of the top-left corner of the area
-        :param y: Y coordinate of the top-left corner of the area
-        :param w: Width of the area
-        :param h: Height of the area
-        """
-        # copy bytes from buf to self._buffer, one row at a time
-
-        BPP = self._buffer_depth // 8
-
-        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
-            raise ValueError("The provided x, y, w, h values are out of range")
-
-        if len(buf) != w * h * BPP:
-            print(f"len(buf)={len(buf)} w={w} h={h} self.color_depth={self.color_depth}")
-            raise ValueError("The source buffer is not the correct size")
-
-        for row in range(h):
-            start = row * w * BPP
-            dest = ((y + row) * self.width + x) * BPP
-            self._buffer[dest : dest + w * BPP] = buf[start : start + w * BPP]
-        return Area(x, y, w, h)
-
 
 class BoolPalette(framebuf.FrameBuffer):
     # This is a 2-value color palette for rendering monochrome glyphs to color

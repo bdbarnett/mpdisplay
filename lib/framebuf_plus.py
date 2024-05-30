@@ -33,10 +33,30 @@ import math
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
-    def __init__(self, buffer, width, height, *args, **kwargs):
-        super().__init__(buffer, width, height, *args, **kwargs)
+    def __init__(self, buffer, width, height, format, *args, **kwargs):
+        super().__init__(buffer, width, height, format, *args, **kwargs)
         self.width = width
         self.height = height
+        
+        if format == MONO_VLSB:
+            self._color_depth = 1
+        elif format == MONO_HLSB:
+            self._color_depth = 1
+        elif format == MONO_HMSB:
+            self._color_depth = 1
+        elif format == RGB565:
+            self._color_depth = 16
+        elif format == GS2_HMSB:
+            self._color_depth = 2
+        elif format == GS4_HMSB:
+            self._color_depth = 4
+        elif format == GS8:
+            self._color_depth = 8
+        else:
+            raise ValueError("invalid format")
+    @property
+    def color_depth(self):
+        return self._color_depth
 
     def fill_rect(self, x, y, w, h, c):
         """
