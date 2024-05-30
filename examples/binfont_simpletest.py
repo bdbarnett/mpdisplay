@@ -35,7 +35,7 @@ def main():
 
     write_text = "Hello!"
     text_len = len(write_text)
-    iterations = 32
+    iterations = 96
 
     font1 = BinFont("romfonts/binfont_8x8.bin")
     font2 = BinFont("romfonts/binfont_8x14.bin")
