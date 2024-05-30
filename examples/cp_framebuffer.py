@@ -35,28 +35,20 @@ tft_io_expander = dict(board.TFT_IO_EXPANDER)
 dotclockframebuffer.ioexpander_send_init_sequence(i2c, init_sequence_tl040hds20, **tft_io_expander)
 i2c.deinit()
 
-bitmap = displayio.OnDiskBitmap("/display-ruler-720p.bmp")
-
 dcfb = dotclockframebuffer.DotClockFramebuffer(**tft_pins, **tft_timings)
+
+
+
+
 display = FramebufferDisplay(dcfb, auto_refresh=False)
-
-# Create a TileGrid to hold the bitmap
-tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader)
-
-# Create a Group to hold the TileGrid
-group = displayio.Group()
-
-# Add the TileGrid to the Group
-group.append(tile_grid)
-
-# Add the Group to the Display
-display.root_group = group
-
+bitmap = displayio.OnDiskBitmap("/display-ruler-720p.bmp")
+tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader)# Create a TileGrid to hold the bitmap
+group = displayio.Group()# Create a Group to hold the TileGrid
+group.append(tile_grid)# Add the TileGrid to the Group
+display.root_group = group# Add the Group to the Display
 display.auto_refresh = True
 
-# Loop forever so you can enjoy your image
-# while True:
-#     pass
+
 
 from framebuf_plus import FrameBuffer, RGB565
 from primitives.palettes import get_palette
