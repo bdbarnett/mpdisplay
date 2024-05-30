@@ -544,7 +544,7 @@ class BusDisplay(_BaseDisplay):
         :rtype: bool
         """
         self.requires_byte_swap = not value
-        print(f"Display Driver byte swapping: {self.requires_byte_swap}")
+        print(f"MPDisplay:  display driver byte swapping: {self.requires_byte_swap}")
         return value
 
     def register_callback(self, callback):
