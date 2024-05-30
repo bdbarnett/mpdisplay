@@ -235,7 +235,7 @@ class BusDisplay(_BaseDisplay):
 
         self.brightness = brightness
 
-        self.fill_rect(0, 0, self.width, self.height, 0x0)
+        # self.fill_rect(0, 0, self.width, self.height, 0x0)
 
     ############### Required API Methods ################
 
