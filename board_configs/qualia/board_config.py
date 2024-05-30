@@ -1,7 +1,7 @@
 """ Qualia with 4.0" 720x720 display """
 
 from lcd_bus import RGBBus
-from busdisplay import BusDisplay
+from mpdisplay import BusDisplay
 from machine import I2C, Pin
 from cst8xx import CST8XX
 from mpdisplay import Devices
