@@ -13,9 +13,9 @@ def text(canvas, first_arg, *args, **kwargs):
 
 class BasicShapes:
     # Used by framebuf.py
-#    fill_rect = shapes.fill_rect
+    # Do not include fill_rect or pixel because they need to be
+    # specific to the object that uses them
     fill = shapes.fill
-#    pixel = shapes.pixel
     hline = shapes.hline
     vline = shapes.vline
     line = shapes.line
