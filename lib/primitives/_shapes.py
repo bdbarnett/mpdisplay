@@ -111,7 +111,10 @@ def blit_rect(canvas, buf, x, y, w, h):
         raise ValueError("The source buffer is not the correct size")
 
     for row in range(h):
-        start = row * w * BPP
-        dest = ((y + row) * canvas.width + x) * BPP
-        canvas._buffer[dest : dest + w * BPP] = buf[start : start + w * BPP]
+        source_begin = row * w * BPP
+        source_end = source_begin + w * BPP
+        dest_begin = ((y + row) * canvas.width + x) * BPP
+        dest_end = dest_begin + w * BPP
+        print(f"{source_begin=}, {source_end=}, source_len={source_end-source_begin}, {dest_begin=}, {dest_end=}, dest_len={dest_end-dest_begin}")
+        canvas._buffer[dest_begin : dest_end] = buf[source_begin : source_end]
     return Area(x, y, w, h)

@@ -5,7 +5,6 @@ from ._area import Area
 
 
 def fill_rect(canvas, x, y, w, h, c):
-    BPP = canvas.color_depth // 8
     x2 = x + w
     y2 = y + h
     top = min(y, y2)
@@ -13,15 +12,9 @@ def fill_rect(canvas, x, y, w, h, c):
     bottom = max(y, y2)
     right = max(x, x2)
     canvas.fill_rect(x, y, w, h, c)
-    # for i in range(y, y + h):
-    #     begin = (i * canvas.width + left) * BPP
-    #     end = begin + w * BPP
-    #     canvas._buffer[begin : end] = c.to_bytes(BPP, "little") * w
     return Area(left, top, right - left, bottom - top)
 
 def pixel(canvas, x, y, c):
-#    BPP = canvas.color_depth // 8
-#    canvas._buffer[(y * canvas.width + x) * BPP : (y * canvas.width + x + 1) * BPP] = c.to_bytes(BPP, "little")
     canvas.pixel(x, y, c)
     return Area(x, y, 1, 1)
 
