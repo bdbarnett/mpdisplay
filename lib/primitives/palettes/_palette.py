@@ -5,19 +5,19 @@
 
 # 125 colors with only 0x00, 0x40, 0x80, 0xC0, 0xFF as RGB values
 NAMES = {
-    0x000000: "Black",
+    0x000000: "Black",                 # Win16
     0x000040: "Midnight Express",
-    0x000080: "Navy",
+    0x000080: "Navy",                  # Win16
     0x0000C0: "Medium Blue",
-    0x0000FF: "Blue",
+    0x0000FF: "Blue",                  # Win16
     0x004000: "Myrtle",
     0x004040: "Cyprus",
     0x004080: "Dark Cerulean",
     0x0040C0: "Cobalt",
     0x0040FF: "Vivid Navy",
-    0x008000: "Green",
+    0x008000: "Green",                 # Win16
     0x008040: "Dark Spring Green",
-    0x008080: "Teal",
+    0x008080: "Teal",                  # Win16
     0x0080C0: "Cerulean",
     0x0080FF: "Azure",
     0x00C000: "Islamic Green",
@@ -25,18 +25,18 @@ NAMES = {
     0x00C080: "Faux-Green",
     0x00C0C0: "Iris Blue",
     0x00C0FF: "Deep Sky Blue",
-    0x00FF00: "Lime",
+    0x00FF00: "Lime",                  # Win16
     0x00FF40: "Malachite",
     0x00FF80: "Spring Green",
     0x00FFC0: "Medium Spring Green",
-    0x00FFFF: "Cyan",
+    0x00FFFF: "Cyan",                  # Win16
     0x400000: "Seal Brown",
     0x400040: "Deep Purple",
     0x400080: "Indigo",
     0x4000C0: "Purple Heart",
     0x4000FF: "Han Purple",
     0x404000: "Turtle Green",
-    0x404040: "Dark Gray",
+    0x404040: "Dark Grey",
     0x404080: "Jackson's Purple",
     0x4040C0: "Free Speech Blue",
     0x4040FF: "Neon Blue",
@@ -55,9 +55,9 @@ NAMES = {
     0x40FF80: "Screamin' Green",
     0x40FFC0: "Turquoise",
     0x40FFFF: "Baby Blue",
-    0x800000: "Maroon",
+    0x800000: "Maroon",                # Win16
     0x800040: "Tyrian Purple",
-    0x800080: "Purple",
+    0x800080: "Purple",                # Win16
     0x8000C0: "Dark Violet",
     0x8000FF: "Violet",
     0x804000: "Brown",
@@ -65,9 +65,9 @@ NAMES = {
     0x804080: "Eminence",
     0x8040C0: "Dark Orchid",
     0x8040FF: "Blue Violet",
-    0x808000: "Olive",
+    0x808000: "Olive",                 # Win16
     0x808040: "Wasabi",
-    0x808080: "Grey",
+    0x808080: "Grey",                  # Win16
     0x8080C0: "Moody Blue",
     0x8080FF: "Light Blue",
     0x80C000: "Citrus",
@@ -98,18 +98,18 @@ NAMES = {
     0xC0C000: "La Rioja",
     0xC0C040: "Celery",
     0xC0C080: "Pine Glade",
-    0xC0C0C0: "Light Grey",
+    0xC0C0C0: "Light Grey",             # Win16
     0xC0C0FF: "Lavender Blue",
     0xC0FF00: "Electric Lime",
     0xC0FF40: "Green Yellow",
     0xC0FF80: "Sulu",
     0xC0FFC0: "Granny Apple",
     0xC0FFFF: "Pale Turquoise",
-    0xFF0000: "Red",
+    0xFF0000: "Red",                    # Win16
     0xFF0040: "Torch Red",
     0xFF0080: "Rose",
     0xFF00C0: "Hot Magenta",
-    0xFF00FF: "Magenta",
+    0xFF00FF: "Magenta",                # Win16
     0xFF4000: "Deep Orange",
     0xFF4040: "Coral Red",
     0xFF4080: "Violet Red",
@@ -125,13 +125,16 @@ NAMES = {
     0xFFC080: "Macaroni and Cheese",
     0xFFC0C0: "Your Pink",
     0xFFC0FF: "Snuff",
-    0xFFFF00: "Yellow",
+    0xFFFF00: "Yellow",                 # Win16
     0xFFFF40: "Paris Daisy",
     0xFFFF80: "Light Yellow",
     0xFFFFC0: "Cumulus",
-    0xFFFFFF: "White"
+    0xFFFFFF: "White",                   # Win16
 }
 
+# The 16 colors marked with # Win16 above are the standard Windows 16-color palette.
+WIN16 = [0x000000, 0x000080, 0x008000, 0x008080, 0x800000, 0x800080, 0x808000, 0x808080,
+         0xC0C0C0, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF]
 
 class Palette:
     """
