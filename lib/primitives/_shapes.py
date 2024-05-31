@@ -16,7 +16,7 @@ from ._basic_shapes import (
 import math
 
 
-def arc(canvas, x, y, r, a1, a2, c, f=False, m=0b1111, w=1):
+def arc(canvas, x, y, r, a0, a1, c, f=False):
     resolution = 60
     a0 = math.radians(a0)
     a1 = math.radians(a1)
