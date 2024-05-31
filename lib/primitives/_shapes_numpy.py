@@ -29,49 +29,49 @@ else:
     from ulab import numpy as np
 
 
-def _to_map(canvas):
+def _ndarray(canvas):
     """Convert a framebuffer object to a numpy array."""
-    return np.memmap(canvas, np.uint16, "w+", shape=(canvas.height, canvas.width))
+    return np.ndarray(shape=(canvas.height, canvas.width), buffer=canvas._buffer, dtype=np.uint16, order='C')
 
 def pixel(canvas, x, y, color):
     """Draw a single pixel."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     arr[y, x] = color
     return Area(x, y, 1, 1)
 
 def fill_rect(canvas, x, y, width, height, color):
     """Fill a rectangle with a color."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     arr[y:y+height, x:x+width] = color
     return Area(x, y, width, height)
 
 def blit_rect(canvas, buf, x, y, width, height):
     """Blit a rectangle from a buffer to the canvas."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     arr[y:y+height, x:x+width] = buf
     return Area(x, y, width, height)
 
 def fill(canvas, color):
     """Fill the canvas with a color."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     arr[:, :] = color
     return Area(0, 0, canvas.width, canvas.height)
 
 def hline(canvas, x, y, width, color):
     """Draw a horizontal line."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     arr[y, x:x+width] = color
     return Area(x, y, width, 1)
 
 def vline(canvas, x, y, height, color):
     """Draw a vertical line."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     arr[y:y+height, x] = color
     return Area(x, y, 1, height)
 
 def line(canvas, x0, y0, x1, y1, color):
     """Draw a line."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     dx = abs(x1 - x0)
     dy = abs(y1 - y0)
     sx = 1 if x0 < x1 else -1
@@ -103,7 +103,7 @@ def rect(canvas, x, y, width, height, color, fill=False):
 
 def ellipse(canvas, x, y, r, r2, color, fill=False, mask=0b1111, width=None, height=None):
     """Draw an ellipse."""
-    arr = _to_map(canvas)
+    arr = _ndarray(canvas)
     if width is None:
         width = r
     if height is None:
