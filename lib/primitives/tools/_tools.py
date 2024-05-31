@@ -36,6 +36,7 @@ https://github.com/devbis/st7789py_mpy.
 from micropython import const
 from sys import implementation
 from primitives import Area
+import math
 
 if implementation.name == "micropython":
     from ._viper import _pack8, _pack16
@@ -331,3 +332,46 @@ def _text16(canvas, font, text, x0, y0, fg_color=WHITE, bg_color=BLACK):
                 canvas.blit_rect(buffer, x_pos, y0 + 8 * line, 16, 8)
         x_pos += 16
     return Area(x0, y0, x_pos - x0, font.HEIGHT)
+
+
+def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
+    """
+    Draw a polygon on the display.
+
+    Args:
+        points (list): List of points to draw.
+        x (int): X-coordinate of the polygon's position.
+        y (int): Y-coordinate of the polygon's position.
+        color (int): 565 encoded color.
+        angle (float): Rotation angle in radians (default: 0).
+        center_x (int): X-coordinate of the rotation center (default: 0).
+        center_y (int): Y-coordinate of the rotation center (default: 0).
+
+    Raises:
+        ValueError: If the polygon has less than 3 points.
+    """
+    if len(points) < 3:
+        raise ValueError("Polygon must have at least 3 points.")
+
+    # fmt: off
+    if angle:
+        cos_a = math.cos(angle)
+        sin_a = math.sin(angle)
+        rotated = [
+            (x + center_x + int((point[0] - center_x) * cos_a - (point[1] - center_y) * sin_a),
+                y + center_y + int((point[0] - center_x) * sin_a + (point[1] - center_y) * cos_a))
+            for point in points
+        ]
+    else:
+        rotated = [(x + int((point[0])), y + int((point[1]))) for point in points]
+
+    # Find the rectangle bounding box of the polygon
+    left = min(vertex[0] for vertex in rotated)
+    right = max(vertex[0] for vertex in rotated)
+    top = min(vertex[1] for vertex in rotated)
+    bottom = max(vertex[1] for vertex in rotated)
+
+    for i in range(1, len(rotated)):
+        canvas.line(rotated[i - 1][0], rotated[i - 1][1], rotated[i][0], rotated[i][1], color)
+    # fmt: on
+    return Area(left, top, right - left, bottom - top)

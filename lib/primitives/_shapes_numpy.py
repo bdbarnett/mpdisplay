@@ -20,10 +20,14 @@ Includes:
     round_rect
     polygon
 """
-
-from ulab import numpy as np
 import math
 from . import Area
+from sys import implementation
+if implementation.name == 'cpython':
+    import numpy as np
+else:
+    from ulab import numpy as np
+
 
 def _to_map(canvas):
     """Convert a framebuffer object to a numpy array."""
@@ -118,16 +122,66 @@ def ellipse(canvas, x, y, r, r2, color, fill=False, mask=0b1111, width=None, hei
                             arr[y+j+m, x+i] = color
     return Area(x-r, y-r2, 2*r, 2*r2)
 
-def poly(canvas, x, y, coords, color, fill=False):
-    """Draw a polygon."""
-    arr = _to_map(canvas)
-    if fill:
-        for i in range(len(coords)):
-            line(canvas, x+coords[i][0], y+coords[i][1], x+coords[(i+1)%len(coords)][0], y+coords[(i+1)%len(coords)][1], color)
+def poly(canvas, x, y, coords, c, f=False):
+    """
+    Given a list of coordinates, draw an arbitrary (convex or concave) closed polygon at the given x, y location
+    using the given color.
+
+    The coords must be specified as an array of integers, e.g. array('h', [x0, y0, x1, y1, ... xn, yn]) or a
+    list or tuple of points, e.g. [(x0, y0), (x1, y1), ... (xn, yn)].
+
+    The optional f parameter can be set to True to fill the polygon. Otherwise, just a one-pixel outline is drawn.
+    """
+
+    # Convert the coords to a list of x, y tuples if it is not already
+    if isinstance(coords, list):
+        vertices = coords
+    elif isinstance(coords, tuple):
+        vertices = list(coords)
     else:
-        for i in range(len(coords)):
-            line(canvas, x+coords[i][0], y+coords[i][1], x+coords[(i+1)%len(coords)][0], y+coords[(i+1)%len(coords)][1], color)
-    return Area(x, y, 0, 0)
+        # Check that the coords array has an even number of elements
+        if len(coords) % 2 != 0:
+            raise ValueError("coords must have an even number of elements")
+        vertices = [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]
+
+    # Check that the polygon has at least 3 vertices
+    if len(vertices) < 3:
+        raise ValueError("polygon must have at least 3 vertices")
+
+    # Close the polygon if it is not already closed
+    if vertices[0] != vertices[-1]:
+        vertices.append(vertices[0])
+
+    # Offset vertices by (x, y)
+    vertices = [(x + vertex[0], y + vertex[1]) for vertex in vertices]
+
+    # Find the rectangle bounding box of the polygon
+    left = min(vertex[0] for vertex in vertices)
+    right = max(vertex[0] for vertex in vertices)
+    top = min(vertex[1] for vertex in vertices)
+    bottom = max(vertex[1] for vertex in vertices)
+
+    for i in range(len(vertices) - 1):
+        line(
+            canvas,
+            vertices[i][0],
+            vertices[i][1],
+            vertices[i + 1][0],
+            vertices[i + 1][1],
+            c,
+        )
+    if f:
+        for y in range(top, bottom + 1):
+            intersections = []
+            for i in range(len(vertices) - 1):
+                x0, y0 = vertices[i]
+                x1, y1 = vertices[i + 1]
+                if y0 <= y < y1 or y1 <= y < y0:
+                    intersections.append(x0 + (x1 - x0) * (y - y0) // (y1 - y0))
+            intersections.sort()
+            for i in range(0, len(intersections), 2):
+                line(canvas, intersections[i], y, intersections[i + 1], y, c)
+    return Area(left, top, right - left, bottom - top)
 
 def arc(canvas, x, y, r, a1, a2, c, f=False, m=0b1111, w=1):
     """Draw an arc."""
@@ -163,16 +217,3 @@ def round_rect(canvas, x, y, w, h, r, c, f=False, m=0b1111):
         r = h // 2
     ellipse(canvas, x + w // 2, y + h // 2, r, r, c, f, m, w, h)
     return Area(x, y, w, h)
-
-def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
-    """Draw a polygon on the display."""
-    arr = _to_map(canvas)
-    for i in range(len(points)):
-        x0 = x + points[i][0]
-        y0 = y + points[i][1]
-        x1 = x + points[(i + 1) % len(points)][0]
-        y1 = y + points[(i + 1) % len(points)][1]
-        arr[y0, x0] = color
-        line(canvas, x0, y0, x1, y1, color)
-    return Area(x, y, 0, 0)
-
