@@ -65,4 +65,3 @@ else:
                 from ._pgdisplay import PGDisplay as DesktopDisplay, PGEventQueue as EventQueue
             except Exception as e:
                 print(f"MPDisplay: {e}")
-                raise ImportError("MPDisplay: No display drivers available")
