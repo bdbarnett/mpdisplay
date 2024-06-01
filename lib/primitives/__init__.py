@@ -2,13 +2,7 @@ from ._area import Area
 from ._binfont import BinFont, text as atext, btext, bfont_width, bfont_height
 from .tools import bitmap, pbitmap, write, write_width, polygon, text as ttext
 from .palettes import get_palette
-
-try:
-    from . import _shapes_numpy as shapes
-    print("Using _shapes_numpy.")
-except Exception as e:
-    print(f"Error importing _shapes_numpy: {e}.  \nFalling back to _shapes.")
-    from . import _shapes as shapes
+from . import _shapes as shapes
 
 
 def text(canvas, first_arg, *args, **kwargs):
