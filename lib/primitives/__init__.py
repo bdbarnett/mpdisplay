@@ -2,6 +2,7 @@ from ._area import Area
 from ._binfont import BinFont, text as atext, btext, bfont_width, bfont_height
 from .tools import bitmap, pbitmap, write, write_width, polygon, text as ttext
 from .palettes import get_palette
+from ._bmp565 import BMP565
 from . import _shapes as shapes
 
 

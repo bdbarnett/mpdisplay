@@ -30,8 +30,12 @@ from eventsys.devices import Devices, Broker
 from eventsys.events import Events
 from eventsys.keys import Keys
 from ._basedisplay import _BaseDisplay
-from ._fbdisplay import FBDisplay
 from primitives import Area
+
+try:
+    from ._fbdisplay import FBDisplay
+except ImportError as e:
+    print(f"MPDisplay: {e}")
 
 
 if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDisplay")):

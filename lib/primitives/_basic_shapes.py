@@ -5,17 +5,27 @@ from ._area import Area
 
 
 def fill_rect(canvas, x, y, w, h, c):
+    BPP = 2
+    if hasattr(canvas, "fill_rect"):
+        canvas.fill_rect(x, y, w, h, c)
+    else:
+        for i in range(h):
+            for j in range(w):
+                pixel(canvas, x + j, y + i, c)
     x2 = x + w
     y2 = y + h
     top = min(y, y2)
     left = min(x, x2)
     bottom = max(y, y2)
     right = max(x, x2)
-    canvas.fill_rect(x, y, w, h, c)
     return Area(left, top, right - left, bottom - top)
 
 def pixel(canvas, x, y, c):
-    canvas.pixel(x, y, c)
+    if hasattr(canvas, "pixel"):
+        canvas.pixel(x, y, c)
+    else:
+        rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
+        canvas._buffer[(y * canvas.width + x) * 2:(y * canvas.width + x) * 2 + 2] = rgb565_color
     return Area(x, y, 1, 1)
 
 def fill(canvas, c):
@@ -44,7 +54,7 @@ def line(canvas, x, y, x2, y2, c):
     sy = -1 if y > y2 else 1
     err = dx - dy
     while True:
-        canvas.pixel(x, y, c)
+        pixel(canvas, x, y, c)
         if x == x2 and y == y2:
             break
         e2 = 2 * err
