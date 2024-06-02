@@ -39,7 +39,7 @@
           ["examples/scroll.py", "github:bdbarnett/mpdisplay/examples/scroll.py"],
           ["examples/shapes_area_test.py", "github:bdbarnett/mpdisplay/examples/shapes_area_test.py"],
           ["examples/shapes_simpletest.py", "github:bdbarnett/mpdisplay/examples/shapes_simpletest.py"],
-          ["examples/sprites.py", "github:bdbarnett/mpdisplay/examples/sprites.py"],
+          ["examples/sprite_test.py", "github:bdbarnett/mpdisplay/examples/sprite_test.py"],
           ["examples/tiny_hello.py", "github:bdbarnett/mpdisplay/examples/tiny_hello.py"],
           ["examples/tiny_toasters/__init__.py", "github:bdbarnett/mpdisplay/examples/tiny_toasters/__init__.py"],
           ["examples/tiny_toasters/tiny_toasters.py", "github:bdbarnett/mpdisplay/examples/tiny_toasters/tiny_toasters.py"],
