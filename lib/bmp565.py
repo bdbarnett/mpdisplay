@@ -7,8 +7,8 @@ A class to read a 16-bit RGB565 BMP file and present it as a sliceable object.
 Usage:
     bmp = BMP565('image.bmp')
     print(bmp.width, bmp.height, self.bpp)
-    print(bmp[0])  # Get pixel at 0 as a memoryview object
-    print(bmp[0, 0])  # Get pixel at (0, 0) as a memoryview object
+    print(bmp[0])  # Get pixel color at 0 as an integer
+    print(bmp[0, 0])  # Get pixel color at (0, 0) as an integer
     print(bmp[0:10])  # Get the first 10 pixels as a memoryview object
     print(bmp[0:10, 0:10])  # Get a 10x10 slice of the image as a bytearray object
 """
@@ -55,9 +55,9 @@ class BMP565:
                     data += self._mv[(i * self.width + x.start) * 2:(i * self.width + x.stop) * 2]
                 return data
             else:
-                return self._mv[(y * self.width + x) * 2:(y * self.width + x) * 2 + 2]
+                return struct.unpack('<H', self._mv[(y * self.width + x) * 2:(y * self.width + x) * 2 + 2])[0]
         elif isinstance(key, int):
-            return self._mv[key * 2:key * 2 + 2]
+            return struct.unpack('<H', self._mv[key * 2:key * 2 + 2])[0]
         elif isinstance(key, slice):
             if key.start is None and key.stop is None:
                 return self._mv[:]
