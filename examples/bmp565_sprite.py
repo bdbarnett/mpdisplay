@@ -11,6 +11,9 @@ sprite_height = image.height // 4
 sprite_width = image.width // 4
 bg = image[0]  # top left pixel is the background color
 print(f"{sprite_width=}, {sprite_height=} {bg=:#0x}\n")
+# display_drv.fill(0x0)
+# display_drv.blit_rect(image[sprite_height:sprite_height*2], 0, 0, image.width, sprite_height)
+# sleep(2)
 
 fwd, right, left, back = [x * sprite_height for x in range(4)]
 directions = [fwd, left, right, back]
