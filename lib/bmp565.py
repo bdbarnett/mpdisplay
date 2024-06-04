@@ -16,8 +16,9 @@ Usage:
 import struct
 
 class BMP565:
-    def __init__(self, filename, streamed=False):
+    def __init__(self, filename, streamed=False, mirrored=False):
         self._streamed = streamed
+        self._mirrored = mirrored
         if self._streamed:
             self._file = open(filename, "rb")
             self._read_header(self._file)
@@ -93,7 +94,15 @@ class BMP565:
             start_row, start_col = divmod(start, self.width)
             begin = (self.height - start_row - 1) * self.width + start_col
             self._file.seek(self.data_offset + begin * self.BPP)
-            return self._file.read(length * self.BPP)
+            if not self._mirrored:
+                return self._file.read(length * self.BPP)
+            else:
+                # Micropython's slice notation doesn't support negative indices
+                # so we need to read the entire row and reorder the bytes
+                pixels = []
+                for i in range(length):
+                    pixels.insert(0, self._file.read(self.BPP))
+                return b''.join(pixels)
 
     def deinit(self):
         if self._streamed:
