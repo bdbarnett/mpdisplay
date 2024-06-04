@@ -5,7 +5,7 @@ from random import choice
 from collections import namedtuple
 
 
-image = BMP565("examples/guy.bmp")
+image = BMP565("examples/assets/guy.bmp")
 print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
 sprite_height = image.height // 4
 sprite_width = image.width // 4
