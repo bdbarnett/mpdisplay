@@ -5,9 +5,10 @@ from random import choice
 from collections import namedtuple
 
 
-image = BMP565("assets/world-1.bmp", streamed=True)
-print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
+display_drv.rotation = 0
 
+image = BMP565("assets/longstreet.bmp", streamed=True)
+print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
 
 def draw_bg(dest_x, dest_y, source_x, source_y, source_image=image, width=image.width, height=1):
     display_drv.blit_rect(source_image[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height)
