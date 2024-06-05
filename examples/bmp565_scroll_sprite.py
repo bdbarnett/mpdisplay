@@ -37,6 +37,7 @@ def main():
     scroll = 0
     char_y = display_drv.height - char_height
     char_x = 200
+    shot_location = 0
     while True:    
         if i > display_drv.width:
             scroll = i % display_drv.width
@@ -50,16 +51,25 @@ def main():
             touched_point = event.pos
             if touched_point[1] < display_drv.height // 2:
                 sprites = jump_shoot_sprites
+                if not shot_location:
+                    shot_location = 1
             elif touched_point[0] < display_drv.width // 2:
                 sprites = jump_sprites
             elif touched_point[0] > display_drv.width // 2:
                 sprites = shoot_sprites
+                if not shot_location:
+                    shot_location = 1
         else:
             sprites = run_sprites
         draw_x = scroll + char_x
-        if not jumping and not shooting:
-            sprite = sprites[i % len(sprites)]
-            draw_sprite(draw_x, char_y, sprite.x, sprite.y)
+        sprite = sprites[i % len(sprites)]
+        draw_sprite(draw_x, char_y, sprite.x, sprite.y)
+        if shot_location:
+            draw_sprite(draw_x + char_width + shot_location, char_y, shot_sprite.x, shot_sprite.y)
+            shot_location += 8
+            if shot_location > (display_drv.width - char_width) // 2:
+                display_drv.fill_rect(draw_x + char_width + shot_location, char_y, char_width, char_height, bg)
+                shot_location = 0
         sleep(0.05)
 
 main()
