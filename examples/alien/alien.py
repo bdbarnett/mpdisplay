@@ -25,8 +25,13 @@ https://github.com/erikflowers/weather-icons and is licensed under SIL OFL 1.1
 (http://scripts.sil.org/OFL).
 
 """
-
-import time
+try:
+    from time import ticks_ms, sleep_ms
+except ImportError:
+    from adafruit_ticks import ticks_ms
+    from time import sleep
+    def sleep_ms(ms):
+        sleep(ms / 1000)
 
 import tft_config
 
@@ -50,7 +55,7 @@ def main():
     last_col, old_row = col, row
 
     while True:
-        last = time.ticks_ms()
+        last = ticks_ms()
         tft.fill_rect(last_col, old_row, alien.WIDTH, alien.HEIGHT, 0)
         tft.bitmap(alien, col, row)
         last_col, old_row = col, row
@@ -58,8 +63,8 @@ def main():
         xd = -xd if col <= 0 or col >= width - alien.WIDTH else xd
         yd = -yd if row <= 0 or row >= height - alien.HEIGHT else yd
 
-        if time.ticks_ms() - last < TICKS:
-            time.sleep_ms(TICKS - (time.ticks_ms() - last))
+        if ticks_ms() - last < TICKS:
+            sleep_ms(TICKS - (ticks_ms() - last))
 
 
 main()

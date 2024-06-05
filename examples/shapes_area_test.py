@@ -15,7 +15,7 @@ or as a function argument:
 """
 
 from board_config import display_drv
-from primitives import shapes
+from draw import shapes
 
 
 dirty = shapes.circle(display_drv, 120, 120, 50, display_drv.color565(255, 0, 0), True)

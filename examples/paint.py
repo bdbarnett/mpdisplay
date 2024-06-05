@@ -3,12 +3,13 @@ A simple paint application demonstrating the use of MPDisplay.
 """
 
 from board_config import display_drv
+from palettes import get_palette
 from mpdisplay import Events
 
 
 display_drv.rotation = 90
 
-pal = display_drv.get_palette()
+pal = get_palette()
 colors = [pal.WHITE, pal.RED, pal.GREEN, pal.BLUE, pal.CYAN, pal.MAGENTA, pal.YELLOW, pal.BLACK]
 
 on_x_axis = display_drv.width < display_drv.height

@@ -30,7 +30,7 @@ from eventsys.devices import Devices, Broker
 from eventsys.events import Events
 from eventsys.keys import Keys
 from ._basedisplay import _BaseDisplay
-from primitives import Area
+from area import Area
 
 try:
     from ._fbdisplay import FBDisplay

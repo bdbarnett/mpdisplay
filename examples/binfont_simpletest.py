@@ -6,9 +6,10 @@ Draws on a framebuffer and blits it to the display.
 """
 
 from board_config import display_drv
-from primitives import BinFont
+from binfont import BinFont
 import random
 from framebuf import FrameBuffer, RGB565
+from palettes import get_palette
 
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel
@@ -31,7 +32,7 @@ def main():
     """
     The big show!
     """
-    pal = display_drv.get_palette()
+    pal = get_palette()
 
     write_text = "Hello!"
     text_len = len(write_text)

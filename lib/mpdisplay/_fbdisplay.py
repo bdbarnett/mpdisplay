@@ -7,15 +7,17 @@ FBDisplay class for MPDisplay.
 """
 
 from . import _BaseDisplay
-from primitives import Area #, FBDisplayPrimitives
-from ulab import numpy as np
+from area import Area
+
+try:
+    from ulab import numpy as np
+except ImportError:
+    import numpy as np
 
 
 class FBDisplay(_BaseDisplay):
     '''
-    A class to emulate an LCD using pygame.
-    Provides scrolling and rotation functions similar to an LCD.  The .texture
-    object functions as the LCD's internal memory.
+    A class to interface with CircuitPython FrameBuffer objects.
     '''
     def __init__(self, buffer, width=None, height=None, stride=None, reverse_bytes_in_word=False,):
         """

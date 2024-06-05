@@ -28,22 +28,17 @@ except ImportError:
 
 import gc
 import sys
-from primitives import Area  # for _show16
+from area import Area  # for _show16
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
 else:
-
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
             ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented for MicroPython."
         )
-
     _bounce4 = _bounce8
 
-
-# Define how line buffers are allocated.  Allows being overridden by platforms with DMA specific allocations, such as ESP32's heap_caps.
-alloc_buffer = lambda size: bytearray(size)
 
 
 class DisplayBuffer(framebuf.FrameBuffer):

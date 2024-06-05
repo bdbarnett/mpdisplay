@@ -35,7 +35,7 @@ https://github.com/devbis/st7789py_mpy.
 
 from micropython import const
 from sys import implementation
-from primitives import Area
+from area import Area
 import math
 
 if implementation.name == "micropython":

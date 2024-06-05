@@ -7,11 +7,12 @@ _BaseDisplay class for all display drivers to inherit from.
 """
 
 from . import Broker, Devices
-from primitives import DisplayPrimitives, Area
+from area import Area
+from draw import Shapes
 from sys import exit  # default for self.quit
 
 
-class _BaseDisplay(Broker, DisplayPrimitives):
+class _BaseDisplay(Broker, Shapes):
 
     def __init__(self):
         super().__init__()
@@ -101,6 +102,11 @@ class _BaseDisplay(Broker, DisplayPrimitives):
         if not callable(value):
             raise ValueError("quit_func must be callable")
         self._quit_func = value
+
+    @staticmethod
+    def alloc_buffer(size):
+    # Define how buffers are allocated.  Allows being overridden by platforms with DMA specific allocations, such as ESP32's heap_caps.
+        return bytearray(size)
 
     def quit(self):
         """

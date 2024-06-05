@@ -5,17 +5,13 @@
 Makes a color cube palette.
 
 Usage:
-    from primitives.palettes import get_palette
-    palette = get_palette(name="wheel", size=5, color_depth=16, swapped=False)
+    from palettes import get_palette
+    palette = get_palette(name="cube", size=5, color_depth=16, swapped=False)
+    # OR
+    palette = get_palette(name="cube")
 
     # OR
-    from board_config import display_drv
-    palette = display_drv.get_palette(name="cube", size=5, color_depth=16, swapped=False)
-    # OR
-    palette = display_drv.get_palette(name="cube")
-
-    # OR
-    from primitives.palettes.cube import CubePalette
+    from palettes.cube import CubePalette
     palette = CubePalette(size=5, color_depth=24)
 
     print(f"Palette: {palette.name}, Length: {len(palette)}")

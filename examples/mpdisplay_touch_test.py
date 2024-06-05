@@ -63,7 +63,7 @@ def loop():
                     FG_COLOR,
                     True,
                 )
-                display_drv.btext(
+                display_drv.text16(
                     text,
                     x * half_width + ((half_width - text_width) // 2),
                     y * half_height + ((half_height - 8) // 2),

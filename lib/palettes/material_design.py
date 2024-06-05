@@ -6,14 +6,10 @@ This module contains the Material Design color palette as a class object.
 
 
 Usage:
-    from primitives.palettes import get_palette
+    from palettes import get_palette
     palette = get_palette(name="material_design", color_depth=16, swapped=False)
-
     # OR
-    from board_config import display_drv
-    palette = display_drv.get_palette(name="material_design", color_depth=16, swapped=False)
-    # OR
-    palette = display_drv.get_palette()
+    palette = get_palette("material_design")
 
     # to access the primary variant of a color family by name:
     x = palette.RED

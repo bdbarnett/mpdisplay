@@ -28,7 +28,8 @@ from framebuf import (
     GS4_HMSB,
     GS8,
 )
-from primitives import ExtendedShapes, Area
+from draw import ExtendedShapes
+from area import Area
 import math
 
 
@@ -193,10 +194,3 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         max_x = max([v[0] for v in vertices])
         max_y = max([v[1] for v in vertices])
         return Area(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1)
-
-    def text(self, first_arg, *args, **kwargs):
-        if isinstance(first_arg, (str, bytes)):
-            return self.atext(first_arg, *args, **kwargs)
-        else:
-            return self.ttext(first_arg, *args, **kwargs)
-

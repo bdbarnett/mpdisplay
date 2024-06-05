@@ -7,6 +7,8 @@ from touch_keypad import Keypad
 from time import sleep
 from framebuf_plus import FrameBuffer, RGB565
 from mpdisplay import Keys
+from palettes import get_palette
+
 
 # Setup variables
 FONT_WIDTH = 8
@@ -27,7 +29,7 @@ LINE_WIDTH = WIDTH - PAD_X2
 LINE_HEIGHT = (ROW_HEIGHT - PAD_X2) // 2
 
 # Get the palette
-pal = display_drv.get_palette(name="material_design")
+pal = get_palette(name="material_design")
 
 # fmt: off
 # Define the button labels
@@ -73,7 +75,7 @@ def draw_button(xpos, ypos, label, pressed=False):
     button_fb.round_rect(
         PAD, PAD, BTN_WIDTH - PAD_X2, BTN_HEIGHT - PAD_X2, PAD_X4, btncolor, True
     )
-    button_fb.btext(label, PAD_X3, PAD_X3, fgcolor)
+    button_fb.text16(label, PAD_X3, PAD_X3, fgcolor)
     display_drv.blit_rect(
         button_ba,
         xpos * COL_WIDTH + PAD,
@@ -87,7 +89,7 @@ def draw_button(xpos, ypos, label, pressed=False):
 def show_result(result):
     x_start = LINE_WIDTH - (len(str(result)) * FONT_WIDTH + PAD_X2)
     line_fb.fill(pal.BLACK)
-    line_fb.btext(str(result), x_start, PAD, pal.WHITE)
+    line_fb.text16(str(result), x_start, PAD, pal.WHITE)
     display_drv.blit_rect(line_ba, PAD, PAD, LINE_WIDTH, LINE_HEIGHT)
 
 
@@ -95,7 +97,7 @@ def show_result(result):
 def show_input(input):
     x_start = LINE_WIDTH - (len(input) * FONT_WIDTH + PAD_X2)
     line_fb.fill(pal.BLACK)
-    line_fb.btext(input, x_start, PAD, pal.YELLOW)
+    line_fb.text16(input, x_start, PAD, pal.YELLOW)
     display_drv.blit_rect(line_ba, PAD, LINE_HEIGHT + PAD, LINE_WIDTH, LINE_HEIGHT)
 
 

@@ -1,6 +1,6 @@
 from board_config import display_drv
 from bmp565 import BMP565
-from primitives import shapes
+from draw import shapes
 
 
 bmp = BMP565("examples/assets/guy.bmp")

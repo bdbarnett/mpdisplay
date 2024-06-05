@@ -19,7 +19,8 @@ library.  It is recommended to use framebuf_plus.py instead of this if
 you need to use the returned Areas so your code will be transferable.
 
 """
-from primitives import BasicShapes, Area, BinFont
+from draw import BasicShapes
+from area import Area
 from sys import implementation
 
 if implementation.name == "circuitpython":
@@ -317,10 +318,6 @@ class FrameBuffer(BasicShapes):
         """Fill the entire FrameBuffer with the specified color."""
         self._format.fill(self, c)
         return Area(0, 0, self.width, self.height)
-
-    def blit(self, *args, **kwargs):
-        """blit is not yet implemented"""
-        raise NotImplementedError()
 
     def scroll(self, xstep, ystep):
         """

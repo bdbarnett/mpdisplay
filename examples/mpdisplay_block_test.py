@@ -2,6 +2,7 @@
 
 from board_config import display_drv
 import random
+from palettes import get_palette
 
 try:
     from time import ticks_ms, ticks_diff
@@ -20,7 +21,7 @@ else:
 alloc_buffer = lambda size: memoryview(bytearray(size))
 
 # Define color palette
-pal = display_drv.get_palette(swapped=needs_swap)
+pal = get_palette(swapped=needs_swap)
 
 # Define the blocks
 bytes_per_pixel = 2

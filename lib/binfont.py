@@ -9,7 +9,7 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from ._area import Area
+from area import Area
 
 # Default font file to use if none is specified.
 # Should be 8x8 to keep framebuf.py compatible with MicroPython framebuf module
@@ -21,54 +21,51 @@ _FONTS = {
 _DEFAULT_FONT = _FONTS[8]
 
 
-def text(
-    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=None
-):
+def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
     """Place text on the canvas.  Breaks on \n to next line.
 
     Does not break on line going off canvas.
     """
     if (
-        not hasattr(canvas, "_textfont")
-        or (font_file is not None and canvas._textfont.font_file != font_file)
-        or (font_height is not None and canvas._textfont.font_height != font_height)
+        not hasattr(canvas, "_text8font")
+        or (font_file is not None and canvas._text8font.font_file != font_file)
+        or (font_height is not None and canvas._text8font.font_height != font_height)
     ):
         # load the font!
-        canvas._textfont = BinFont(font_file, font_height)
+        canvas._text8font = BinFont(font_file, font_height)
 
-    return canvas._textfont.text(canvas, s, x, y, c, scale, inverted)
+    return canvas._text8font.text(canvas, s, x, y, c, scale, inverted)
 
 
-def btext(
-    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16
-):
+def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=14):
     """Place text on the screen.  Breaks on \n to next line.
 
     Does not break on line going off screen.
     """
     if (
-        not hasattr(canvas, "_btextfont")
-        or (font_file is not None and canvas._btextfont.font_file != font_file)
-        or (font_height is not None and canvas._btextfont.font_height != font_height)
+        not hasattr(canvas, "_text14font")
+        or (font_file is not None and canvas._text14font.font_file != font_file)
+        or (font_height is not None and canvas._text14font.font_height != font_height)
     ):
         # load the font!
-        canvas._btextfont = BinFont(font_file, font_height)
+        canvas._text14font = BinFont(font_file, font_height)
 
-    return canvas._btextfont.text(canvas, s, x, y, c, scale, inverted)
+    return canvas._text14font.text(canvas, s, x, y, c, scale, inverted)
 
+def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16):
+    """Place text on the screen.  Breaks on \n to next line.
 
-def bfont_width(canvas):
-    """Return the width of the font in pixels."""
-    if hasattr(canvas, "_btextfont"):
-        return canvas._btextfont.font_width
-    return 0
+    Does not break on line going off screen.
+    """
+    if (
+        not hasattr(canvas, "_text16font")
+        or (font_file is not None and canvas._text16font.font_file != font_file)
+        or (font_height is not None and canvas._text16font.font_height != font_height)
+    ):
+        # load the font!
+        canvas._text16font = BinFont(font_file, font_height)
 
-
-def bfont_height(canvas):
-    """Return the height of the font in pixels."""
-    if hasattr(canvas, "_btextfont"):
-        return canvas._btextfont.font_height
-    return 0
+    return canvas._text16font.text(canvas, s, x, y, c, scale, inverted)
 
 
 class BinFont:

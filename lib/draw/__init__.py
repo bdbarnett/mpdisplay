@@ -1,15 +1,14 @@
-from ._area import Area
-from ._binfont import BinFont, text as atext, btext, bfont_width, bfont_height
-from .tools import bitmap, pbitmap, write, write_width, polygon, text as ttext
-from .palettes import get_palette
+from area import Area
+from binfont import text8, text14, text16
+from rh_tools import bitmap, pbitmap, write, write_width, polygon, text as rh_text
 from . import _shapes as shapes
 
 
 def text(canvas, first_arg, *args, **kwargs):
     if isinstance(first_arg, (str, bytes)):
-        return atext(canvas, first_arg, *args, **kwargs)
+        return text8(canvas, first_arg, *args, **kwargs)
     else:
-        return ttext(canvas, first_arg, *args, **kwargs)
+        return rh_text(canvas, first_arg, *args, **kwargs)
 
 
 class BasicShapes:
@@ -23,6 +22,7 @@ class BasicShapes:
     rect = shapes.rect
     ellipse = shapes.ellipse
     poly = shapes.poly
+    blit = shapes.blit
     text = text
 
 
@@ -32,24 +32,17 @@ class ExtendedShapes:
     arc = shapes.arc
     circle = shapes.circle
     round_rect = shapes.round_rect
-    polygon = polygon
     blit_rect = shapes.blit_rect
-    atext = atext
-    btext = btext
-    ttext = ttext
-    bfont_width = bfont_width
-    bfont_height = bfont_height
+    polygon = polygon
     bitmap = bitmap
     pbitmap = pbitmap
     write = write
     write_width = write_width
+    text14 = text14
+    text16 = text16
 
 
 class Shapes(BasicShapes, ExtendedShapes):
+    # Used by MPDisplay
     # Can be used by the end-user
     pass
-
-
-class DisplayPrimitives(Shapes):
-    # Used by MPDisplay
-    get_palette = get_palette

@@ -4,7 +4,8 @@ Simple test example to demonstrate the use of Shapes.
 
 from board_config import display_drv
 from array import array  # for defining a polygon
-from primitives import shapes, text
+from draw import shapes, text
+from palettes import get_palette
 
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
@@ -19,7 +20,7 @@ HEIGHT = display_drv.height
 FONT_WIDTH = 8
 
 # Define color palette
-pal = display_drv.get_palette(swapped=needs_swap)
+pal = get_palette(swapped=needs_swap)
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])

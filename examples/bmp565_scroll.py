@@ -7,7 +7,7 @@ from collections import namedtuple
 
 display_drv.rotation = 0
 
-image = BMP565("assets/longstreet.bmp", streamed=True)
+image = BMP565("examples/assets/longstreet.bmp", streamed=True)
 print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
 
 def draw_bg(dest_x, dest_y, source_x, source_y, source_image=image, width=image.width, height=1):

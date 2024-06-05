@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
-from ._area import Area
+from area import Area
 from ._basic_shapes import (
     fill_rect,
     fill,
@@ -76,3 +76,34 @@ def blit_rect(canvas, buf, x, y, w, h):
         print(f"{source_begin=}, {source_end=}, source_len={source_end-source_begin}, {dest_begin=}, {dest_end=}, dest_len={dest_end-dest_begin}")
         canvas._buffer[dest_begin : dest_end] = buf[source_begin : source_end]
     return Area(x, y, w, h)
+
+
+def blit(canvas, source, x, y, key=-1, palette=None):
+    if (
+        (x >= canvas.width) or
+        (y >= canvas.height) or
+        (-x >= source.width) or
+        (-y >= source.height)
+    ):
+        # Out of bounds, no-op.
+        return
+
+    # Clip.
+    x0 = max(0, x)
+    y0 = max(0, y)
+    x1 = max(0, -x)
+    y1 = max(0, -y)
+    x0end = min(canvas.width, x + source.width)
+    y0end = min(canvas.height, y + source.height)
+
+    for y0 in range(y0, y0end):
+        cx1 = x1
+        for cx0 in range(x0, x0end):
+            col = source.pixel(cx1, y1)
+            if palette:
+                col = palette.pixel(col, 0)
+            if col != key:
+                pixel(canvas, cx0, y0, col)
+            cx1 += 1
+        y1 += 1
+    return Area(x0, y0, x0end - x0, y0end - y0)

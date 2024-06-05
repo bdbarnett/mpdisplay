@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
-from ._area import Area
+from area import Area
 
 
 def fill_rect(canvas, x, y, w, h, c):

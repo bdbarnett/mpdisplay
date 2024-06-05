@@ -1,5 +1,6 @@
 from board_config import display_drv
 from sys import implementation
+from palettes import get_palette
 
 if implementation.name == "esp32":
     from machine import freq
@@ -27,7 +28,7 @@ SCROLL = TALL  # orientation for scroll.py
 FEATHERS = WIDE  # orientation for feathers.py
 
 
-palette = display_drv.get_palette()
+palette = get_palette()
 
 
 def deinit(display_drv, display_off=False):

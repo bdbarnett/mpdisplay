@@ -1,4 +1,7 @@
-from ulab import numpy as np
+try:
+    from ulab import numpy as np
+except ImportError:
+    import numpy as np
 
 full_framebuffer = np.zeros((480, 320), dtype=np.uint16)
 
