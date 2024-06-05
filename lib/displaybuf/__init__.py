@@ -99,14 +99,14 @@ class DisplayBuffer(framebuf.FrameBuffer):
         elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 != None:
             self._buffer_depth = 8
             self._stride = stride
-            self._bounce_buf = alloc_buffer(self.width * self._stride * BPP)
+            self._bounce_buf = display_drv.alloc_buffer(self.width * self._stride * BPP)
             self._buffer = bytearray(self.width * self.height)
             self.show = self._show8
         elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB != None:
             self._buffer_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
-            self._bounce_buf = alloc_buffer(self.width * self._stride * BPP)
+            self._bounce_buf = display_drv.alloc_buffer(self.width * self._stride * BPP)
             self._buffer = bytearray(self.width * self.height // 2)
             self.show = self._show4
         else:
