@@ -19,6 +19,17 @@ format = SSD.RGB565  # all 65,536 16-bit RGB565 colors; w*h*2 buffer
 ssd = SSD(display_drv, format)
 
 
+# enable screenshot functionality
+from mpdisplay import Events
+def screenshot(event):
+    if event.type == Events.MOUSEBUTTONDOWN and event.button == 3:
+        from bmp565 import BMP565
+        bmp = BMP565(source=ssd.buffer, width=ssd.width, height=ssd.height)
+        filename = bmp.save("screenshot.bmp")
+        print(f"\nSaved BMP565 file as '{filename}'")
+display_drv.subscribe(screenshot, event_types=[Events.MOUSEBUTTONDOWN])
+# End screenshot functionality
+
 class Poller:
     def __init__(self, poll_func):
         self._poll_func = poll_func

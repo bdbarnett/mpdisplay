@@ -14,26 +14,81 @@ Usage:
 """
 
 import struct
+import os
 
 class BMP565:
-    def __init__(self, filename, streamed=False, mirrored=False):
+    def __init__(self, filename=None, source=None, streamed=False, mirrored=False, width=None, height=None):
+        self._filename = filename
         self._streamed = streamed
         self._mirrored = mirrored
-        if self._streamed:
-            self._file = open(filename, "rb")
-            self._read_header(self._file)
+        if source is not None:
+            self.width = width
+            self.height = height
+            self._buffer = source
+            self._mv = memoryview(self._buffer)
+        elif filename is not None:
+            if self._streamed is True:
+                self._file = open(filename, "rb")
+                self._read_header(self._file)
+            else:
+                with open(filename, "rb") as f:
+                    self._read_header(f)
+                    self._read_data(f)
         else:
-            with open(filename, "rb") as f:
-                self._read_header(f)
-                self._read_data(f)
+            raise ValueError('Invalid arguments')
+
+    @staticmethod
+    def _exists(filename):
+        try:
+            os.stat(filename)
+            return True
+        except OSError:
+            return False
+
+    def save(self, filename=None):
+        if filename is None:
+            filename = self._filename if self._filename is not None else 'image.bmp'
+        while self._exists(filename):
+            # if the file already exists, add a number to the filename
+            filename, ext = filename.split(".")
+            # if the filename already has a number, increment it
+            if filename[-1].isdigit():
+                # strip the number off the end of the filename and save it so we can increment it
+                ver = ''
+                while filename[-1].isdigit():
+                    ver = filename[-1] + ver
+                    filename = filename[:-1]
+                filename += str(int(ver) + 1) + "." + ext
+            else:
+                filename += "_1." + ext
+        with open (filename, 'wb') as f:
+            f.write(b'BM')  # Offset 0: Signature
+            f.write(struct.pack('<I', 14 + 40 + len(self._buffer)))  # Offset 2: File size
+            f.write(b'\x00\x00\x00\x00')  # Offset 6: Unused
+            f.write(struct.pack('<I', 14 + 40))  # Offset 10: Data offset
+            # Windows BITMAPINFOHEADER
+            f.write(struct.pack('<I', 40))  # Offset 14: Header size
+            f.write(struct.pack('<II', self.width, self.height))  # Offset 18: Width, Height
+            f.write(struct.pack('<H', 1))  # Offset 26: Planes
+            f.write(struct.pack('<H', 16))  # Offset 28: Bits per pixel
+            f.write(b'\x00\x00\x00\x00')  # Offset 30: Compression
+            f.write(struct.pack('<I', len(self._buffer)))  # Offset 34: Image size
+            f.write(b'\x00\x00\x00\x00')  # Offset 38: X pixels per meter
+            f.write(b'\x00\x00\x00\x00')  # Offset 42: Y pixels per meter
+            f.write(b'\x00\x00\x00\x00')  # Offset 46: Colors in color table
+            f.write(b'\x00\x00\x00\x00')  # Offset 50: Important color count
+            # The order of the lines is reversed when reading the file or buffer.  We need to reverse it back.
+            for i in range(self.height):
+                f.write(self._buffer[(self.height - i - 1) * self.width * 2:(self.height - i) * self.width * 2])
+        return filename
 
     def _read_header(self, f):
         if f.read(2) != b'BM':
             raise ValueError('Not a BMP file')
-        self.file_size = struct.unpack('<I', f.read(4))[0]
+        file_size = struct.unpack('<I', f.read(4))[0]
         f.seek(10)
         self.data_offset = struct.unpack('<I', f.read(4))[0]
-        self.header_size = struct.unpack('<I', f.read(4))[0]
+        header_size = struct.unpack('<I', f.read(4))[0]
         self.width, self.height = struct.unpack('<II', f.read(8))
         planes = struct.unpack('<H', f.read(2))[0]
         if planes != 1:
