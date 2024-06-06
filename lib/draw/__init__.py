@@ -22,7 +22,6 @@ class BasicShapes:
     rect = shapes.rect
     ellipse = shapes.ellipse
     poly = shapes.poly
-    blit = shapes.blit
     text = text
 
 

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-A module to draw text to a canvas using romfonts from 
+A module to draw text to a canvas using fonts from 
 https://github.com/spacerace/romfont
 """
 
@@ -14,9 +14,9 @@ from area import Area
 # Default font file to use if none is specified.
 # Should be 8x8 to keep framebuf.py compatible with MicroPython framebuf module
 _FONTS = {
-    8: "romfonts/binfont_8x8.bin",
-    14: "romfonts/binfont_8x14.bin",
-    16: "romfonts/binfont_8x16.bin",
+    8: "fonts/binfont_8x8.bin",
+    14: "fonts/binfont_8x14.bin",
+    16: "fonts/binfont_8x16.bin",
 }
 _DEFAULT_FONT = _FONTS[8]
 

@@ -57,7 +57,7 @@ def blit_rect(canvas, buf, x, y, w, h):
     :param w: Width of the area
     :param h: Height of the area
     """
-    # copy bytes from buf to self._buffer, one row at a time
+    # copy bytes from buf to canvas.buffer, one row at a time
 
     BPP = canvas.color_depth // 8
 
@@ -74,16 +74,17 @@ def blit_rect(canvas, buf, x, y, w, h):
         dest_begin = ((y + row) * canvas.width + x) * BPP
         dest_end = dest_begin + w * BPP
         print(f"{source_begin=}, {source_end=}, source_len={source_end-source_begin}, {dest_begin=}, {dest_end=}, dest_len={dest_end-dest_begin}")
-        canvas._buffer[dest_begin : dest_end] = buf[source_begin : source_end]
+        canvas.buffer[dest_begin : dest_end] = buf[source_begin : source_end]
     return Area(x, y, w, h)
 
 
 def blit(canvas, source, x, y, key=-1, palette=None):
+    print(f"{dir(canvas)=}\n{dir(source)=}\n\n")
     if (
-        (x >= canvas.width) or
-        (y >= canvas.height) or
         (-x >= source.width) or
-        (-y >= source.height)
+        (-y >= source.height) or
+        (x >= canvas.width) or
+        (y >= canvas.height)
     ):
         # Out of bounds, no-op.
         return

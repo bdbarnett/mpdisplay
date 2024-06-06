@@ -13,4 +13,4 @@ mpy-cross vga2_bold_16x16.py
 mpy-cross vga2_bold_16x32.py
 
 cd ..
-mpremote cp -r romfonts/*.mpy :
+mpremote cp -r fonts/*.mpy :

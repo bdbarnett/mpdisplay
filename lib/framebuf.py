@@ -97,6 +97,22 @@ class MVLSBFormat:
 class MHLSBFormat:
     depth = 1
 
+    @staticmethod
+    def set_pixel(framebuf, x, y, color):
+        """Set a given pixel to a color."""
+        index = (y >> 3) * framebuf._stride + x
+        offset = 7 - (x & 0x07)
+        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
+            (color != 0) << offset
+        )
+
+    @staticmethod
+    def get_pixel(framebuf, x, y):
+        """Get the color of a given pixel"""
+        index = (x + y * framebuf._stride) >> 3
+        offset = 7 - (x & 0x07)
+        return (framebuf._buffer[index] >> offset) & 0x01
+
 
 class MHMSBFormat:
     """MHMSBFormat"""
@@ -278,10 +294,8 @@ class FrameBuffer(BasicShapes):
         self._buffer = buffer
         self.width = width
         self.height = height
-        self._stride = stride
+        self._stride = stride if stride is not None else width
         self._font = None
-        if self._stride is None:
-            self._stride = width
         if format == MONO_VLSB:
             self._format = MVLSBFormat()
         elif format == MONO_HLSB:

@@ -35,9 +35,9 @@ def main():
     text_len = len(write_text)
     iterations = 32
 
-    font1 = BinFont("romfonts/binfont_8x8.bin")
-    font2 = BinFont("romfonts/binfont_8x14.bin")
-    font3 = BinFont("romfonts/binfont_8x16.bin")
+    font1 = BinFont("fonts/binfont_8x8.bin")
+    font2 = BinFont("fonts/binfont_8x14.bin")
+    font3 = BinFont("fonts/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.font_width for font in fonts])

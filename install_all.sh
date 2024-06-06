@@ -132,7 +132,7 @@ fi
 cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 cp -ur $REPO/mpdisplay/lib $TARGET/
-cp -ur $REPO/mpdisplay/romfonts $TARGET/
+cp -ur $REPO/mpdisplay/fonts $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/

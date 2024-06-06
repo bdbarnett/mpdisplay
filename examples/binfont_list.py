@@ -21,7 +21,7 @@ def main():
     global y_pos
 
     # Specify the directory containing the .bin files
-    directory = "romfonts"
+    directory = "fonts"
 
     def gather_font_files(directory):
         font_files = []

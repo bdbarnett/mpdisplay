@@ -36,8 +36,8 @@ import math
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
     def __init__(self, buffer, width, height, format, *args, **kwargs):
         super().__init__(buffer, width, height, format, *args, **kwargs)
-        self.width = width
-        self.height = height
+        self._width = width
+        self._height = height
         
         if format == MONO_VLSB:
             self._color_depth = 1
@@ -58,6 +58,18 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
     @property
     def color_depth(self):
         return self._color_depth
+    
+    @property
+    def width(self):
+        return self._width
+    
+    @property
+    def height(self):
+        return self._height
+    
+    @property
+    def buffer(self):
+        return self._buffer
 
     def fill_rect(self, x, y, w, h, c):
         """
