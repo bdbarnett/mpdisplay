@@ -16,6 +16,7 @@
       ["examples/chango/chango_32.py", "github:bdbarnett/mpdisplay/examples/chango/chango_32.py"],
       ["examples/chango/chango_64.py", "github:bdbarnett/mpdisplay/examples/chango/chango_64.py"],
       ["examples/color_test.py", "github:bdbarnett/mpdisplay/examples/color_test.py"],
+      ["examples/displaybuf_screenshot.py", "github:bdbarnett/mpdisplay/examples/displaybuf_screenshot.py"],
       ["examples/displaybuf_simpletest.py", "github:bdbarnett/mpdisplay/examples/displaybuf_simpletest.py"],
       ["examples/ezfont_simpletest.py", "github:bdbarnett/mpdisplay/examples/ezfont_simpletest.py"],
       ["examples/feathers.py", "github:bdbarnett/mpdisplay/examples/feathers.py"],
