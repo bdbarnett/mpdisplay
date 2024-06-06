@@ -11,19 +11,18 @@ FONT_WIDTH = 8
 # Define colors (max 16 colors if using lookup tables / GS4_HMSB mode)
 # Note:  ssd.color and ssd.colors_registered should not be used with Nano-GUI or
 # Micro-GUI because those packages have their own mechanisms for managing colors.
-color565 = ssd.color  # Define a shorter alias for the color function
-WHITE = color565(255, 255, 255)
-RED = color565(255, 0, 0)
-GREEN = color565(0, 255, 0)
-BLUE = color565(0, 0, 255)
-CYAN = color565(0, 255, 255)
-MAGENTA = color565(255, 0, 255)
-YELLOW = color565(255, 255, 0)
-BLACK = color565(0, 0, 0)
-LIGHT_GREY = color565(192, 192, 192)
-GREY = color565(96, 96, 96)
-DARK_GREY = color565(64, 64, 64)
-GREY = color565(
+WHITE = ssd.color(255, 255, 255)
+RED = ssd.color(255, 0, 0)
+GREEN = ssd.color(0, 255, 0)
+BLUE = ssd.color(0, 0, 255)
+CYAN = ssd.color(0, 255, 255)
+MAGENTA = ssd.color(255, 0, 255)
+YELLOW = ssd.color(255, 255, 0)
+BLACK = ssd.color(0, 0, 0)
+LIGHT_GREY = ssd.color(192, 192, 192)
+GREY = ssd.color(96, 96, 96)
+DARK_GREY = ssd.color(64, 64, 64)
+GREY = ssd.color(
     128, 128, 128, GREY
 )  # Example of how to redefine a color in the lookup table
 if ssd.colors_registered:  # Will be 0 if not using lookup tables / GS4_HMSB mode.
