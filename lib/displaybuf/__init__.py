@@ -63,8 +63,8 @@ class DisplayBuffer(framebuf.FrameBuffer):
         self.display_drv = display_drv
         self.vscrdef = display_drv.vscrdef
         self.vscsad = display_drv.vscsad
-        self.height = display_drv.height
-        self.width = display_drv.width
+        height = display_drv.height
+        width = display_drv.width
         self._color_depth = display_drv.color_depth
         BPP = self._color_depth // 8
         self.palette = BoolPalette(
@@ -94,28 +94,32 @@ class DisplayBuffer(framebuf.FrameBuffer):
         gc.collect()
         if format == DisplayBuffer.RGB565:
             self._buffer_depth = 16
-            self._buffer = bytearray(self.width * self.height * BPP)
+            self._buffer = bytearray(width * height * BPP)
             self.show = self._show16
         elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 != None:
             self._buffer_depth = 8
             self._stride = stride
-            self._bounce_buf = display_drv.alloc_buffer(self.width * self._stride * BPP)
-            self._buffer = bytearray(self.width * self.height)
+            self._bounce_buf = display_drv.alloc_buffer(width * self._stride * BPP)
+            self._buffer = bytearray(width * height)
             self.show = self._show8
         elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB != None:
             self._buffer_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
-            self._bounce_buf = display_drv.alloc_buffer(self.width * self._stride * BPP)
-            self._buffer = bytearray(self.width * self.height // 2)
+            self._bounce_buf = display_drv.alloc_buffer(width * self._stride * BPP)
+            self._buffer = bytearray(width * height // 2)
             self.show = self._show4
         else:
             raise ValueError(f"Unsupported format: {format}")
 
-        super().__init__(self._buffer, self.width, self.height, format)
+        super().__init__(self._buffer, width, height, format)
         self._mvb = memoryview(self._buffer)
         self.show()  # Clear the display
         gc.collect()
+
+    @property
+    def buffer(self):
+        return self._buffer
 
     def _show16(self, area=None):
         if isinstance(area, Area):
@@ -208,6 +212,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
         DisplayBuffer.lut[offset] = c & 0xFF  # Set the lower 8 bits of the color
         DisplayBuffer.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
         return idx  # Return the index of the registered color
+
 
 class BoolPalette(framebuf.FrameBuffer):
     # This is a 2-value color palette for rendering monochrome glyphs to color
