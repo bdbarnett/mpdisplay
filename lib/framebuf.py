@@ -292,8 +292,8 @@ class FrameBuffer(BasicShapes):
     def __init__(self, buffer, width, height, format, stride=None):
         # pylint: disable=too-many-arguments
         self._buffer = buffer
-        self.width = width
-        self.height = height
+        self._width = width
+        self._height = height
         self._stride = stride if stride is not None else width
         self._font = None
         if format == MONO_VLSB:
@@ -321,7 +321,7 @@ class FrameBuffer(BasicShapes):
     def pixel(self, x, y, c=None):
         """If ``c`` is not given, get the color value of the specified pixel. If ``c`` is
         given, set the specified pixel to the given color."""
-        if x < 0 or x >= self.width or y < 0 or y >= self.height:
+        if x < 0 or x >= self._width or y < 0 or y >= self._height:
             return None
         if c is None:
             return self._format.get_pixel(self, x, y)
@@ -331,7 +331,7 @@ class FrameBuffer(BasicShapes):
     def fill(self, c):
         """Fill the entire FrameBuffer with the specified color."""
         self._format.fill(self, c)
-        return Area(0, 0, self.width, self.height)
+        return Area(0, 0, self._width, self._height)
 
     def scroll(self, xstep, ystep):
         """
@@ -347,8 +347,8 @@ class FrameBuffer(BasicShapes):
         BPP = self._format.depth // 8  # Bytes per pixel
 
         # Determine the width and height of the FrameBuffer
-        width = self.width
-        height = self.height
+        width = self._width
+        height = self._height
 
         # Calculate the number of bytes per row
         bytes_per_row = width * BPP
