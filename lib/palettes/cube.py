@@ -29,8 +29,17 @@ class CubePalette(_Palette):
         self._size = size
         self._length = size ** 3
         self._values = [round(i * (255 / (size - 1)) + .25) for i in range(size)]
-        name = name if name else f"Cube{len(self)}"
-        super().__init__(name, color_depth, swapped, cached)
+
+        if self._size == 2:
+            from ._rgb8 import RGB8 as NAMES
+        elif self._size == 3:
+            from ._rgb27 import RGB27 as NAMES
+        elif self._size == 4:
+            from ._rgb64 import RGB64 as NAMES
+        else:
+            from ._rgb125 import RGB125 as NAMES
+        self._names = NAMES
+        super().__init__(name + str(self._length), color_depth, swapped, cached)
 
     def _get_rgb(self, index):
         z = index % self._size

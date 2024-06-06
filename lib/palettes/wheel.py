@@ -32,7 +32,6 @@ class WheelPalette(_Palette):
     def __init__(self, name="", color_depth=16, swapped=False, cached=True, length=256, saturation=1.0, value=None):
 
         self._length = length
-        name = name if name else f"Wheel{len(self)}"
 
         if saturation is None and value is None:
             self._mode = "wheel"
@@ -46,7 +45,7 @@ class WheelPalette(_Palette):
             if not 0 <= self._saturation <= 1 or not 0 <= self._value <= 1:
                 raise ValueError("Saturation and value must be in the range of 0-1")
 
-        super().__init__(name, color_depth, swapped, cached)
+        super().__init__(name + str(self._length), color_depth, swapped, cached)
 
     def _get_rgb(self, index):
         if self._mode == "wheel":
