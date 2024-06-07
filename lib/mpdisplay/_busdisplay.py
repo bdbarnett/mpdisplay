@@ -11,7 +11,7 @@ from area import Area
 from micropython import const
 import struct
 import sys
-
+import gc
 
 if sys.implementation.name == "micropython":
     from machine import Pin
@@ -29,6 +29,8 @@ elif sys.implementation.name == "circuitpython":
 else:
     raise ImportError("BusDisplay is not supported on this platform.")
 
+
+gc.collect()
 
 # MIPI DCS (Display Command Set) Command Constants
 _INVOFF = const(0x20)
@@ -147,6 +149,7 @@ class BusDisplay(_BaseDisplay):
         :param reset_high: Whether the display resets when the pin is high (default is True).
         :type reset_high: bool, optional
         """
+        gc.collect()
         super().__init__()
         self.display_bus = display_bus
         self._width = width
@@ -237,6 +240,8 @@ class BusDisplay(_BaseDisplay):
         self.brightness = brightness
 
         # self.fill_rect(0, 0, self.width, self.height, 0x0)
+
+        gc.collect()
 
     ############### Required API Methods ################
 

@@ -10,11 +10,15 @@ from . import Broker, Devices
 from area import Area
 from draw import Shapes
 from sys import exit  # default for self.quit
+import gc
 
+
+gc.collect()
 
 class _BaseDisplay(Broker, Shapes):
 
     def __init__(self):
+        gc.collect()
         super().__init__()
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
@@ -24,6 +28,7 @@ class _BaseDisplay(Broker, Shapes):
         # function that cleans up resources and calls `sys.exit()`.
         # .poll() must be called periodically to check for the quit event.
         self.quit_func = exit
+        gc.collect()
 
     ############### Common API Methods ################
 

@@ -31,11 +31,15 @@ from eventsys.events import Events
 from eventsys.keys import Keys
 from ._basedisplay import _BaseDisplay
 from area import Area
+import gc
 
-try:
-    from ._fbdisplay import FBDisplay
-except ImportError as e:
-    print(f"MPDisplay: {e}")
+
+gc.collect()
+
+# try:
+#     from ._fbdisplay import FBDisplay
+# except ImportError as e:
+#     print(f"MPDisplay: {e}")
 
 
 if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDisplay")):
@@ -69,3 +73,5 @@ else:
                 from ._pgdisplay import PGDisplay as DesktopDisplay, PGEventQueue as EventQueue
             except Exception as e:
                 print(f"MPDisplay: {e}")
+
+gc.collect()
