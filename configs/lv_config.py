@@ -4,41 +4,26 @@
 """
 
 import board_config
+import lvgl as lv
+import gc
 
-###################### Create framebuffers before loading LVGL
-try:
-    from lcd_bus import MEMORY_32BIT, MEMORY_8BIT, MEMORY_DMA, MEMORY_SPIRAM, MEMORY_INTERNAL, MEMORY_DEFAULT
-
-    caps = MEMORY_DMA | MEMORY_INTERNAL  ### Change to your requirements.  Bitwise OR of buffer memory capabilities
-    alloc_buffer = board_config.display_bus.allocate_framebuffer
-except:
-    caps = None
-    alloc_buffer = lambda buffersize, caps: memoryview(bytearray(buffer_size))
-
-factor = 10  ### Must be 1 if using an RGBBus
-double_buf = True  ### Must be False if using an RGBBus
-
-buffer_size = board_config.display_drv.width \
-              * board_config.display_drv.height \
-              * (board_config.display_drv.color_depth // 8) \
-              // factor
-
-fbuf1 = alloc_buffer(buffer_size, caps)
-fbuf2 = alloc_buffer(buffer_size, caps) if double_buf else None
-
+print("Creating buffers")
+gc.collect()
+color_format = lv.COLOR_FORMAT.RGB565
+draw_buf1 = lv.draw_buf_create(board_config.display_drv.width, 50, color_format, 0)
+draw_buf2 = lv.draw_buf_create(board_config.display_drv.width, 50, color_format, 0)
+print("Buffers created.")
 
 ###################### Load LVGL and continue setting up
-import lv_mpdisplay
-from lvgl import COLOR_FORMAT
 
-### Change color_format to match your display
+import lv_mpdisplay
+
 display = lv_mpdisplay.DisplayDriver(
     board_config.display_drv,
-    fbuf1,
-    fbuf2,
-    COLOR_FORMAT.RGB565,
+    draw_buf1,
+    draw_buf2,
+    color_format,
     blocking=True,
 )
 
-### Uncomment if your board has an encoder
-# encoder = lv_mpdisplay.EncoderDriver(board_config.encoder_read_func, board_config.encoder_button_func)
+print("finished loading lv_config.py")

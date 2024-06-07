@@ -103,10 +103,8 @@ class DisplayDriver:
             self.display_drv.register_callback(self.lv_display.flush_ready)
         self.lv_display.set_draw_buffers(
             self._frame_buffer1,
-            self._frame_buffer2,
-            len(self._frame_buffer1),
-            render_mode,
-        )
+            self._frame_buffer2)
+        self.lv_display.set_render_mode(render_mode)
 
         # Create an input device for each device of known type registered to display_drv
         # and set its type and read callback function.  Save a reverence to the indev object
