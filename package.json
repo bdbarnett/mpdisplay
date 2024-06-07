@@ -1,5 +1,8 @@
 {
     "urls": [
+      ["examples/assets/longstreet.bmp", "github:bdbarnett/mpdisplay/examples/assets/longstreet.bmp"],
+      ["examples/assets/runner.bmp", "github:bdbarnett/mpdisplay/examples/assets/runner.bmp"],
+      ["examples/assets/warrior.bmp", "github:bdbarnett/mpdisplay/examples/assets/warrior.bmp"],
       ["examples/binfont_list.py", "github:bdbarnett/mpdisplay/examples/binfont_list.py"],
       ["examples/binfont_simpletest.py", "github:bdbarnett/mpdisplay/examples/binfont_simpletest.py"],
       ["examples/binfont_simpletest2.py", "github:bdbarnett/mpdisplay/examples/binfont_simpletest2.py"],
@@ -21,7 +24,6 @@
       ["examples/feathers.py", "github:bdbarnett/mpdisplay/examples/feathers.py"],
       ["examples/fonts.py", "github:bdbarnett/mpdisplay/examples/fonts.py"],
       ["examples/framebuf_simpletest.py", "github:bdbarnett/mpdisplay/examples/framebuf_simpletest.py"],
-      ["examples/guy.bmp", "github:bdbarnett/mpdisplay/examples/guy.bmp"],
       ["examples/hello.py", "github:bdbarnett/mpdisplay/examples/hello.py"],
       ["examples/keypins_simpletest.py", "github:bdbarnett/mpdisplay/examples/keypins_simpletest.py"],
       ["examples/lv_touch_test.py", "github:bdbarnett/mpdisplay/examples/lv_touch_test.py"],

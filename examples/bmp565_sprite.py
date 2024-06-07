@@ -5,23 +5,23 @@ from random import choice
 from collections import namedtuple
 
 
-image = BMP565("examples/assets/guy.bmp")
+image = BMP565("examples/assets/warrior.bmp", streamed=True)
 print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
 sprite_height = image.height // 4
-sprite_width = image.width // 4
+sprite_width = image.width // 3
 bg = image[0]  # top left pixel is the background color
 print(f"{sprite_width=}, {sprite_height=} {bg=:#0x}\n")
 # display_drv.fill(0x0)
 # display_drv.blit_rect(image[sprite_height:sprite_height*2], 0, 0, image.width, sprite_height)
 # sleep(2)
 
-fwd, right, left, back = [x * sprite_height for x in range(4)]
+back, right, fwd, left = [x * sprite_height for x in range(4)]
 directions = [fwd, left, right, back]
-a, b, c, d = [x * sprite_width for x in range(4)]
-positions = [a, b, c, d]
+a, b, c = [x * sprite_width for x in range(3)]
+positions = [a, b, c, b]
 print("Sprite coordinates:")
 for col in [fwd, left, right, back]:
-    print(f"{(a, col)} {(b, col)} {(c, col)} {(d, col)}")
+    print(f"{(a, col)} {(b, col)} {(c, col)} {(b, col)}")
 
 def draw_sprite(dest_x, dest_y, source_x, source_y, source_image=image, width=sprite_width, height=sprite_height):
     display_drv.blit_rect(source_image[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height)
