@@ -16,7 +16,7 @@ print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
 def draw_bg(dest_x, source_y, count=1, source=image):
     display_drv.blit_rect(source[source_y:source_y + count], dest_x, 0, count, display_drv.height)
 
-char_sprites = BMP565("examples/assets/runner.bmp")
+char_sprites = BMP565("examples/assets/runner.bmp", streamed=True)
 print(f"\n{char_sprites.width=}, {char_sprites.height=}, {char_sprites.bpp=}")
 char_height = char_sprites.height // 3
 char_width = char_sprites.width // 6
