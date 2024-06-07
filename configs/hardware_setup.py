@@ -23,10 +23,7 @@ ssd = SSD(display_drv, format)
 from mpdisplay import Events
 def screenshot(event):
     if event.type == Events.MOUSEBUTTONDOWN and event.button == 3:
-        from bmp565 import BMP565
-        bmp = BMP565(source=ssd.buffer, width=ssd.width, height=ssd.height)
-        filename = bmp.save("screenshot.bmp")
-        print(f"\nSaved BMP565 file as '{filename}'")
+        ssd.screenshot()
 display_drv.subscribe(screenshot, event_types=[Events.MOUSEBUTTONDOWN])
 # End screenshot functionality
 
