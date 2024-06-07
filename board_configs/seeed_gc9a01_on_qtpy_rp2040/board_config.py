@@ -1,24 +1,21 @@
-""" QT Py RP2040 with EyeSPI and ILI9341 2.8" display """
+""" Seeed Studio Round Display for XIAO GC9A01 240x240 display on Adafruit QT Py RP2040 """
 
 from lcd_bus import SPIBus
-from ili9341 import ILI9341
+from gc9a01 import GC9A01
 from machine import Pin, I2C
-from ft6x36 import FT6x36
+from chsc6x import CHSC6X
 from mpdisplay import Devices
-import gc
-
-gc.collect()
 
 
 display_bus = SPIBus(
-    dc=5,
-    cs=20,
+    dc=26,
+    cs=28,
     mosi=3,
-    miso=4, 
+    miso=4,
     sclk=6,
     host=0,
     tx_only=True,
-    freq=60_000_000,
+    freq=30_000_000,
     spi_mode=0,
     cmd_bits=8,
     param_bits=8,
@@ -27,12 +24,10 @@ display_bus = SPIBus(
     cs_high_active=False,
 )
 
-gc.collect()
-
-display_drv = ILI9341(
+display_drv = GC9A01(
     display_bus,
     width=240,
-    height=320,
+    height=240,
     colstart=0,
     rowstart=0,
     rotation=0,
@@ -40,7 +35,7 @@ display_drv = ILI9341(
     color_depth=16,
     bgr=True,
     reverse_bytes_in_word=True,
-    invert=False,
+    invert=True,
     brightness=1.0,
     backlight_pin=None,
     backlight_on_high=True,
@@ -50,19 +45,13 @@ display_drv = ILI9341(
     power_on_high=True,
 )
 
-gc.collect()
-
 i2c = I2C(0, sda=Pin(24), scl=Pin(25), freq=100000)
-touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=(6, 3, 0, 5)
-
-gc.collect()
+touch_drv = CHSC6X(i2c, irq_pin=5)
+touch_read_func=touch_drv.touch_read
+touch_rotation_table=(0, 5, 6, 3)
 
 touch_dev = display_drv.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,
 )
-
-gc.collect()
