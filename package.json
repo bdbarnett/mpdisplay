@@ -73,6 +73,7 @@
       ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/__init__.py"],
       ["lib/mpdisplay/_basedisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_basedisplay.py"],
       ["lib/mpdisplay/_busdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_busdisplay.py"],
+      ["lib/mpdisplay/_fbdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_fbdisplay.py"],
       ["lib/mpdisplay/_pgdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_pgdisplay.py"],
       ["lib/mpdisplay/_sdl2display.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_sdl2display.py"],
       ["lib/palettes/__init__.py", "github:bdbarnett/mpdisplay/lib/palettes/__init__.py"],
