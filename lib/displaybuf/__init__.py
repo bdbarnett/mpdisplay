@@ -40,6 +40,8 @@ else:
     _bounce4 = _bounce8
 
 
+gc.collect()
+
 
 class DisplayBuffer(framebuf.FrameBuffer):
     """
@@ -60,6 +62,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
     GS4_HMSB = framebuf.GS4_HMSB if hasattr(framebuf, "GS4_HMSB") else None
 
     def __init__(self, display_drv, format=framebuf.RGB565, stride=8):
+        gc.collect()
         self.display_drv = display_drv
         self.vscrdef = display_drv.vscrdef
         self.vscsad = display_drv.vscsad
@@ -120,6 +123,19 @@ class DisplayBuffer(framebuf.FrameBuffer):
     @property
     def buffer(self):
         return self._buffer
+    
+    @property
+    def color_palette(self):
+        return self._color_palette
+    
+    @color_palette.setter
+    def color_palette(self, palette):
+        if len(palette) > 16:
+            raise ValueError("Palette must be 16 colors or less")
+        self._color_palette = palette
+        for index, color in enumerate(palette):
+            r, g, b = color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF
+            self.color(r, g, b, index)
 
     def _show16(self, area=None):
         if isinstance(area, Area):
