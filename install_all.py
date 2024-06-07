@@ -17,7 +17,7 @@ import sys
 
 
 TARGET = "."
-LAUNCH = "calculator"
+LAUNCH = "paint"
 
 print("\nInstalling the mpdisplay library and optional libraries and examples.\n")
 
@@ -42,6 +42,9 @@ mip.install("github:bdbarnett/playing_cards", target=TARGET)
 print("")
 
 mip.install("github:bdbarnett/testris", target=TARGET)
+print("")
+
+mip.install("github:peterhinch/micropython-touch", target=TARGET)
 print("")
 
 

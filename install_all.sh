@@ -156,9 +156,11 @@ cp -ur $REPO/micropython-touch/gui $TARGET/
 
 ######################## Launch the test app ####################################
 
-pushd $TARGET
 echo
-# echo "Launching $LAUNCH"
+echo "Installation complete.  To run the '$LAUNCH' example, type the following:"
 echo
-# $EXE -c "import path, $LAUNCH"
-popd
+echo "cd $TARGET"
+echo "$EXE -i path.py"
+echo "import $LAUNCH"
+echo
+
