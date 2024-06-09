@@ -1,16 +1,15 @@
 """ Qualia S3 RGB-666 with TL040HDS20 4.0" 720x720 Square Display """
+# Similar configs may be available for RGBMatrix, is31fl3741 and picodvi
 
-# Similar configs for RGBMatrix, usb_video, is31fl3741 an picodvi
-import displayio
-import busio
-import board
 import dotclockframebuffer
 from framebufferio import FramebufferDisplay
+from displayio import release_displays
+import busio
+import board
 import adafruit_focaltouch
-from mpdisplay import FBDisplay, Devices
+from mpdisplay.fbdisplay import FBDisplay
+from mpdisplay import Devices
 
-
-displayio.release_displays()
 
 tft_pins = dict(board.TFT_PINS)
 
@@ -39,11 +38,12 @@ tft_io_expander = dict(board.TFT_IO_EXPANDER)
 #tft_io_expander['i2c_address'] = 0x38 # uncomment for rev B
 dotclockframebuffer.ioexpander_send_init_sequence(i2c, init_sequence_tl040hds20, **tft_io_expander)
 
-dcfb = dotclockframebuffer.DotClockFramebuffer(**tft_pins, **tft_timings)
-display = FramebufferDisplay(dcfb, auto_refresh=True)
+release_displays()
+fb = dotclockframebuffer.DotClockFramebuffer(**tft_pins, **tft_timings)
+display = FramebufferDisplay(fb, auto_refresh=True)
 display.root_group = None
 
-display_drv = FBDisplay(dcfb)
+display_drv = FBDisplay(fb)
 
 touch_drv = adafruit_focaltouch.Adafruit_FocalTouch(i2c, address=0x48)
 
