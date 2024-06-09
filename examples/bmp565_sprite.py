@@ -4,6 +4,8 @@ from time import sleep
 from random import choice
 from collections import namedtuple
 
+show = display_drv.show if hasattr(display_drv, "show") else lambda : None
+
 
 image = BMP565("examples/assets/warrior.bmp", streamed=True)
 print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
@@ -28,9 +30,10 @@ def draw_sprite(dest_x, dest_y, source_x, source_y, source_image=image, width=sp
 
 
 display_drv.fill(bg)
+show()
 
 point = namedtuple("point", "x y")
-location = point(display_drv.width // 2, display_drv.height // 2)
+location = point(0, 0)
 sprite = (a, fwd)
 draw_sprite(*location, *sprite)
 
@@ -62,4 +65,5 @@ while True:
             display_drv.fill_rect(location.x, location.y, step, sprite_height, bg)
             location = point(location.x + step, location.y)
         draw_sprite(*location, pos, dir)
+        show()
         sleep(0.1)
