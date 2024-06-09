@@ -6,11 +6,14 @@
 _BaseDisplay class for all display drivers to inherit from.
 """
 
-from . import Broker, Devices
+from . import Broker, Devices, np
 from area import Area
 from draw import Shapes
-from sys import exit  # default for self.quit
+from sys import exit, implementation
 import gc
+
+if implementation.name == "micropython":
+    from ._viper import swap_bytes_viper
 
 
 gc.collect()
@@ -294,3 +297,20 @@ class _BaseDisplay(Broker, Shapes):
 
     def sleep_mode(self, value):
         return
+
+    @staticmethod
+    def _swap_bytes(buf, buf_size_pix):
+        """
+        Swap the bytes in a buffer of RGB565 data.
+
+        :param buf: Buffer of RGB565 data
+        :type buf: memoryview
+        :param buf_size_px: Size of the buffer in pixels
+        :type buf_size_px: int
+        """
+        # buf[::2], buf[1::2] = buf[1::2], buf[::2]
+        if np is None:
+            swap_bytes_viper(buf, width * height)
+        else:
+            npbuf = np.frombuffer(buf, dtype=np.uint16)
+            npbuf.byteswap(inplace=True)

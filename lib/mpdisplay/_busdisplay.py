@@ -19,13 +19,11 @@ if sys.implementation.name == "micropython":
     from micropython import alloc_emergency_exception_buf
 
     alloc_emergency_exception_buf(256)
-    np = None
 elif sys.implementation.name == "circuitpython":
     import digitalio
     from time import sleep
 
     sleep_ms = lambda ms: sleep(ms / 1000)
-    import ulab.numpy as np
 else:
     raise ImportError("BusDisplay is not supported on this platform.")
 
@@ -292,10 +290,8 @@ class BusDisplay(_BaseDisplay):
         :type buf: memoryview
         """
         if self.requires_byte_swap:
-            if np is not None:
-                self._swap_bytes_numpy(buf, width * height)
-            else:
-                self._swap_bytes(buf, width * height)
+            self._swap_bytes(buf, width * height)
+
         x1 = x + self._colstart
         x2 = x1 + width - 1
         y1 = y + self._rowstart
@@ -680,31 +676,3 @@ class BusDisplay(_BaseDisplay):
             if value is not None:
                 p.value = value
         return p
-
-    @micropython.viper
-    def _swap_bytes(self, buf: ptr8, buf_size_px: int):
-        """
-        Swap the bytes in a buffer of RGB565 data.
-
-        :param buf: Buffer of RGB565 data
-        :type buf: ptr8
-        :param buf_size_px: Size of the buffer in pixels
-        :type buf_size_px: int
-        """
-        for i in range(0, buf_size_px * 2, 2):
-            tmp = buf[i]
-            buf[i] = buf[i + 1]
-            buf[i + 1] = tmp
-
-    def _swap_bytes_numpy(self, buf, buf_size_px):
-        """
-        Swap the bytes in a buffer of RGB565 data using numpy.
-
-        :param buf: Buffer of RGB565 data
-        :type buf: memoryview
-        :param buf_size_px: Size of the buffer in pixels
-        :type buf_size_px: int
-        """
-        # buf[::2], buf[1::2] = buf[1::2], buf[::2]
-        npbuf = np.frombuffer(buf, dtype=np.uint16)
-        npbuf.byteswap(inplace=True)

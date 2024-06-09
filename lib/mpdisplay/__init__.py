@@ -24,6 +24,14 @@ Usage:
 If no display drivers are available, an ImportError will be raised.
 """
 
+try:
+    import ulab.numpy as np
+except:
+    try:
+        import numpy as np
+    except:
+        np = None
+
 import sys
 import os
 from eventsys.devices import Devices, Broker
@@ -35,11 +43,6 @@ import gc
 
 
 gc.collect()
-
-# try:
-#     from ._fbdisplay import FBDisplay
-# except ImportError as e:
-#     print(f"MPDisplay: {e}")
 
 
 if (sys.implementation.name != "micropython") and (envsetting := os.getenv("MPDisplay")):

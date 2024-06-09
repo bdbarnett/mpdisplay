@@ -6,20 +6,15 @@
 FBDisplay class for MPDisplay.
 """
 
-from . import _BaseDisplay
+from . import _BaseDisplay, np
 from area import Area
-
-try:
-    from ulab import numpy as np
-except ImportError:
-    import numpy as np
 
 
 class FBDisplay(_BaseDisplay):
     '''
     A class to interface with CircuitPython FrameBuffer objects.
     '''
-    def __init__(self, buffer, width=None, height=None, stride=None, reverse_bytes_in_word=False,):
+    def __init__(self, buffer, width=None, height=None, stride=None, reverse_bytes_in_word=False):
         """
         Initializes the display instance with the given parameters.
 
@@ -38,6 +33,12 @@ class FBDisplay(_BaseDisplay):
 
         self.init()
 
+    def show(self):
+        self._raw_buffer.refresh()
+
+    def refesh(self):
+        self._raw_buffer.refresh()
+
     ############### Required API Methods ################
 
     def init(self):
@@ -46,8 +47,10 @@ class FBDisplay(_BaseDisplay):
         """
         pass
 
-
     def fill_rect(self, x, y, w, h, c):
+        if self.requires_byte_swap:
+            c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
+
         BPP = self.color_depth // 8
         x2 = x + w
         y2 = y + h
@@ -64,6 +67,9 @@ class FBDisplay(_BaseDisplay):
         return Area(left, top, right - left, bottom - top)
 
     def blit_rect(self, buf, x, y, width, height):
+        if self.requires_byte_swap:
+            self._swap_bytes(buf, width * height)
+
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + width > self.width or y + height > self.height:
             raise ValueError("The provided x, y, w, h values are out of range")
