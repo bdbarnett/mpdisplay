@@ -162,3 +162,7 @@ Don't forget to give the project a star! Thanks again!
 4. Commit your changes (`git commit -m 'Add some amazing feature'`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a pull request from your feature branch from your repository into this repository main branch, and provide a description of your changes
+
+## Why
+
+I started out just wanting to create drivers that worked with MicroPython the way DisplayIO drivers work for CircuitPython, except without DisplayIO and instead usable by any GUI framework like, but not limited to, LVGL.  That snowballed into adding more platforms and then adding drawing primitives, font classes, palettes, an event system, a barebones SDL2 library and supporting as many platforms as possible.  I stopped short of creating a full fledged GUI and plan to leave it as a very capable graphics library.  I think this is a great foundation for building a GUI framework with widgets and a task scheduler, although it is very usable and useful without one.  @peterhinch has a great GUI for MicroPython that works on top of MPDisplay, and I'm hoping someone will make a GUI that works across platforms.
