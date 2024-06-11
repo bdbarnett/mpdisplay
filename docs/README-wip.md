@@ -9,8 +9,7 @@
   <a href="#running-your-first-app">Running Your First App</a> •
   <a href="#api">API</a> •
   <a href="#roadmap">Roadmap</a> •
-  <a href="#contributing">Contributing</a> •
-  <a href="#license">License</a>
+  <a href="#contributing">Contributing</a>
 </p>
 
 | ![peterhinch's active.py](../screenshots/active.gif) | ![russhughes's tiny_toasters.py](../screenshots/tiny_toasters.gif) |
@@ -149,7 +148,7 @@ Where possible, existing, proven APIs were used.
 
 ## Contributing
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+This is a community project and I need your help!  If you have a suggestion that would make this better, please fork the repo and create a pull request.
 Don't forget to give the project a star! Thanks again!
 
 1. Fork the project
