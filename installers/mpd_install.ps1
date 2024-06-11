@@ -37,7 +37,6 @@ Copy-Item -Path $REPO/mpdisplay/fonts -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/mpdisplay/examples -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/mpdisplay/utils/* -Destination $TARGET/lib/ -Force
 Copy-Item -Path $REPO/mpdisplay/configs/* -Destination $TARGET/ -Force
-Copy-Item -Path $REPO/mpdisplay/mpd_install.py -Destination $TARGET/ -Force
 
 Copy-Item -Path $REPO/lcd_bus/lcd_bus -Destination $TARGET/lib/ -Recurse -Force
 

@@ -5,20 +5,20 @@
 # Prerequisites:  The only prerequisites to use this script to download and stage
 # the files is git, which is preinstalled on nearly all Linux distros, including WSL.
 #
-# To use MPDisplay in desktop operating systems, you will need either Pygame (which
-# also installs SDL2, or just SDL2 by itself.  Here is how you get them on Ubuntu under WSL:
+# To use MPDisplay in desktop operating systems, you will need either SDL2 or PyGame.
+# Here is how you get them on Ubuntu under WSL:
 #
 #     sudo apt update  && sudo apt upgrade
-#     sudo apt install python3-pygame
-#                   OR
 #     sudo apt install libsdl2-2.0-0
+#                   OR
+#     sudo apt install python3-pygame
 #
 # Python3 is installed on nearly all Linux Distros.  If your distro has a package
 # for MicroPython, like Ubuntu does on WSL, you may get it with:
 #
 #     sudo apt install micropython
 #
-# After downloading, switch to the directory your files are staged in and launch your python.
+# After downloading, cd to the directory your files are staged in and launch *Python.
 # For instance:
 #
 #     cd ~/mp
@@ -26,7 +26,7 @@
 #             OR
 #     python3 -i path.py
 #
-# You may than import any of the examples, such as 'import paint'
+# You may then import any of the examples, such as 'import paint'
 #
 # Usage:
 #     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/installers/mpd_install.sh
@@ -65,11 +65,14 @@
 #
 # For testing purposes, it is recommended you 'cd' into the directory specified
 # by $TARGET and type either
+#
 #     python3 -i path.py
 # or
 #     micropython -i path.py
+#
 # That will add the directories necessary to run the demos to the path and leave
 # you at the REPL.  Or, type the following ommitting the '.py' file extensions:
+#
 #     python3 -c "import path, <EXAMPLE>"
 # or
 #     micropython -c "import path, <EXAMPLE>"
@@ -77,7 +80,7 @@
 # Remember:
 #     - All examples other than those for LVGL should run on MicroPython on Unix.
 #     - Examples that use MicroPython specific libraries, such as those based on
-#       the MicroPython-Touch library in the lib/gui directory will not run on
+#       the MicroPython-Touch library in the gui directory will not run on
 #       CPython.
 #     - While MPDisplay suppots LVGL on microntrollers, it doesn't support LVGL
 #       on desktops operating systems, including MicroPython on Unix.
@@ -96,7 +99,6 @@ EXE=python3  # micropython, python3 or python
 ##################### Optional: set these variables #####################################
 
 BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
-#LAUNCH=mpdisplay_paint  # without .py extension
 LAUNCH=paint  # without .py extension
 
 
@@ -136,7 +138,6 @@ cp -ur $REPO/mpdisplay/fonts $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/
-cp -u $REPO/mpdisplay/mpd_install.py $TARGET/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 
