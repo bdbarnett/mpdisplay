@@ -9,7 +9,8 @@
   <a href="#running-your-first-app">Running Your First App</a> •
   <a href="#api">API</a> •
   <a href="#roadmap">Roadmap</a> •
-  <a href="#contributing">Contributing</a>
+  <a href="#contributing">Contributing</a> •
+  <a href="screenshots">Screenshots</a>
 </p>
 
 | ![peterhinch's active.py](../screenshots/active.gif) | ![russhughes's tiny_toasters.py](../screenshots/tiny_toasters.gif) |
