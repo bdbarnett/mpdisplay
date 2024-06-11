@@ -9,10 +9,11 @@
   <a href="#running-your-first-app">Running Your First App</a> •
   <a href="#api">API</a> •
   <a href="#roadmap">Roadmap</a> •
-  <a href="#contributing">Contributing</a>
+  <a href="#contributing">Contributing</a> •
+  <a href="screenshots">Screenshots</a>
 </p>
 
-| ![peterhinch's active.py](../screenshots/active.gif) | ![russhughes's tiny_toasters.py](../screenshots/tiny_toasters.gif) |
+| ![peterhinch's active.py](screenshots/active.gif) | ![russhughes's tiny_toasters.py](screenshots/tiny_toasters.gif) |
 |-------------------------|--------------------------------|
 | @peterhinch's active.py | @russhughes's tiny_toasters.py |
 
@@ -38,9 +39,9 @@ It is important to note that MPDisplay is meant to be a foundation for GUI libra
 
 On desktop operating systems, you will need [SDL2](https://github.com/libsdl-org/SDL/releases) or [PyGame](https://www.pygame.org/wiki/GettingStarted).   There's plenty of documentation as to how to install them online.  On microcontrollers, you need to have at least 256K RAM, 1MB flash (for the base library with examples) and a display with a supported bus.  It is highly recommended that you START with an ESP32 series or RP2040 microcontroller with either a SPI or i80 (parallel) bus.  Save yourself some grief and don't start with a display with an RGB bus!  CircuitPython supports SPI, ParallelBus (i80) and RGB buses.  The [lcd_bus](https://github.com/bdbarnett/lcd_bus) Python drivers that are included with the installer support only SPI and i80 buses, and have only been tested on ESP32 series and RP2040.  lcd_bus will likely support SPI on other microcontrollers, but i80 will likely need modification to work.  @kdschlosser's bus drivers in [lvgl_micropython](https://github.com/kdschlosser/lvgl_micropython) support SPI, i80 and RGB buses on ESP32.
 
-There are 3 installers for different platforms in the [installers](../installers) directory.  The Unix and Windows installers will download MPDisplay and related Git repositories into a directory named `gh` and then copy the necessary files into a directory named `mp`.  The Unix installer requires bash and the Windows installer requires Powershell.  The MicroPython installer will use `mip` to download the necessary files only (not the full Github repositories) and may not download all examples for space saving reasons.  It is recommended you begin by using the Unix or Windows installers.  You may copy the files (except the `board_config.py`) directly from the `mp` directory to your microcontroller.  Currently, there isn't an installer for CircuitPython, but there likely will be soon.
+There are 3 installers for different platforms in the [installers](installers) directory.  The Unix and Windows installers will download MPDisplay and related Git repositories into a directory named `gh` and then copy the necessary files into a directory named `mp`.  The Unix installer requires bash and the Windows installer requires Powershell.  The MicroPython installer will use `mip` to download the necessary files only (not the full Github repositories) and may not download all examples for space saving reasons.  It is recommended you begin by using the Unix or Windows installers.  You may copy the files (except the `board_config.py`) directly from the `mp` directory to your microcontroller.  Currently, there isn't an installer for CircuitPython, but there likely will be soon.
 
-NOTE:  You will need a `board_config.py` file from the [board_configs](../board_configs) directory that matches your hardware.  If you are running on a desktop OS, that file is provided for you, and you won't need any other files.  If you are running on a microcontroller such as ESP32 or RP2040, you will also need the [display](../drivers/display), [touch](../drivers/touch) and [encoder](../drivers/encoder) drivers referenced in your `board_config.py`.  Many of them can be found in the [drivers](../drivers) directory.  More details about the `board_config.py` at the end of this section.
+NOTE:  You will need a `board_config.py` file from the [board_configs](board_configs) directory that matches your hardware.  If you are running on a desktop OS, that file is provided for you, and you won't need any other files.  If you are running on a microcontroller such as ESP32 or RP2040, you will also need the [display](drivers/display), [touch](drivers/touch) and [encoder](drivers/encoder) drivers referenced in your `board_config.py`.  Many of them can be found in the [drivers](drivers) directory.  More details about the `board_config.py` at the end of this section.
 
 ### Unix (bash prompt)
 ```
@@ -62,7 +63,7 @@ mip.install("github:bdbarnett/mpdisplay/installers/mpd_install.json", target="."
 ```
 
 ### board_config
-As mentioned earlier, on CircuitPython or MicroPython on a microcontroller you will need a `board_config.py` file that matches your hardware.  Many are provided in the [board_configs](../board_configs) directory.  Find one that matches your hardware (or is close so you can modify it), then either download it manually or type the following command if your device is connected to the Internet, substituting <YOUR_BOARD_HERE> with the directory for your board:
+As mentioned earlier, on CircuitPython or MicroPython on a microcontroller you will need a `board_config.py` file that matches your hardware.  Many are provided in the [board_configs](board_configs) directory.  Find one that matches your hardware (or is close so you can modify it), then either download it manually or type the following command if your device is connected to the Internet, substituting <YOUR_BOARD_HERE> with the directory for your board:
 ```
 mip.install("github:bdbarnett/mpdisplay/board_configs/<YOUR_BOARD_HERE>", target=".")
 ```
@@ -85,7 +86,7 @@ On microcontrollers, either add the following to your `boot.py` (MicroPython) or
 import path
 ```
 
-The  [examples](../examples) directory will be on the system path, so to run an app from it, you just need to type:
+The  [examples](examples) directory will be on the system path, so to run an app from it, you just need to type:
 ```
 import calculator  # substitute `calculator` with the file OR directory you want to run, omitting the .py extension
 ```
@@ -105,10 +106,10 @@ Where possible, existing, proven APIs were used.
   - PGDisplay is an optional class for desktop operating systems.  It uses a pygame `surface` in place of an LCD's GRAM.  It can be benificial in a couple of instances:
     - SDL2Display "glitches" on my ChromeBook, but PGDisplay doesn't
     - On Windows, it is easier to install PyGame than SDL2
-  - FBDisplay works with CircuitPython framebufferio.FramebufferDisplay objects, such as dotclockframebuffer (RGB displays), usb_video and rgbmatrix.  (usb_video may be the coolest thing you can do with MPDisplay, although I'm not sure how practical or useful it is.  It allows your board to function as a webcam, even without a camera, and to render the display through USB to any application on your host PC that can open a webcam!  My Windows machine sees it as an unsupported device, so it will not work, but it does work on my ChromeBook.  Currently it is limited to RP2040 only and is hardcoded to a 128 x 96 resolution, but that likely will change.  See the [screen capture](../examples/circuitpython_usb_video_chromebook.gif) and the [board_config.py](../board_configs/circuitpython/usb_video/board_config.py) for more details.)
+  - FBDisplay works with CircuitPython framebufferio.FramebufferDisplay objects, such as dotclockframebuffer (RGB displays), usb_video and rgbmatrix.  (usb_video may be the coolest thing you can do with MPDisplay, although I'm not sure how practical or useful it is.  It allows your board to function as a webcam, even without a camera, and to render the display through USB to any application on your host PC that can open a webcam!  My Windows machine sees it as an unsupported device, so it will not work, but it does work on my ChromeBook.  Currently it is limited to RP2040 only and is hardcoded to a 128 x 96 resolution, but that likely will change.  See the [screen capture](examples/circuitpython_usb_video_chromebook.gif) and the [board_config.py](board_configs/circuitpython/usb_video/board_config.py) for more details.)
 - Names of Events and Devices in eventsys are taken from PyGame and/or SDL2 to keep the API consistent.
 - All drawing targets, sometimes referred to as `canvas` in the code, may be written to using the API from MicroPython's framebuffer.FrameBuf API (except .blit())
-  - CPython and CircuitPython don't have a `framebuf` module that is API compliant with MicroPython's `framebuf`, so [framebuf.py](../lib/framebuf.py) has been modified from [Adafruit CircuitPython framebuf](https://github.com/adafruit/Adafruit_CircuitPython_framebuf) and is provided for those platforms.  It is not used in MicroPython.
+  - CPython and CircuitPython don't have a `framebuf` module that is API compliant with MicroPython's `framebuf`, so [framebuf.py](lib/framebuf.py) has been modified from [Adafruit CircuitPython framebuf](https://github.com/adafruit/Adafruit_CircuitPython_framebuf) and is provided for those platforms.  It is not used in MicroPython.
   - A `framebuf_plus` module is provided that subclasses `framebuf` (either built-in or from framebuf.py) and provides additional drawing tools, such as `round_rect`, `bitmap` and `write`.  All methods in framebuf_plus return an Area object with x, y, w and h attributes describing a bounding box of what was changed.  This can be used by applications to only update the part of the display that needs it.  That functionality is implemented in DisplayBuffer and will likely be required by EPaperDisplay when it is implemented.
   - Canvases include, but are not limited to, the display itself, framebuf bytearrays, bmp565 (16-bit Windows Bitmap files) and displaybuf.DisplayBuffer objects.
   - displaybuf.DisplayBuffer implements @peterhinch's API that represents the full display as a framebuffer and allows for 4-, 8- and 16-bit bytearrays while still drawing to the screen as 16-bit.  It is required for `MicroPython-Touch` and is very useful outside of that library as well, especially when memory is constrained.
@@ -137,7 +138,7 @@ Where possible, existing, proven APIs were used.
 - [ ] Test with frozen modules
 - [ ] On MicroPython on Unix, the screen gets cleared when the display is rotated.  Microcontroller displays don't do this.  It's not an issue unless you want to draw to the display, rotate it, then draw more on top.  This functionality allow drawing text in all four 90 degree orientations.
 - [ ] Scrolling vertically on desktop operating sytems works correctly, but not when rotated.  When rotated, it show scroll horizontally, but continues to scroll vertically.
-- [ ] Scrolling on microcontrollers has issues when trying to write spanning the cutoff line.  For instance, if drawing a 16 pixel high image at the 8th line from the cutoff line, the bottom 8 lines don't end up where you expect.  See the [bmp565_sprite](../examples/bmp565_sprite.py) example.
+- [ ] Scrolling on microcontrollers has issues when trying to write spanning the cutoff line.  For instance, if drawing a 16 pixel high image at the 8th line from the cutoff line, the bottom 8 lines don't end up where you expect.  See the [bmp565_sprite](examples/bmp565_sprite.py) example.
 - [ ] Ensure multiple displays work at the same time
 - [ ] Implement color depths other than 16 bit
 - [ ] Add a Joystick class to eventsys
