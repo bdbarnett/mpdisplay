@@ -1,165 +1,159 @@
-# MPDisplay
-Display, touch and encoder drivers for [MicroPython](https://github.com/micropython/micropython)
+<h1 align="center">MPDisplay<br></h1>
 
-MPDisplay provides display, touch and encoder drivers as well as framework, config and test files for MicroPython and can be used in LV_MicroPython, LVGL_MicroPython, TFT Graphics, Nano-GUI and Micro-GUI.  It provides SDL2 LCD drivers for Unix as well as SPI and I80 display buses in the included [lcd_bus](mpdisplay/lcd_bus) but also supports [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) which are fast drivers written in C for SPI, I80 and RGB buses on ESP32.
+<h4 align="center">Universal Display and Event Drivers for *Python</h4>
 
-# Supported platforms
-## MicroPython
-[MicroPython](https://github.com/micropython/micropython) doesn't include drivers for color displays nor display buses.  MPDisplay provides both display and bus drivers that will work with MicroPython's native `framebuf.FrameBuffer` and several other methods of creating buffer objects before they are sent to the display.  Here are directions for [compiling in mp_lcd_bus](docs/compiling.md) if you have an ESP32 target.
+<p align="center">
+  <a href="#about">About</a> •
+  <a href="#key-features">Key Features</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#running-your-first-app">Running Your First App</a> •
+  <a href="#api">API</a> •
+  <a href="#roadmap">Roadmap</a> •
+  <a href="#contributing">Contributing</a>
+</p>
 
-## LV_MicroPython
-[LV_MicroPython](https://github.com/lvgl/lv_micropython) is the official repository of LVGL integrated into MicroPython.  The handful of drivers it has are all-in-one, not modular, and are generally written for a specific display on a specific bus on a specific architecture.  The drivers in MPDisplay are modular and work with LV_MicroPython.
+| ![peterhinch's active.py](../screenshots/active.gif) | ![russhughes's tiny_toasters.py](../screenshots/tiny_toasters.gif) |
+|-------------------------|--------------------------------|
+| @peterhinch's active.py | @russhughes's tiny_toasters.py |
 
-## LVGL_MicroPython
-[LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython) is created by community member Kevin Schlosser.  It has several improvements over the official repo.  Most significant as far as drivers are concerned, it includes mp_lcd_bus, which are very fast SPI, i80 and RGB bus drivers written in C for ESP32 platforms.  MPDisplay works with the mp_lcd_bus bus drivers in LVGL_MicroPython.
+## About
 
-## TFT Graphics
-[TFT Graphics](https://github.com/bdbarnett/direct_draw) is a port I created of Russ Hughes's st7789mpy_py library to demonstrate MPDisplay's usefullness with other libraries.  It is fully functional and very powerful.  It includes all the examples provided in the original library.  It draws directly to the screen, only creating small buffers for individual characters in text or for bitmap images.
+MPDisplay is a universal display, event and device driver framework for multiple flavors of Python, including MicroPython, CircuitPython and CPython (big Python).  It may be used as-is to create graphic frontends to your apps, or may be used as a foundation with GUI libraries such as [LVGL](https://github.com/lvgl/lv_micropython), [MicroPython-touch](https://github.com/peterhinch/micropython-touch) or maybe even a GUI framework you've been thinking of developing.  Its primary purpose is to provide display and touch drivers for MicroPython, but it is equally useful for developers who may never touch MicroPython.
 
-## DisplayBuffer
-[DisplayBuffer](https://github.com/bdbarnett/displaybuffer) is a class I wrote based on the drivers Peter Hinch wrote in Nano-GUI and Micro-GUI.  I initially wrote it to make MPDisplay compatible with those libraries, but it is very useful on its own.  It is a framebuffer based on the number of pixels on the display, but can be sized to 2 bytes per pixel, 1 byte per pixel or 2 pixels per byte depending on whether the user wants all 65k (RGB565), only 256 (RGB332) or even only 16 (RGB565 in a lookup table) colors.
+It is important to note that MPDisplay is meant to be a foundation for GUI libraries and is not itself a GUI library.  It doesn't provide widgets, such as buttons, checkboxes or sliders, and it doesn't provide a timing mechanism.  You will need a GUI library to provide those if necessary, although many apps won't need them.  (There is a cross-platform repository [timer](https://github.com/bdbarnett/timer) you can use if you want to used scheduled interrupts.  It works with CPython and MicroPython, but doesn't work with CircuitPython.  You can also use asyncio for timing.)
 
-## Nano-GUI on MicroPython
-[Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) is a graphics library written in MicroPython for MicroPython by longtime MicroPython coder Peter Hinch.  It provides its own drivers, but it is modular and may use the drivers provided by MPDisplay as well.  The benefit of using MPDisplay with Nano-Gui is that more displays are supported, particularly Unix, I80 and RGB Bus displays.  [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) uses Nano-GUI compatible drivers, so you may use MPDisplay with Micro-GUI as well.
+## Key Features
 
-# Quickstart
-Flash your board with your preferred version of MicroPython listed above.  If using the Unix port of MicroPython, put the follwing files in your `lib` folder and skip to `Using popular graphics libraries`.  Note the Unix drivers included with lv_micropython are recommended over these drivers because these drivers discard all keyboard events.  These drivers will work for other graphics libraries on the Unix port of MicroPython.
-- sdl2lcd.py, sdl2display.py, mpdisplay_simpletest.py and board_configs/unix/board_config.py
+- May be used without additional libraries to add graphics capabilities to MicroPython, CircuitPython and CPython, with a consistent API across them all.
+- Enables moving from one platform to another, for example MicroPython on ESP32-S3 to CPython on Windows without changing your code.  Do your graphics development on your desktop, laptop or ChromeBook and then move to a microcontroller when you are ready to interface with your sensors and devices.  CPython has much better error messages than MicroPython making it easier to troubleshoot when things go wrong!
+- Built around devices available on microcontrollers but not necessarily available on desktop operating systems.  For instance, rotary encoders and mouse scroll wheels show up as the same device type and yield the same events.  Touchscreens on microcontrollers yield the same events as mice on desktops.  Likewise with keypads / keyboards.
+- Easily extensible.  Use the primitives provided by MPDisplay and add your own libraries, classes and functions to have even greater functionality.
+- Provides several built-in color palettes and a mechanism to generate your own palettes.
+- Lots of examples included, whether developed specifically for MPDisplay or ported from [Russ Hughes's st7789py_mpy](https://github.com/russhughes/st7789py_mpy).  Also works with all of the examples from Peter Hinch's McroPython GUI libraries [MicroPython-Touch](https://github.com/peterhinch/micropython-touch) and [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) on MicroPython.
+- Support MicroPython on microcontrollers and on Unix(-like) operating systems.
+- On MicroPython, works with [kdschlosser's lvgl_micropython bus drivers](https://github.com/kdschlosser/lvgl_micropython), which are very fast bus drivers written in C.
+- Works with CircuitPython's FourWire and ParallelBus bus drivers, as well as FrameBufferDisplay based interfaces such as dotclockframebuffer, usb_video and rgbmatrix
 
-## Install on an MCU with mip
-Replace YOUR_BOARD_HERE with your the directory from [board_configs](board_configs) that matches your installation OR leave that line out and manually install the board_config.py and drivers per the Manual installation directions.
+## Getting Started
 
-### On a network connected board, at the REPL:
+On desktop operating systems, you will need [SDL2](https://github.com/libsdl-org/SDL/releases) or [PyGame](https://www.pygame.org/wiki/GettingStarted).   There's plenty of documentation as to how to install them online.  On microcontrollers, you need to have at least 256K RAM, 1MB flash (for the base library with examples) and a display with a supported bus.  It is highly recommended that you START with an ESP32 series or RP2040 microcontroller with either a SPI or i80 (parallel) bus.  Save yourself some grief and don't start with a display with an RGB bus!  CircuitPython supports SPI, ParallelBus (i80) and RGB buses.  The [lcd_bus](https://github.com/bdbarnett/lcd_bus) Python drivers that are included with the installer support only SPI and i80 buses, and have only been tested on ESP32 series and RP2040.  lcd_bus will likely support SPI on other microcontrollers, but i80 will likely need modification to work.  @kdschlosser's bus drivers in [lvgl_micropython](https://github.com/kdschlosser/lvgl_micropython) support SPI, i80 and RGB buses on ESP32.
+
+There are 3 installers for different platforms in the [installers](../installers) directory.  The Unix and Windows installers will download MPDisplay and related Git repositories into a directory named `gh` and then copy the necessary files into a directory named `mp`.  The Unix installer requires bash and the Windows installer requires Powershell.  The MicroPython installer will use `mip` to download the necessary files only (not the full Github repositories) and may not download all examples for space saving reasons.  It is recommended you begin by using the Unix or Windows installers.  You may copy the files (except the `board_config.py`) directly from the `mp` directory to your microcontroller.  Currently, there isn't an installer for CircuitPython, but there likely will be soon.
+
+NOTE:  You will need a `board_config.py` file from the [board_configs](../board_configs) directory that matches your hardware.  If you are running on a desktop OS, that file is provided for you, and you won't need any other files.  If you are running on a microcontroller such as ESP32 or RP2040, you will also need the [display](../drivers/display), [touch](../drivers/touch) and [encoder](../drivers/encoder) drivers referenced in your `board_config.py`.  Many of them can be found in the [drivers](../drivers) directory.  More details about the `board_config.py` at the end of this section.
+
+### Unix (bash prompt)
+```
+wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/installers/mpd_install.sh
+chmod u+x mpd_install.sh
+./mpd_install.sh
+```
+
+### Windows (PowerShell prompt as Administrator)
+```
+wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/installers/mpd_install.ps1 -OutFile mpd_install.ps1
+.\mpd_install.ps1
+```
+
+### MicroPython (REPL on a network connected Microcontroller or Unix)
 ```
 import mip
-mip.install("github:bdbarnett/mpdisplay", target="/")
-mip.install("github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE", target="/")
+mip.install("github:bdbarnett/mpdisplay/installers/mpd_install.json", target=".")
 ```
 
-### On a non-network connected board, use mpremote from your computer's command line:
+### board_config
+As mentioned earlier, on CircuitPython or MicroPython on a microcontroller you will need a `board_config.py` file that matches your hardware.  Many are provided in the [board_configs](../board_configs) directory.  Find one that matches your hardware (or is close so you can modify it), then either download it manually or type the following command if your device is connected to the Internet, substituting <YOUR_BOARD_HERE> with the directory for your board:
 ```
-mpremote mip install --target=/ "github:bdbarnett/mpdisplay"
-mpremote mip install --target=/ "github:bdbarnett/mpdisplay/board_configs/YOUR_BOARD_HERE"
-```
-
-## Manual installation on an MCU
-Download the following files and upload them to your board:
-- Put the contents of the [mpdisplay](mpdisplay) folder in your `lib` folder
-
-You will also need the folowing files that match your particular hardware:
-- An appropriate `board_config.py` from [board_configs](board_configs).  If you don't find one that matches your hardware, try to find one with the same bus, display controller and MCU as yours.
-- The driver for your display controller from [display_drivers](display_drivers)
-- The driver for your touchscreen controller (if applicable) from [touch_drivers](touch_drivers)
-- If your board uses an IO expander to communicate with the display, for example RGB displays like the ST7701 on the T-RGB board, get the driver from [io_expander_drivers](io_expander_drivers)
-- If your board has an encoder, or if you want to add one, get the driver from [encoder_drivers](encoder_drivers).  See [t-embed](board_configs/t-embed) for an example.
-
-
-## Using popular graphics libraries
-If you have LVGL compiled into MicroPython, also get:
-- the contents of the [lvgl](lvgl) folder
-
-To use Nano-GUI or Micro-GUI, [see DisplayBuffer](https://github.com/bdbarnett/displaybuffer)
-
-To use [direct_draw](https://github.com/bdbarnett/direct_draw), see its directions.
-
-
-# Suggested filesystem structure
-Don't forget to put your display and optional touchscreen and encoder drivers somewhere on the path, preferably in /lib or /.
-```
-├── mpdisplay/  (put each of these, not the mpdisplay directory, in your machine's lib directory)
-│   │
-│   ├── lcd_bus/                - required if C bus drivers aren't compiled in, otherwise Optional
-│   │   ├── __init__.py         - required
-│   │   ├── _basebus.py         - required
-│   │   ├── _spibus.py          - required for SPIBus only
-│   │   ├── _i80bus.py          - required for I80Bus only
-│   │   └── _gpio_registers.py  - required for I80Bus only
-│   │
-│   ├── busdisplay.py           - required for all SPI, I80 and RGB LCD buses
-│   ├── mpdisplay_simpletest.py - optional for all Unix, SPI, I80 and RGB targets
-│   │
-│   ├── sdl2_display.py         - required for Unix / Linux targets (same API as busdisplay)
-│   ├── sdl2lcd.py             - required for Unix / Linux targets (same FUNCTION as lcd_bus)
-│   └── sdl2lcd_simpletest.py  - Not needed.  Only useful for Unix developer purposes.
-|                                              May be removed from the repo in the future.
-│   
-├── lvgl/  (put each of these, not the lvgl directory, in your machine's lib directory)
-│   ├── lv_mpdisplay.py         - LVGL:  required
-│   └── lv_touch_test.py        - LVGL:  recommended
-│
-├── board_config.py             - required in all cases (put at the root of your machine's fs)
-└── lv_config.py                - LVGL targets:  required (put at the root of your machine's fs)
+mip.install("github:bdbarnett/mpdisplay/board_configs/<YOUR_BOARD_HERE>", target=".")
 ```
 
-You MAY want to edit your `board_config.py` to:
-- Add `from machine import freq; freq(<Your MCU Speed Here>)`
-- Adjust the bus frequency for possible higher throughput.  Some board_configs have a conservative setting.  Note: the bus frequency setting is only used in mp_lcd_bus, not MPDisplay's lcd_bus.
-- Set the initial brightness of the backlight if backlight_pin is set
-- Set the rotation of the display
-- Enable an encoder if you add one.  See [t-embed](board_configs/t-embed) for an example.
-- Add other non-display related drivers, such as SD card reader or real time clock (not provided)
-- Correct any settings that may be necessary for your setup
+## Running your first app
 
-For use in LVGL, you MAY want to edit `lv_config.py` to:
-- Adjust the buffer size, type and quantity to match your needs
-- Set your color format if "lv.COLOR_FORMAT.NATIVE" doesn't work
-- Change from blocking mode to non-blocking mode (currently has issues in mp_lcd_bus drivers)
-- Enable encoder(s) if you are using them.  Simply uncomment the last line.
+You will need to import the `path.py` file before running any of the examples.
 
-# Usage
-## All graphics platforms
-No matter which graphics platform you plan to use, it is recommended that you first try the [display_simpletest.py](mpdisplay/mpdisplay_simpletest.py) program.  See the code from that program and [testris](https://github.com/bdbarnett/testris) for bare MicroPython usage examples.  It is also recommended that you try `displaybuf_simpletest.py` from [DisplayBuffer](https://github.com/bdbarnett/displaybuffer).  It demonstrates a simple way to get started with MPDisplay without using a graphics library that provides widgets.
-
-## Nano-GUI
-If you have downloaded the `gui` directory from [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) to your /lib folder, try `nano_gui_simpletest.py` from [DisplayBuffer](https://github.com/bdbarnett/displaybuffer).  The color of the top-left square should be red, the diagonal line should be green, and the bottom-right square should be blue.
-
-## LVGL
-If you have LVGL compiled into your MicroPython binary, try [lv_touch_test.py](lvgl/lv_touch_test.py).  The color of the buttons should be blue when not selected, green when pressed and red when focused.  If the touch points don't line up with the buttons, it provides directions in the REPL on how to find the correct touch rotation masks.  From the REPL type:
+On desktop operating systems, `cd` into the `mp` directory (or wherever you have the files staged) and type:
 ```
-from lv_touch_test import mask, rotation
+python3 -i path.py
+```
+or 
+```
+micropython -i path.py
 ```
 
-After getting everything working with the above tests, you're ready to start writing your own code.  Here is an LVGL usage example:
+On microcontrollers, either add the following to your `boot.py` (MicroPython) or `code.py` (CircuitPython), or simply import it at the REPL before importing your desired app:
 ```
-import lv_config
-import lvgl as lv
-
-scr = lv.screen_active()
-button = lv.button(scr)
-button.center()
-label = lv.label(button)
-label.set_text("Test")
+import path
 ```
 
-# My board isn't listed
-Please note, I am only providing configs for boards that have an integrated display or, on occasion, boards and displays that may be directly plugged into one another, such as Feather, EYE-SPI, Qualia or QT-Py.  I will not create configs for any setup that requires wiring.  Those setups are generally custom built, but you may use the board configs here as an example.  Please consider contributing your board_config.py if your hardware doesn't require custom wiring.
-
-I am considering creating board configs by request IF you provide a gift certificate to pay for the board from Adafruit, DigiKey, Amazon, Pimoroni or wherever your board is stocked.  I'll post that here if I decide to do that.
-
-# Coexistence with mp_lcd_bus (C bus drivers)
-Note, if you have mp_lcd_bus compiled in, whether from LVGL_MicroPython or if you added it yourself, and also have lcd_bus in your /lib folder, the former takes precedence.  In this case, if you want to force MicroPython to use lib/lcd_bus, change the include line in your board_config.py from
+The  [examples](../examples) directory will be on the system path, so to run an app from it, you just need to type:
 ```
-from lcd_bus include ...
-```
-to
-```
-from lib.lcd_bus include ...
+import calculator  # substitute `calculator` with the file OR directory you want to run, omitting the .py extension
 ```
 
-# TODO
-- Document how to create custom board_configs, display_drivers and touch_drivers.
-- I80bus assumes pins will be non-sequential and on multiple ports.  Create a version that doesn't, so lookup tables aren't necessary in order to increase speed.
-- Create RP2 platform-specific bus drivers.
-- Add keypad support to be subclassed in LVGL and Micro-GUI
-	- hardware pins
-   	- matrix of pins
-   	- capacitive touch pins
-   	- capacitive touch chips
-   	- io expander
-- Create a throughput comparison chart
-- Create better documentation with readthedocs
-- Test boards with RGB buses using [mp_lcd_bus](https://github.com/kdschlosser/mp_lcd_bus) and [LVGL_MicroPython](https://github.com/kdschlosser/lvgl_micropython):
-	- qualia
-   	- t-rgb_2.1in_full_circle
-   	- esp32-s3-lcd-4.3
-- Implement color OLED display drivers in `busdisplay.py` for ssd1331 and ssd1351
+To run any of the examples from MicroPython-Touch (remember, its for MicroPython only) type:
+```
+import gui.demos.various  # substitute `various` with the file you want to run, omitting the .py extension
+```
+
+## API
+
+Where possible, existing, proven APIs were used.
+
+- There are currently 4 display classes, and hopefully another `EPaperDisplay` display class will be added soon, although I will need help from the community for this.
+  - BusDisplay is for microcontrollers, both on MicroPython and CircuitPython.  CircuitPython provides the required bus drivers, as mentioned elsewhere in this README, but MicroPython doesn't have display bus drivers.  The [lcd_bus](https://github.com/bdbarnett/lcd_bus) repo from the author is included with the installer.  It is my hope that community members will create other C bus drivers similar to @kdschlosser's bus drivers in [lvgl_micropython](https://github.com/kdschlosser/lvgl_micropython).
+  - SDL2Display is the preferred class for desktop operating systems as it is faster than PGDisplay.  It uses an SDL `texture` in place of an LCD's Graphics RAM (GRAM).
+  - PGDisplay is an optional class for desktop operating systems.  It uses a pygame `surface` in place of an LCD's GRAM.  It can be benificial in a couple of instances:
+    - SDL2Display "glitches" on my ChromeBook, but PGDisplay doesn't
+    - On Windows, it is easier to install PyGame than SDL2
+  - FBDisplay works with CircuitPython framebufferio.FramebufferDisplay objects, such as dotclockframebuffer (RGB displays), usb_video and rgbmatrix.  (usb_video may be the coolest thing you can do with MPDisplay, although I'm not sure how practical or useful it is.  It allows your board to function as a webcam, even without a camera, and to render the display through USB to any application on your host PC that can open a webcam!  My Windows machine sees it as an unsupported device, so it will not work, but it does work on my ChromeBook.  Currently it is limited to RP2040 only and is hardcoded to a 128 x 96 resolution, but that likely will change.  See the [screen capture](../examples/circuitpython_usb_video_chromebook.gif) and the [board_config.py](../board_configs/circuitpython/usb_video/board_config.py) for more details.)
+- Names of Events and Devices in eventsys are taken from PyGame and/or SDL2 to keep the API consistent.
+- All drawing targets, sometimes referred to as `canvas` in the code, may be written to using the API from MicroPython's framebuffer.FrameBuf API (except .blit())
+  - CPython and CircuitPython don't have a `framebuf` module that is API compliant with MicroPython's `framebuf`, so [framebuf.py](../lib/framebuf.py) has been modified from [Adafruit CircuitPython framebuf](https://github.com/adafruit/Adafruit_CircuitPython_framebuf) and is provided for those platforms.  It is not used in MicroPython.
+  - A `framebuf_plus` module is provided that subclasses `framebuf` (either built-in or from framebuf.py) and provides additional drawing tools, such as `round_rect`, `bitmap` and `write`.  All methods in framebuf_plus return an Area object with x, y, w and h attributes describing a bounding box of what was changed.  This can be used by applications to only update the part of the display that needs it.  That functionality is implemented in DisplayBuffer and will likely be required by EPaperDisplay when it is implemented.
+  - Canvases include, but are not limited to, the display itself, framebuf bytearrays, bmp565 (16-bit Windows Bitmap files) and displaybuf.DisplayBuffer objects.
+  - displaybuf.DisplayBuffer implements @peterhinch's API that represents the full display as a framebuffer and allows for 4-, 8- and 16-bit bytearrays while still drawing to the screen as 16-bit.  It is required for `MicroPython-Touch` and is very useful outside of that library as well, especially when memory is constrained.
+- Display drivers for MicroPython BusDisplay use the constructor API of CircuitPython's DisplayIO drivers.  This includes rotation = 0, 90, 180, 270 instead of 0, 1, 2, 3.
+- BusDisplay can communicate with the underlying bus driver using either CircuitPython's DisplayIO method calls or @kdschlosser's [lvgl_micropython] method calls.
+- There are 3 primary mechanism's for fonts: the BinFont class, .text() and .write() methods.  All 3 of these return an Area object as mentioned earlier.  A fourth font mechanism called EZFont is included in the utils folder, but it doesn't return an Area object, which is why it isn't in the lib folder.
+  - BinFont is derived from Tony DiCola's 5x7 font class and reads 8x8, 8x14 and 8x16 .bin files from [@spaceraces romfont repo](https://github.com/spacerace/romfont)
+  - .text() is written by @russhughes and uses fonts generated by his [text_font_converter](https://github.com/russhughes/st7789py_mpy/blob/master/utils/text_font_converter.py)
+  - .write() is written by @russhughes and uses fonts generated by his [write_font_converter](https://github.com/russhughes/st7789py_mpy/blob/master/utils/write_font_converter.py)
+  - EZFont is a subclass of [@easytarget's microPyEZfonts](https://github.com/easytarget/microPyEZfonts) which uses fonts generated from [@peterhinch's font-to-py](https://github.com/peterhinch/micropython-font-to-py).
+  - NOTE:  @peterhinch's Writer class is inlcuded in MicroPyton-Touch and may be used on MicroPython platforms, but, like EZFont, it doesn't return an Area object.
+- Root files - All files that are intended for you to edit to customize your configuration are in the root of your installation:
+  - `board_config.py` - required in all circumstances.  Feel free to add your own setup code here, such as for real-time clocks, wifi, sensors, etc.
+  - `path.py` - required in all circumstances
+  - `color_setup.py` - required for [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui)
+  - `hardware_setup.py` - required for [MicroPython-Touch](https://github.com/peterhinch/micropython-touch)
+  - `lv_config.py` - required for LVGL
+  - `tft_config.py` - required for @russhughes's examples
+
+## Roadmap
+
+- [ ] Much more documentation on Github
+- [ ] Document the files to produce output for ReadTheDocs
+- [ ] Optimize with more Numpy and Viper code
+- [ ] Decrease the memory footprint where possible
+- [ ] Test with frozen modules
+- [ ] On MicroPython on Unix, the screen gets cleared when the display is rotated.  Microcontroller displays don't do this.  It's not an issue unless you want to draw to the display, rotate it, then draw more on top.  This functionality allow drawing text in all four 90 degree orientations.
+- [ ] Scrolling vertically on desktop operating sytems works correctly, but not when rotated.  When rotated, it show scroll horizontally, but continues to scroll vertically.
+- [ ] Scrolling on microcontrollers has issues when trying to write spanning the cutoff line.  For instance, if drawing a 16 pixel high image at the 8th line from the cutoff line, the bottom 8 lines don't end up where you expect.  See the [bmp565_sprite](../examples/bmp565_sprite.py) example.
+- [ ] Ensure multiple displays work at the same time
+- [ ] Implement color depths other than 16 bit
+- [ ] Add a Joystick class to eventsys
+- [ ] Implement opacity!!!!
+- [ ] Create a `canvas.py` and test with [uctx](https://ctx.graphics/uctx/)
+- [ ] Test with CircuitPython Blinka on SBC's such as Raspberry Pi 4
+- [ ] Need C bus drivers from the community, especially for STM32H7 and MIMXRT
+
+## Contributing
+
+This is a community project and I need your help!  If you have a suggestion that would make this better, please fork the repo and create a pull request.
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the project
+2. Clone it open the repository in command line
+3. Create your feature branch (`git checkout -b feature/amazing-feature`)
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a pull request from your feature branch from your repository into this repository main branch, and provide a description of your changes

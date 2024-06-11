@@ -43,13 +43,7 @@ At the REPL, type:
 
 ```
 import mip
-mip.install("github:bdbarnett/mpdisplay/mpd_install.json", target=".")
-```
-
-As an alternative, you may save [mpd_install.py](mpd_install.py) from the root of the repository to your board, edit it to install only the libraries you want, and simply type:
-
-```
-import mpd_install.py
+mip.install("github:bdbarnett/mpdisplay/installers/mpd_install.json", target=".")
 ```
 
 ## For CPython on Unix / Linux
