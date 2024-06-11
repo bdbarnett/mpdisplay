@@ -43,35 +43,35 @@ At the REPL, type:
 
 ```
 import mip
-mip.install("github:bdbarnett/mpdisplay/install_all.json", target=".")
+mip.install("github:bdbarnett/mpdisplay/mpd_install.json", target=".")
 ```
 
-As an alternative, you may save [install_all.py](install_all.py) from the root of the repository to your board, edit it to install only the libraries you want, and simply type:
+As an alternative, you may save [mpd_install.py](mpd_install.py) from the root of the repository to your board, edit it to install only the libraries you want, and simply type:
 
 ```
-import install_all.py
+import mpd_install.py
 ```
 
 ## For CPython on Unix / Linux
 
 You can use this method to download MPDisplay for use in CPython, but may also use it to stage files to upload to your microcontroller later using your preferred method, which may be mpremote, Thonny, or something else.
 
-The [install_all.sh](install_all.sh) bash script will clone all repositories to a directory specified by REPO (default is `~/gh/`) and then stage the required files from those repos into the directory specified by TARGET (default is `~/mp/`).  To download the file, at the bash prompt type:
+The [mpd_install.sh](mpd_install.sh) bash script will clone all repositories to a directory specified by REPO (default is `~/gh/`) and then stage the required files from those repos into the directory specified by TARGET (default is `~/mp/`).  To download the file, at the bash prompt type:
 
 ```
-wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install_all.sh
+wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/mpd_install.sh
 ```
 
-Edit `install_all.sh` to set the REPO and TARGET directories to your preferred locations.  Then make the file executable and run it by typing the following at the bash prompt:
+Edit `mpd_install.sh` to set the REPO and TARGET directories to your preferred locations.  Then make the file executable and run it by typing the following at the bash prompt:
 
 ```
-chmod u+x install_all.sh
-./install_all.sh
+chmod u+x mpd_install.sh
+./mpd_install.sh
 ```
 
 ## For CPython on Windows
 
-There is no native installer for Windows, but the above directions for CPython on Unix / Linux work under Windows Subsytem for Linux (WSL).  I recommended you get Ubuntu 24.04 LTS (the latest release) from the [Microsoft Store](https://apps.microsoft.com/detail/9nz3klhxdjp5).  You may simply download the files under WSL and then copy / move them to a directory visible to the Command Prompt.  Instead, I create a `mp` directory in my my Windows user profile directory, then create a symbolic link to it in my Linux home directory.  My Windows username is brad, so I type the following at the bash prompt before running the `install_all.sh` script in WSL:
+There is no native installer for Windows, but the above directions for CPython on Unix / Linux work under Windows Subsytem for Linux (WSL).  I recommended you get Ubuntu 24.04 LTS (the latest release) from the [Microsoft Store](https://apps.microsoft.com/detail/9nz3klhxdjp5).  You may simply download the files under WSL and then copy / move them to a directory visible to the Command Prompt.  Instead, I create a `mp` directory in my my Windows user profile directory, then create a symbolic link to it in my Linux home directory.  My Windows username is brad, so I type the following at the bash prompt before running the `mpd_install.sh` script in WSL:
 
 ```
 mkdir /mnt/c/Users/brad/mp

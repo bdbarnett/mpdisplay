@@ -29,10 +29,10 @@
 # You may than import any of the examples, such as 'import paint'
 #
 # Usage:
-#     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install_all.sh
-#     (edit install_all.sh to set the $REPO, $TARGET and $EXE variables below)
+#     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/installers/mpd_install.sh
+#     (edit mpd_install.sh to set the $REPO, $TARGET and $EXE variables below)
 #     chmod u+x install.sh
-#     ./install_all.sh
+#     ./mpd_install.sh
 #
 # After installation, you may use the files in the $TARGET directory to 
 # transfer to your MicroPython or CircuitPython device.  You will need
@@ -136,7 +136,7 @@ cp -ur $REPO/mpdisplay/fonts $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
 cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/
-cp -u $REPO/mpdisplay/install_all.py $TARGET/
+cp -u $REPO/mpdisplay/mpd_install.py $TARGET/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 

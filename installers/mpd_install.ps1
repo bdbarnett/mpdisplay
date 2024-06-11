@@ -1,4 +1,4 @@
-# install_all.ps1
+# mpd_install.ps1
 
 # Set the following variables to your desired paths
 $REPO = "./gh"  # Path to clone repositories into
@@ -37,7 +37,7 @@ Copy-Item -Path $REPO/mpdisplay/fonts -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/mpdisplay/examples -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/mpdisplay/utils/* -Destination $TARGET/lib/ -Force
 Copy-Item -Path $REPO/mpdisplay/configs/* -Destination $TARGET/ -Force
-Copy-Item -Path $REPO/mpdisplay/install_all.py -Destination $TARGET/ -Force
+Copy-Item -Path $REPO/mpdisplay/mpd_install.py -Destination $TARGET/ -Force
 
 Copy-Item -Path $REPO/lcd_bus/lcd_bus -Destination $TARGET/lib/ -Recurse -Force
 
