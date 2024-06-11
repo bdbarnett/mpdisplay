@@ -1,3 +1,5 @@
+<img align="left" src="docs/logo.png" alt="logo" width="64">
+
 <h1 align="center">MPDisplay<br></h1>
 
 <h4 align="center">Universal Display and Event Drivers for *Python</h4>
@@ -37,11 +39,13 @@ It is important to note that MPDisplay is meant to be a foundation for GUI libra
 
 ## Getting Started
 
+IMPORTANT:  You will need a `board_config.py` file from the [board_configs](board_configs) directory that matches your hardware.  If you are running on a desktop OS, that file is provided for you, and you won't need any other files.  If you are running on a microcontroller such as ESP32 or RP2040, you will also need the [display](drivers/display), [touch](drivers/touch) and [encoder](drivers/encoder) drivers referenced in your `board_config.py`.  Many of them can be found in the [drivers](drivers) directory.  More details about the `board_config.py` at the end of this section.
+
+I recommend you start with a desktop operating system, preferably a Unix/Linux clone.  On Windows, you can [download Ubuntu 24.04 LTS for WSL from the Microsoft Store](https://apps.microsoft.com/detail/9nz3klhxdjp5) and then install MicroPython with `sudo apt install micropython`.  On a ChromeBook you just need to turn on the "Linux development environment" but you'll need to get or compile micropython yourself if you want it.  I just copied it from my Windows computer.
+
 On desktop operating systems, you will need [SDL2](https://github.com/libsdl-org/SDL/releases) or [PyGame](https://www.pygame.org/wiki/GettingStarted).   There's plenty of documentation as to how to install them online.  On microcontrollers, you need to have at least 256K RAM, 1MB flash (for the base library with examples) and a display with a supported bus.  It is highly recommended that you START with an ESP32 series or RP2040 microcontroller with either a SPI or i80 (parallel) bus.  Save yourself some grief and don't start with a display with an RGB bus!  CircuitPython supports SPI, ParallelBus (i80) and RGB buses.  The [lcd_bus](https://github.com/bdbarnett/lcd_bus) Python drivers that are included with the installer support only SPI and i80 buses, and have only been tested on ESP32 series and RP2040.  lcd_bus will likely support SPI on other microcontrollers, but i80 will likely need modification to work.  @kdschlosser's bus drivers in [lvgl_micropython](https://github.com/kdschlosser/lvgl_micropython) support SPI, i80 and RGB buses on ESP32.
 
 There are 3 installers for different platforms in the [installers](installers) directory.  The Unix and Windows installers will download MPDisplay and related Git repositories into a directory named `gh` and then copy the necessary files into a directory named `mp`.  The Unix installer requires bash and the Windows installer requires Powershell.  The MicroPython installer will use `mip` to download the necessary files only (not the full Github repositories) and may not download all examples for space saving reasons.  It is recommended you begin by using the Unix or Windows installers.  You may copy the files (except the `board_config.py`) directly from the `mp` directory to your microcontroller.  Currently, there isn't an installer for CircuitPython, but there likely will be soon.
-
-NOTE:  You will need a `board_config.py` file from the [board_configs](board_configs) directory that matches your hardware.  If you are running on a desktop OS, that file is provided for you, and you won't need any other files.  If you are running on a microcontroller such as ESP32 or RP2040, you will also need the [display](drivers/display), [touch](drivers/touch) and [encoder](drivers/encoder) drivers referenced in your `board_config.py`.  Many of them can be found in the [drivers](drivers) directory.  More details about the `board_config.py` at the end of this section.
 
 ### Unix (bash prompt)
 ```
