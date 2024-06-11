@@ -153,6 +153,7 @@ Where possible, existing, proven APIs were used.
 
 - [ ] Much more documentation on Github
 - [ ] Document the files to produce output for ReadTheDocs
+- [ ] Implement EPaperDisplay
 - [ ] Optimize with more Numpy and Viper code
 - [ ] Decrease the memory footprint where possible
 - [ ] Test with frozen modules
@@ -162,7 +163,7 @@ Where possible, existing, proven APIs were used.
 - [ ] Ensure multiple displays work at the same time
 - [ ] Implement color depths other than 16 bit
 - [ ] Add a Joystick class to eventsys
-- [ ] Implement opacity!!!!
+- [ ] Implement transparency or opacity!!!!
 - [ ] Create a `canvas.py` and test with [uctx](https://ctx.graphics/uctx/)
 - [ ] Test with CircuitPython Blinka on SBC's such as Raspberry Pi 4
 - [ ] Need C bus drivers from the community, especially for STM32H7 and MIMXRT
