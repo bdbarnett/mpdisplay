@@ -1,4 +1,4 @@
-<img align="left" src="docs/logo.png" alt="logo" width="64">
+<img align="left" src="docs/logo.png" alt="logo" width="64"/>
 
 <h1 align="center">MPDisplay<br></h1>
 
