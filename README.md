@@ -157,6 +157,7 @@ Where possible, existing, proven APIs were used.
 - [ ] Optimize with more Numpy and Viper code
 - [ ] Decrease the memory footprint where possible
 - [ ] Test with frozen modules
+- [ ] Add logic for SPI sharing with touch controllers and SD Cards (re .init() the bus before each write)
 - [ ] On MicroPython on Unix, the screen gets cleared when the display is rotated.  Microcontroller displays don't do this.  It's not an issue unless you want to draw to the display, rotate it, then draw more on top.  This functionality allow drawing text in all four 90 degree orientations.
 - [ ] Scrolling vertically on desktop operating sytems works correctly, but not when rotated.  When rotated, it show scroll horizontally, but continues to scroll vertically.
 - [ ] Scrolling on microcontrollers has issues when trying to write spanning the cutoff line.  For instance, if drawing a 16 pixel high image at the 8th line from the cutoff line, the bottom 8 lines don't end up where you expect.  See the [bmp565_sprite](examples/bmp565_sprite.py) example.
