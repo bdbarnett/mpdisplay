@@ -39,9 +39,12 @@ from area import Area
 import math
 
 if implementation.name == "micropython":
-    from ._viper import _pack8, _pack16
+    try:
+        from ._viper import _pack8, _pack16
+    except:
+        from ._python import _pack8, _pack16
 else:
-    from ._python import _pack8, _pack16
+        from ._python import _pack8, _pack16
 
 
 WHITE = const(0xFFFF)

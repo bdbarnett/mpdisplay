@@ -13,7 +13,11 @@ from sys import exit, implementation
 import gc
 
 if implementation.name == "micropython":
-    from ._viper import swap_bytes_viper
+    try:
+        from ._viper import swap_bytes_viper
+        viper = True
+    except:
+        viper = False
 
 
 gc.collect()
@@ -308,9 +312,10 @@ class _BaseDisplay(Broker, Shapes):
         :param buf_size_px: Size of the buffer in pixels
         :type buf_size_px: int
         """
-        # buf[::2], buf[1::2] = buf[1::2], buf[::2]
-        if np is None:
-            swap_bytes_viper(buf, width * height)
-        else:
+        if np is not None:
             npbuf = np.frombuffer(buf, dtype=np.uint16)
             npbuf.byteswap(inplace=True)
+        elif viper is True:
+            swap_bytes_viper(buf, buf_size_pix)
+        else:
+            buf[::2], buf[1::2] = buf[1::2], buf[::2]       
