@@ -1,6 +1,28 @@
-# SPDX-FileCopyrightText: 2024 Brad Barnett
+# Much of the code below is adapted from:
+# SPDX-FileCopyrightText: 2018 Kattni Rembor for Adafruit Industries
 #
 # SPDX-License-Identifier: MIT
+
+"""
+`gfx`
+====================================================
+
+CircuitPython pixel graphics drawing library.
+
+* Author(s): Kattni Rembor, Tony DiCola, Jonah Yolles-Murphy, based on code by Phil Burgess
+
+Implementation Notes
+--------------------
+
+**Hardware:**
+
+**Software and Dependencies:**
+
+* Adafruit CircuitPython firmware for the supported boards:
+  https://github.com/adafruit/circuitpython/releases
+
+"""
+
 from area import Area
 
 
