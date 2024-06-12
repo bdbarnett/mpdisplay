@@ -1,4 +1,4 @@
-<img align="left" src="docs/logo.png" alt="logo" width="64"/>
+<img align="left" src="docs/logo.png" alt="logo" width="96"/>
 
 <h1 align="center">MPDisplay<br></h1>
 
@@ -12,6 +12,7 @@
   <a href="#api">API</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#contributing">Contributing</a> •
+  <a href="#thanks">Thanks</a> •
   <a href="screenshots">Screenshots</a>
 </p>
 
@@ -180,6 +181,10 @@ Don't forget to give the project a star! Thanks again!
 4. Commit your changes (`git commit -m 'Add some amazing feature'`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a pull request from your feature branch from your repository into this repository main branch, and provide a description of your changes
+
+## Thanks
+
+I very much appreciate @peterhinch, @russhughes and the team at Adafruit for their contributions to the Python on microcontrollers community.
 
 ## Why
 
