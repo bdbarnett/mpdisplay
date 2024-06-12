@@ -76,6 +76,7 @@
       ["lib/mpdisplay/fbdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/fbdisplay.py"],
       ["lib/mpdisplay/_pgdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_pgdisplay.py"],
       ["lib/mpdisplay/_sdl2display.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_sdl2display.py"],
+      ["lib/mpdisplay/_viper.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_viper.py"],
       ["lib/palettes/__init__.py", "github:bdbarnett/mpdisplay/lib/palettes/__init__.py"],
       ["lib/palettes/_material_design.py", "github:bdbarnett/mpdisplay/lib/palettes/_material_design.py"],
       ["lib/palettes/_palette.py", "github:bdbarnett/mpdisplay/lib/palettes/_palette.py"],
