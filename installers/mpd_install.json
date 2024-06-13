@@ -8,7 +8,6 @@
         ["github:bdbarnett/console", "main"],
         ["github:bdbarnett/playing_cards", "main"],
         ["github:bdbarnett/testris", "main"],
-        ["github:peterhinch/micropython-touch", "master"]
     ],
     "version": "0.1"
   }
