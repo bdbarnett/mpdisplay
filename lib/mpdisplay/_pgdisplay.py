@@ -58,10 +58,9 @@ class PGDisplay(_BaseDisplay):
 
         self._bytes_per_pixel = color_depth // 8
 
-        if pg.vernum.major <= 2 and pg.vernum.minor < 5:
-            if self._scale != 1:
-                print(f"Scaling is set to {self._scale}, but pygame {pg.ver} does not support it.")
-                self._scale = 1
+        if self._scale != 1 and not hasattr(pg.transform, "scale_by"):
+            print(f"PGDisplay:  Scaling is set to {self._scale}, but pygame {pg.ver} does not support it.")
+            self._scale = 1
 
         pg.init()
 
