@@ -22,6 +22,8 @@
 
 ## About
 
+WARNING:  MPDisplay is currently alpha quality.  Every effort has been made to test on as many platforms as possible, but I need your help and feedback to get it to its inital release.
+
 MPDisplay is a universal display, event and device driver framework for multiple flavors of Python, including MicroPython, CircuitPython and CPython (big Python).  It may be used as-is to create graphic frontends to your apps, or may be used as a foundation with GUI libraries such as [LVGL](https://github.com/lvgl/lv_micropython), [MicroPython-touch](https://github.com/peterhinch/micropython-touch) or maybe even a GUI framework you've been thinking of developing.  Its primary purpose is to provide display and touch drivers for MicroPython, but it is equally useful for developers who may never touch MicroPython.
 
 It is important to note that MPDisplay is meant to be a foundation for GUI libraries and is not itself a GUI library.  It doesn't provide widgets, such as buttons, checkboxes or sliders, and it doesn't provide a timing mechanism.  You will need a GUI library to provide those if necessary, although many apps won't need them.  (There is a cross-platform repository [timer](https://github.com/bdbarnett/timer) you can use if you want to used scheduled interrupts.  It works with CPython and MicroPython, but doesn't work with CircuitPython.  You can also use asyncio for timing.)
