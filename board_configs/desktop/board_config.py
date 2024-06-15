@@ -24,7 +24,7 @@ display_drv = mpdisplay.DesktopDisplay(
     color_depth=16,
     title=f"{sys.implementation.name} on {sys.platform}",
 #     window_flags=BORDERLESS,
-    scale=1.5,
+    scale=1.0,
 )
 
 events_drv = mpdisplay.EventQueue()
