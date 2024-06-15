@@ -56,8 +56,12 @@ class PGDisplay(_BaseDisplay):
         self.touch_scale = scale
         self._buffer = None
 
-
         self._bytes_per_pixel = color_depth // 8
+
+        if pg.vernum.major <= 2 and pg.vernum.minor < 5:
+            if self._scale != 1:
+                print(f"Scaling is set to {self._scale}, but pygame {pg.ver} does not support it.")
+                self._scale = 1
 
         pg.init()
 
@@ -209,7 +213,10 @@ class PGDisplay(_BaseDisplay):
         :type renderRect: pg.Rect
         """
         s = self._scale
-        buffer = pg.transform.scale_by(self._buffer, s)
+        if s != 1:
+            buffer = pg.transform.scale_by(self._buffer, s)
+        else:
+            buffer = self._buffer
         if (y_start := self.vscsad()) == False:
             if renderRect is not None:
                 x, y, w, h = renderRect
