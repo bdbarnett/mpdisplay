@@ -302,6 +302,7 @@ class SDL2Display(_BaseDisplay):
             retcheck(SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect))
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
+            y_start = self.vscsad()
             if self._tfa > 0:
                 tfaRect = SDL_Rect(0, 0, self.width, self._tfa)
                 retcheck(SDL_RenderCopy(self._renderer, self._buffer, tfaRect, tfaRect))
