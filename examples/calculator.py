@@ -128,7 +128,7 @@ pending_operation = ""
 input = "0"
 editable = True
 
-show_result(result)
+show_result('Demo only.  Expect "quirks"!')
 show_input(input)
 
 # Main loop
