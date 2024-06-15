@@ -296,7 +296,9 @@ class SDL2Display(_BaseDisplay):
         :param renderRect: The rectangle to render (default is None).
         :type renderRect: SDL_Rect
         """
-        if (y_start := self.vscsad()) == False:
+        # if (y_start := self.vscsad()) == False:
+        if False:
+            # The following line is not working on Chromebooks, Ubuntu and Raspberry Pi OS
             retcheck(SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect))
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
