@@ -23,7 +23,7 @@ Implementation Notes
 
 """
 
-from area import Area
+from . import Area
 
 
 def fill_rect(canvas, x, y, w, h, c):

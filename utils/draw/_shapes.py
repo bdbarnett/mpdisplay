@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
-from area import Area
+from . import Area
+
 from ._basic_shapes import (
     fill_rect,
     fill,

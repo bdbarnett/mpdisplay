@@ -6,8 +6,7 @@
 PGDisplay class for CPython.
 """
 
-from . import _BaseDisplay, Events, Devices
-from area import Area
+from . import _BaseDisplay, Events, Devices, Area
 import pygame as pg
 
 

@@ -6,8 +6,7 @@
 FBDisplay class for MPDisplay.
 """
 
-from . import _BaseDisplay, np
-from area import Area
+from . import _BaseDisplay, np, Area
 
 
 class FBDisplay(_BaseDisplay):

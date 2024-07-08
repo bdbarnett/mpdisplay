@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 
 class Area:
     def __init__(self, x, y, w, h):

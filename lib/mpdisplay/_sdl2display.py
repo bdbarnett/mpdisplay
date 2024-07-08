@@ -6,8 +6,7 @@
 SDL2Display class for MicroPython on Linux and CPython on available platforms.
 """
 
-from . import _BaseDisplay, Events, Devices
-from area import Area
+from . import _BaseDisplay, Events, Devices, Area
 from sdl2_lib import (
     SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
     SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor, SDL_Point,

@@ -6,8 +6,7 @@
 BusDisplay class for MicroPython and CircuitPython.
 """
 
-from . import _BaseDisplay
-from area import Area
+from . import _BaseDisplay, Area
 from micropython import const
 import struct
 import sys

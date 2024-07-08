@@ -6,9 +6,7 @@
 _BaseDisplay class for all display drivers to inherit from.
 """
 
-from . import Broker, Devices, np
-from area import Area
-from draw import Shapes
+from . import Broker, Devices, np, Area
 from sys import exit, implementation
 import gc
 
@@ -22,7 +20,7 @@ if implementation.name == "micropython":
 
 gc.collect()
 
-class _BaseDisplay(Broker, Shapes):
+class _BaseDisplay(Broker):
 
     def __init__(self):
         gc.collect()
