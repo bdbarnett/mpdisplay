@@ -1,5 +1,5 @@
 '''
-A class to handle PBM files
+A class to handle PBM files - WIP - Not working yet
 
 Example:
     pbm = PBM('image.pbm')

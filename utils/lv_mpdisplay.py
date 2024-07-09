@@ -7,7 +7,6 @@ lv_mpdisplay.py - LVGL driver framework for MPDisplay
 '''
 
 import lvgl as lv
-from time import ticks_ms, ticks_diff
 from mpdisplay import Events, Devices
 
 

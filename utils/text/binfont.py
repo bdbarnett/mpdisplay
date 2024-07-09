@@ -27,14 +27,14 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_he
     Does not break on line going off canvas.
     """
     if (
-        not hasattr(canvas, "_text8font")
-        or (font_file is not None and canvas._text8font.font_file != font_file)
-        or (font_height is not None and canvas._text8font.font_height != font_height)
+        not hasattr(BinFont, "_text8font")
+        or (font_file is not None and BinFont._text8font.font_file != font_file)
+        or (font_height is not None and BinFont._text8font.font_height != font_height)
     ):
         # load the font!
-        canvas._text8font = BinFont(font_file, font_height)
+        BinFont._text8font = BinFont(font_file, font_height)
 
-    return canvas._text8font.text(canvas, s, x, y, c, scale, inverted)
+    return BinFont._text8font.text(canvas, s, x, y, c, scale, inverted)
 
 
 def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=14):
@@ -43,14 +43,14 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_h
     Does not break on line going off screen.
     """
     if (
-        not hasattr(canvas, "_text14font")
-        or (font_file is not None and canvas._text14font.font_file != font_file)
-        or (font_height is not None and canvas._text14font.font_height != font_height)
+        not hasattr(BinFont, "_text14font")
+        or (font_file is not None and BinFont._text14font.font_file != font_file)
+        or (font_height is not None and BinFont._text14font.font_height != font_height)
     ):
         # load the font!
-        canvas._text14font = BinFont(font_file, font_height)
+        BinFont._text14font = BinFont(font_file, font_height)
 
-    return canvas._text14font.text(canvas, s, x, y, c, scale, inverted)
+    return BinFont._text14font.text(canvas, s, x, y, c, scale, inverted)
 
 def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16):
     """Place text on the screen.  Breaks on \n to next line.
@@ -58,14 +58,14 @@ def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_h
     Does not break on line going off screen.
     """
     if (
-        not hasattr(canvas, "_text16font")
-        or (font_file is not None and canvas._text16font.font_file != font_file)
-        or (font_height is not None and canvas._text16font.font_height != font_height)
+        not hasattr(BinFont, "_text16font")
+        or (font_file is not None and BinFont._text16font.font_file != font_file)
+        or (font_height is not None and BinFont._text16font.font_height != font_height)
     ):
         # load the font!
-        canvas._text16font = BinFont(font_file, font_height)
+        BinFont._text16font = BinFont(font_file, font_height)
 
-    return canvas._text16font.text(canvas, s, x, y, c, scale, inverted)
+    return BinFont._text16font.text(canvas, s, x, y, c, scale, inverted)
 
 
 class BinFont:

@@ -22,7 +22,7 @@ Usage:
         <your code here>
 """
 try:
-    import framebuf_plus as framebuf
+    import utils.framebuf_plus.framebuf_plus as framebuf
 except ImportError:
     import framebuf
 
