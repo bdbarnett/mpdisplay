@@ -50,7 +50,6 @@ class FBDisplay(_BaseDisplay):
         if self.requires_byte_swap:
             c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
 
-        BPP = self.color_depth // 8
         x2 = x + w
         y2 = y + h
         top = min(y, y2)
