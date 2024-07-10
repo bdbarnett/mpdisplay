@@ -3,7 +3,7 @@ A simple paint application demonstrating the use of MPDisplay.
 """
 
 from board_config import display_drv
-from palettes import get_palette
+from graphics.palettes import get_palette
 from mpdisplay import Events
 
 

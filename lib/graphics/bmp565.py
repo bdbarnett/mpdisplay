@@ -37,6 +37,10 @@ class BMP565:
         else:
             raise ValueError('Invalid arguments')
 
+    @property
+    def buffer(self):
+        return self._buffer
+
     @staticmethod
     def _exists(filename):
         try:

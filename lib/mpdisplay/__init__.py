@@ -32,13 +32,13 @@ except:
     except:
         np = None
 
+from area import Area
 import sys
 import os
-from eventsys.devices import Devices, Broker
-from eventsys.events import Events
-from eventsys.keys import Keys
+from ._eventsys.devices import Devices, Broker
+from ._eventsys.events import Events
+from ._eventsys.keys import Keys
 from ._basedisplay import _BaseDisplay
-from area import Area
 import gc
 
 

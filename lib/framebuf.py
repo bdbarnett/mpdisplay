@@ -19,7 +19,8 @@ library.  It is recommended to use framebuf_plus.py instead of this if
 you need to use the returned Areas so your code will be transferable.
 
 """
-from draw import BasicShapes
+from draw import shapes
+from text.binfont import text
 from area import Area
 from sys import implementation
 
@@ -45,6 +46,21 @@ _FONT_FILE = None  # Use the default font
 _FONT_WIDTH = 8
 _FONT_HEIGHT = 8
 _FONT_SCALE = 1
+
+
+class BasicShapes:
+    # Used by framebuf.py
+    # Do not include fill_rect or pixel because they need to be
+    # specific to the object that uses them
+    fill = shapes.fill
+    hline = shapes.hline
+    vline = shapes.vline
+    line = shapes.line
+    rect = shapes.rect
+    ellipse = shapes.ellipse
+    poly = shapes.poly
+    blit = shapes.blit
+    text = text
 
 
 class MVLSBFormat:

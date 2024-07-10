@@ -35,7 +35,6 @@ Example:
 
 import math
 from array import array
-import os
 import sys
 
 

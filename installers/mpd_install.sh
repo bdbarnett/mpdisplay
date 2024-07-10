@@ -83,7 +83,7 @@
 #       the MicroPython-Touch library in the gui directory will not run on
 #       CPython.
 #     - While MPDisplay suppots LVGL on microntrollers, it doesn't support LVGL
-#       on desktops operating systems, including MicroPython on Unix.
+#       on desktop operating systems, including MicroPython on Unix.
 
 
 ##################### Required: set these variables #####################################
@@ -136,7 +136,7 @@ cp -u $REPO/$BOARD_CONFIG $TARGET/
 cp -ur $REPO/mpdisplay/lib $TARGET/
 cp -ur $REPO/mpdisplay/fonts $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
-cp -u $REPO/mpdisplay/utils/* $TARGET/lib/
+cp -ur $REPO/mpdisplay/utils/* $TARGET/lib/
 cp -u $REPO/mpdisplay/configs/* $TARGET/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/

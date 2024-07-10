@@ -9,7 +9,7 @@ The script iterates through the font files, creates a framebuffer, and renders t
 The rendered font is then displayed on the display driver.
 """
 from board_config import display_drv
-from binfont import BinFont
+from graphics.binfont import BinFont
 from framebuf import FrameBuffer, RGB565
 import os
 

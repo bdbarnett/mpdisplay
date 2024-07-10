@@ -8,7 +8,7 @@ Usage:
     from hardware_setup import display
     <your code here>
 '''
-from displaybuf import DisplayBuffer as SSD
+from graphics.displaybuf import DisplayBuffer as SSD
 from board_config import display_drv
 from mpdisplay import Events
 

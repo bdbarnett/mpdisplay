@@ -28,9 +28,31 @@ from framebuf import (
     GS4_HMSB,
     GS8,
 )
-from draw import ExtendedShapes
-from area import Area
-import math
+from . import Area
+from . import shapes
+from .bitmap import bitmap, pbitmap
+from .pytext import pytext
+from .binfont import text8, text14, text16
+from .write import write, write_width
+
+
+class ExtendedShapes:
+    # Used by framebuf_plus.py
+    # Does not include shapes from BasicShapes
+    fill_rect = shapes.fill_rect
+    blit_rect = shapes.blit_rect
+    circle = shapes.circle
+    triangle = shapes.triangle
+    round_rect = shapes.round_rect
+    arc = shapes.arc
+    polygon = shapes.polygon
+    bitmap = bitmap
+    pbitmap = pbitmap
+    pytext = pytext
+    text14 = text14
+    text16 = text16
+    write = write
+    write_width = write_width
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
@@ -55,6 +77,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             self._color_depth = 8
         else:
             raise ValueError("invalid format")
+
     @property
     def color_depth(self):
         return self._color_depth
@@ -71,30 +94,6 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
     def buffer(self):
         return self._buffer
 
-    def fill_rect(self, x, y, w, h, c):
-        """
-        Fill a rectangle at the given location, size and color.
-
-        Args:
-            x (int): Top left corner x coordinate
-            y (int): Top left corner y coordinate
-            width (int): Width in pixels
-            height (int): Height in pixels
-            c (int): 565 encoded color
-        """
-        super().fill_rect(x, y, w, h, c)
-        return Area(x, y, w, h)
-
-    def fill(self, c):
-        """
-        Fill the entire display with the given color.
-
-        Args:
-            c (int): 565 encoded color
-        """
-        super().fill(c)
-        return Area(0, 0, self.width, self.height)
-
     def pixel(self, x, y, c):
         """
         Draw a single pixel at the given location and color.
@@ -106,6 +105,16 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         """
         super().pixel(x, y, c)
         return Area(x, y, 1, 1)
+
+    def fill(self, c):
+        """
+        Fill the entire display with the given color.
+
+        Args:
+            c (int): 565 encoded color
+        """
+        super().fill(c)
+        return Area(0, 0, self.width, self.height)
 
     def hline(self, x, y, w, c):
         """
@@ -206,3 +215,18 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         max_x = max([v[0] for v in vertices])
         max_y = max([v[1] for v in vertices])
         return Area(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1)
+
+    def text(self, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
+        """
+        Draw text at the given location, using the given font and color.
+
+        Args:
+            s (str): Text to draw
+            x (int): x coordinate
+            y (int): y coordinate
+            c (int): 565 encoded color
+            scale (int): Scale factor (default: 1)
+            inverted (bool): Invert the text (default: False)
+        """
+        text8(self, s, x, y, c, scale, inverted, font_file, font_height)
+        return Area(x, y, len(s) * 8 * scale, font_height * scale)

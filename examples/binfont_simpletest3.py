@@ -6,10 +6,10 @@ Draws to a DisplayBuffer and only updates the area that has changed.
 """
 
 from board_config import display_drv
-from binfont import BinFont
+from graphics.binfont import BinFont
 import random
-from displaybuf import DisplayBuffer
-from palettes import get_palette
+from graphics.displaybuf import DisplayBuffer
+from graphics.palettes import get_palette
 
 display = DisplayBuffer(display_drv)
 

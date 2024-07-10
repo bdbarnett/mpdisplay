@@ -34,7 +34,8 @@ https://github.com/devbis/st7789py_mpy.
 """
 
 from micropython import const
-from area import Area
+from . import Area
+from .shapes import blit_rect
 
 
 WHITE = const(0xFFFF)
@@ -90,8 +91,8 @@ def write(canvas, font, string, x, y, fg=WHITE, bg=BLACK):
             to_col = x_pos + char_width - 1
             to_row = y + font.HEIGHT - 1
             if canvas.width > to_col and canvas.height > to_row:
-                canvas.blit_rect(
-                    buffer[:buffer_needed], x_pos, y, char_width, font.HEIGHT
+                blit_rect(
+                    canvas, buffer[:buffer_needed], x_pos, y, char_width, font.HEIGHT
                 )
 
             x_pos += char_width

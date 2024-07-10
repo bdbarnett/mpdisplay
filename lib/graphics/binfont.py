@@ -9,7 +9,7 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from area import Area
+from . import Area
 
 # Default font file to use if none is specified.
 # Should be 8x8 to keep framebuf.py compatible with MicroPython framebuf module
@@ -20,6 +20,10 @@ _FONTS = {
 }
 _DEFAULT_FONT = _FONTS[8]
 
+
+
+def text(*args, **kwargs):
+    return text8(*args, **kwargs)
 
 def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
     """Place text on the canvas.  Breaks on \n to next line.

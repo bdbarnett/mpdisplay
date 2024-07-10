@@ -5,9 +5,9 @@ Simple calculator example to demonstrate the use of framebuf.FrameBuffer
 from board_config import display_drv
 from touch_keypad import Keypad
 from time import sleep
-from framebuf_plus import FrameBuffer, RGB565
+from graphics.framebuf_plus import FrameBuffer, RGB565
 from mpdisplay import Keys
-from palettes import get_palette
+from graphics.palettes import get_palette
 
 
 # Setup variables

@@ -35,15 +35,15 @@ https://github.com/devbis/st7789py_mpy.
 
 from micropython import const
 from sys import implementation
-from area import Area
+from . import Area
 
 if implementation.name == "micropython":
     try:
-        from ._viper import _pack8, _pack16
+        from ._pytext_viper import _pack8, _pack16
     except:
-        from ._python import _pack8, _pack16
+        from ._pytext_python import _pack8, _pack16
 else:
-        from ._python import _pack8, _pack16
+        from ._pytext_python import _pack8, _pack16
 
 
 WHITE = const(0xFFFF)
@@ -51,7 +51,7 @@ BLACK = const(0x0000)
 
 _default_font = None
 
-def text(canvas, firstarg, *args, **kwargs):
+def pytext(canvas, firstarg, *args, **kwargs):
     global _default_font
     if type(firstarg) == str:
         if _default_font == None:

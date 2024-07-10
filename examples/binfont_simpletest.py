@@ -6,10 +6,10 @@ Draws on a framebuffer and blits it to the display.
 """
 
 from board_config import display_drv
-from binfont import BinFont
+from graphics.binfont import BinFont
 import random
-from framebuf import FrameBuffer, RGB565
-from palettes import get_palette
+from graphics.framebuf_plus import FrameBuffer, RGB565
+from graphics.palettes import get_palette
 
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel

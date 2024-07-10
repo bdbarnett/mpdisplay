@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-displaybuf.py
+displaybuf
 FrameBuffer wrapper for using framebuf based GUIs with MPDisplay.
 Works with MicroPython Nano-GUI, Micro-GUI and MicroPython-Touch from Peter Hinch,
 but may also be used without them.
@@ -21,17 +21,13 @@ Usage:
         from color_setup import ssd
         <your code here>
 """
-try:
-    import utils.framebuf_plus.framebuf_plus as framebuf
-except ImportError:
-    import framebuf
-
+from . import framebuf_plus as framebuf
 import gc
 import sys
-from area import Area  # for _show16
+from . import Area  # for _show16
 
 if sys.implementation.name == "micropython":
-    from ._viper import _bounce8, _bounce4
+    from ._displaybuf_viper import _bounce8, _bounce4
 else:
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(

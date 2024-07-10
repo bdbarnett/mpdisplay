@@ -33,8 +33,8 @@ https://github.com/devbis/st7789py_mpy.
 
 """
 
-from area import Area
-from graphics.shapes import blit_rect
+from . import Area
+from .shapes import blit_rect
 
 
 def bitmap(canvas, bitmap, x, y, index=0):

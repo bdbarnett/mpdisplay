@@ -20,17 +20,17 @@ object has these methods.
 
 """
 
-from area import Area
+from . import Area
 import math
 
 
-def pixel(canvas, x0, y0, color, c):
+def pixel(canvas, x0, y0, c):
     """A function to pass through in input pixel functionality."""
     # This was added to mainitatn the abstraction between gfx and the dislay library
     if hasattr(canvas, "pixel"):
-        pixel(canvas, x0, y0, color, c)
+        canvas.pixel(x0, y0, c)
     else:
-        rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
+        rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
         canvas.buffer[(y0 * canvas.width + x0) * 2:(y0 * canvas.width + x0) * 2 + 2] = rgb565_color
     return Area(x0, y0, 1, 1)
 
@@ -300,6 +300,67 @@ def poly(canvas, x, y, coords, c, f=False):
                 c,
             )
     return Area(left, top, right - left, bottom - top)
+
+def blit(canvas, source, x, y, key=-1, palette=None):
+    if (
+        (-x >= source.width) or
+        (-y >= source.height) or
+        (x >= canvas.width) or
+        (y >= canvas.height)
+    ):
+        # Out of bounds, no-op.
+        return
+
+    # Clip.
+    x0 = max(0, x)
+    y0 = max(0, y)
+    x1 = max(0, -x)
+    y1 = max(0, -y)
+    x0end = min(canvas.width, x + source.width)
+    y0end = min(canvas.height, y + source.height)
+
+    for cy0 in range(y0, y0end):
+        cx1 = x1
+        for cx0 in range(x0, x0end):
+            col = source.pixel(cx1, y1)
+            if palette:
+                col = palette.pixel(col, 0)
+            if col != key:
+                pixel(canvas, cx0, cy0, col)
+            cx1 += 1
+        y1 += 1
+    return Area(x0, y0, x0end - x0, y0end - y0)
+
+
+
+def blit_rect(canvas, buf, x, y, w, h):
+    """
+    Blit a rectangular area from a buffer to the canvas.
+    :param buf: Buffer containing the data to blit
+    :param x: X coordinate of the top-left corner of the area
+    :param y: Y coordinate of the top-left corner of the area
+    :param w: Width of the area
+    :param h: Height of the area
+    """
+    if hasattr(canvas, "blit_rect"):
+        return canvas.blit_rect(buf, x, y, w, h)
+
+    BPP = 2
+
+    if x < 0 or y < 0 or x + w > canvas.width or y + h > canvas.height:
+        raise ValueError("The provided x, y, w, h values are out of range")
+
+    if len(buf) != w * h * BPP:
+        print(f"len(buf)={len(buf)} w={w} h={h} self.color_depth={canvas.color_depth}")
+        raise ValueError("The source buffer is not the correct size")
+
+    for row in range(h):
+        source_begin = row * w * BPP
+        source_end = source_begin + w * BPP
+        dest_begin = ((y + row) * canvas.width + x) * BPP
+        dest_end = dest_begin + w * BPP
+        canvas.buffer[dest_begin : dest_end] = buf[source_begin : source_end]
+    return Area(x, y, w, h)
 
 def circle(canvas, x0, y0, r, c, f=False):
     """Circle drawing function.  Will draw a single pixel wide circle with
@@ -600,62 +661,3 @@ def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
         canvas.line(rotated[i - 1][0], rotated[i - 1][1], rotated[i][0], rotated[i][1], color)
     # fmt: on
     return Area(left, top, right - left, bottom - top)
-
-def blit_rect(canvas, buf, x, y, w, h):
-    """
-    Blit a rectangular area from a buffer to the canvas.
-    :param buf: Buffer containing the data to blit
-    :param x: X coordinate of the top-left corner of the area
-    :param y: Y coordinate of the top-left corner of the area
-    :param w: Width of the area
-    :param h: Height of the area
-    """
-    if hasattr(canvas, "blit_rect"):
-        return canvas.blit_rect(buf, x, y, w, h)
-
-    BPP = 2
-
-    if x < 0 or y < 0 or x + w > canvas.width or y + h > canvas.height:
-        raise ValueError("The provided x, y, w, h values are out of range")
-
-    if len(buf) != w * h * BPP:
-        print(f"len(buf)={len(buf)} w={w} h={h} self.color_depth={canvas.color_depth}")
-        raise ValueError("The source buffer is not the correct size")
-
-    for row in range(h):
-        source_begin = row * w * BPP
-        source_end = source_begin + w * BPP
-        dest_begin = ((y + row) * canvas.width + x) * BPP
-        dest_end = dest_begin + w * BPP
-        canvas.buffer[dest_begin : dest_end] = buf[source_begin : source_end]
-    return Area(x, y, w, h)
-
-def blit(canvas, source, x, y, key=-1, palette=None):
-    if (
-        (-x >= source.width) or
-        (-y >= source.height) or
-        (x >= canvas.width) or
-        (y >= canvas.height)
-    ):
-        # Out of bounds, no-op.
-        return
-
-    # Clip.
-    x0 = max(0, x)
-    y0 = max(0, y)
-    x1 = max(0, -x)
-    y1 = max(0, -y)
-    x0end = min(canvas.width, x + source.width)
-    y0end = min(canvas.height, y + source.height)
-
-    for cy0 in range(y0, y0end):
-        cx1 = x1
-        for cx0 in range(x0, x0end):
-            col = source.pixel(cx1, y1)
-            if palette:
-                col = palette.pixel(col, 0)
-            if col != key:
-                pixel(canvas, cx0, cy0, col)
-            cx1 += 1
-        y1 += 1
-    return Area(x0, y0, x0end - x0, y0end - y0)
