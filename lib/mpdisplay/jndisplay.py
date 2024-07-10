@@ -72,13 +72,11 @@ class JNDisplay(_BaseDisplay):
             raise ValueError("The provided x, y, w, h values are out of range")
         if len(buf) != width * height * BPP:
             raise ValueError("The source buffer is not the correct size")
-        
-        # convert buf from 16-bit to 24-bit
-        buf = np.frombuffer(buf, dtype=np.uint16).astype(np.uint32)
 
-        # copy buf to self._buffer using numpy
-        buf = buf.reshape((height, width))
-        self._buffer.paste(Image.fromarray(buf, 'I;16'), (x, y))
+        for j in range(height):
+            for i in range(width):
+                color = buf[(j * width + i) * BPP:(j * width + i) * BPP + BPP]
+                self.pixel(x + i, y + j, color)
         
         return Area(x, y, width, height)
 
