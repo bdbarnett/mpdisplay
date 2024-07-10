@@ -19,8 +19,8 @@ library.  It is recommended to use framebuf_plus.py instead of this if
 you need to use the returned Areas so your code will be transferable.
 
 """
-from draw import shapes
-from text.binfont import text
+from graphics import shapes
+from graphics.binfont import text
 from area import Area
 from sys import implementation
 
