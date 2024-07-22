@@ -228,7 +228,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
     def screenshot(self, filename="screenshot.bmp"):
         if self._buffer_depth != 16:
             raise ValueError("Screenshots are only supported for 16-bit buffers.")
-        from bmp565 import BMP565
+        from graphics.bmp565 import BMP565
         bmp = BMP565(source=self.buffer, width=self.width, height=self.height)
         filename = bmp.save(filename)
         print(f"\nSaved BMP565 file as '{filename}'")
