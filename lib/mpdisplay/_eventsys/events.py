@@ -9,7 +9,6 @@ Events class for MPDisplay's Event System
 from collections import namedtuple
 from micropython import const
 
-_USER_TYPE_BASE = 0x8000
 
 class Events:
     # Event types (from SDL2 / PyGame, not complete)
@@ -25,6 +24,7 @@ class Events:
     JOYHATMOTION = const(0x602)  # Joystick hat position change
     JOYBUTTONDOWN = const(0x603)  # Joystick button pressed
     JOYBUTTONUP = const(0x604)  # Joystick button released
+    _USER_TYPE_BASE = 0x8000
 
     filter = [
         QUIT,
@@ -49,7 +49,7 @@ class Events:
         """
         Create new event types and classes for the Events class.
 
-        For example, to create the the events and device class for the keypad device:
+        For example, to create the events and device class for the keypad device:
         ```
         from eventsys.events import Events, Devices
 
@@ -77,9 +77,9 @@ class Events:
             if hasattr(Events, type_name):
                 raise ValueError(f"Event type {type_name} already exists in Events class.")
             else:
-                setattr(Events, type_name, value if value else _USER_TYPE_BASE)
+                setattr(Events, type_name, value if value else Events._USER_TYPE_BASE)
                 if not value:
-                    _USER_TYPE_BASE += 1
+                    Events._USER_TYPE_BASE += 1
 
         for event_class_name, event_class_fields in classes.items():
             event_class_name = event_class_name[0].upper() + event_class_name[1:].lower()

@@ -10,11 +10,17 @@ from micropython import const as _const
 
 
 class Keys:
-    keyname = lambda x: Keys._keytable.get(x, "Unknown")
-    key = lambda x: list(Keys._keytable.keys())[list(Keys._keytable.values()).index(x)]
+    def keyname(x):
+        return Keys._keytable.get(x, "Unknown")
 
-    modname = lambda x: Keys._modtable.get(x, "Unknown")
-    mod = lambda x: list(Keys._modtable.keys())[list(Keys._modtable.values()).index(x)]
+    def key(x):
+        return list(Keys._keytable.keys())[list(Keys._keytable.values()).index(x)]
+
+    def modname(x):
+        return Keys._modtable.get(x, "Unknown")
+
+    def mod(x):
+        return list(Keys._modtable.keys())[list(Keys._modtable.values()).index(x)]
 
     K_UNKNOWN = _const(0)
     K_BACKSPACE = _const(8)
