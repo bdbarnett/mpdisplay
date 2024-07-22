@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 
-'''
-lv_mpdisplay.py - LVGL driver framework for MPDisplay
-'''
+"""
+lv_mpdisplay.py - LVGL driver shim for MPDisplay
+"""
 
 import lvgl as lv
 from mpdisplay import Events, Devices
@@ -16,10 +16,12 @@ if not lv.is_initialized():
 
 try:
     import lv_utils  # lv_micropython provides lv_utils
+
     if not lv_utils.event_loop.is_running():
         _eventloop = lv_utils.event_loop()
 except ImportError:
     import task_handler  # lvgl_micropython provides task_handler
+
     _task_handler = task_handler.TaskHandler()
 
 
@@ -48,7 +50,9 @@ class DisplayDriver:
         else:
             self.needs_swap = False
 
-        if hasattr(display_drv, "display_bus") and "RGB" in repr(display_drv.display_bus):
+        if hasattr(display_drv, "display_bus") and "RGB" in repr(
+            display_drv.display_bus
+        ):
             render_mode = lv.DISPLAY_RENDER_MODE.DIRECT
             self.display_drv.set_render_mode_full(True)
         elif (
@@ -61,14 +65,14 @@ class DisplayDriver:
             render_mode = lv.DISPLAY_RENDER_MODE.PARTIAL
             self.display_drv.set_render_mode_full(False)
 
-        self.lv_display = lv.display_create(self.display_drv.width, self.display_drv.height)
+        self.lv_display = lv.display_create(
+            self.display_drv.width, self.display_drv.height
+        )
         self.lv_display.set_flush_cb(self._flush_cb)
         self.lv_display.set_color_format(color_format)
         if not self._blocking:
             self.display_drv.register_callback(self.lv_display.flush_ready)
-        self.lv_display.set_draw_buffers(
-            self._frame_buffer1,
-            self._frame_buffer2)
+        self.lv_display.set_draw_buffers(self._frame_buffer1, self._frame_buffer2)
         self.lv_display.set_render_mode(render_mode)
 
         # Create an input device for each device of known type registered to display_drv
@@ -78,7 +82,7 @@ class DisplayDriver:
         #     indev = device.user_data
         #     indev.set_group(new_group)
         #     indev.set_display(new_display)
-        for device in display_drv.devices:
+        for device in display_drv.broker.devices:
             if device.type in (Devices.TOUCH, Devices.ENCODER, Devices.KEYPAD):
                 indev = lv.indev_create()
                 indev.set_display(self.lv_display)

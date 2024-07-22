@@ -9,7 +9,7 @@ An implementation of SDL2 written in MicroPython.
 import uctypes
 import ffi
 import struct
-from ._constants import *
+from ._constants import *  # noqa: F403
 
 
 # Load the SDL2 shared library using ffi
@@ -133,7 +133,8 @@ SDL_UpdateTexture = _libSDL2.func("i", "SDL_UpdateTexture", "PPPi")
 # SDL timer functions  NOT WORKING
 SDL_AddTimer = _libSDL2.func("P", "SDL_AddTimer", "IPP")
 SDL_RemoveTimer = _libSDL2.func("i", "SDL_RemoveTimer", "P")
-SDL_TimerCallback = lambda tcb: ffi.callback("I", tcb, "IP")
+def SDL_TimerCallback(tcb):
+    return ffi.callback("I", tcb, "IP")
 
 
 ###############################################################################
@@ -141,13 +142,14 @@ SDL_TimerCallback = lambda tcb: ffi.callback("I", tcb, "IP")
 ###############################################################################
 
 _event_struct_map = {
-    SDL_KEYDOWN: SDL_KeyboardEvent,
-    SDL_KEYUP: SDL_KeyboardEvent,
-    SDL_MOUSEMOTION: SDL_MouseMotionEvent,
-    SDL_MOUSEBUTTONDOWN: SDL_MouseButtonEvent,
-    SDL_MOUSEBUTTONUP: SDL_MouseButtonEvent,
-    SDL_MOUSEWHEEL: SDL_MouseWheelEvent,
-    SDL_POLLSENTINEL: SDL_CommonEvent,
+    # Constants from _constants.py
+    SDL_KEYDOWN: SDL_KeyboardEvent,  # noqa: F405
+    SDL_KEYUP: SDL_KeyboardEvent,  # noqa: F405
+    SDL_MOUSEMOTION: SDL_MouseMotionEvent,  # noqa: F405
+    SDL_MOUSEBUTTONDOWN: SDL_MouseButtonEvent,  # noqa: F405
+    SDL_MOUSEBUTTONUP: SDL_MouseButtonEvent,  # noqa: F405
+    SDL_MOUSEWHEEL: SDL_MouseWheelEvent,  # noqa: F405
+    SDL_POLLSENTINEL: SDL_CommonEvent,  # noqa: F405
 }
 
 def SDL_Event(event=None):

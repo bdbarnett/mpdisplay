@@ -7,7 +7,7 @@ An implementation of SDL2 written in CPython using ctypes.
 """
 
 import ctypes
-from ._constants import *
+from ._constants import *  # noqa: F403
 from sys import platform
 
 # Load the SDL2 shared library using ctypes
@@ -236,13 +236,14 @@ SDL_TimerCallback = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_uint32, ctypes.c_
 ###############################################################################
 
 _event_struct_map = {
-    SDL_KEYDOWN: SDL_KeyboardEvent,
-    SDL_KEYUP: SDL_KeyboardEvent,
-    SDL_MOUSEMOTION: SDL_MouseMotionEvent,
-    SDL_MOUSEBUTTONDOWN: SDL_MouseButtonEvent,
-    SDL_MOUSEBUTTONUP: SDL_MouseButtonEvent,
-    SDL_MOUSEWHEEL: SDL_MouseWheelEvent,
-    SDL_POLLSENTINEL: SDL_CommonEvent,
+    # Constants from _constants.py
+    SDL_KEYDOWN: SDL_KeyboardEvent,  # noqa: F405
+    SDL_KEYUP: SDL_KeyboardEvent,  # noqa: F405
+    SDL_MOUSEMOTION: SDL_MouseMotionEvent,  # noqa: F405
+    SDL_MOUSEBUTTONDOWN: SDL_MouseButtonEvent,  # noqa: F405
+    SDL_MOUSEBUTTONUP: SDL_MouseButtonEvent,  # noqa: F405
+    SDL_MOUSEWHEEL: SDL_MouseWheelEvent,  # noqa: F405
+    SDL_POLLSENTINEL: SDL_CommonEvent,  # noqa: F405
 }
 
 def SDL_Event(event=None):
