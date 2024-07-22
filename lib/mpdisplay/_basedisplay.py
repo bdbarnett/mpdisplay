@@ -14,15 +14,16 @@ viper = False
 if implementation.name == "micropython":
     try:
         from ._viper import swap_bytes_viper
+
         viper = True
-    except:
+    except Exception:
         viper = False
 
 
 gc.collect()
 
-class _BaseDisplay:
 
+class _BaseDisplay:
     def __init__(self):
         gc.collect()
         super().__init__()
@@ -118,7 +119,7 @@ class _BaseDisplay:
 
     @staticmethod
     def alloc_buffer(size):
-    # Define how buffers are allocated.  Allows being overridden by platforms with DMA specific allocations, such as ESP32's heap_caps.
+        # Define how buffers are allocated.  Allows being overridden by platforms with DMA specific allocations, such as ESP32's heap_caps.
         return bytearray(size)
 
     def quit(self):
@@ -319,4 +320,4 @@ class _BaseDisplay:
         elif viper is True:
             swap_bytes_viper(buf, buf_size_pix)
         else:
-            buf[::2], buf[1::2] = buf[1::2], buf[::2]       
+            buf[::2], buf[1::2] = buf[1::2], buf[::2]
