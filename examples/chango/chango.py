@@ -39,13 +39,13 @@ def main():
     tft = tft_config.config(tft_config.WIDE)
 
     row = 0
-    tft.write(font_16, "abcdefghijklmnopqrst", 0, row, palette.RED)
+    tft.draw.write(font_16, "abcdefghijklmnopqrst", 0, row, palette.RED)
     row += font_16.HEIGHT
 
-    tft.write(font_32, "abcdefghij", 0, row, palette.GREEN)
+    tft.draw.write(font_32, "abcdefghij", 0, row, palette.GREEN)
     row += font_32.HEIGHT
 
-    tft.write(font_64, "abcd", 0, row, palette.BLUE)
+    tft.draw.write(font_64, "abcd", 0, row, palette.BLUE)
     row += font_64.HEIGHT
 
 

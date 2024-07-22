@@ -68,22 +68,22 @@ def main():
                 for idx in range(3)
             ]
             color = palette.color565(rgb_color)
-            tft.hline(0, row, tft.width, color)
+            tft.draw.hline(0, row, tft.width, color)
 
         name = names[i]
         text_x = (tft.width - font.WIDTH * len(name)) // 2
         text_y = start_row + (end_row - start_row - font.HEIGHT) // 2
-        tft.text(font, name, text_x, text_y, palette.WHITE, color)
+        tft.draw.text(font, name, text_x, text_y, palette.WHITE, color)
 
     while True:
         for color in [palette.RED, palette.GREEN, palette.BLUE]:
             for x in range(tft.width):
-                tft.pixel(x, 0, color)
-                tft.pixel(x, tft.height - 1, color)
+                tft.draw.pixel(x, 0, color)
+                tft.draw.pixel(x, tft.height - 1, color)
 
             for y in range(tft.height):
-                tft.pixel(0, y, color)
-                tft.pixel(tft.width - 1, y, color)
+                tft.draw.pixel(0, y, color)
+                tft.draw.pixel(tft.width - 1, y, color)
 
             sleep(1)
 

@@ -34,7 +34,7 @@ def main():
             random.getrandbits(8), random.getrandbits(8), random.getrandbits(8)
         )
 
-        tft.line(
+        tft.draw.line(
             random.randint(0, tft.width),
             random.randint(0, tft.height),
             random.randint(0, tft.width),
@@ -46,7 +46,7 @@ def main():
         height = random.randint(0, tft.height // 2)
         col = random.randint(0, tft.width - width)
         row = random.randint(0, tft.height - height)
-        tft.fill_rect(
+        tft.draw.fill_rect(
             col,
             row,
             width,

@@ -78,12 +78,12 @@ def main():
             proverb_lines = proverb.split("，")
             half_lines_height = len(proverb_lines) * line_height // 2
 
-            tft.fill(palette.BLACK)
+            tft.draw.fill(palette.BLACK)
 
             for count, proverb_line in enumerate(proverb_lines):
-                half_length = tft.write_width(font, proverb_line) // 2
+                half_length = tft.draw.write_width(font, proverb_line) // 2
 
-                tft.write(
+                tft.draw.write(
                     font,
                     proverb_line,
                     half_width - half_length,

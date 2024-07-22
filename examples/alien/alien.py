@@ -56,8 +56,8 @@ def main():
 
     while True:
         last = ticks_ms()
-        tft.fill_rect(last_col, old_row, alien.WIDTH, alien.HEIGHT, 0)
-        tft.bitmap(alien, col, row)
+        tft.draw.fill_rect(last_col, old_row, alien.WIDTH, alien.HEIGHT, 0)
+        tft.draw.bitmap(alien, col, row)
         last_col, old_row = col, row
         col, row = col + xd, row + yd
         xd = -xd if col <= 0 or col >= width - alien.WIDTH else xd

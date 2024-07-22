@@ -1,4 +1,4 @@
-'''
+"""
 A class to handle PBM files - WIP - Not working yet
 
 Example:
@@ -27,11 +27,7 @@ Example:
     display_fb = FrameBuffer(display_mv, 320, 240, RGB565)
 
     # Convert the image to a 16-bit color map
-
-
-
-
-'''
+"""
 
 import math
 from array import array

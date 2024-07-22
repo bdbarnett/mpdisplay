@@ -38,14 +38,14 @@ def main():
     while True:
         for rotation in range(4):
             tft.rotation = rotation
-            tft.fill(0)
+            tft.draw.fill(0)
             col_max = tft.width - font.WIDTH * 5
             row_max = tft.height - font.HEIGHT
             if col_max < 0 or row_max < 0:
                 raise RuntimeError("This font is too big to display on this screen.")
 
             for _ in range(100):
-                tft.text(
+                tft.draw.text(
                     font,
                     "Hello",
                     random.randint(0, col_max),

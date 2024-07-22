@@ -115,7 +115,7 @@ def main():
             """
             Draw the polygon
             """
-            tft.polygon(self.polygon, self.x, self.y, color, self.angle, 0, 0)
+            tft.draw.polygon(self.polygon, self.x, self.y, color, self.angle, 0, 0)
 
         def collision(self, poly):
             """
@@ -246,15 +246,15 @@ def main():
         """
         ship.counter += 1
         if ship.counter % 2 == 0:
-            tft.polygon(explosion_poly, ship.x, ship.y, palette.BLACK, 0.785398)
-            tft.polygon(explosion_poly, ship.x, ship.y, palette.WHITE)
+            tft.draw.polygon(explosion_poly, ship.x, ship.y, palette.BLACK, 0.785398)
+            tft.draw.polygon(explosion_poly, ship.x, ship.y, palette.WHITE)
         else:
-            tft.polygon(explosion_poly, ship.x, ship.y, palette.WHITE, 0.785398)
-            tft.polygon(explosion_poly, ship.x, ship.y, palette.BLACK)
+            tft.draw.polygon(explosion_poly, ship.x, ship.y, palette.WHITE, 0.785398)
+            tft.draw.polygon(explosion_poly, ship.x, ship.y, palette.BLACK)
 
         if ship.counter > 25:
             # erase explosion, move ship to center and stop explosion
-            tft.polygon(explosion_poly, ship.x, ship.y, palette.BLACK)
+            tft.draw.polygon(explosion_poly, ship.x, ship.y, palette.BLACK)
             # move ship to center
             ship.x = width >> 1
             ship.y = height >> 1
@@ -264,7 +264,7 @@ def main():
         return False
 
     # enable display and clear screen
-    tft.fill(palette.BLACK)
+    tft.draw.fill(palette.BLACK)
     width = tft.width
     height = tft.height
 

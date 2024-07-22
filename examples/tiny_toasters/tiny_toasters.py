@@ -112,11 +112,11 @@ def main():
 
         def clear(self):
             """clear above and behind sprite"""
-            tft.fill_rect(
+            tft.draw.fill_rect(
                 self.col, self.row - 1, self.width, self.dir_row + 1, palette.BLACK
             )
 
-            tft.fill_rect(
+            tft.draw.fill_rect(
                 self.col + self.width + self.dir_col,
                 self.row,
                 -self.dir_col,
@@ -126,7 +126,7 @@ def main():
 
         def erase(self):
             """erase last position of sprite"""
-            tft.fill_rect(
+            tft.draw.fill_rect(
                 self.last_col, self.last_row, self.width, self.height, palette.BLACK
             )
 
@@ -184,7 +184,7 @@ def main():
         def draw(self):
             """if the location is not 0,0 draw current frame of sprite at it's location"""
             if self.col and self.row:
-                tft.bitmap(self.bitmaps, self.col, self.row, self.frames[self.step])
+                tft.draw.bitmap(self.bitmaps, self.col, self.row, self.frames[self.step])
 
     # configure display driver
     tft = tft_config.config(tft_config.WIDE)

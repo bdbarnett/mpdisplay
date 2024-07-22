@@ -33,7 +33,7 @@ def center_on(display, using_font, text, y, fg, bg):
     Center the text on the display
     """
     x = (display.width - len(text) * font.WIDTH) // 2
-    display.text(using_font, text, x, y, fg, bg)
+    display.draw.text(using_font, text, x, y, fg, bg)
 
 
 def clear_screen(display, color):
@@ -85,9 +85,9 @@ def main():
             fg = colors[color_idx][2]
             bg = colors[color_idx][1]
 
-            tft.fill(bg)
+            tft.draw.fill(bg)
 
-            tft.rect(0, 0, width, height, palette.WHITE)
+            tft.draw.rect(0, 0, width, height, palette.WHITE)
             center_on(tft, font, "Rotation", height // 3 - font.HEIGHT // 2, fg, bg)
             center_on(tft, font, str(rotation), height // 2 - font.HEIGHT // 2, fg, bg)
             center_on(

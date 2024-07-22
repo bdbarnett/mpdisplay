@@ -36,7 +36,7 @@ def center(text, fg=palette.WHITE, bg=palette.BLACK):
     Centers the given text on the display.
     """
     length = len(text)
-    tft.text(
+    tft.draw.text(
         font,
         text,
         tft.width // 2 - length // 2 * font.WIDTH,
@@ -51,20 +51,20 @@ def main():
     The big show!
     """
     for color in [palette.RED, palette.GREEN, palette.BLUE]:
-        tft.fill(color)
-        tft.rect(0, 0, tft.width, tft.height, palette.WHITE)
+        tft.draw.fill(color)
+        tft.draw.rect(0, 0, tft.width, tft.height, palette.WHITE)
         center("Hello!", palette.WHITE, color)
         time.sleep(1)
 
     while True:
         for rotation in range(4):
             tft.rotation = rotation
-            tft.fill(0)
+            tft.draw.fill(0)
             col_max = tft.width - font.WIDTH * 6
             row_max = tft.height - font.HEIGHT
 
             for _ in range(128):
-                tft.text(
+                tft.draw.text(
                     font,
                     "Hello!",
                     random.randint(0, col_max),

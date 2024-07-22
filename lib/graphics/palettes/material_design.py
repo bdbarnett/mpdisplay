@@ -6,7 +6,7 @@ This module contains the Material Design color palette as a class object.
 
 
 Usage:
-    from palettes import get_palette
+    from graphics.palettes import get_palette
     palette = get_palette(name="material_design", color_depth=16, swapped=False)
     # OR
     palette = get_palette("material_design")

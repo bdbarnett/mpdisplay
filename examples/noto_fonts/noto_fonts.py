@@ -50,9 +50,9 @@ def main():
         """
 
         screen = tft.width  # get screen width
-        width = tft.write_width(font, string)  # get the width of the string
+        width = tft.draw.write_width(font, string)  # get the width of the string
         col = tft.width // 2 - width // 2 if width and width < screen else 0
-        tft.write(font, string, col, row, color)  # and write the string
+        tft.draw.write(font, string, col, row, color)  # and write the string
 
     # initialize the display
     tft = tft_config.config(tft_config.WIDE)

@@ -68,7 +68,7 @@ def main():
 
     tft.vscrdef(tfa, height, bfa)  # set scroll area
     tft.vscsad(scroll + tfa)  # set scroll position
-    tft.fill(palette.BLACK)  # clear screen
+    tft.draw.fill(palette.BLACK)  # clear screen
 
     half = (height >> 1) - 1  # half the height of the dislay
     interval = 0  # steps between new points
@@ -94,7 +94,7 @@ def main():
             increment = 1 / interval  # increment per step
 
         # clear the first column of the display and scroll it
-        tft.vline(scroll, 0, height, palette.BLACK)
+        tft.draw.vline(scroll, 0, height, palette.BLACK)
         tft.vscsad(scroll + tfa)
 
         # get the next point between last_y and current_y
@@ -102,10 +102,10 @@ def main():
 
         # draw mirrored pixels across the display at the offsets using the color_wheel effect
         for i, x_offset in enumerate(x_offsets):
-            tft.pixel(
+            tft.draw.pixel(
                 (scroll + x_offset) % width, half + tween, color_wheel(wheel + (i << 2))
             )
-            tft.pixel(
+            tft.draw.pixel(
                 (scroll + x_offset) % width, half - tween, color_wheel(wheel + (i << 2))
             )
 

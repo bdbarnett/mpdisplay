@@ -41,12 +41,12 @@ def main():
 
     while True:
         for font in (font1, font2, font3, font4):
-            tft.fill(palette.BLUE)
+            tft.draw.fill(palette.BLUE)
             line = 0
             col = 0
 
             for char in range(font.FIRST, font.LAST):
-                tft.text(font, chr(char), col, line, palette.WHITE, palette.BLUE)
+                tft.draw.text(font, chr(char), col, line, palette.WHITE, palette.BLUE)
                 col += font.WIDTH
                 if col > tft.width - font.WIDTH:
                     col = 0
@@ -54,7 +54,7 @@ def main():
 
                     if line > tft.height - font.HEIGHT:
                         time.sleep(3)
-                        tft.fill(palette.BLUE)
+                        tft.draw.fill(palette.BLUE)
                         line = 0
                         col = 0
 

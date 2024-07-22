@@ -1,6 +1,7 @@
 from board_config import display_drv
 from sys import implementation
-from palettes import get_palette
+from graphics.palettes import get_palette
+from graphics.draw import Draw
 
 if implementation.name == "esp32":
     from machine import freq
@@ -29,6 +30,8 @@ FEATHERS = WIDE  # orientation for feathers.py
 
 
 palette = get_palette()
+
+display_drv.draw = Draw(display_drv)
 
 
 def deinit(display_drv, display_off=False):

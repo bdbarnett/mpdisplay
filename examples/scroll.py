@@ -39,16 +39,16 @@ def main():
     bfa = tft_config.BFA  # bottom free area when scrolling
     tft.vscrdef(tfa, tft.height - tfa - bfa, bfa)
 
-    tft.fill(palette.BLUE)
+    tft.draw.fill(palette.BLUE)
     scroll = 0
     character = 0
     col = tft.width // 2 - 5 * font.WIDTH // 2
 
     while True:
-        tft.fill_rect(0, scroll, tft.width, 1, palette.BLUE)
+        tft.draw.fill_rect(0, scroll, tft.width, 1, palette.BLUE)
 
         if scroll % font.HEIGHT == 0:
-            tft.text(
+            tft.draw.text(
                 font,
                 f"x{character:02x} {chr(character)}",
                 col,
