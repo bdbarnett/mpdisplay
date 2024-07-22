@@ -55,7 +55,7 @@ def touch_read_func():
 
 touch_rotation_table=(0, 0, 0, 0)
 
-touch_dev = display_drv.create_device(
+touch_dev = display_drv.broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,

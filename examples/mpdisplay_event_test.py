@@ -3,7 +3,7 @@ from mpdisplay import Events
 
 
 while True:
-    e = display_drv.poll()
+    e = display_drv.broker.poll()
     if e:
         print(e)
         if e == Events.QUIT:

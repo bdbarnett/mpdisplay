@@ -46,7 +46,7 @@ def main():
         i += 1
         if i < display_drv.width:
             continue
-        event = display_drv.poll()
+        event = display_drv.broker.poll()
         if (event and event.type == Events.MOUSEMOTION and event.buttons[0] == 1):
             touched_point = event.pos
             if touched_point[1] < display_drv.height // 2:

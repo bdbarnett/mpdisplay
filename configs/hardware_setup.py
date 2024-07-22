@@ -24,7 +24,7 @@ from mpdisplay import Events
 def screenshot(event):
     if event.type == Events.MOUSEBUTTONDOWN and event.button == 3:
         ssd.screenshot()
-display_drv.subscribe(screenshot, event_types=[Events.MOUSEBUTTONDOWN])
+display_drv.broker.subscribe(screenshot, event_types=[Events.MOUSEBUTTONDOWN])
 # End screenshot functionality
 
 class Poller:
@@ -49,8 +49,8 @@ class Poller:
             self._touched = False
 
 
-tpad = Poller(display_drv.poll)
-display_drv.subscribe(tpad.callback, event_types=[Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP])
+tpad = Poller(display_drv.broker.poll)
+display_drv.broker.subscribe(tpad.callback, event_types=[Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP])
 
 from gui.core.tgui import Display
 display = Display(ssd, tpad)

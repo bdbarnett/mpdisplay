@@ -280,7 +280,7 @@ class SDL2Display(_BaseDisplay):
 
         self._rotation = value
         
-        for device in self.devices:
+        for device in self.broker.devices:
             if device.type == Devices.TOUCH:
                 device.rotation = value
 

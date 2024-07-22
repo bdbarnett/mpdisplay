@@ -50,7 +50,7 @@ touch_drv = CHSC6X(i2c, irq_pin=16)
 touch_read_func=touch_drv.touch_read
 touch_rotation_table=(0, 5, 6, 3)
 
-touch_dev = display_drv.create_device(
+touch_dev = display_drv.broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,

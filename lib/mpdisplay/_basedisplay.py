@@ -10,6 +10,7 @@ from . import Broker, Devices, np, Area
 from sys import exit, implementation
 import gc
 
+viper = False
 if implementation.name == "micropython":
     try:
         from ._viper import swap_bytes_viper
@@ -20,7 +21,7 @@ if implementation.name == "micropython":
 
 gc.collect()
 
-class _BaseDisplay(Broker):
+class _BaseDisplay:
 
     def __init__(self):
         gc.collect()
@@ -28,6 +29,7 @@ class _BaseDisplay(Broker):
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
         self.draw = None  # Draw class for drawing shapes
+        self.broker = Broker()
 
         # Function to call when the window close button is clicked.
         # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a
@@ -78,7 +80,7 @@ class _BaseDisplay(Broker):
 
         self._rotation = value
 
-        for device in self.devices:
+        for device in self.broker.devices:
             if device.type == Devices.TOUCH:
                 device.rotation = value
 

@@ -17,10 +17,10 @@ Usage:
         fire=Keys.K_SPACE,
     )
 
-    display_drv.subscribe(buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
+    display_drv.broker.subscribe(buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
 
     while True:
-        _ = display_drv.poll()
+        _ = display_drv.broker.poll()
         for button in buttons:
             if button.value() == True:
                 print(f"{button.name} ({button.keyname}) pressed")

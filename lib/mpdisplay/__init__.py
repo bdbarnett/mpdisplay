@@ -18,7 +18,7 @@ Usage:
 - Import the module: `import mpdisplay`
 - Create an instance of the display: `display_drv = mpdisplay.DesktopDisplay()`
 - Create a device driver instance: `events_drv = mpdisplay.EventQueue()`
-- Create a device registration with the display: `events_dev = display_drv.create_device(read=events_drv.read)`
+- Create a device registration with the display: `events_dev = display_drv.broker.create_device(read=events_drv.read)`
 - Use display_drv to interact with the display and all registered devices.
 
 If no display drivers are available, an ImportError will be raised.

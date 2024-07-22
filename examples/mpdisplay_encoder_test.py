@@ -25,7 +25,7 @@ display_drv.vscsad(y_pos)
 draw_line()
 
 while True:
-    if not (e := display_drv.poll()):
+    if not (e := display_drv.broker.poll()):
         continue
     if e.type == Events.MOUSEWHEEL:
         if e.y != 0:

@@ -75,7 +75,7 @@ def loop():
                 )
                 touched_point = None
                 while not touched_point:
-                    event = display_drv.poll()
+                    event = display_drv.broker.poll()
                     if (
                         event
                         and event.type == Events.MOUSEBUTTONDOWN

@@ -45,7 +45,7 @@ for i, color in enumerate(colors):
 
 
 while True:
-    if not (e := display_drv.poll()):
+    if not (e := display_drv.broker.poll()):
         continue
     if e.type == Events.MOUSEBUTTONDOWN:
         x, y = e.pos

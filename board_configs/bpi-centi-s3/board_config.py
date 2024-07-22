@@ -59,7 +59,7 @@ encoder_read_func = encoder_drv.value
 encoder_button = Pin(35, Pin.IN, Pin.PULL_UP)
 encoder_button_func = lambda : not encoder_button.value()
 
-encoder_dev = display_drv.create_device(
+encoder_dev = display_drv.broker.create_device(
     type=Devices.ENCODER,
     read=encoder_read_func,
     read2=encoder_button_func,

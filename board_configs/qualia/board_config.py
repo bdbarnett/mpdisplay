@@ -70,7 +70,7 @@ touch_drv = CST8XX(i2c)
 touch_read_func = touch_drv.touches
 touch_rotation_table=None
 
-touch_dev = display_drv.create_device(
+touch_dev = display_drv.broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,

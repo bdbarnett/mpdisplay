@@ -30,7 +30,7 @@ class Keypad:
         self._rows = rows
 
     def read(self):
-        event = self._display_drv.poll()
+        event = self._display_drv.broker.poll()
         if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             col = x // (self._display_drv.width // self._cols)
