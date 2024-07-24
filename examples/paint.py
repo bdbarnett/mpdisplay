@@ -39,7 +39,7 @@ def paint(x, y, color):
 for i, color in enumerate(colors):
     draw_block(i, color)
 
-
+print("Application loaded.  Select a color and PAINT!")
 while True:
     if not (e := display_drv.broker.poll()):
         continue
