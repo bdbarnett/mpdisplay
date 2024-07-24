@@ -6,8 +6,6 @@ from board_config import display_drv
 from mpdisplay import Events
 
 
-display_drv.rotation = 90
-
 colors = [0xFFFF, 0xF800, 0x07E0, 0x001F, 0x07FF, 0xF81F, 0xFFE0, 0x0000]
 
 on_x_axis = display_drv.width < display_drv.height
