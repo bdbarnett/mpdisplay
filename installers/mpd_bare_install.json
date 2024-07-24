@@ -8,7 +8,8 @@
       ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/__init__.py"],
       ["lib/mpdisplay/_basedisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_basedisplay.py"],
       ["lib/mpdisplay/_busdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_busdisplay.py"],
-      ["lib/mpdisplay/_viper.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_viper.py"]
+      ["lib/mpdisplay/_viper.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_viper.py"],
+      ["lib/mpdisplay_simpletest.py", "github:bdbarnett/examples/mpdispaly_simpletest.py"]
       ],
     "version": "0.1"
   }
