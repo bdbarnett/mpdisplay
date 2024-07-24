@@ -3,14 +3,12 @@ A simple paint application demonstrating the use of MPDisplay.
 """
 
 from board_config import display_drv
-from graphics.palettes import get_palette
 from mpdisplay import Events
 
 
 display_drv.rotation = 90
 
-pal = get_palette()
-colors = [pal.WHITE, pal.RED, pal.GREEN, pal.BLUE, pal.CYAN, pal.MAGENTA, pal.YELLOW, pal.BLACK]
+colors = [0xFFFF, 0xF800, 0x07E0, 0x001F, 0x07FF, 0xF81F, 0xFFE0, 0x0000]
 
 on_x_axis = display_drv.width < display_drv.height
 block_size = min(display_drv.width, display_drv.height) // len(colors)
@@ -22,7 +20,7 @@ selected = 0
 def draw_block(index, color):
     x, y = (index * block_size, 0) if on_x_axis else (0, index * block_size)
     if index == selected:
-        display_drv.fill_rect(x, y, block_size, block_size, pal.GREY)
+        display_drv.fill_rect(x, y, block_size, block_size, 0x8410)
         display_drv.fill_rect(
             x + selected_pad,
             y + selected_pad,
