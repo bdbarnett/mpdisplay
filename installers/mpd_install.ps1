@@ -23,6 +23,7 @@ git clone https://github.com/bdbarnett/console.git $REPO/console
 git clone https://github.com/bdbarnett/playing_cards.git $REPO/playing_cards
 git clone https://github.com/bdbarnett/testris.git $REPO/testris
 git clone https://github.com/peterhinch/micropython-touch.git $REPO/micropython-touch
+git clone https://github.com/adafruit/Adafruit_CircuitPython_Ticks $REPO/Adafruit_CircuitPython_Ticks
 
 # If $TARGET directory does not exist, create it
 if (!(Test-Path -Path $TARGET)) {
@@ -52,6 +53,8 @@ Copy-Item -Path $REPO/playing_cards/examples -Destination $TARGET/ -Recurse -For
 Copy-Item -Path $REPO/testris/testris.py -Destination $TARGET/examples/ -Force
 
 Copy-Item -Path $REPO/micropython-touch/gui -Destination $TARGET/ -Recurse -Force
+
+Copy-Item -Path $REPO/Adafruit_CircuitPython_Ticks/adafruit_ticks.py -Destination $TARGET/lib/ -Force
 
 # Launch the test app
 Write-Host "`nInstallation complete.  To run the '$LAUNCH' example, type the following:"
