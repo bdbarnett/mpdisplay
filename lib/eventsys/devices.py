@@ -280,6 +280,8 @@ class Broker(_Device):
     def __init__(self, owner=None):
         super().__init__()
         self.owner = owner
+        if hasattr(owner, "touch_scale"):
+            self.touch_scale = owner.touch_scale
         self.devices = []  # List of devices to poll
         self._device_callbacks = dict()
         # Function to call when the window close button is clicked.
@@ -431,8 +433,8 @@ class QueueDevice(_Device):
         super().__init__(*args, **kwargs)
         if self._data is None:
             self._data = Events.filter
-        if hasattr(self._broker.owner, "touch_scale"):
-            self.scale = self._broker.owner.touch_scale
+        if hasattr(self._broker, "touch_scale"):
+            self.scale = self._broker.touch_scale
         else:
             self.scale = 1
 
