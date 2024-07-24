@@ -212,7 +212,8 @@ class _Device:
     def broker(self, broker):
         self._broker = broker
         if broker is not None and self.type == Devices.TOUCH:
-            self.rotation = broker.rotation
+            if broker.owner is not None:
+                self.rotation = broker.owner.rotation
 
     @property
     def user_data(self):
@@ -275,7 +276,8 @@ class Broker(_Device):
     type = Devices.BROKER
     responses = Events.filter
 
-    def __init__(self):
+    def __init__(self, owner=None):
+        self.owner = owner
         super().__init__()
         self.devices = []  # List of devices to poll
         self._device_callbacks = dict()

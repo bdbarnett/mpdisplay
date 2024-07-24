@@ -30,7 +30,7 @@ class _BaseDisplay:
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
         self.draw = None  # Draw class for drawing shapes
-        self.broker = Broker()
+        self.broker = Broker(self)
 
         # Function to call when the window close button is clicked.
         # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a
