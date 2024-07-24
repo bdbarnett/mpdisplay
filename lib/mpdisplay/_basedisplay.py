@@ -31,12 +31,6 @@ class _BaseDisplay:
         self.requires_byte_swap = False
         self.draw = None  # Draw class for drawing shapes
         self.broker = Broker(self)
-
-        # Function to call when the window close button is clicked.
-        # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a
-        # function that cleans up resources and calls `sys.exit()`.
-        # .poll() must be called periodically to check for the quit event.
-        self.quit_func = exit
         gc.collect()
 
     ############### Common API Methods ################
@@ -99,34 +93,10 @@ class _BaseDisplay:
             value = value * 90
         return value
 
-    @property
-    def quit_func(self):
-        """
-        The function to call when the window close button is clicked.
-        """
-        return self._quit_func
-
-    @quit_func.setter
-    def quit_func(self, value):
-        """
-        Sets the function to call when the window close button is clicked.
-
-        :param value: The function to call.
-        """
-        if not callable(value):
-            raise ValueError("quit_func must be callable")
-        self._quit_func = value
-
     @staticmethod
     def alloc_buffer(size):
         # Define how buffers are allocated.  Allows being overridden by platforms with DMA specific allocations, such as ESP32's heap_caps.
         return bytearray(size)
-
-    def quit(self):
-        """
-        Call the quit function.
-        """
-        self._quit_func()
 
     def fill(self, color):
         """

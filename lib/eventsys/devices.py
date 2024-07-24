@@ -30,6 +30,7 @@ Devices can be created with the following types:
 
 from micropython import const
 from .events import Events
+from sys import exit
 
 
 _DEFAULT_TOUCH_ROTATION_TABLE = (0b000, 0b101, 0b110, 0b011)
@@ -277,10 +278,15 @@ class Broker(_Device):
     responses = Events.filter
 
     def __init__(self, owner=None):
-        self.owner = owner
         super().__init__()
+        self.owner = owner
         self.devices = []  # List of devices to poll
         self._device_callbacks = dict()
+        # Function to call when the window close button is clicked.
+        # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a
+        # function that cleans up resources and calls `sys.exit()`.
+        # .poll() must be called periodically to check for the quit event.
+        self._quit_func = exit
 
     def subscribe(self, callback, event_types=None, device_types=None):
         """
@@ -369,6 +375,30 @@ class Broker(_Device):
             self.devices.remove(dev)
             dev.broker = None
 
+    @property
+    def quit_func(self):
+        """
+        The function to call when the window close button is clicked.
+        """
+        return self._quit_func
+
+    @quit_func.setter
+    def quit_func(self, value):
+        """
+        Sets the function to call when the window close button is clicked.
+
+        :param value: The function to call.
+        """
+        if not callable(value):
+            raise ValueError("quit_func must be callable")
+        self._quit_func = value
+
+    def quit(self):
+        """
+        Call the quit function.
+        """
+        self._quit_func()
+
     def _poll(self):
         """
         Polls the registered devices for events.
@@ -401,8 +431,8 @@ class QueueDevice(_Device):
         super().__init__(*args, **kwargs)
         if self._data is None:
             self._data = Events.filter
-        if hasattr(self._broker, "touch_scale"):
-            self.scale = self._broker.touch_scale
+        if hasattr(self._broker.owner, "touch_scale"):
+            self.scale = self._broker.owner.touch_scale
         else:
             self.scale = 1
 
@@ -501,9 +531,9 @@ class TouchDevice(_Device):
             if self._mask & SWAP_XY:
                 x, y = y, x
             if self._mask & REVERSE_X:
-                x = self._broker.width - x - 1
+                x = self._broker.owner.width - x - 1
             if self._mask & REVERSE_Y:
-                y = self._broker.height - y - 1
+                y = self._broker.owner.height - y - 1
             self._state = (x, y)
             if last_pos is not None:
                 last_x, last_y = last_pos
