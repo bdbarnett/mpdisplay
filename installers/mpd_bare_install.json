@@ -6,9 +6,8 @@
       ["lib/eventsys/events.py", "github:bdbarnett/mpdisplay/lib/eventsys/events.py"],
       ["lib/eventsys/keys.py", "github:bdbarnett/mpdisplay/lib/eventsys/keys.py"],
       ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/__init__.py"],
-      ["lib/mpdisplay/_basedisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_basedisplay.py"],
-      ["lib/mpdisplay/_busdisplay.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_busdisplay.py"],
       ["lib/mpdisplay/_viper.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_viper.py"],
+      ["lib/mpdisplay/busdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/busdisplay/__init__.py"],
       ["lib/paint.py", "github:bdbarnett/mpdisplay/examples/paint.py"]
       ],
     "version": "0.1"

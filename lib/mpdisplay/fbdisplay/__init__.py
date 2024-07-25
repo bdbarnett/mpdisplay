@@ -6,7 +6,9 @@
 FBDisplay class for MPDisplay.
 """
 
-from . import _BaseDisplay, np, Area
+from .. import _BaseDisplay, np, Area
+if not np:
+    raise ImportError("This module depends on the numpy module. Please install it.")
 
 
 class FBDisplay(_BaseDisplay):

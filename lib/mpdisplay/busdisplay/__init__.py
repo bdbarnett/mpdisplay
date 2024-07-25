@@ -6,7 +6,7 @@
 BusDisplay class for MicroPython and CircuitPython.
 """
 
-from . import _BaseDisplay, Area
+from .. import _BaseDisplay, Area
 from micropython import const
 import struct
 import sys
@@ -22,7 +22,8 @@ elif sys.implementation.name == "circuitpython":
     import digitalio
     from time import sleep
 
-    sleep_ms = lambda ms: sleep(ms / 1000)
+    def sleep_ms(ms):
+        return sleep(ms / 1000)
 else:
     raise ImportError("BusDisplay is not supported on this platform.")
 

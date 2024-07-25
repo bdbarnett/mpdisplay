@@ -6,8 +6,10 @@
 PGDisplay class for CPython.
 """
 
-from . import _BaseDisplay, Events, Devices, Area
 import pygame as pg
+from .. import _BaseDisplay, events_enabled, Area
+if events_enabled:
+    from .. import Events, Devices
 
 
 class PGDisplay(_BaseDisplay):
@@ -79,6 +81,18 @@ class PGDisplay(_BaseDisplay):
 
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
+
+    def read(self):
+        """
+        Polls for an event and returns the event type and data.
+
+        :return: The event type and data.
+        :rtype: tuple
+        """
+        if event := pg.event.poll():
+            if event.type in Events.filter:
+                return event
+        return None
 
     def blit_rect(self, buffer, x, y, w, h):
         """
@@ -195,9 +209,10 @@ class PGDisplay(_BaseDisplay):
 
         self._rotation = value
 
-        for device in self.broker.devices:
-            if device.type == Devices.TOUCH:
-                device.rotation = value
+        if events_enabled:
+            for device in self.broker.devices:
+                if device.type == Devices.TOUCH:
+                    device.rotation = value
 
         self.init()
 
@@ -250,26 +265,3 @@ class PGDisplay(_BaseDisplay):
                 self._window.blit(buffer, bfaRect, bfaRect)
 
         pg.display.flip()
-
-
-class PGEventQueue():
-    """
-    A class to poll events in pygame.
-    """
-    def __init__(self):
-        """
-        Initializes the PGEvents instance.
-        """
-        pg.init()
-
-    def read(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        if event := pg.event.poll():
-            if event.type in Events.filter:
-                return event
-        return None

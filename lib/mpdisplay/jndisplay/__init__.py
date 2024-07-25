@@ -6,7 +6,7 @@
 JNDisplay class for MPDisplay on Jupyter Notebook
 """
 
-from . import _BaseDisplay, np, Area
+from .. import _BaseDisplay, Area
 from IPython.display import display, update_display
 from PIL import Image, ImageDraw
 

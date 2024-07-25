@@ -36,8 +36,8 @@ Copy-Item -Path $REPO/$BOARD_CONFIG -Destination $TARGET/ -Force
 Copy-Item -Path $REPO/mpdisplay/lib -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/mpdisplay/fonts -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/mpdisplay/examples -Destination $TARGET/ -Recurse -Force
-Copy-Item -Path $REPO/mpdisplay/utils/* -Destination $TARGET/lib/ -Force
-Copy-Item -Path $REPO/mpdisplay/configs/* -Destination $TARGET/ -Force
+Copy-Item -Path $REPO/mpdisplay/extras/* -Destination $TARGET/lib/ -Force
+Copy-Item -Path $REPO/mpdisplay/app_configs/* -Destination $TARGET/ -Force
 
 Copy-Item -Path $REPO/lcd_bus/lcd_bus -Destination $TARGET/lib/ -Recurse -Force
 
