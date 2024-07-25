@@ -33,7 +33,7 @@ Implementation Notes
 # rather than a component of the displayio library
 try:
     from fourwire import FourWire
-    from mpdisplay import BusDisplay
+    from mpdisplay.busdisplay import BusDisplay
     from i2cdisplaybus import I2CDisplayBus
 except ImportError:
     from displayio import FourWire
