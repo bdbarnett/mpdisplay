@@ -46,8 +46,8 @@ if implementation.name == "micropython":
     try:
         from ._viper import swap_bytes
         viper = True
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"MPDisplay:  {e}")
 
 if not viper:
     if np:
