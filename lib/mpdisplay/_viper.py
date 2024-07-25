@@ -1,6 +1,6 @@
 
 @micropython.viper
-def swap_bytes_viper(buf: ptr8, buf_size_px: int):
+def swap_bytes(buf: ptr8, buf_size_px: int):
     """
     Swap the bytes in a buffer of RGB565 data.
 
