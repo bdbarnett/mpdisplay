@@ -1,6 +1,10 @@
 {
     "urls": [
       ["lib/area.py", "github:bdbarnett/mpdisplay/lib/area.py"],
+      ["lib/eventsys/__init__.py", "github:bdbarnett/mpdisplay/lib/eventsys/__init__.py"],
+      ["lib/eventsys/devices.py", "github:bdbarnett/mpdisplay/lib/eventsys/devices.py"],
+      ["lib/eventsys/events.py", "github:bdbarnett/mpdisplay/lib/eventsys/events.py"],
+      ["lib/eventsys/keys.py", "github:bdbarnett/mpdisplay/lib/eventsys/keys.py"],
       ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/__init__.py"],
       ["lib/mpdisplay/_viper.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_viper.py"],
       ["lib/mpdisplay/busdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/busdisplay/__init__.py"],
