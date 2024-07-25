@@ -8,7 +8,8 @@
       ["lib/mpdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/__init__.py"],
       ["lib/mpdisplay/_viper.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/_viper.py"],
       ["lib/mpdisplay/busdisplay/__init__.py", "github:bdbarnett/mpdisplay/lib/mpdisplay/busdisplay/__init__.py"],
-      ["lib/paint.py", "github:bdbarnett/mpdisplay/examples/paint.py"]
+      ["lib/paint.py", "github:bdbarnett/mpdisplay/examples/paint.py"],
+      ["lib/mpdisplay_simpletest.py", "github:bdbarnett/mpdisplay/examples/mpdisplay_simpletest.py"]
       ],
     "version": "0.1"
   }
