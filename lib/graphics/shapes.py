@@ -341,9 +341,11 @@ def blit_rect(canvas, buf, x, y, w, h):
     :param y: Y coordinate of the top-left corner of the area
     :param w: Width of the area
     :param h: Height of the area
+    :return: Area object representing the blitted area
     """
-    if hasattr(canvas, "blit_rect"):
-        return canvas.blit_rect(buf, x, y, w, h)
+
+    # if hasattr(canvas, "blit_rect"):
+    #     return canvas.blit_rect(buf, x, y, w, h)
 
     BPP = 2
 
@@ -360,6 +362,48 @@ def blit_rect(canvas, buf, x, y, w, h):
         dest_begin = ((y + row) * canvas.width + x) * BPP
         dest_end = dest_begin + w * BPP
         canvas.buffer[dest_begin : dest_end] = buf[source_begin : source_end]
+    return Area(x, y, w, h)
+
+def blit_transparent(canvas, buf, x, y, w, h, key):
+    """
+    Blit a buffer with transparency.
+
+    :param buf: Buffer to blit.  Must already be byte-swapped if necessary.
+    :type buf: memoryview
+    :param x: X-coordinate to blit to
+    :type x: int
+    :param y: Y-coordinate to blit to
+    :type y: int
+    :param w: Width of the buffer
+    :type w: int
+    :param h: Height of the buffer
+    :type h: int
+    :param key: Key value for transparency
+    :type key: int
+    """
+    BPP = canvas.color_depth // 8
+    key_bytes = key.to_bytes(BPP, "little")
+    stride = w * BPP
+    for j in range(h):
+        rowstart = j * stride
+        colstart = 0
+        # iterate over each pixel looking for the first non-key pixel
+        while colstart < stride:
+            startoffset = rowstart + colstart
+            if buf[startoffset : startoffset + BPP] != key_bytes:
+                # found a non-key pixel
+                # then iterate over each pixel looking for the next key pixel
+                colend = colstart
+                while colend < stride:
+                    endoffset = rowstart + colend
+                    if buf[endoffset : endoffset + BPP] == key_bytes:
+                        break
+                    colend += BPP
+                # blit the non-key pixels
+                blit_rect(canvas, buf[rowstart + colstart : rowstart + colend], x + colstart // BPP, y + j, (colend - colstart) // BPP, 1)
+                colstart = colend
+            else:
+                colstart += BPP
     return Area(x, y, w, h)
 
 def circle(canvas, x0, y0, r, c, f=False):

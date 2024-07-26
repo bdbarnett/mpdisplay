@@ -37,10 +37,9 @@ from .write import write, write_width
 
 
 class ExtendedShapes:
-    # Used by framebuf_plus.py
-    # Does not include shapes from BasicShapes
-    fill_rect = shapes.fill_rect
+    # Does not include shapes from framebuf.FrameBuffer
     blit_rect = shapes.blit_rect
+    blit_transparent = shapes.blit_transparent
     circle = shapes.circle
     triangle = shapes.triangle
     round_rect = shapes.round_rect
@@ -93,6 +92,20 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
     @property
     def buffer(self):
         return self._buffer
+    
+    def fill_rect(self, x, y, w, h, c):
+        """
+        Fill the given rectangle with the given color.
+
+        Args:
+            x (int): x coordinate
+            y (int): y coordinate
+            w (int): Width in pixels
+            h (int): Height in pixels
+            c (int): 565 encoded color
+        """
+        super().fill_rect(x, y, w, h, c)
+        return Area(x, y, w, h)
 
     def pixel(self, x, y, c):
         """
