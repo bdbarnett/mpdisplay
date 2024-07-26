@@ -66,20 +66,20 @@ class FBDisplay(_BaseDisplay):
             arr[begin : end] = color
         return Area(left, top, right - left, bottom - top)
 
-    def blit_rect(self, buf, x, y, width, height):
+    def blit_rect(self, buf, x, y, w, h):
         if self.requires_byte_swap:
-            self._swap_bytes(buf, width * height)
+            self._swap_bytes(buf, w * h)
 
         BPP = self.color_depth // 8
-        if x < 0 or y < 0 or x + width > self.width or y + height > self.height:
+        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
             raise ValueError("The provided x, y, w, h values are out of range")
-        if len(buf) != width * height * BPP:
+        if len(buf) != w * h * BPP:
             raise ValueError("The source buffer is not the correct size")
         arr = np.frombuffer(self._buffer, dtype=np.uint8)
-        for row in range(height):
-            source_begin = row * width * BPP
-            source_end = source_begin + width * BPP
+        for row in range(h):
+            source_begin = row * w * BPP
+            source_end = source_begin + w * BPP
             dest_begin = ((y + row) * self.width + x) * BPP
-            dest_end = dest_begin + width * BPP
+            dest_end = dest_begin + w * BPP
             arr[dest_begin : dest_end] = buf[source_begin : source_end]
-        return Area(x, y, width, height)
+        return Area(x, y, w, h)

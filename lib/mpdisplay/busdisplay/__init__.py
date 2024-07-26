@@ -269,7 +269,7 @@ class BusDisplay(_BaseDisplay):
         # Set the display inversion mode
         self.invert_colors(self._invert)
 
-    def blit_rect(self, buf, x, y, width, height):
+    def blit_rect(self, buf, x, y, w, h):
         """
         Blit a buffer to the display.
 
@@ -282,26 +282,26 @@ class BusDisplay(_BaseDisplay):
         :type x: int
         :param y: The y-coordinate of the top-left corner of the rectangle.
         :type y: int
-        :param width: The width of the rectangle.
-        :type width: int
-        :param height: The height of the rectangle.
-        :type height: int
+        :param w: The width of the rectangle.
+        :type w: int
+        :param h: The height of the rectangle.
+        :type h: int
         :param buf: The buffer containing the pixel data to be written to the display.
         :type buf: memoryview
         """
         if self.requires_byte_swap:
-            self._swap_bytes(buf, width * height)
+            self._swap_bytes(buf, w * h)
 
         x1 = x + self._colstart
-        x2 = x1 + width - 1
+        x2 = x1 + w - 1
         y1 = y + self._rowstart
-        y2 = y1 + height - 1
+        y2 = y1 + h - 1
 
         self.set_window(x1, y1, x2, y2)
         self._tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
-        return Area(x1, y1, width, height)
+        return Area(x1, y1, w, h)
 
-    def fill_rect(self, x, y, width, height, color):
+    def fill_rect(self, x, y, w, h, c):
         """
         Draw a rectangle at the given location, size and filled with color.
 
@@ -314,23 +314,23 @@ class BusDisplay(_BaseDisplay):
         :type x: int
         :param y: The y-coordinate of the top-left corner of the rectangle.
         :type y: int
-        :param width: The width of the rectangle in pixels.
-        :type width: int
-        :param height: The height of the rectangle in pixels.
-        :type height: int
-        :param color: The color to fill the rectangle with, encoded as a 565 color.
-        :type color: int
+        :param w: The width of the rectangle in pixels.
+        :type w: int
+        :param h: The height of the rectangle in pixels.
+        :type h: int
+        :param c: The color to fill the rectangle with, encoded as a 565 color.
+        :type c: int
         """
-        color = color & 0xFFFF  # Ensure color is 16-bit for circuitpython
-        if height > width:
-            raw_data = struct.pack("<H", color) * height
-            for col in range(x, x + width):
-                self.blit_rect(memoryview(raw_data[:]), col, y, 1, height)
+        c = c & 0xFFFF  # Ensure color is 16-bit for circuitpython
+        if h > w:
+            raw_data = struct.pack("<H", c) * h
+            for col in range(x, x + w):
+                self.blit_rect(memoryview(raw_data[:]), col, y, 1, h)
         else:
-            raw_data = struct.pack("<H", color) * width
-            for row in range(y, y + height):
-                self.blit_rect(memoryview(raw_data[:]), x, row, width, 1)
-        return Area(x, y, width, height)
+            raw_data = struct.pack("<H", c) * w
+            for row in range(y, y + h):
+                self.blit_rect(memoryview(raw_data[:]), x, row, w, 1)
+        return Area(x, y, w, h)
 
     def deinit(self):
         """

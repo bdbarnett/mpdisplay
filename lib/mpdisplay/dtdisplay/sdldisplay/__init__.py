@@ -193,7 +193,7 @@ class SDLDisplay(_BaseDisplay):
         self._show(blitRect)
         return Area(x, y, w, h)
 
-    def fill_rect(self, x, y, w, h, color):
+    def fill_rect(self, x, y, w, h, c):
         """
         Fill a rectangle with a color.
 
@@ -208,11 +208,11 @@ class SDLDisplay(_BaseDisplay):
         :type w: int
         :param h: The height of the rectangle.
         :type h: int
-        :param color: The color of the rectangle.
+        :param c: The color of the rectangle.
         :type color: int
         """
         fillRect = SDL_Rect(x, y, w, h)
-        r, g, b = self.color_rgb(color)
+        r, g, b = self.color_rgb(c)
 
         retcheck(SDL_SetRenderTarget(self._renderer, self._buffer))  # Set the render target to the texture
         retcheck(SDL_SetRenderDrawColor(self._renderer, r, g, b, 255))  # Set the color to fill the rectangle

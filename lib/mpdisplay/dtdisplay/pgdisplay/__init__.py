@@ -119,7 +119,7 @@ class PGDisplay(_BaseDisplay):
         self._show(blitRect)
         return Area(x, y, w, h)
 
-    def fill_rect(self, x, y, w, h, color):
+    def fill_rect(self, x, y, w, h, c):
         """
         Fill a rectangle with a color.
 
@@ -134,11 +134,11 @@ class PGDisplay(_BaseDisplay):
         :type w: int
         :param h: The height of the rectangle.
         :type h: int
-        :param color: The color of the rectangle.
-        :type color: int
+        :param c: The color of the rectangle.
+        :type c: int
         """
         fillRect = pg.Rect(x, y, w, h)
-        self._buffer.fill(self.color_rgb(color), fillRect)
+        self._buffer.fill(self.color_rgb(c), fillRect)
         self._show(fillRect)
         return Area(x, y, w, h)
 

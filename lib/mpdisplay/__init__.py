@@ -147,7 +147,7 @@ class _BaseDisplay:
         self.fill_rect(0, 0, self.width, self.height, color)
         return Area(0, 0, self.width, self.height)
 
-    def pixel(self, x, y, color):
+    def pixel(self, x, y, c):
         """
         Set a pixel on the display.
 
@@ -155,10 +155,10 @@ class _BaseDisplay:
         :type x: int
         :param y: The y-coordinate of the pixel.
         :type y: int
-        :param color: The color of the pixel.
-        :type color: int
+        :param c: The color of the pixel.
+        :type c: int
         """
-        self.blit_rect(bytearray(color.to_bytes(2, "little")), x, y, 1, 1)
+        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
         return Area(x, y, 1, 1)
 
     def scroll(self, dx, dy):

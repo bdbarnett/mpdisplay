@@ -63,26 +63,26 @@ class JNDisplay(_BaseDisplay):
         self._draw.rectangle([(left, top), (right, bottom)], fill=(r, g, b))
         return Area(left, top, right - left, bottom - top)
 
-    def blit_rect(self, buf, x, y, width, height):
+    def blit_rect(self, buf, x, y, w, h):
         if self.requires_byte_swap:
-            self._swap_bytes(buf, width * height)
+            self._swap_bytes(buf, w * h)
 
         BPP = self.color_depth // 8
-        if x < 0 or y < 0 or x + width > self.width or y + height > self.height:
+        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
             raise ValueError("The provided x, y, w, h values are out of range")
-        if len(buf) != width * height * BPP:
+        if len(buf) != w * h * BPP:
             raise ValueError("The source buffer is not the correct size")
 
-        for j in range(height):
-            for i in range(width):
-                color = buf[(j * width + i) * BPP:(j * width + i) * BPP + BPP]
+        for j in range(h):
+            for i in range(w):
+                color = buf[(j * w + i) * BPP:(j * w + i) * BPP + BPP]
                 self.pixel(x + i, y + j, color)
         
-        return Area(x, y, width, height)
+        return Area(x, y, w, h)
 
-    def pixel(self, x, y, color):
+    def pixel(self, x, y, c):
         if self.requires_byte_swap:
-            color = ((color & 0xFF00) >> 8) | ((color & 0x00FF) << 8)
-        r, g, b = self.color_rgb(color)
+            c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
+        r, g, b = self.color_rgb(c)
         self._draw.point((x, y), fill=(r, g, b))
         return Area(x, y, 1, 1)

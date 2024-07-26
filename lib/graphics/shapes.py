@@ -24,29 +24,29 @@ from . import Area
 import math
 
 
-def pixel(canvas, x0, y0, c):
+def pixel(canvas, x, y, c):
     """A function to pass through in input pixel functionality."""
     # This was added to mainitatn the abstraction between gfx and the dislay library
     if hasattr(canvas, "pixel"):
-        canvas.pixel(x0, y0, c)
+        canvas.pixel(x, y, c)
     else:
         rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
-        canvas.buffer[(y0 * canvas.width + x0) * 2:(y0 * canvas.width + x0) * 2 + 2] = rgb565_color
-    return Area(x0, y0, 1, 1)
+        canvas.buffer[(y * canvas.width + x) * 2:(y * canvas.width + x) * 2 + 2] = rgb565_color
+    return Area(x, y, 1, 1)
 
-def fill_rect(canvas, x0, y0, w, h, c):
+def fill_rect(canvas, x, y, w, h, c):
     """Filled rectangle drawing function.  Will draw a filled
     rectangle starting in the upper left x0, y0 position and w, h
     pixels in size."""
-    if y0 < -h or y0 > canvas.height or x0 < -w or x0 > canvas.width:
+    if y < -h or y > canvas.height or x < -w or x > canvas.width:
         return
     if hasattr(canvas, "fill_rect"):
-        canvas.fill_rect(x0, y0, w, h, c)
+        canvas.fill_rect(x, y, w, h, c)
     else:
-        for j in range(y0, y0 + h):
-            for i in range(x0, x0 + w):
+        for j in range(y, y + h):
+            for i in range(x, x + w):
                 pixel(canvas, i, j, c)
-    return Area(x0, y0, w, h)
+    return Area(x, y, w, h)
 
 def fill(canvas, c):
     """Fill the entire canvas with a color."""
