@@ -187,6 +187,24 @@ class DisplayBuffer(framebuf.FrameBuffer):
             _bounce4(bb, buf[start:], remainder * wd // 2, clut)
             self.display_drv.blit_rect(bb, 0, chunks * lines, wd, remainder)
 
+    def blit_rect(self, buf, x, y, w, h):
+        if self.needs_swap:
+            # swap_bytes(buf, w * h)
+            pass
+
+        BPP = self._color_depth // 8
+        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
+            raise ValueError("The provided x, y, w, h values are out of range")
+        if len(buf) != w * h * BPP:
+            raise ValueError("The source buffer is not the correct size")
+        for row in range(h):
+            source_begin = row * w * BPP
+            source_end = source_begin + w * BPP
+            dest_begin = ((y + row) * self.width + x) * BPP
+            dest_end = dest_begin + w * BPP
+            self._mvb[dest_begin : dest_end] = buf[source_begin : source_end]
+        return Area(x, y, w, h)
+
     @staticmethod
     def color(r, g, b, idx=None):
         """

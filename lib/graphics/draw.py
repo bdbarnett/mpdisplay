@@ -25,6 +25,8 @@ class Draw:
         return shapes.blit(self.canvas, source, x, y, key, palette)
 
     def blit_rect(self, buf, x, y, w, h):
+        if hasattr(self.canvas, "blit_rect"):
+            return self.canvas.blit_rect(buf, x, y, w, h)
         return shapes.blit_rect(self.canvas, buf, x, y, w, h)
 
     def blit_tranparent(self, buf, x, y, w, h, key=None):

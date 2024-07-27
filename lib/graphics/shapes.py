@@ -343,9 +343,8 @@ def blit_rect(canvas, buf, x, y, w, h):
     :param h: Height of the area
     :return: Area object representing the blitted area
     """
-
-    # if hasattr(canvas, "blit_rect"):
-    #     return canvas.blit_rect(buf, x, y, w, h)
+    if hasattr(canvas, "blit_rect"):
+        return canvas.blit_rect(buf, x, y, w, h)
 
     BPP = 2
 
