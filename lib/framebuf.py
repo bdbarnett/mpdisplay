@@ -328,6 +328,14 @@ class FrameBuffer(BasicShapes):
             self._format = GS8Format()
         else:
             raise ValueError("invalid format")
+        
+    @property
+    def width(self):
+        return self._width
+    
+    @property
+    def height(self):
+        return self._height
 
     def fill_rect(self, x, y, w, h, c):
         """Draw a filled rectangle at the given location, size and color."""
