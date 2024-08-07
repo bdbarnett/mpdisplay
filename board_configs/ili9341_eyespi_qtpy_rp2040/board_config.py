@@ -4,7 +4,7 @@ from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-from mpdisplay import Devices
+from eventsys.devices import Devices
 import gc
 
 gc.collect()

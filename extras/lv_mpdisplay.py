@@ -7,7 +7,8 @@ lv_mpdisplay.py - LVGL driver shim for MPDisplay
 """
 
 import lvgl as lv
-from mpdisplay import Events, Devices
+from eventsys.events import Events
+from eventsys.devices import Devices
 
 
 if not lv.is_initialized():

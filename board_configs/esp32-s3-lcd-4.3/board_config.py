@@ -4,7 +4,7 @@ from lcd_bus import RGBBus
 from mpdisplay.busdisplay import BusDisplay
 from machine import I2C, Pin
 from gt911 import GT911
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 display_bus = RGBBus(

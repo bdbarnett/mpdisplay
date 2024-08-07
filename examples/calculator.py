@@ -6,7 +6,7 @@ from board_config import display_drv
 from touch_keypad import Keypad
 from time import sleep
 from graphics.framebuf_plus import FrameBuffer, RGB565
-from mpdisplay import Keys
+from eventsys.keys import Keys
 from graphics.palettes import get_palette
 
 

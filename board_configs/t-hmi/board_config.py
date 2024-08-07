@@ -4,7 +4,7 @@ from lcd_bus import I80Bus
 from st7789 import ST7789
 from machine import SPI, Pin  # See the note about reset below
 from xpt2046 import Touch
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 display_bus = I80Bus(

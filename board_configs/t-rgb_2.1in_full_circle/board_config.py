@@ -5,7 +5,7 @@ from st7701 import ST7701, LCDPins
 from machine import Pin, I2C
 from xl9535 import XL9535
 from cst8xx import CST8XX
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 display_bus = RGBBus(

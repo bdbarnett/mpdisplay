@@ -1,5 +1,5 @@
 from board_config import display_drv
-from mpdisplay import Events
+from eventsys.events import Events
 
 
 while True:

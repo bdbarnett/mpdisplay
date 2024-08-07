@@ -4,7 +4,7 @@ from lcd_bus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from cst8xx import CST8XX
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 display_bus = SPIBus(

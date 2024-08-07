@@ -4,7 +4,7 @@ from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, SPI
 from xpt2046 import Touch
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 display_bus = SPIBus(
     dc=5,

@@ -38,9 +38,6 @@ class JNDisplay(_BaseDisplay):
     def show(self):
         update_display(self._buffer, display_id=self._display_id)
 
-    def refesh(self):
-        self.show()
-
     ############### Required API Methods ################
 
     def init(self):

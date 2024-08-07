@@ -7,7 +7,7 @@ from lcd_bus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 """
 The Nucleo-H743ZI/Nucleo-H743ZI2 do not have SPI1 defined.

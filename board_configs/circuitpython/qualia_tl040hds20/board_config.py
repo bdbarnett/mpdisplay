@@ -8,7 +8,7 @@ import busio
 import board
 import adafruit_focaltouch
 from mpdisplay.fbdisplay import FBDisplay
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 tft_pins = dict(board.TFT_PINS)

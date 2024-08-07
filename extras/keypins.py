@@ -26,7 +26,8 @@ Usage:
                 print(f"{button.name} ({button.keyname}) pressed")
 """
 
-from mpdisplay import Events, Keys
+from eventsys.events import Events
+from eventsys.keys import Keys
 
 
 class KeyPins:

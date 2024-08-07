@@ -37,9 +37,6 @@ class FBDisplay(_BaseDisplay):
     def show(self):
         self._raw_buffer.refresh()
 
-    def refesh(self):
-        self._raw_buffer.refresh()
-
     ############### Required API Methods ################
 
     def init(self):

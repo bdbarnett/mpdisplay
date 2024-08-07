@@ -7,19 +7,15 @@ SDL2Display class for MicroPython on Linux and CPython on available platforms.
 """
 
 from .sdl2_lib import (
-    SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_PollEvent,
-    SDL_DestroyWindow, SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor,
-    SDL_RenderPresent, SDL_RenderSetLogicalSize, SDL_SetWindowSize, SDL_RenderCopyEx,
-    SDL_SetRenderTarget, SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy,
-    SDL_UpdateTexture, SDL_CreateTexture, SDL_GetKeyName, SDL_Rect, SDL_Event, SDL_QUIT,
+    SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_DestroyWindow,
+    SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor, SDL_RenderPresent,
+    SDL_RenderSetLogicalSize, SDL_SetWindowSize, SDL_RenderCopyEx, SDL_SetRenderTarget, 
+    SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy, SDL_UpdateTexture, SDL_CreateTexture,
     SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGB888, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET,
     SDL_BLENDMODE_NONE, SDL_RENDERER_ACCELERATED, SDL_RENDERER_PRESENTVSYNC, SDL_WINDOWPOS_CENTERED,
-    SDL_WINDOW_SHOWN, SDL_INIT_EVERYTHING, SDL_BUTTON_LMASK, SDL_BUTTON_MMASK, SDL_BUTTON_RMASK,
-    SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL, SDL_KEYDOWN, SDL_KEYUP,
+    SDL_WINDOW_SHOWN, SDL_INIT_EVERYTHING, SDL_Rect,
 )
-from .. import _BaseDisplay, events_enabled, Area
-if events_enabled:
-    from .. import Events, Devices
+from .. import _BaseDisplay, Area
 from sys import implementation
 if implementation.name == 'cpython':
     import ctypes
@@ -27,25 +23,11 @@ if implementation.name == 'cpython':
 else:
     is_cpython = False
 
+try:
+    from ._poll import poll  # noqa: F401
+except Exception:
+    pass
 
-def _convert(e):
-    if e.type == SDL_MOUSEMOTION:
-        l = 1 if e.motion.state & SDL_BUTTON_LMASK else 0
-        m = 1 if e.motion.state & SDL_BUTTON_MMASK else 0
-        r = 1 if e.motion.state & SDL_BUTTON_RMASK else 0
-        evt = Events.Motion(e.type, (e.motion.x, e.motion.y), (e.motion.xrel, e.motion.yrel), (l, m, r), e.motion.which != 0, e.motion.windowID)
-    elif e.type in (SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP):
-        evt = Events.Button(e.type, (e.button.x, e.button.y), e.button.button, e.button.which != 0, e.button.windowID)
-    elif e.type == SDL_MOUSEWHEEL:
-        evt = Events.Wheel(e.type, e.wheel.direction != 0, e.wheel.x, e.wheel.y, e.wheel.preciseX, e.wheel.preciseY, e.wheel.which != 0, e.wheel.windowID)
-    elif e.type in (SDL_KEYDOWN, SDL_KEYUP):
-        name = SDL_GetKeyName(e.key.keysym.sym)
-        evt = Events.Key(e.type, name, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.scancode, e.key.windowID)
-    elif e.type == SDL_QUIT:
-        evt = Events.Quit(e.type)
-    else:
-        evt = Events.Unknown(e.type)
-    return evt
 
 def retcheck(retvalue):
     # Check the return value of an SDL function and raise an exception if it's not 0
@@ -105,7 +87,6 @@ class SDLDisplay(_BaseDisplay):
         self._window_flags = window_flags
         self._scale = scale
         self._buffer = None
-        self._event = SDL_Event()
 
         # Determine the pixel format
         if color_depth == 32:
@@ -131,22 +112,6 @@ class SDLDisplay(_BaseDisplay):
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
         self.init()
-
-    def read(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        if SDL_PollEvent(self._event):
-            if is_cpython:
-                if self._event.type in Events.filter:
-                    return _convert(SDL_Event(self._event))
-            else:
-                if int.from_bytes(self._event[:4], 'little') in Events.filter:
-                    return _convert(SDL_Event(self._event))
-        return None
 
     ############### Required API Methods ################
 
@@ -259,38 +224,18 @@ class SDLDisplay(_BaseDisplay):
         else:
             return super().vscsad()
 
-    @property
-    def rotation(self):
+    def _rotation_helper(self, value):
         """
-        The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
-        """
-        return self._rotation
-
-    @rotation.setter
-    def rotation(self, value):
-        """
-        Sets the rotation of the display.
-
-        Makes sure the rotation is not a multiple of 360, creates a new texture to use as the buffer and
-        copies the old one, applying rotation with SDL_RenderCopyEx.  Destroys the old buffer.
+        Creates a new texture to use as the buffer and copies the old one,
+        applying rotation with SDL_RenderCopyEx.  Destroys the old buffer.
 
         :param value: The rotation of the display.
         :type value: int
         """
 
-        value = self._rotation_helper(value)
-
-        if value == self._rotation:
-            return
-
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
             if implementation.name == 'cpython':
-                # print("Before.")
                 tempBuffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
-                # print("After.")
                 if not tempBuffer:
                     raise RuntimeError(f"{SDL_GetError()}")
 
@@ -315,14 +260,6 @@ class SDLDisplay(_BaseDisplay):
                 if not self._buffer:
                     raise RuntimeError(f"{SDL_GetError()}")
                 retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
-
-        self._rotation = value
-        
-        for device in self.broker.devices:
-            if device.type == Devices.TOUCH:
-                device.rotation = value
-
-        self.init()
 
     ############### Class Specific Methods ##############
 

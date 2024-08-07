@@ -22,16 +22,6 @@ from area import Area
 from sys import implementation
 import gc
 
-events_enabled = False
-try:
-    from eventsys.devices import Broker, Devices
-    from eventsys.events import Events  # noqa: F401
-    from eventsys.keys import Keys  # noqa: F401
-    events_enabled = True
-except ImportError:
-    Broker = Devices = Events = Keys = None
-    print("MPDisplay:  eventsys not available")
-
 np = False
 try:
     import ulab.numpy as np  # type: ignore
@@ -63,11 +53,11 @@ gc.collect()
 class _BaseDisplay:
     def __init__(self):
         gc.collect()
-        super().__init__()
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
-        self.draw = None  # Draw class for drawing shapes
-        self.broker = Broker(self) if events_enabled else None
+        self.draw = None  # Placeholder for instance of Draw class for drawing shapes
+        self.broker = None  # Placeholder for instance of Broker class for handling events
+        self._rotation_callback = None
         print(f"MPDisplay:  Using {self.__class__.__name__}")
         gc.collect()
 
@@ -97,6 +87,30 @@ class _BaseDisplay:
         """
         return self._rotation
 
+    @property
+    def rotation_callback(self):
+        """
+        The rotation callback function.
+
+        :return: The rotation callback function.
+        :rtype: function
+        """
+        return self._rotation_callback
+    
+    @rotation_callback.setter
+    def rotation_callback(self, value):
+        """
+        Sets the rotation callback function.
+
+        :param value: The rotation callback function.
+        :type value: function
+        """
+        if callable(value) or value is None:
+            self._rotation_callback = value
+        else:
+            raise ValueError("Rotation callback must be callable")
+        self._rotation_callback(self.rotation)
+
     @rotation.setter
     def rotation(self, value):
         """
@@ -106,17 +120,18 @@ class _BaseDisplay:
         :type value: int
         """
 
-        value = self._rotation_helper(value)
+        if value % 90 != 0:
+            value = value * 90
 
         if value == self._rotation:
             return
+        
+        self._rotation_helper(value)
 
         self._rotation = value
 
-        if events_enabled:
-            for device in self.broker.devices:
-                if device.type == Devices.TOUCH:
-                    device.rotation = value
+        if callable(self.rotation_callback):
+            self.rotation_callback(value)
 
         self.init()
 
@@ -127,10 +142,8 @@ class _BaseDisplay:
         :param value: The rotation of the display.
         :type value: int
         """
-        # if the value is not a multiple of 90, it is in quarter turns
-        if value % 90 != 0:
-            value = value * 90
-        return value
+        # override this method in subclasses to handle rotation
+        pass
 
     @staticmethod
     def alloc_buffer(size):

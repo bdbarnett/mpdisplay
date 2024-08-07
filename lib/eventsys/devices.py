@@ -80,7 +80,8 @@ class Devices:
             To create the KEYPAD device type and `KeypadDevice` class:
 
             ```python
-            from eventsys.devices import Devices, Events
+            from eventsys.devices import Devices
+            from eventsys.events import Events
 
             KeypadDevice = Devices.new_type("KEYPAD", [Events.KEYDOWN, Events.KEYUP])
             KeypadDevice._poll = lambda: return Events.Key(Events.KEYDOWN, "a", 97, 0, 0, 0)
@@ -212,9 +213,6 @@ class _Device:
     @broker.setter
     def broker(self, broker):
         self._broker = broker
-        if broker is not None and self.type == Devices.TOUCH:
-            if broker.owner is not None:
-                self.rotation = broker.owner.rotation
 
     @property
     def user_data(self):
@@ -488,7 +486,7 @@ class TouchDevice(_Device):
         if self._data is None:  # self._data is a rotation table
             self._data = _DEFAULT_TOUCH_ROTATION_TABLE
 
-        self.rotation = self._broker.rotation if self._broker else 0
+        self.rotation = 0
 
     @property
     def rotation(self):

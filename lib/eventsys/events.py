@@ -51,7 +51,8 @@ class Events:
 
         For example, to create the events and device class for the keypad device:
         ```
-        from eventsys.events import Events, Devices
+        from eventsys.events import Events
+        from eventsys.devices import Devices
 
         types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
         classes = {

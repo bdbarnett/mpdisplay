@@ -6,7 +6,7 @@ release_displays()
 from fourwire import FourWire
 from ili9341 import ILI9341
 from adafruit_focaltouch import Adafruit_FocalTouch
-from mpdisplay import Devices
+from eventsys.devices import Devices
 import board
 
 

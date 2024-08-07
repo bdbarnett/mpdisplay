@@ -4,7 +4,7 @@ from lcd_bus import SPIBus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 display_bus = SPIBus(

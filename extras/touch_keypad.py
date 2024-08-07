@@ -19,7 +19,7 @@ while True:
     if key := keypad.read():
         print(key)
 """
-from mpdisplay import Events
+from eventsys.events import Events
 
 
 class Keypad:

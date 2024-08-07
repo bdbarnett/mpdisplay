@@ -7,9 +7,17 @@ PGDisplay class for CPython.
 """
 
 import pygame as pg
-from .. import _BaseDisplay, events_enabled, Area
-if events_enabled:
-    from .. import Events, Devices
+from .. import _BaseDisplay, Area
+
+
+def poll(self):
+    """
+    Polls for an event and returns the event type and data.
+
+    :return: The event type and data.
+    :rtype: tuple
+    """
+    return pg.event.poll()
 
 
 class PGDisplay(_BaseDisplay):
@@ -81,18 +89,6 @@ class PGDisplay(_BaseDisplay):
 
         super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
-
-    def read(self):
-        """
-        Polls for an event and returns the event type and data.
-
-        :return: The event type and data.
-        :rtype: tuple
-        """
-        if event := pg.event.poll():
-            if event.type in Events.filter:
-                return event
-        return None
 
     def blit_rect(self, buffer, x, y, w, h):
         """
@@ -177,44 +173,13 @@ class PGDisplay(_BaseDisplay):
         else:
             return super().vscsad()
 
-    @property
-    def rotation(self):
+    def _rotation_helper(self, value):
         """
-        The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
+        Helper function for the rotation setter.
         """
-        return self._rotation
-
-    @rotation.setter
-    def rotation(self, value):
-        """
-        Sets the rotation of the display.
-
-        Makes sure the rotation is not a multiple of 360, creates a new texture to use as the buffer and
-        copies the old one, applying rotation with SDL_RenderCopyEx.  Destroys the old buffer.
-
-        :param value: The rotation of the display.
-        :type value: int
-        """
-        value = self._rotation_helper(value)
-        
-        if value == self._rotation:
-            return
-
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
                 tempBuffer = pg.transform.rotate(self._buffer, -angle)
                 self._buffer = tempBuffer
-
-        self._rotation = value
-
-        if events_enabled:
-            for device in self.broker.devices:
-                if device.type == Devices.TOUCH:
-                    device.rotation = value
-
-        self.init()
 
     ############### Class Specific Methods ##############
 
@@ -230,7 +195,7 @@ class PGDisplay(_BaseDisplay):
             buffer = pg.transform.scale_by(self._buffer, s)
         else:
             buffer = self._buffer
-        if (y_start := self.vscsad()) == False:
+        if not (y_start := self.vscsad()):
             if renderRect is not None:
                 x, y, w, h = renderRect
                 renderRect = pg.Rect(x*s, y*s, w*s, h*s)

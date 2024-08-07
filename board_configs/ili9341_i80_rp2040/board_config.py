@@ -4,7 +4,7 @@ from lcd_bus import I80Bus
 from ili9341 import ILI9341
 from machine import I2C, Pin, freq  # See the note about reset below
 from ft6x36 import FT6x36
-from mpdisplay import Devices
+from eventsys.devices import Devices
 
 
 # The ILI9341 2.8" display has the reset pins of the display IC and the touch

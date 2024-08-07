@@ -13,7 +13,7 @@ import sys
 import gc
 
 if sys.implementation.name == "micropython":
-    from machine import Pin
+    from machine import Pin # type: ignore
     from time import sleep_ms
     from micropython import alloc_emergency_exception_buf
 
@@ -186,7 +186,7 @@ class BusDisplay(_BaseDisplay):
 
         if self._backlight_pin is not None:
             try:
-                from machine import PWM
+                from machine import PWM # type: ignore
                 self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True
             except ImportError:
