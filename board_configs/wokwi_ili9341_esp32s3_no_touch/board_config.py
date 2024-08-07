@@ -1,4 +1,4 @@
-""" Wokwi ESP32S3 and ILI9341 Touchscreen Display """
+""" Wokwi ESP32S3 and ILI9341 Display """
 
 from lcd_bus import SPIBus
 from ili9341 import ILI9341
