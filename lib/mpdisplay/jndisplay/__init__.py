@@ -47,8 +47,6 @@ class JNDisplay(_BaseDisplay):
         display(self._buffer, display_id=self._display_id)
 
     def fill_rect(self, x, y, w, h, c):
-        if self.requires_byte_swap:
-            c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
         color = c & 0xFFFF
         r, g, b = self.color_rgb(color)
         x2 = x + w
@@ -61,9 +59,6 @@ class JNDisplay(_BaseDisplay):
         return Area(left, top, right - left, bottom - top)
 
     def blit_rect(self, buf, x, y, w, h):
-        if self.requires_byte_swap:
-            self._swap_bytes(buf, w * h)
-
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
             raise ValueError("The provided x, y, w, h values are out of range")
@@ -78,8 +73,6 @@ class JNDisplay(_BaseDisplay):
         return Area(x, y, w, h)
 
     def pixel(self, x, y, c):
-        if self.requires_byte_swap:
-            c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
         r, g, b = self.color_rgb(c)
         self._draw.point((x, y), fill=(r, g, b))
         return Area(x, y, 1, 1)
