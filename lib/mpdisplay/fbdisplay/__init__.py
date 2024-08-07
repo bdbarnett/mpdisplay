@@ -15,7 +15,7 @@ class FBDisplay(_BaseDisplay):
     '''
     A class to interface with CircuitPython FrameBuffer objects.
     '''
-    def __init__(self, buffer, width=None, height=None, stride=None, reverse_bytes_in_word=False):
+    def __init__(self, buffer, width=None, height=None, reverse_bytes_in_word=False):
         """
         Initializes the display instance with the given parameters.
 
@@ -27,7 +27,6 @@ class FBDisplay(_BaseDisplay):
         self._buffer = memoryview(buffer)
         self._width = width if width else buffer.width
         self._height = height if height else buffer.height
-#        self._stride = stride if stride else buffer.row_stride // 2
         self.requires_byte_swap = reverse_bytes_in_word
         self._rotation = 0
         self.color_depth = 16
@@ -46,6 +45,23 @@ class FBDisplay(_BaseDisplay):
         pass
 
     def fill_rect(self, x, y, w, h, c):
+        """
+        Fills a rectangle with the given color.
+               
+        :param x: The x-coordinate of the top-left corner of the rectangle.
+        :type x: int
+        :param y: The y-coordinate of the top-left corner of the rectangle.
+        :type y: int
+        :param w: The width of the rectangle.
+        :type w: int
+        :param h: The height of the rectangle.
+        :type h: int
+        :param c: The color of the rectangle.
+        :type c: int
+        
+        :return: The Area object representing the rectangle.
+        :rtype: Area
+        """
         if self.requires_byte_swap:
             c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
 
@@ -64,6 +80,23 @@ class FBDisplay(_BaseDisplay):
         return Area(left, top, right - left, bottom - top)
 
     def blit_rect(self, buf, x, y, w, h):
+        """
+        Blits a buffer to the display at the given coordinates.
+
+        :param buf: The buffer to blit.
+        :type buf: bytearray
+        :param x: The x-coordinate of the top-left corner of the blit.
+        :type x: int
+        :param y: The y-coordinate of the top-left corner of the blit.
+        :type y: int
+        :param w: The width of the blit.
+        :type w: int
+        :param h: The height of the blit.
+        :type h: int
+
+        :return: The Area object representing the blit.
+        :rtype: Area
+        """
         if self.requires_byte_swap:
             self._swap_bytes(buf, w * h)
 
@@ -80,3 +113,24 @@ class FBDisplay(_BaseDisplay):
             dest_end = dest_begin + w * BPP
             arr[dest_begin : dest_end] = buf[source_begin : source_end]
         return Area(x, y, w, h)
+
+    def pixel(self, x, y, c=None):
+        """
+        Gets or sets the color of the pixel at the given coordinates.
+
+        :param x: The x-coordinate of the pixel.
+        :type x: int
+        :param y: The y-coordinate of the pixel.
+        :type y: int
+        :param c: The color to set the pixel to.  If None, the current color is returned.
+        :type c: int
+        
+        :return: The color of the pixel if c is None, otherwise None.
+        :rtype: int or None
+        """
+        if c is not None:
+            if self.requires_byte_swap:
+                c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
+            self._raw_buffer[x, y] = c
+        else:
+            return self._raw_buffer[x, y]
