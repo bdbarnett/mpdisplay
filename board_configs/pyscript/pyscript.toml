@@ -1,0 +1,7 @@
+[files]
+"/examples/mpdisplay_simpletest.py" = ""
+"/path.py" = ""
+"/board_config.py" = ""
+"/lib/area.py" = "lib/area.py"
+"/lib/mpdisplay/__init__.py" = "lib/mpdisplay/__init__.py"
+"/lib/mpdisplay/psdisplay/__init__.py" = "lib/mpdisplay/psdisplay/__init__.py"
