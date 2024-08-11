@@ -6,10 +6,12 @@
 PSDisplay class for MPDisplay on PyScript
 """
 
-from js import document
+from js import document, console
 from .. import _BaseDisplay, Area
-from pyscript.ffi import create_proxy # type: ignore
 
+
+def log(*args):
+    console.log(*args)
 
 class PSDisplay(_BaseDisplay):
     '''

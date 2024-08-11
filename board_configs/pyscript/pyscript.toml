@@ -1,7 +1,13 @@
 [files]
 "/examples/mpdisplay_simpletest.py" = ""
+"/examples/mpdisplay_event_test.py" = ""
 "/path.py" = ""
 "/board_config.py" = ""
 "/lib/area.py" = "lib/area.py"
 "/lib/mpdisplay/__init__.py" = "lib/mpdisplay/__init__.py"
 "/lib/mpdisplay/psdisplay/__init__.py" = "lib/mpdisplay/psdisplay/__init__.py"
+"/lib/mpdisplay/psdisplay/psdevices.py" = "lib/mpdisplay/psdisplay/psdevices.py"
+"/lib/eventsys/__init__.py" = "lib/eventsys/__init__.py"
+"/lib/eventsys/events.py" = "lib/eventsys/events.py"
+"/lib/eventsys/devices.py" = "lib/eventsys/devices.py"
+"/lib/eventsys/keys.py" = "lib/eventsys/keys.py"
