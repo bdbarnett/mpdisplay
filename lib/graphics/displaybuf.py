@@ -80,7 +80,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             self.needs_swap = False
 
         # Set the DisplayBuffer.rgb function to the appropriate one for the format and byte swapping
-        if format == DisplayBuffer.GS8 and DisplayBuffer.GS8 != None:
+        if format == DisplayBuffer.GS8 and DisplayBuffer.GS8 is not None:
             DisplayBuffer.rgb = self.display_drv.color332
         else:
             if self.needs_swap:
@@ -226,7 +226,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             DisplayBuffer, "lut"
         ):  # If the ssd doesn't use a LUT in its current format
             return c  # Return the color as-is
-        if idx == None:  # If no index was provided
+        if idx is not None:  # If no index was provided
             if (
                 DisplayBuffer.colors_registered < 16
             ):  # If there are fewer than 16 colors registered
