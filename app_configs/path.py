@@ -15,7 +15,7 @@ Does not work for nested directories.
 '''
 def update():
     # Edit this list to include the directories you want to add to the path.
-    directories = ('lib', 'drivers', 'examples', 'fonts')
+    directories = ('lib', 'drivers', 'examples')
 
     import sys
     import os
@@ -29,7 +29,7 @@ def update():
     # Check to see if each directory is on the filesystem and if so, add it to the path.
     completed = []
     for directory in directories:
-        if directory in dirlist and not directory in sys.path:
+        if directory in dirlist and directory not in sys.path:
             sys.path.append(directory)
             completed.append(directory)
 
