@@ -9,7 +9,7 @@ from board_config import display_drv
 from graphics.binfont import BinFont
 import random
 from graphics.framebuf_plus import FrameBuffer, RGB565
-from graphics.palettes import get_palette
+from palettes import get_palette
 
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel
@@ -38,9 +38,9 @@ def main():
     text_len = len(write_text)
     iterations = 96
 
-    font1 = BinFont("fonts/binfont_8x8.bin")
-    font2 = BinFont("fonts/binfont_8x14.bin")
-    font3 = BinFont("fonts/binfont_8x16.bin")
+    font1 = BinFont("binfont_8x8.bin")
+    font2 = BinFont("binfont_8x14.bin")
+    font3 = BinFont("binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.font_width for font in fonts])

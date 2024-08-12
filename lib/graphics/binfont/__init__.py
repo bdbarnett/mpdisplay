@@ -11,12 +11,14 @@ import os
 import struct
 from area import Area
 
+font_dir = os.path.dirname(__file__)
+
 # Default font file to use if none is specified.
 # Should be 8 pixels wide to keep framebuf.py compatible with MicroPython framebuf module
 _FONTS = {
-    8: "binfonts/binfont_8x8.bin",
-    14: "binfonts/binfont_8x14.bin",
-    16: "binfonts/binfont_8x16.bin",
+    8: "binfont_8x8.bin",
+    14: "binfont_8x14.bin",
+    16: "binfont_8x16.bin",
 }
 _DEFAULT_FONT = _FONTS[8]
 
@@ -101,14 +103,15 @@ class BinFont:
             if font_height is not None
             else int(self.font_name.split("x")[-1])
         )
+        # Note that only fonts up to 8 pixels wide are currently supported.
         self._font_width = 8
 
         # Open the font file.
-        # Note that only fonts up to 8 pixels wide are currently supported.
         try:
-            self._font = open(self.font_file, "rb")
+            font_path = "/".join([font_dir, self.font_file])
+            self._font = open(font_path, "rb")
             # simple font file validation check based on expected file size
-            filesize = os.stat(self.font_file)[6]
+            filesize = os.stat(font_path)[6]
             if (
                 filesize != 256 * self.font_height
                 and filesize != 128 * self.font_height

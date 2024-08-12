@@ -136,9 +136,8 @@ fi
 cp -u $REPO/$BOARD_CONFIG $TARGET/
 
 cp -ur $REPO/mpdisplay/lib $TARGET/
-cp -ur $REPO/mpdisplay/binfonts $TARGET/
 cp -ur $REPO/mpdisplay/examples $TARGET/
-cp -ur $REPO/mpdisplay/extras/* $TARGET/lib/
+cp -ur $REPO/mpdisplay/extras $TARGET/
 cp -u $REPO/mpdisplay/app_configs/* $TARGET/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/

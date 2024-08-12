@@ -1,1 +1,1 @@
-from area import Area
+from area import Area  # noqa: F401
