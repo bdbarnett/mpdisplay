@@ -21,285 +21,36 @@ object has these methods.
 """
 
 from . import Area
+from binfont import text, text8, text14, text16
 import math
 
 
-def pixel(canvas, x, y, c):
-    """A function to pass through in input pixel functionality."""
-    # This was added to mainitatn the abstraction between gfx and the dislay library
-    if hasattr(canvas, "pixel"):
-        canvas.pixel(x, y, c)
+
+def arc(canvas, x, y, r, a0, a1, c):
+    resolution = 60
+    a0 = math.radians(a0)
+    a1 = math.radians(a1)
+    x0 = x + int(r * math.cos(a0))
+    y0 = y + int(r * math.sin(a0))
+    if a1 > a0:
+        arc_range = range(int(a0 * resolution), int(a1 * resolution))
     else:
-        rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
-        canvas.buffer[(y * canvas.width + x) * 2:(y * canvas.width + x) * 2 + 2] = rgb565_color
-    return Area(x, y, 1, 1)
+        arc_range = range(int(a0 * resolution), int(a1 * resolution), -1)
 
-def fill_rect(canvas, x, y, w, h, c):
-    """Filled rectangle drawing function.  Will draw a filled
-    rectangle starting in the upper left x0, y0 position and w, h
-    pixels in size."""
-    if y < -h or y > canvas.height or x < -w or x > canvas.width:
-        return
-    if hasattr(canvas, "fill_rect"):
-        canvas.fill_rect(x, y, w, h, c)
-    else:
-        for j in range(y, y + h):
-            for i in range(x, x + w):
-                pixel(canvas, i, j, c)
-    return Area(x, y, w, h)
-
-def fill(canvas, c):
-    """Fill the entire canvas with a color."""
-    return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
-
-def hline(canvas, x0, y0, w, c):
-    """Horizontal line drawing function.  Will draw a single pixel wide line."""
-    if y0 < 0 or y0 > canvas.height or x0 < -w or x0 > canvas.width:
-        return
-    fill_rect(canvas, x0, y0, w, 1, c)
-    return Area(x0, y0, w, 1)
-
-def vline(canvas, x0, y0, h, c):
-    """Vertical line drawing function.  Will draw a single pixel wide line."""
-    if y0 < -h or y0 > canvas.height or x0 < 0 or x0 > canvas.width:
-        return
-    fill_rect(canvas, x0, y0, 1, h, c)
-    return Area(x0, y0, 1, h)
-
-def line(canvas, x0, y0, x1, y1, c):
-    """Line drawing function.  Will draw a single pixel wide line starting at
-    x0, y0 and ending at x1, y1."""
-    if x0 == x1:
-        return vline(canvas, x0, y0, abs(y1 - y0) + 1, c)
-    if y0 == y1:
-        return hline(canvas, x0, y0, abs(x1 - x0) + 1, c)
-    
-    steep = abs(y1 - y0) > abs(x1 - x0)
-    if steep:
-        x0, y0 = y0, x0
-        x1, y1 = y1, x1
-    if x0 > x1:
-        x0, x1 = x1, x0
-        y0, y1 = y1, y0
-    dx = x1 - x0
-    dy = abs(y1 - y0)
-    err = dx // 2
-    ystep = 0
-    if y0 < y1:
-        ystep = 1
-    else:
-        ystep = -1
-    while x0 <= x1:
-        if steep:
-            pixel(canvas, y0, x0, c)
-        else:
-            pixel(canvas, x0, y0, c)
-        err -= dy
-        if err < 0:
-            y0 += ystep
-            err += dx
-        x0 += 1
-    return Area(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0))
-
-def rect(canvas, x0, y0, w, h, c, f=False):
-    """Rectangle drawing function.  Will draw a single pixel wide rectangle
-    starting in the upper left x0, y0 position and w, h pixels in
-    size."""
-    if f:
-        return fill_rect(canvas, x0, y0, w, h, c)
-    if y0 < -h or y0 > canvas.height or x0 < -w or x0 > canvas.width:
-        return
-    hline(canvas, x0, y0, w, c)
-    hline(canvas, x0, y0 + h - 1, w, c)
-    vline(canvas, x0, y0, h, c)
-    vline(canvas, x0 + w - 1, y0, h, c)
-    return Area(x0, y0, w, h)
-
-def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
-    """
-    Midpoint ellipse algorithm
-    Draw an ellipse at the given location. Radii r1 and r2 define the geometry; equal values cause a
-    circle to be drawn. The c parameter defines the color.
-
-    The optional f parameter can be set to True to fill the ellipse. Otherwise just a one pixel outline
-    is drawn.
-
-    The optional m parameter enables drawing to be restricted to certain quadrants of the ellipse.
-    The LS four bits determine which quadrants are to be drawn, with bit 0 specifying Q1, b1 Q2,
-    b2 Q3 and b3 Q4. Quadrants are numbered counterclockwise with Q1 being top right.
-
-    Args:
-        x0 (int): Center x coordinate
-        y0 (int): Center y coordinate
-        r1 (int): x radius
-        r2 (int): y radius
-        c (int): color
-        f (bool): Fill the ellipse (default: False)
-        mask (int): Bitmask to determine which quadrants to draw (default: 0b1111)
-        w (int): Width of the ellipse (default: None)
-        h (int): Height of the ellipse (default: None)
-    """
-    if r1 < 1 or r2 < 1:
-        return
-
-    x_side = w - 2 * r1 if w else 0
-    y_side = h - 2 * r2 if h else 0
-    x_offset = x_side // 2 if w else 0
-    y_offset = y_side // 2 if h else 0
-
-    if f:
-        if y_offset > 0:
-            fill_rect(canvas, x0 - w // 2, y0 - y_offset, w, y_side, c)
-        if x_offset > 0:
-            fill_rect(canvas, x0 - x_offset, y0 - h // 2, x_side, r1, c)
-            fill_rect(canvas, x0 - x_offset, y0 + h // 2 - r1, x_side, r1, c)
-
-    if x_offset > 0:
-        hline(canvas, x0 - x_offset, y0 - h // 2, x_side, c)
-        hline(canvas, x0 - x_offset, y0 + h // 2, x_side, c)
-    if y_offset > 0:
-        vline(canvas, x0 - w // 2, y0 - y_offset, y_side, c)
-        vline(canvas, x0 + w // 2, y0 - y_offset, y_side, c)
-
-    a2 = r1 * r1
-    b2 = r2 * r2
-    fa2 = 4 * a2
-    fb2 = 4 * b2
-
-    x1 = r1
-    y1 = 0
-    sigma = 2 * a2 + b2 * (1 - 2 * r1)
-    while a2 * y1 <= b2 * x1:
-        if f:
-            if m & 0x1:
-                hline(canvas, x0 + x_offset, y0 - y1 - y_offset, x1, c)
-            if m & 0x2:
-                hline(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, x1, c)
-            if m & 0x4:
-                hline(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, x1, c)
-            if m & 0x8:
-                hline(canvas, x0 + x_offset, y0 + y1 + y_offset, x1, c)
-        else:
-            if m & 0x1:
-                pixel(canvas, x0 + x1 + x_offset, y0 - y1 - y_offset, c)
-            if m & 0x2:
-                pixel(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, c)
-            if m & 0x4:
-                pixel(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, c)
-            if m & 0x8:
-                pixel(canvas, x0 + x1 + x_offset, y0 + y1 + y_offset, c)
-        if sigma >= 0:
-            sigma += fb2 * (1 - x1)
-            x1 -= 1
-        sigma += a2 * ((4 * y1) + 6)
-        y1 += 1
-
-    x1 = 0
-    y1 = r2
-    sigma = 2 * b2 + a2 * (1 - 2 * r2)
-    while b2 * x1 <= a2 * y1:
-        if f:
-            if m & 0x1:
-                hline(canvas, x0 + x_offset, y0 - y1 - y_offset, x1, c)
-            if m & 0x2:
-                hline(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, x1, c)
-            if m & 0x4:
-                hline(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, x1, c)
-            if m & 0x8:
-                hline(canvas, x0 + x_offset, y0 + y1 + y_offset, x1, c)
-        else:
-            if m & 0x1:
-                pixel(canvas, x0 + x1 + x_offset, y0 - y1 - y_offset, c)
-            if m & 0x2:
-                pixel(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, c)
-            if m & 0x4:
-                pixel(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, c)
-            if m & 0x8:
-                pixel(canvas, x0 + x1 + x_offset, y0 + y1 + y_offset, c)
-        if sigma >= 0:
-            sigma += fa2 * (1 - y1)
-            y1 -= 1
-        sigma += b2 * ((4 * x1) + 6)
-        x1 += 1
-    return Area(x0 - r1 - x_offset, y0 - r2 - y_offset, 2 * (r1 + x_offset), 2 * (r2 + y_offset))
-
-def poly(canvas, x, y, coords, c, f=False):
-    """
-    Given a list of coordinates, draw an arbitrary (convex or concave) closed polygon at the given x, y location
-    using the given color.
-
-    The coords must be specified as an array of integers, e.g. array('h', [x0, y0, x1, y1, ... xn, yn]) or a
-    list or tuple of points, e.g. [(x0, y0), (x1, y1), ... (xn, yn)].
-
-    The optional f parameter can be set to True to fill the polygon. Otherwise, just a one-pixel outline is drawn.
-    """
-
-    # Convert the coords to a list of x, y tuples if it is not already
-    if isinstance(coords, list):
-        vertices = coords
-    elif isinstance(coords, tuple):
-        vertices = list(coords)
-    else:
-        # Check that the coords array has an even number of elements
-        if len(coords) % 2 != 0:
-            raise ValueError("coords must have an even number of elements")
-        vertices = [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]
-
-    # Check that the polygon has at least 3 vertices
-    if len(vertices) < 3:
-        raise ValueError("polygon must have at least 3 vertices")
-
-    # Close the polygon if it is not already closed
-    if vertices[0] != vertices[-1]:
-        vertices.append(vertices[0])
-
-    # Offset vertices by (x, y)
-    vertices = [(x + vertex[0], y + vertex[1]) for vertex in vertices]
-
-    # Find the rectangle bounding box of the polygon
-    left = min(vertex[0] for vertex in vertices)
-    right = max(vertex[0] for vertex in vertices)
-    top = min(vertex[1] for vertex in vertices)
-    bottom = max(vertex[1] for vertex in vertices)
-
-    if f:
-        # Fill the polygon using scanline algorithm
-        # Calculate the minimum and maximum y-coordinates in the polygon
-        y_min = min(vertex[1] for vertex in vertices)
-        y_max = max(vertex[1] for vertex in vertices)
-
-        # Iterate through each y-coordinate within the bounding box
-        for y_scan in range(y_min, y_max + 1):
-            # Determine intersections with the polygon edges
-            intersections = []
-            for i in range(len(vertices) - 1):
-                x1, y1 = vertices[i]
-                x2, y2 = vertices[i + 1]
-                # Check if the scanline intersects the edge
-                if y1 <= y_scan < y2 or y2 <= y_scan < y1:
-                    # Calculate the intersection point using linear interpolation
-                    x_intersection = x1 + ((y_scan - y1) / (y2 - y1)) * (x2 - x1)
-                    intersections.append(x_intersection)
-
-            # Sort intersections in increasing order
-            intersections.sort()
-
-            # Draw horizontal lines between pairs of intersection points
-            for i in range(0, len(intersections), 2):
-                x_start = int(intersections[i])
-                x_end = int(intersections[i + 1])
-                hline(canvas, x_start, y_scan, x_end - x_start, c)
-    else:
-        for i in range(len(vertices) - 1):
-            line(
-                canvas,
-                vertices[i][0],
-                vertices[i][1],
-                vertices[i + 1][0],
-                vertices[i + 1][1],
-                c,
-            )
-    return Area(left, top, right - left, bottom - top)
+    x_min = x_max = x0
+    y_min = y_max = y0
+    for a in arc_range:
+        ar = a / resolution
+        x1 = x + int(r * math.cos(ar))
+        y1 = y + int(r * math.sin(ar))
+        line(canvas, x0, y0, x1, y1, c)
+        x_min = min(x0, x1, x_min)
+        x_max = max(x0, x1, x_max)
+        y_min = min(y0, y1, y_min)
+        y_max = max(y0, y1, y_max)
+        x0 = x1
+        y0 = y1
+    return Area(x_min, y_min, x_max - x_min, y_max - y_min)
 
 def blit(canvas, source, x, y, key=-1, palette=None):
     if (
@@ -330,8 +81,6 @@ def blit(canvas, source, x, y, key=-1, palette=None):
             cx1 += 1
         y1 += 1
     return Area(x0, y0, x0end - x0, y0end - y0)
-
-
 
 def blit_rect(canvas, buf, x, y, w, h):
     """
@@ -461,6 +210,404 @@ def _fill_circle(canvas, x0, y0, r, c):
         vline(canvas, x0 - y, y0 - x, 2 * x + 1, c)
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
 
+def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
+    """
+    Midpoint ellipse algorithm
+    Draw an ellipse at the given location. Radii r1 and r2 define the geometry; equal values cause a
+    circle to be drawn. The c parameter defines the color.
+
+    The optional f parameter can be set to True to fill the ellipse. Otherwise just a one pixel outline
+    is drawn.
+
+    The optional m parameter enables drawing to be restricted to certain quadrants of the ellipse.
+    The LS four bits determine which quadrants are to be drawn, with bit 0 specifying Q1, b1 Q2,
+    b2 Q3 and b3 Q4. Quadrants are numbered counterclockwise with Q1 being top right.
+
+    Args:
+        x0 (int): Center x coordinate
+        y0 (int): Center y coordinate
+        r1 (int): x radius
+        r2 (int): y radius
+        c (int): color
+        f (bool): Fill the ellipse (default: False)
+        mask (int): Bitmask to determine which quadrants to draw (default: 0b1111)
+        w (int): Width of the ellipse (default: None)
+        h (int): Height of the ellipse (default: None)
+    """
+    if r1 < 1 or r2 < 1:
+        return
+
+    x_side = w - 2 * r1 if w else 0
+    y_side = h - 2 * r2 if h else 0
+    x_offset = x_side // 2 if w else 0
+    y_offset = y_side // 2 if h else 0
+
+    if f:
+        if y_offset > 0:
+            fill_rect(canvas, x0 - w // 2, y0 - y_offset, w, y_side, c)
+        if x_offset > 0:
+            fill_rect(canvas, x0 - x_offset, y0 - h // 2, x_side, r1, c)
+            fill_rect(canvas, x0 - x_offset, y0 + h // 2 - r1, x_side, r1, c)
+
+    if x_offset > 0:
+        hline(canvas, x0 - x_offset, y0 - h // 2, x_side, c)
+        hline(canvas, x0 - x_offset, y0 + h // 2, x_side, c)
+    if y_offset > 0:
+        vline(canvas, x0 - w // 2, y0 - y_offset, y_side, c)
+        vline(canvas, x0 + w // 2, y0 - y_offset, y_side, c)
+
+    a2 = r1 * r1
+    b2 = r2 * r2
+    fa2 = 4 * a2
+    fb2 = 4 * b2
+
+    x1 = r1
+    y1 = 0
+    sigma = 2 * a2 + b2 * (1 - 2 * r1)
+    while a2 * y1 <= b2 * x1:
+        if f:
+            if m & 0x1:
+                hline(canvas, x0 + x_offset, y0 - y1 - y_offset, x1, c)
+            if m & 0x2:
+                hline(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, x1, c)
+            if m & 0x4:
+                hline(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, x1, c)
+            if m & 0x8:
+                hline(canvas, x0 + x_offset, y0 + y1 + y_offset, x1, c)
+        else:
+            if m & 0x1:
+                pixel(canvas, x0 + x1 + x_offset, y0 - y1 - y_offset, c)
+            if m & 0x2:
+                pixel(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, c)
+            if m & 0x4:
+                pixel(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, c)
+            if m & 0x8:
+                pixel(canvas, x0 + x1 + x_offset, y0 + y1 + y_offset, c)
+        if sigma >= 0:
+            sigma += fb2 * (1 - x1)
+            x1 -= 1
+        sigma += a2 * ((4 * y1) + 6)
+        y1 += 1
+
+    x1 = 0
+    y1 = r2
+    sigma = 2 * b2 + a2 * (1 - 2 * r2)
+    while b2 * x1 <= a2 * y1:
+        if f:
+            if m & 0x1:
+                hline(canvas, x0 + x_offset, y0 - y1 - y_offset, x1, c)
+            if m & 0x2:
+                hline(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, x1, c)
+            if m & 0x4:
+                hline(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, x1, c)
+            if m & 0x8:
+                hline(canvas, x0 + x_offset, y0 + y1 + y_offset, x1, c)
+        else:
+            if m & 0x1:
+                pixel(canvas, x0 + x1 + x_offset, y0 - y1 - y_offset, c)
+            if m & 0x2:
+                pixel(canvas, x0 - x1 - x_offset, y0 - y1 - y_offset, c)
+            if m & 0x4:
+                pixel(canvas, x0 - x1 - x_offset, y0 + y1 + y_offset, c)
+            if m & 0x8:
+                pixel(canvas, x0 + x1 + x_offset, y0 + y1 + y_offset, c)
+        if sigma >= 0:
+            sigma += fa2 * (1 - y1)
+            y1 -= 1
+        sigma += b2 * ((4 * x1) + 6)
+        x1 += 1
+    return Area(x0 - r1 - x_offset, y0 - r2 - y_offset, 2 * (r1 + x_offset), 2 * (r2 + y_offset))
+
+def fill(canvas, c):
+    """Fill the entire canvas with a color."""
+    return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
+
+def fill_rect(canvas, x, y, w, h, c):
+    """Filled rectangle drawing function.  Will draw a filled
+    rectangle starting in the upper left x0, y0 position and w, h
+    pixels in size."""
+    if y < -h or y > canvas.height or x < -w or x > canvas.width:
+        return
+    if hasattr(canvas, "fill_rect"):
+        canvas.fill_rect(x, y, w, h, c)
+    else:
+        for j in range(y, y + h):
+            for i in range(x, x + w):
+                pixel(canvas, i, j, c)
+    return Area(x, y, w, h)
+
+def hline(canvas, x0, y0, w, c):
+    """Horizontal line drawing function.  Will draw a single pixel wide line."""
+    if y0 < 0 or y0 > canvas.height or x0 < -w or x0 > canvas.width:
+        return
+    fill_rect(canvas, x0, y0, w, 1, c)
+    return Area(x0, y0, w, 1)
+
+def line(canvas, x0, y0, x1, y1, c):
+    """Line drawing function.  Will draw a single pixel wide line starting at
+    x0, y0 and ending at x1, y1."""
+    if x0 == x1:
+        return vline(canvas, x0, y0, abs(y1 - y0) + 1, c)
+    if y0 == y1:
+        return hline(canvas, x0, y0, abs(x1 - x0) + 1, c)
+    
+    steep = abs(y1 - y0) > abs(x1 - x0)
+    if steep:
+        x0, y0 = y0, x0
+        x1, y1 = y1, x1
+    if x0 > x1:
+        x0, x1 = x1, x0
+        y0, y1 = y1, y0
+    dx = x1 - x0
+    dy = abs(y1 - y0)
+    err = dx // 2
+    ystep = 0
+    if y0 < y1:
+        ystep = 1
+    else:
+        ystep = -1
+    while x0 <= x1:
+        if steep:
+            pixel(canvas, y0, x0, c)
+        else:
+            pixel(canvas, x0, y0, c)
+        err -= dy
+        if err < 0:
+            y0 += ystep
+            err += dx
+        x0 += 1
+    return Area(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0))
+
+def pixel(canvas, x, y, c):
+    """A function to pass through in input pixel functionality."""
+    if hasattr(canvas, "pixel"):
+        canvas.pixel(x, y, c)
+    else:
+        rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
+        canvas.buffer[(y * canvas.width + x) * 2:(y * canvas.width + x) * 2 + 2] = rgb565_color
+    return Area(x, y, 1, 1)
+
+def poly(canvas, x, y, coords, c, f=False):
+    """
+    Given a list of coordinates, draw an arbitrary (convex or concave) closed polygon at the given x, y location
+    using the given color.
+
+    The coords must be specified as an array of integers, e.g. array('h', [x0, y0, x1, y1, ... xn, yn]) or a
+    list or tuple of points, e.g. [(x0, y0), (x1, y1), ... (xn, yn)].
+
+    The optional f parameter can be set to True to fill the polygon. Otherwise, just a one-pixel outline is drawn.
+    """
+
+    # Convert the coords to a list of x, y tuples if it is not already
+    if isinstance(coords, list):
+        vertices = coords
+    elif isinstance(coords, tuple):
+        vertices = list(coords)
+    else:
+        # Check that the coords array has an even number of elements
+        if len(coords) % 2 != 0:
+            raise ValueError("coords must have an even number of elements")
+        vertices = [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]
+
+    # Check that the polygon has at least 3 vertices
+    if len(vertices) < 3:
+        raise ValueError("polygon must have at least 3 vertices")
+
+    # Close the polygon if it is not already closed
+    if vertices[0] != vertices[-1]:
+        vertices.append(vertices[0])
+
+    # Offset vertices by (x, y)
+    vertices = [(x + vertex[0], y + vertex[1]) for vertex in vertices]
+
+    # Find the rectangle bounding box of the polygon
+    left = min(vertex[0] for vertex in vertices)
+    right = max(vertex[0] for vertex in vertices)
+    top = min(vertex[1] for vertex in vertices)
+    bottom = max(vertex[1] for vertex in vertices)
+
+    if f:
+        # Fill the polygon using scanline algorithm
+        # Calculate the minimum and maximum y-coordinates in the polygon
+        y_min = min(vertex[1] for vertex in vertices)
+        y_max = max(vertex[1] for vertex in vertices)
+
+        # Iterate through each y-coordinate within the bounding box
+        for y_scan in range(y_min, y_max + 1):
+            # Determine intersections with the polygon edges
+            intersections = []
+            for i in range(len(vertices) - 1):
+                x1, y1 = vertices[i]
+                x2, y2 = vertices[i + 1]
+                # Check if the scanline intersects the edge
+                if y1 <= y_scan < y2 or y2 <= y_scan < y1:
+                    # Calculate the intersection point using linear interpolation
+                    x_intersection = x1 + ((y_scan - y1) / (y2 - y1)) * (x2 - x1)
+                    intersections.append(x_intersection)
+
+            # Sort intersections in increasing order
+            intersections.sort()
+
+            # Draw horizontal lines between pairs of intersection points
+            for i in range(0, len(intersections), 2):
+                x_start = int(intersections[i])
+                x_end = int(intersections[i + 1])
+                hline(canvas, x_start, y_scan, x_end - x_start, c)
+    else:
+        for i in range(len(vertices) - 1):
+            line(
+                canvas,
+                vertices[i][0],
+                vertices[i][1],
+                vertices[i + 1][0],
+                vertices[i + 1][1],
+                c,
+            )
+    return Area(left, top, right - left, bottom - top)
+
+def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
+    """
+    Draw a polygon on the display.
+
+    Args:
+        points (list): List of points to draw.
+        x (int): X-coordinate of the polygon's position.
+        y (int): Y-coordinate of the polygon's position.
+        color (int): 565 encoded color.
+        angle (float): Rotation angle in radians (default: 0).
+        center_x (int): X-coordinate of the rotation center (default: 0).
+        center_y (int): Y-coordinate of the rotation center (default: 0).
+
+    Raises:
+        ValueError: If the polygon has less than 3 points.
+    """
+    # MIT License
+    # Copyright (c) 2024 Brad Barnett
+    # Copyright (c) 2020-2023 Russ Hughes
+    # Copyright (c) 2019 Ivan Belokobylskiy
+    if len(points) < 3:
+        raise ValueError("Polygon must have at least 3 points.")
+
+    # fmt: off
+    if angle:
+        cos_a = math.cos(angle)
+        sin_a = math.sin(angle)
+        rotated = [
+            (x + center_x + int((point[0] - center_x) * cos_a - (point[1] - center_y) * sin_a),
+                y + center_y + int((point[0] - center_x) * sin_a + (point[1] - center_y) * cos_a))
+            for point in points
+        ]
+    else:
+        rotated = [(x + int((point[0])), y + int((point[1]))) for point in points]
+
+    # Find the rectangle bounding box of the polygon
+    left = min(vertex[0] for vertex in rotated)
+    right = max(vertex[0] for vertex in rotated)
+    top = min(vertex[1] for vertex in rotated)
+    bottom = max(vertex[1] for vertex in rotated)
+
+    for i in range(1, len(rotated)):
+        line(canvas, rotated[i - 1][0], rotated[i - 1][1], rotated[i][0], rotated[i][1], color)
+    # fmt: on
+    return Area(left, top, right - left, bottom - top)
+
+def rect(canvas, x0, y0, w, h, c, f=False):
+    """Rectangle drawing function.  Will draw a single pixel wide rectangle
+    starting in the upper left x0, y0 position and w, h pixels in
+    size."""
+    if f:
+        return fill_rect(canvas, x0, y0, w, h, c)
+    if y0 < -h or y0 > canvas.height or x0 < -w or x0 > canvas.width:
+        return
+    hline(canvas, x0, y0, w, c)
+    hline(canvas, x0, y0 + h - 1, w, c)
+    vline(canvas, x0, y0, h, c)
+    vline(canvas, x0 + w - 1, y0, h, c)
+    return Area(x0, y0, w, h)
+
+def round_rect(canvas, x0, y0, w, h, r, c, f=False):
+    """Rectangle with rounded corners drawing function.
+    This works like a regular rect though! if r = 0
+    Will draw the outline of a rectangle with rounded corners with (x0,y0) at the top left
+    """
+    if f:
+        return _fill_round_rect(canvas, x0, y0, w, h, r, c)
+    # shift to correct for start point location
+    x0 += r
+    y0 += r
+
+    # ensure that the r will only ever half of the shortest side or less
+    r = int(min(r, w / 2, h / 2))
+
+    if r:
+        f = 1 - r
+        ddF_x = 1
+        ddF_y = -2 * r
+        x = 0
+        y = r
+        vline(canvas, x0 - r, y0, h - 2 * r + 1, c)  # left
+        vline(canvas, x0 + w - r, y0, h - 2 * r + 1, c)  # right
+        hline(canvas, x0, y0 + h - r + 1, w - 2 * r + 1, c)  # bottom
+        hline(canvas, x0, y0 - r, w - 2 * r + 1, c)  # top
+        while x < y:
+            if f >= 0:
+                y -= 1
+                ddF_y += 2
+                f += ddF_y
+            x += 1
+            ddF_x += 2
+            f += ddF_x
+            # angle notations are based on the unit circle and in diection of being drawn
+
+            # top left
+            pixel(canvas, x0 - y, y0 - x, c)  # 180 to 135
+            pixel(canvas, x0 - x, y0 - y, c)  # 90 to 135
+            # top right
+            pixel(canvas, x0 + x + w - 2 * r, y0 - y, c)  # 90 to 45
+            pixel(canvas, x0 + y + w - 2 * r, y0 - x, c)  # 0 to 45
+            # bottom right
+            pixel(canvas, x0 + y + w - 2 * r, y0 + x + h - 2 * r, c) # 0 to 315
+            pixel(canvas, x0 + x + w - 2 * r, y0 + y + h - 2 * r, c)  # 270 to 315
+            # bottom left
+            pixel(canvas, x0 - x, y0 + y + h - 2 * r, c)  # 270 to 255
+            pixel(canvas, x0 - y, y0 + x + h - 2 * r, c)  # 180 to 225
+    return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
+
+def _fill_round_rect(canvas, x0, y0, w, h, r, c):
+    """Filled circle drawing function.  Will draw a filled circle with
+    center at x0, y0 and the specified r."""
+    # shift to correct for start point location
+    x0 += r
+    y0 += r
+
+    # ensure that the r will only ever half of the shortest side or less
+    r = int(min(r, w / 2, h / 2))
+
+    fill_rect(canvas, x0, y0 - r, w - 2 * r + 2, h + 2, c)
+
+    if r:
+        f = 1 - r
+        ddF_x = 1
+        ddF_y = -2 * r
+        x = 0
+        y = r
+        while x < y:
+            if f >= 0:
+                y -= 1
+                ddF_y += 2
+                f += ddF_y
+            x += 1
+            ddF_x += 2
+            f += ddF_x
+            # part notation starts with 0 on left and 1 on right, and direction is noted
+            # top left
+            vline(canvas, x0 - y, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 0 to .25
+            vline(canvas, x0 - x, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .25
+            # top right
+            vline(canvas, x0 + x + w - 2 * r, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .75
+            vline(canvas, x0 + y + w - 2 * r, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 1 to .75
+    return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
+
 def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     # pylint: disable=too-many-arguments
     """Triangle drawing function.  Will draw a single pixel wide triangle
@@ -550,157 +697,82 @@ def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
     bottom = max(y0, y1, y2)
     return Area(left, top, right - left, bottom - top)
 
-def round_rect(canvas, x0, y0, w, h, r, c, f=False):
-    """Rectangle with rounded corners drawing function.
-    This works like a regular rect though! if r = 0
-    Will draw the outline of a rectangle with rounded corners with (x0,y0) at the top left
+def vline(canvas, x0, y0, h, c):
+    """Vertical line drawing function.  Will draw a single pixel wide line."""
+    if y0 < -h or y0 > canvas.height or x0 < 0 or x0 > canvas.width:
+        return
+    fill_rect(canvas, x0, y0, 1, h, c)
+    return Area(x0, y0, 1, h)
+
+
+class Draw:
     """
-    if f:
-        return _fill_round_rect(canvas, x0, y0, w, h, r, c)
-    # shift to correct for start point location
-    x0 += r
-    y0 += r
-
-    # ensure that the r will only ever half of the shortest side or less
-    r = int(min(r, w / 2, h / 2))
-
-    if r:
-        f = 1 - r
-        ddF_x = 1
-        ddF_y = -2 * r
-        x = 0
-        y = r
-        vline(canvas, x0 - r, y0, h - 2 * r + 1, c)  # left
-        vline(canvas, x0 + w - r, y0, h - 2 * r + 1, c)  # right
-        hline(canvas, x0, y0 + h - r + 1, w - 2 * r + 1, c)  # bottom
-        hline(canvas, x0, y0 - r, w - 2 * r + 1, c)  # top
-        while x < y:
-            if f >= 0:
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            x += 1
-            ddF_x += 2
-            f += ddF_x
-            # angle notations are based on the unit circle and in diection of being drawn
-
-            # top left
-            pixel(canvas, x0 - y, y0 - x, c)  # 180 to 135
-            pixel(canvas, x0 - x, y0 - y, c)  # 90 to 135
-            # top right
-            pixel(canvas, x0 + x + w - 2 * r, y0 - y, c)  # 90 to 45
-            pixel(canvas, x0 + y + w - 2 * r, y0 - x, c)  # 0 to 45
-            # bottom right
-            pixel(canvas, x0 + y + w - 2 * r, y0 + x + h - 2 * r, c) # 0 to 315
-            pixel(canvas, x0 + x + w - 2 * r, y0 + y + h - 2 * r, c)  # 270 to 315
-            # bottom left
-            pixel(canvas, x0 - x, y0 + y + h - 2 * r, c)  # 270 to 255
-            pixel(canvas, x0 - y, y0 + x + h - 2 * r, c)  # 180 to 225
-    return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
-
-def _fill_round_rect(canvas, x0, y0, w, h, r, c):
-    """Filled circle drawing function.  Will draw a filled circle with
-    center at x0, y0 and the specified r."""
-    # shift to correct for start point location
-    x0 += r
-    y0 += r
-
-    # ensure that the r will only ever half of the shortest side or less
-    r = int(min(r, w / 2, h / 2))
-
-    fill_rect(canvas, x0, y0 - r, w - 2 * r + 2, h + 2, c)
-
-    if r:
-        f = 1 - r
-        ddF_x = 1
-        ddF_y = -2 * r
-        x = 0
-        y = r
-        while x < y:
-            if f >= 0:
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            x += 1
-            ddF_x += 2
-            f += ddF_x
-            # part notation starts with 0 on left and 1 on right, and direction is noted
-            # top left
-            vline(canvas, x0 - y, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 0 to .25
-            vline(canvas, x0 - x, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .25
-            # top right
-            vline(canvas, x0 + x + w - 2 * r, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .75
-            vline(canvas, x0 + y + w - 2 * r, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 1 to .75
-    return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
-
-def arc(canvas, x, y, r, a0, a1, c):
-    resolution = 60
-    a0 = math.radians(a0)
-    a1 = math.radians(a1)
-    x0 = x + int(r * math.cos(a0))
-    y0 = y + int(r * math.sin(a0))
-    if a1 > a0:
-        arc_range = range(int(a0 * resolution), int(a1 * resolution))
-    else:
-        arc_range = range(int(a0 * resolution), int(a1 * resolution), -1)
-
-    x_min = x_max = x0
-    y_min = y_max = y0
-    for a in arc_range:
-        ar = a / resolution
-        x1 = x + int(r * math.cos(ar))
-        y1 = y + int(r * math.sin(ar))
-        line(canvas, x0, y0, x1, y1, c)
-        x_min = min(x0, x1, x_min)
-        x_max = max(x0, x1, x_max)
-        y_min = min(y0, y1, y_min)
-        y_max = max(y0, y1, y_max)
-        x0 = x1
-        y0 = y1
-    return Area(x_min, y_min, x_max - x_min, y_max - y_min)
-
-def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
+    A Draw class to draw shapes onto a specified canvas.
     """
-    Draw a polygon on the display.
+    def __init__(self, canvas):
+        self.canvas = canvas
 
-    Args:
-        points (list): List of points to draw.
-        x (int): X-coordinate of the polygon's position.
-        y (int): Y-coordinate of the polygon's position.
-        color (int): 565 encoded color.
-        angle (float): Rotation angle in radians (default: 0).
-        center_x (int): X-coordinate of the rotation center (default: 0).
-        center_y (int): Y-coordinate of the rotation center (default: 0).
+    def arc(self, x, y, r, a0, a1, c):
+        return arc(self.canvas, x, y, r, a0, a1, c)
 
-    Raises:
-        ValueError: If the polygon has less than 3 points.
-    """
-    # MIT License
-    # Copyright (c) 2024 Brad Barnett
-    # Copyright (c) 2020-2023 Russ Hughes
-    # Copyright (c) 2019 Ivan Belokobylskiy
-    if len(points) < 3:
-        raise ValueError("Polygon must have at least 3 points.")
+    def blit(self, source, x, y, key=-1, palette=None):
+        return blit(self.canvas, source, x, y, key, palette)
 
-    # fmt: off
-    if angle:
-        cos_a = math.cos(angle)
-        sin_a = math.sin(angle)
-        rotated = [
-            (x + center_x + int((point[0] - center_x) * cos_a - (point[1] - center_y) * sin_a),
-                y + center_y + int((point[0] - center_x) * sin_a + (point[1] - center_y) * cos_a))
-            for point in points
-        ]
-    else:
-        rotated = [(x + int((point[0])), y + int((point[1]))) for point in points]
+    def blit_rect(self, buf, x, y, w, h):
+        if hasattr(self.canvas, "blit_rect"):
+            return self.canvas.blit_rect(buf, x, y, w, h)
+        return blit_rect(self.canvas, buf, x, y, w, h)
 
-    # Find the rectangle bounding box of the polygon
-    left = min(vertex[0] for vertex in rotated)
-    right = max(vertex[0] for vertex in rotated)
-    top = min(vertex[1] for vertex in rotated)
-    bottom = max(vertex[1] for vertex in rotated)
+    def blit_tranparent(self, buf, x, y, w, h, key=None):
+        return blit_transparent(self.canvas, buf, x, y, w, h, key)
 
-    for i in range(1, len(rotated)):
-        canvas.line(rotated[i - 1][0], rotated[i - 1][1], rotated[i][0], rotated[i][1], color)
-    # fmt: on
-    return Area(left, top, right - left, bottom - top)
+    def circle(self, x, y, r, c, f=False):
+        return circle(self.canvas, x, y, r, c, f)
+
+    def ellipse(self, x, y, r1, r2, c, f=False, m=0b1111, w=None, h=None):
+        return ellipse(self.canvas, x, y, r1, r2, c, f, m, w, h)
+
+    def fill(self, c):
+        return fill(self.canvas, c)
+
+    def fill_rect(self, x, y, w, h, c):
+        return fill_rect(self.canvas, x, y, w, h, c)
+
+    def hline(self, x, y, w, c):
+        return hline(self.canvas, x, y, w, c)
+
+    def line(self, x1, y1, x2, y2, c):
+        return line(self.canvas, x1, y1, x2, y2, c)
+
+    def pixel(self, x, y, c):
+        return pixel(self.canvas, x, y, c)
+
+    def poly(self, x, y, coords, c, f=False):
+        return poly(self.canvas, x, y, coords, c, f)
+
+    def polygon(self, points, x, y, c, angle=0, center_x=0, center_y=0):
+        return polygon(self.canvas, points, x, y, c, angle, center_x, center_y)
+
+    def rect(self, x, y, w, h, c, f=False):
+        return rect(self.canvas, x, y, w, h, c, f)
+
+    def round_rect(self, x, y, w, h, r, c, f=False):
+        return round_rect(self.canvas, x, y, w, h, r, c, f)
+
+    def triangle(self, x1, y1, x2, y2, x3, y3, c, f=False):
+        return triangle(self.canvas, x1, y1, x2, y2, x3, y3, c, f)
+
+    def vline(self, x, y, h, c):
+        return vline(self.canvas, x, y, h, c)
+
+    def text(self, *args, **kwargs):
+        return text(self.canvas, *args, **kwargs)
+
+    def text8(self, *args, **kwargs):
+        return text8(self.canvas, *args, **kwargs)
+
+    def text14(self, *args, **kwargs):
+        return text14(self.canvas, *args, **kwargs)
+
+    def text16(self, *args, **kwargs):
+        return text16(self.canvas, *args, **kwargs)

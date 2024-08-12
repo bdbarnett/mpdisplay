@@ -35,12 +35,12 @@ https://github.com/devbis/st7789py_mpy.
 
 from micropython import const
 from sys import implementation
-from . import Area
+from area import Area
 
 if implementation.name == "micropython":
     try:
         from ._pytext_viper import _pack8, _pack16
-    except:
+    except Exception:
         from ._pytext_python import _pack8, _pack16
 else:
         from ._pytext_python import _pack8, _pack16
@@ -53,9 +53,9 @@ _default_font = None
 
 def pytext(canvas, firstarg, *args, **kwargs):
     global _default_font
-    if type(firstarg) == str:
-        if _default_font == None:
-            import vga1_8x8
+    if type(firstarg) is str:
+        if _default_font is None:
+            from .fonts import vga1_8x8
 
             _default_font = vga1_8x8
         return _text(canvas, _default_font, firstarg, *args, **kwargs)

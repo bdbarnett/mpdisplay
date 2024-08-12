@@ -2,40 +2,22 @@
 #
 # SPDX-License-Identifier: MIT
 
-from micropython import const
+import micropython
 
-
-# The following if statement is used to prevent errors when linting the code.
-# It is not necessary to include it in your own code.
-if 0:
-    uint = int
-    ptr16 = ptr8 = lambda x: x
-
-    class micropython:
-
-        @staticmethod
-        def viper(func):
-            return func
-
-        @staticmethod
-        def native(func):
-            return func
-
-
-_BIT7 = const(0x80)
-_BIT6 = const(0x40)
-_BIT5 = const(0x20)
-_BIT4 = const(0x10)
-_BIT3 = const(0x08)
-_BIT2 = const(0x04)
-_BIT1 = const(0x02)
-_BIT0 = const(0x01)
+_BIT7 = micropython.const(0x80)
+_BIT6 = micropython.const(0x40)
+_BIT5 = micropython.const(0x20)
+_BIT4 = micropython.const(0x10)
+_BIT3 = micropython.const(0x08)
+_BIT2 = micropython.const(0x04)
+_BIT1 = micropython.const(0x02)
+_BIT0 = micropython.const(0x01)
 
 @micropython.viper
-def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint):
+def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint): # type: ignore  # noqa: F821
     buffer = bytearray(128)
-    bitmap = ptr16(buffer)
-    glyph = ptr8(glyphs)
+    bitmap = ptr16(buffer)  # type: ignore # noqa: F821
+    glyph = ptr8(glyphs)  # type: ignore # noqa: F821
 
     for i in range(0, 64, 8):
         byte = glyph[idx]
@@ -52,10 +34,10 @@ def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint):
     return buffer
 
 @micropython.viper
-def _pack16(glyphs, idx: uint, fg_color: uint, bg_color: uint):
+def _pack16(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # type: ignore # noqa: F821
     buffer = bytearray(256)
-    bitmap = ptr16(buffer)
-    glyph = ptr8(glyphs)
+    bitmap = ptr16(buffer)  # type: ignore # noqa: F821
+    glyph = ptr8(glyphs)  # type: ignore # noqa: F821
 
     for i in range(0, 128, 16):
         byte = glyph[idx]

@@ -3,7 +3,7 @@
 # A color cube with 3 levels of red, green, and blue (27 colors in total)
 # (values 0x00, 0x80, and 0xFF for each of the red, green, and blue components)
 # A 28th color, "Silver", is added to the end of the list for compatibility with other palettes
-RGB27 = {
+CUBE27 = {
     0x000000: "Black",
     0x000080: "Navy",
     0x0000FF: "Blue",

@@ -2,7 +2,7 @@
 
 # A color cube with 5 levels of red, green, and blue (125 colors in total)
 # (values 0x00, 0x40, 0x80, 0xC0, and 0xFF for each of the red, green, and blue components)
-RGB125 = {
+CUBE125 = {
     0x000000: "Black",
     0x000040: "Stratos",
     0x000080: "Navy",

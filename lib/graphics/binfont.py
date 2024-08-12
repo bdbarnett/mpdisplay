@@ -9,21 +9,27 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from . import Area
+from area import Area
 
 # Default font file to use if none is specified.
-# Should be 8x8 to keep framebuf.py compatible with MicroPython framebuf module
+# Should be 8 pixels wide to keep framebuf.py compatible with MicroPython framebuf module
 _FONTS = {
-    8: "fonts/binfont_8x8.bin",
-    14: "fonts/binfont_8x14.bin",
-    16: "fonts/binfont_8x16.bin",
+    8: "binfonts/binfont_8x8.bin",
+    14: "binfonts/binfont_8x14.bin",
+    16: "binfonts/binfont_8x16.bin",
 }
 _DEFAULT_FONT = _FONTS[8]
 
 
 
-def text(*args, **kwargs):
-    return text8(*args, **kwargs)
+def text(*args, font_height=8, **kwargs):
+    if font_height == 8:
+        return text8(*args, **kwargs)
+    if font_height == 14:
+        return text14(*args, **kwargs)
+    if font_height == 16:
+        return text16(*args, **kwargs)
+    raise ValueError("Unsupported font height: %d" % font_height)
 
 def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
     """Place text on the canvas.  Breaks on \n to next line.

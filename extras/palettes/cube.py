@@ -5,7 +5,7 @@
 Makes a color cube palette.
 
 Usage:
-    from graphics.palettes import get_palette
+    from palettes import get_palette
     palette = get_palette(name="cube", size=5, color_depth=16, swapped=False)
     # OR
     palette = get_palette(name="cube")
@@ -18,7 +18,7 @@ Usage:
     for i, color in enumerate(palette):
         for i, color in enumerate(palette):  print(f"{i}. {color:#06X} {palette.color_name(i)}")
 """
-from ._palette import Palette as _Palette
+from . import Palette as _Palette
 
 
 class CubePalette(_Palette):
@@ -31,13 +31,13 @@ class CubePalette(_Palette):
         self._values = [round(i * (255 / (size - 1)) + .25) for i in range(size)]
 
         if self._size == 2:
-            from ._rgb8 import RGB8 as NAMES
+            from ._cube8 import CUBE8 as NAMES
         elif self._size == 3:
-            from ._rgb27 import RGB27 as NAMES
+            from ._cube27 import CUBE27 as NAMES
         elif self._size == 4:
-            from ._rgb64 import RGB64 as NAMES
+            from ._cube64 import CUBE64 as NAMES
         else:
-            from ._rgb125 import RGB125 as NAMES
+            from ._cube125 import CUBE125 as NAMES
         self._names = NAMES
         super().__init__(name + str(self._length), color_depth, swapped, cached)
 

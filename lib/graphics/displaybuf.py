@@ -24,7 +24,7 @@ Usage:
 from . import framebuf_plus as framebuf
 import gc
 import sys
-from . import Area  # for _show16
+from area import Area  # for _show16
 
 if sys.implementation.name == "micropython":
     from ._displaybuf_viper import _bounce8, _bounce4
@@ -95,13 +95,13 @@ class DisplayBuffer(framebuf.FrameBuffer):
             self._buffer_depth = 16
             self._buffer = bytearray(width * height * BPP)
             self.show = self._show16
-        elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 != None:
+        elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 is not None:
             self._buffer_depth = 8
             self._stride = stride
             self._bounce_buf = display_drv.alloc_buffer(width * self._stride * BPP)
             self._buffer = bytearray(width * height)
             self.show = self._show8
-        elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB != None:
+        elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB is not None:
             self._buffer_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
@@ -246,7 +246,12 @@ class DisplayBuffer(framebuf.FrameBuffer):
     def screenshot(self, filename="screenshot.bmp"):
         if self._buffer_depth != 16:
             raise ValueError("Screenshots are only supported for 16-bit buffers.")
-        from graphics.bmp565 import BMP565
+        try:
+            from bmp565 import BMP565
+        except ImportError:
+            raise ImportError(
+                "The bmp565 module is required to save screenshots.  Please install it."
+            )
         bmp = BMP565(source=self.buffer, width=self.width, height=self.height)
         filename = bmp.save(filename)
         print(f"\nSaved BMP565 file as '{filename}'")

@@ -33,8 +33,7 @@ https://github.com/devbis/st7789py_mpy.
 
 """
 
-from . import Area
-from .shapes import blit_rect
+from area import Area
 
 
 def bitmap(canvas, bitmap, x, y, index=0):
@@ -79,7 +78,7 @@ def bitmap(canvas, bitmap, x, y, index=0):
             buffer[i] = color & 0xFF
             buffer[i + 1] = color >> 8
 
-    blit_rect(canvas, buffer, x, y, width, height)
+    canvas.blit_rect(buffer, x, y, width, height)
     return Area(x, y, width, height)
 
 def pbitmap(canvas, bitmap, x, y, index=0):
@@ -123,5 +122,5 @@ def pbitmap(canvas, bitmap, x, y, index=0):
         to_col = x + width - 1
         to_row = y + row
         if canvas.width > to_col and canvas.height > to_row:
-            blit_rect(canvas, buffer, x, y + row, width, height)
+            canvas.blit_rect(buffer, x, y + row, width, height)
     return Area(x, y, width, height)

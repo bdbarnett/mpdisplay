@@ -3,7 +3,7 @@ This module contains the cool wheel color palette as a class object.
 
 
 Usage:
-    from graphics.palettes import get_palette
+    from palettes import get_palette
     palette = get_palette(name="wheel", color_depth=16, swapped=False, length=256)
     # OR
     palette = get_palette(name="wheel")
@@ -21,7 +21,7 @@ Usage:
     x = palette.BLACK
 
 """
-from ._palette import Palette as _Palette
+from . import Palette as _Palette
 
 
 class WheelPalette(_Palette):

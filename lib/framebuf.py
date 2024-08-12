@@ -20,14 +20,15 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 from graphics import shapes
-from graphics.binfont import text
 from area import Area
-from sys import implementation
 
-if implementation.name == "circuitpython":
-    from ulab import numpy as np
-else:
-    np = None
+try:
+    from ulab import numpy as np # type: ignore
+except ImportError:
+    try:
+        import numpy as np # type: ignore
+    except ImportError:
+        np = None
 
 
 # Framebuf format constants:
@@ -50,17 +51,16 @@ _FONT_SCALE = 1
 
 class BasicShapes:
     # Inherited from the FrameBuffer class
-    # Do not include fill_rect or pixel because they need to be
-    # specific to the object that uses them
-    fill = shapes.fill
-    hline = shapes.hline
-    vline = shapes.vline
-    line = shapes.line
-    rect = shapes.rect
-    ellipse = shapes.ellipse
-    poly = shapes.poly
+    # Do not include fill, fill_rect or pixel because they need to be
+    # specific to the class format that uses them
     blit = shapes.blit
-    text = text
+    ellipse = shapes.ellipse
+    hline = shapes.hline
+    line = shapes.line
+    poly = shapes.poly
+    rect = shapes.rect
+    vline = shapes.vline
+    text = shapes.text
 
 
 class MVLSBFormat:

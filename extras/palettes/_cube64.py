@@ -2,7 +2,7 @@
 
 # A color cube with 4 levels of red, green, and blue (64 colors in total)
 # (values 0x00, 0x55, 0xAA, and 0xFF for each of the red, green, and blue components)
-RGB64 = {
+CUBE64 = {
     0x000000: "Black",
     0x000055: "Navy",
     0x0000AA: "Blue",

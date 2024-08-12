@@ -1,7 +1,39 @@
-
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+
+
+# The 16 colors of the standard Windows 16-color palette
+WIN16 = {
+    0x000000: "Black",
+    0x000080: "Navy",
+    0x0000FF: "Blue",
+    0x008000: "Green",
+    0x008080: "Teal",
+    0x00FF00: "Lime",
+    0x00FFFF: "Cyan",
+    0x800000: "Maroon",
+    0x800080: "Purple",
+    0x808000: "Olive",
+    0x808080: "Grey",
+    0xC0C0C0: "Silver",
+    0xFF0000: "Red",
+    0xFF00FF: "Magenta",
+    0xFFFF00: "Yellow",
+    0xFFFFFF: "White",
+}
+
+
+def get_palette(name="default", **kwargs):
+    if name == "wheel":
+        from .wheel import WheelPalette as MyPalette
+    elif name == "material_design":
+        from .material_design import MDPalette as MyPalette
+    elif name == "cube":
+        from .cube import CubePalette as MyPalette
+    else:
+        MyPalette = Palette
+    return MyPalette(name, **kwargs)
 
 
 class Palette:
@@ -18,8 +50,7 @@ class Palette:
 
     def _define_named_colors(self):
         if not hasattr(self, "_names"):
-            from ._win16 import WIN16 as NAMES
-            self._names = NAMES
+            self._names = WIN16
             self._length = len(self._names)
         for color, name in self._names.items():
             if self._color_depth == 16:

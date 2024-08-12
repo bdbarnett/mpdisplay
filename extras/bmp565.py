@@ -89,10 +89,10 @@ class BMP565:
     def _read_header(self, f):
         if f.read(2) != b'BM':
             raise ValueError('Not a BMP file')
-        file_size = struct.unpack('<I', f.read(4))[0]
+        file_size = struct.unpack('<I', f.read(4))[0]  # noqa: F841
         f.seek(10)
         self.data_offset = struct.unpack('<I', f.read(4))[0]
-        header_size = struct.unpack('<I', f.read(4))[0]
+        header_size = struct.unpack('<I', f.read(4))[0]  # noqa: F841
         self.width, self.height = struct.unpack('<II', f.read(8))
         planes = struct.unpack('<H', f.read(2))[0]
         if planes != 1:
