@@ -3,7 +3,7 @@ Create a timer to call display_drv.show() periodically.
 """
 from board_config import display_drv
 
-from timer import Timer
+from timer import Timer # type: ignore
 from sys import platform
 
 class ShowTimer:
