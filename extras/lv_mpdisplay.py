@@ -132,7 +132,7 @@ class DisplayDriver:
         if event is None:
             return
         if event.type == Events.MOUSEWHEEL:
-            data.enc_diff = event.x if event.flipped == False else -event.x
+            data.enc_diff = event.x if event.flipped is False else -event.x
         elif event.type == Events.MOUSEBUTTONDOWN and event.button == 3:
             data.state = lv.INDEV_STATE.PRESSED
         elif event.type == Events.MOUSEBUTTONUP and event.button == 3:
