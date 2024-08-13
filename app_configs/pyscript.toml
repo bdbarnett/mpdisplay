@@ -2,6 +2,7 @@
 "/examples/mpdisplay_simpletest.py" = ""
 "/examples/mpdisplay_event_test.py" = ""
 "/examples/mpdisplay_logo.py" = ""
+"/examples/mpdisplay_touch_test.py" = ""
 "/path.py" = ""
 "/board_config.py" = ""
 "/lib/area.py" = "lib/area.py"
