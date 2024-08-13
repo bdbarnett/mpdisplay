@@ -1,2 +1,0 @@
-import path
-import mpdisplay_touch_test
