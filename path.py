@@ -34,7 +34,7 @@ def update():
     # Check to see if each directory is on the filesystem and if so, add it to the path.
     added = []
     for directory in directories:
-        full_path = "/".join([cwd, directory})
+        full_path = "/".join([cwd, directory])
         if directory in dirlist and full_path not in sys.path:
             sys.path.append(full_path)
             added.append(full_path)
