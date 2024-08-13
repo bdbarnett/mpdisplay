@@ -23,7 +23,7 @@ def update():
 
     # get the path this module is in
     cwd = __file__.split("/")[0:-1]
-    cwd = "/".join(font_dir)
+    cwd = "/".join(cwd)
 
     # Get a list of directories on the filesystem.
     if hasattr(os, 'listdir'):
@@ -32,13 +32,14 @@ def update():
         dirlist = [x[0] for x in os.ilistdir()]
 
     # Check to see if each directory is on the filesystem and if so, add it to the path.
-    completed = []
+    added = []
     for directory in directories:
-        if directory in dirlist and (d := "/".join([cwd, directory})) not in sys.path:
-            sys.path.append(d)
-            completed.append(d)
+        full_path = "/".join([cwd, directory})
+        if directory in dirlist and full_path not in sys.path:
+            sys.path.append(full_path)
+            added.append(full_path)
 
-    if completed:
-        print(f'path.py:  Added {completed} to sys.path.\n')
+    if added:
+        print(f'path.py:  Added {added} to sys.path.\n')
 
 update()
