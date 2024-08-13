@@ -155,7 +155,7 @@ class SDLDisplay(_BaseDisplay):
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer_ptr, pitch))
         else:
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer, pitch))
-        self._show(blitRect)
+        self.show(blitRect)
         return Area(x, y, w, h)
 
     def fill_rect(self, x, y, w, h, c):
@@ -183,7 +183,7 @@ class SDLDisplay(_BaseDisplay):
         retcheck(SDL_SetRenderDrawColor(self._renderer, r, g, b, 255))  # Set the color to fill the rectangle
         retcheck(SDL_RenderFillRect(self._renderer, fillRect))  # Fill the rectangle on the texture
         retcheck(SDL_SetRenderTarget(self._renderer, None))  # Reset the render target back to the window
-        self._show(fillRect)
+        self.show(fillRect)
         return Area(x, y, w, h)
 
     def deinit(self):
@@ -209,7 +209,7 @@ class SDLDisplay(_BaseDisplay):
         :type bfa: int
         """
         super().vscrdef(tfa, vsa, bfa)
-        self._show()
+        self.show()
 
     def vscsad(self, vssa=None):
         """
@@ -220,7 +220,7 @@ class SDLDisplay(_BaseDisplay):
         """
         if vssa is not None:
             super().vscsad(vssa)
-            self._show()
+            self.show()
         else:
             return super().vscsad()
 
@@ -263,7 +263,7 @@ class SDLDisplay(_BaseDisplay):
 
     ############### Class Specific Methods ##############
 
-    def _show(self, renderRect=None):
+    def show(self, renderRect=None):
         """
         Show the display.  Automatically called after blitting or filling the display.
 

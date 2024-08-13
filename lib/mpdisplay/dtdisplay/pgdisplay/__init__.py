@@ -87,7 +87,7 @@ class PGDisplay(_BaseDisplay):
         self._window = pg.display.set_mode(size=(int(self.width * self._scale), int(self.height * self._scale)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
         pg.display.set_caption(self._title)
 
-        super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
+        super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
     def blit_rect(self, buffer, x, y, w, h):
@@ -112,7 +112,7 @@ class PGDisplay(_BaseDisplay):
                 pixel_index = (i * w + j) * self._bytes_per_pixel
                 color = self.color_rgb(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
                 self._buffer.set_at((x + j, y + i), color)
-        self._show(blitRect)
+        self.show(blitRect)
         return Area(x, y, w, h)
 
     def fill_rect(self, x, y, w, h, c):
@@ -135,7 +135,7 @@ class PGDisplay(_BaseDisplay):
         """
         fillRect = pg.Rect(x, y, w, h)
         self._buffer.fill(self.color_rgb(c), fillRect)
-        self._show(fillRect)
+        self.show(fillRect)
         return Area(x, y, w, h)
 
     def deinit(self):
@@ -158,7 +158,7 @@ class PGDisplay(_BaseDisplay):
         :type bfa: int
         """
         super().vscrdef(tfa, vsa, bfa)
-        self._show()
+        self.show()
 
     def vscsad(self, vssa=None):
         """
@@ -169,7 +169,7 @@ class PGDisplay(_BaseDisplay):
         """
         if vssa is not None:
             super().vscsad(vssa)
-            self._show()
+            self.show()
         else:
             return super().vscsad()
 
@@ -183,7 +183,7 @@ class PGDisplay(_BaseDisplay):
 
     ############### Class Specific Methods ##############
 
-    def _show(self, renderRect=None):
+    def show(self, renderRect=None):
         """
         Show the display.  Automatically called after blitting or filling the display.
 

@@ -11,7 +11,10 @@ import os
 import struct
 from area import Area
 
-font_dir = os.path.dirname(__file__)
+
+# get the path this module is in
+font_dir = __file__.split("/")[0:-1]
+font_dir = "/".join(font_dir)
 
 # Default font file to use if none is specified.
 # Should be 8 pixels wide to keep framebuf.py compatible with MicroPython framebuf module

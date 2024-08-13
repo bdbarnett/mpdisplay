@@ -42,5 +42,7 @@ async def main():
 
 loop = asyncio.get_event_loop()
 loop.create_task(main())
-if hasattr(loop, "run_forever"):
+if hasattr(loop, "is_running") and loop.is_running():
+    pass
+else:
     loop.run_forever()

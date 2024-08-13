@@ -5,3 +5,5 @@ the functions to run, but prevents them from throwing errors when loaded.
 """
 const = viper = native = lambda x: x
 
+def schedule(cb, interval):
+    cb(interval)
