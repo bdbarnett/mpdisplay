@@ -11,10 +11,8 @@
 "../lib/framebuf.py" = "/lib/"
 "../lib/micropython.py" = "/lib/"
 
-"../lib/mpdisplay/__init__.py" = "/lib/mpdisplay/"
 "../lib/mpdisplay/_viper.py" = "/lib/mpdisplay/"
 "../lib/mpdisplay/_numpy.py" = "/lib/mpdisplay/"
-"../lib/mpdisplay/psdisplay/__init__.py" = "/lib/mpdisplay/psdisplay/"
 "../lib/mpdisplay/psdisplay/psdevices.py" = "/lib/mpdisplay/psdisplay/"
 
 "../lib/eventsys/__init__.py" = "/lib/eventsys/"
