@@ -1,4 +1,3 @@
-print("Executing lib/mpdisplay/__init__.py")
 # SPDX-FileCopyrightText: 2024 Brad Barnett and Kevin Schlosser
 #
 # SPDX-License-Identifier: MIT
@@ -33,12 +32,12 @@ except ImportError:
         pass
 
 viper = False
-if implementation.name == "micropython":
-    try:
-        from ._viper import swap_bytes
-        viper = True
-    except Exception as e:
-        print(f"MPDisplay:  {e}")
+# if implementation.name == "micropython":
+#     try:
+#         from ._viper import swap_bytes
+#         viper = True
+#     except Exception as e:
+#         print(f"MPDisplay:  {e}")
 
 if not viper:
     if np:
