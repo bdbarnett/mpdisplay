@@ -19,19 +19,19 @@ Supported display classes:
 - 'JNDisplay': Uses a Jupyter Notebook
 """
 from area import Area
-from sys import implementation
 import gc
+# from sys import implementation
 
-np = False
-try:
-    import ulab.numpy as np  # type: ignore
-except ImportError:
-    try:
-        import numpy as np
-    except ImportError:
-        pass
+# np = False
+# try:
+#     import ulab.numpy as np  # type: ignore
+# except ImportError:
+#     try:
+#         import numpy as np
+#     except ImportError:
+#         pass
 
-viper = False
+# viper = False
 # if implementation.name == "micropython":
 #     try:
 #         from ._viper import swap_bytes
@@ -39,13 +39,14 @@ viper = False
 #     except Exception as e:
 #         print(f"MPDisplay:  {e}")
 
-if not viper:
-    if np:
-        from ._numpy import swap_bytes
-    else:
-        def swap_bytes(buf, buf_size_pix):
-            buf[::2], buf[1::2] = buf[1::2], buf[::2]
-
+# if not viper:
+#     if np:
+#         from ._numpy import swap_bytes
+#     else:
+#         def swap_bytes(buf, buf_size_pix):
+#             buf[::2], buf[1::2] = buf[1::2], buf[::2]
+def swap_bytes(buf, buf_size_pix):
+    pass
 
 gc.collect()
 
