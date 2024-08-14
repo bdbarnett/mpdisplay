@@ -16,7 +16,7 @@ Does not work for nested directories.
 
 def update():
     # Edit this list to include the directories you want to add to the path.
-    directories = ('lib', 'extras', 'examples', 'app_configs')
+    directories = ("lib", "extras", "examples", "app_configs")
 
     import sys
     import os
@@ -26,7 +26,7 @@ def update():
     cwd = "/".join(cwd)
 
     # Get a list of directories on the filesystem.
-    if hasattr(os, 'listdir'):
+    if hasattr(os, "listdir"):
         dirlist = os.listdir()
     else:
         dirlist = [x[0] for x in os.ilistdir()]
@@ -40,6 +40,7 @@ def update():
             added.append(full_path)
 
     if added:
-        print(f'path.py:  Added {added} to sys.path.\n')
+        print(f"path.py:  Added {added} to sys.path.")
+        print(f"{sys.path=}")
 
 update()
