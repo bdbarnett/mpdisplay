@@ -12,6 +12,7 @@
 "../lib/micropython.py" = "/lib/"
 
 "../lib/mpdisplay/__init__.py" = "/lib/mpdisplay/"
+"../lib/mpdisplay/_basedisplay.py" = "/lib/mpdisplay/"
 "../lib/mpdisplay/_viper.py" = "/lib/mpdisplay/"
 "../lib/mpdisplay/_numpy.py" = "/lib/mpdisplay/"
 "../lib/mpdisplay/psdisplay/psdevices.py" = "/lib/mpdisplay/psdisplay/"
