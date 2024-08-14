@@ -7,7 +7,7 @@ from displayio import release_displays
 import busio
 import board
 import adafruit_focaltouch
-from mpdisplay.fbdisplay import FBDisplay
+from displays.fbdisplay import FBDisplay
 from eventsys.devices import Devices
 
 

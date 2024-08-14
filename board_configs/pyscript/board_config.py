@@ -1,7 +1,7 @@
 """ board_config.py - board configuration for PyScript """
 
-from mpdisplay.psdisplay import PSDisplay
-from mpdisplay.psdisplay.psdevices import PSDevices
+from displays.psdisplay import PSDisplay
+from displays.psdisplay.psdevices import PSDevices
 from eventsys.devices import Devices, Broker # type: ignore
 
 

@@ -1,8 +1,8 @@
 {   "urls": [
-        ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/desktop/board_config.py"]
+        ["board_config.py", "github:bdbarnett/displays/board_configs/desktop/board_config.py"]
     ],
     "deps": [
-        ["github:bdbarnett/mpdisplay", "main"],
+        ["github:bdbarnett/displays", "main"],
         ["github:bdbarnett/lcd_bus", "main"],
         ["github:bdbarnett/timer", "main"],
         ["github:bdbarnett/console", "main"],

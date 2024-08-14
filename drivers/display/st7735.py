@@ -23,7 +23,7 @@ Implementation Notes
 
 """
 
-from mpdisplay.busdisplay import BusDisplay
+from displays.busdisplay import BusDisplay
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ST7735.git"

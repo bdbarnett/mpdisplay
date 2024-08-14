@@ -11,11 +11,11 @@
 "../lib/framebuf.py" = "/lib/"
 "../lib/micropython.py" = "/lib/"
 
-"../lib/mpdisplay/__init__.py" = "/lib/mpdisplay/"
-"../lib/mpdisplay/_viper.py" = "/lib/mpdisplay/"
-"../lib/mpdisplay/_numpy.py" = "/lib/mpdisplay/"
-"../lib/mpdisplay/psdisplay/__init__.py" = "/lib/mpdisplay/psdisplay/"
-"../lib/mpdisplay/psdisplay/psdevices.py" = "/lib/mpdisplay/psdisplay/"
+"../lib/displays/__init__.py" = "/lib/displays/"
+"../lib/displays/_viper.py" = "/lib/displays/"
+"../lib/displays/_numpy.py" = "/lib/displays/"
+"../lib/displays/psdisplay/__init__.py" = "/lib/displays/psdisplay/"
+"../lib/displays/psdisplay/psdevices.py" = "/lib/displays/psdisplay/"
 
 "../lib/eventsys/__init__.py" = "/lib/eventsys/"
 "../lib/eventsys/events.py" = "/lib/eventsys/"

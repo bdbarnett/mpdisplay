@@ -5,7 +5,7 @@ Tested with CPython on Linux, Windows and ChromeOS.
 Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
-from mpdisplay.dtdisplay import DTDisplay, poll # type: ignore
+from displays.dtdisplay import DTDisplay, poll # type: ignore
 from eventsys.devices import Devices, Broker # type: ignore
 import sys
 

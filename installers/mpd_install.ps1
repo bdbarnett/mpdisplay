@@ -7,7 +7,7 @@ $TARGET = "./mp"  # Path to copy Python files
 # Set to the executable you want to use for the test at the end of the script
 $EXE = "python3"  # micropython, python3 or python
 
-$BOARD_CONFIG = "mpdisplay/board_configs/desktop/board_config.py"  # with .py extension
+$BOARD_CONFIG = "displays/board_configs/desktop/board_config.py"  # with .py extension
 $LAUNCH = "paint"  # without .py extension
 
 # If $REPO directory does not exist, create it
@@ -16,7 +16,7 @@ if (!(Test-Path -Path $REPO)) {
 }
 
 # Clone the repositories. This will error if the repositories already exist.
-git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
+git clone https://github.com/bdbarnett/displays.git $REPO/displays
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/console.git $REPO/console
@@ -33,11 +33,11 @@ if (!(Test-Path -Path $TARGET)) {
 # Stage the files in $TARGET
 Copy-Item -Path $REPO/$BOARD_CONFIG -Destination $TARGET/ -Force
 
-Copy-Item -Path $REPO/mpdisplay/lib -Destination $TARGET/ -Recurse -Force
-Copy-Item -Path $REPO/mpdisplay/fonts -Destination $TARGET/ -Recurse -Force
-Copy-Item -Path $REPO/mpdisplay/examples -Destination $TARGET/ -Recurse -Force
-Copy-Item -Path $REPO/mpdisplay/extras/* -Destination $TARGET/lib/ -Force
-Copy-Item -Path $REPO/mpdisplay/app_configs/* -Destination $TARGET/ -Force
+Copy-Item -Path $REPO/displays/lib -Destination $TARGET/ -Recurse -Force
+Copy-Item -Path $REPO/displays/fonts -Destination $TARGET/ -Recurse -Force
+Copy-Item -Path $REPO/displays/examples -Destination $TARGET/ -Recurse -Force
+Copy-Item -Path $REPO/displays/extras/* -Destination $TARGET/lib/ -Force
+Copy-Item -Path $REPO/displays/app_configs/* -Destination $TARGET/ -Force
 
 Copy-Item -Path $REPO/lcd_bus/lcd_bus -Destination $TARGET/lib/ -Recurse -Force
 

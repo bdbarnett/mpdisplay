@@ -45,4 +45,5 @@ loop.create_task(main())
 if hasattr(loop, "is_running") and loop.is_running():
     pass
 else:
-    pass
+    if hasattr(loop, "run_forever"):
+        loop.run_forever()

@@ -1,7 +1,7 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/qualia/board_config.py"],
-      ["drivers/cst8xx.py", "github:bdbarnett/mpdisplay/drivers/touch/cst8xx.py"]
+      ["board_config.py", "github:bdbarnett/displays/board_configs/qualia/board_config.py"],
+      ["drivers/cst8xx.py", "github:bdbarnett/displays/drivers/touch/cst8xx.py"]
     ],
     "version": "0.1"
   }

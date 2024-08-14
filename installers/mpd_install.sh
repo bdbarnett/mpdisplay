@@ -29,7 +29,7 @@
 # You may then import any of the examples, such as 'import paint'
 #
 # Usage:
-#     wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/installers/mpd_install.sh
+#     wget https://raw.githubusercontent.com/bdbarnett/displays/main/installers/mpd_install.sh
 #     (edit mpd_install.sh to set the $REPO, $TARGET and $EXE variables below)
 #     chmod u+x install.sh
 #     ./mpd_install.sh
@@ -40,7 +40,7 @@
 # device and add any drivers it references.
 #
 # This script clones the following repositories into the $REPO directory:
-# - mpdisplay
+# - displays
 # - lcd_bus
 # - console
 # - timer
@@ -99,7 +99,7 @@ EXE=python3  # micropython, python3 or python
 
 ##################### Optional: set these variables #####################################
 
-BOARD_CONFIG=mpdisplay/board_configs/desktop/board_config.py  # with .py extension
+BOARD_CONFIG=displays/board_configs/desktop/board_config.py  # with .py extension
 LAUNCH=paint  # without .py extension
 
 
@@ -111,7 +111,7 @@ if [ ! -d $REPO ]; then
 fi
 
 ##### Clone the repositories.  This will error if the repositories already exist.
-git clone https://github.com/bdbarnett/mpdisplay.git $REPO/mpdisplay
+git clone https://github.com/bdbarnett/displays.git $REPO/displays
 git clone https://github.com/bdbarnett/lcd_bus.git $REPO/lcd_bus
 git clone https://github.com/bdbarnett/timer.git $REPO/timer
 git clone https://github.com/bdbarnett/console.git $REPO/console
@@ -135,10 +135,10 @@ fi
 
 cp -u $REPO/$BOARD_CONFIG $TARGET/
 
-cp -ur $REPO/mpdisplay/lib $TARGET/
-cp -ur $REPO/mpdisplay/examples $TARGET/
-cp -ur $REPO/mpdisplay/extras $TARGET/
-cp -u $REPO/mpdisplay/app_configs/* $TARGET/
+cp -ur $REPO/displays/lib $TARGET/
+cp -ur $REPO/displays/examples $TARGET/
+cp -ur $REPO/displays/extras $TARGET/
+cp -u $REPO/displays/app_configs/* $TARGET/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 

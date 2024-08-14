@@ -17,8 +17,8 @@ width = 320
 height = 240
 
 if _ps:
-    from mpdisplay.psdisplay import PSDisplay
-    from mpdisplay.psdisplay.psdevices import PSDevices
+    from displays.psdisplay import PSDisplay
+    from displays.psdisplay.psdevices import PSDevices
     from eventsys.devices import Devices, Broker # type: ignore
 
 
@@ -34,13 +34,13 @@ if _ps:
         data=None,
     )
 elif _jn:
-    from mpdisplay.jndisplay import JNDisplay
+    from displays.jndisplay import JNDisplay
 
     display_drv = JNDisplay(width, height)
 
     import showtimer  # noqa: F401
 else:
-    from mpdisplay.dtdisplay import DTDisplay, poll # type: ignore
+    from displays.dtdisplay import DTDisplay, poll # type: ignore
     from eventsys.devices import Devices, Broker # type: ignore
     import sys
 

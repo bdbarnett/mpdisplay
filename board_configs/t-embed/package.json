@@ -1,7 +1,7 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-embed/board_config.py"],
-      ["drivers/st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"],
+      ["board_config.py", "github:bdbarnett/displays/board_configs/t-embed/board_config.py"],
+      ["drivers/st7789.py", "github:bdbarnett/displays/drivers/display/st7789.py"],
       ["drivers/rotary.py", "github:miketeachman/micropython-rotary/rotary.py"],
       ["drivers/rotary_irq_esp.py", "github:miketeachman/micropython-rotary/rotary_irq_esp.py"]
       ],

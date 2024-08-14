@@ -1,7 +1,7 @@
 """ Waveshare ESP32-S3-Touch-LCD-4.3 800x480 ST7701 display """
 
 from lcd_bus import RGBBus
-from mpdisplay.busdisplay import BusDisplay
+from displays.busdisplay import BusDisplay
 from machine import I2C, Pin
 from gt911 import GT911
 from eventsys.devices import Devices
