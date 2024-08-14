@@ -2,6 +2,8 @@
 from board_config import display_drv
 import random
 import asyncio
+
+
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
 # disable it and set a flag so we can swap the color bytes as they are created.
 if display_drv.requires_byte_swap:

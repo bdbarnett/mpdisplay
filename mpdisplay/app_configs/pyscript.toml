@@ -4,6 +4,9 @@
 "../examples/mpdisplay_logo.py" = "/examples/"
 "../examples/mpdisplay_touch_test.py" = "/examples/"
 "../examples/paint.py" = "/examples/"
+"../examples/calculator.py" = "/examples/"
+
+"../extras/touch_keypad.py" = "/extras/"
 
 "../path.py" = "/"
 "../board_config.py" = "/"

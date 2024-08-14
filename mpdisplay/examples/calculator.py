@@ -135,6 +135,7 @@ async def main():
 
     # Main loop
     while True:
+        await asyncio.sleep(0.01)
         code = keypad.read()
         if code is None:
             continue
@@ -196,9 +197,11 @@ async def main():
         show_input(input)
         sleep(0.15)
         draw_button(x, y, label, False)
-        await asyncio.sleep(0.001)
 
 loop = asyncio.get_event_loop()
 loop.create_task(main())
-if hasattr(loop, "run_forever"):
-    loop.run_forever()
+if hasattr(loop, "is_running") and loop.is_running():
+    pass
+else:
+    if hasattr(loop, "run_forever"):
+        loop.run_forever()
