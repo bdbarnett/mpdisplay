@@ -45,4 +45,4 @@ loop.create_task(main())
 if hasattr(loop, "is_running") and loop.is_running():
     pass
 else:
-    print(f"{dir(loop)}")
+    pass
