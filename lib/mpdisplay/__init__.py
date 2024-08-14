@@ -1,3 +1,4 @@
+print("Executing lib/mpdisplay/__init__.py")
 # SPDX-FileCopyrightText: 2024 Brad Barnett and Kevin Schlosser
 #
 # SPDX-License-Identifier: MIT
