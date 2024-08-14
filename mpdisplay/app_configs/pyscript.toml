@@ -3,6 +3,7 @@
 "../examples/mpdisplay_event_test.py" = "/examples/"
 "../examples/mpdisplay_logo.py" = "/examples/"
 "../examples/mpdisplay_touch_test.py" = "/examples/"
+"../examples/paint.py" = "/examples/"
 
 "../path.py" = "/"
 "../board_config.py" = "/"
