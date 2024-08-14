@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="mini-coi.js"></script>
+        <title>Title</title>
+        <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
+    </head>
+    <body>
+        <script type="mpy" id="main" config="/mpdisplay/app_configs/pyscript.toml" terminal worker>
+            import path
+            import os
+            import js
+            from pyscript import document
+
+
+            term = document.querySelector('script[terminal]').terminal
+            term.resize(80, 24)
+      
+            output = js.document.getElementById('examples_list')
+            for file in os.listdir("/examples"):
+                if file.endswith('.py'):
+                    output.innerHTML += f'<button onclick="runScript(\'/examples/{file[:-3]}\')">{file}</button>'
+
+            import code
+            code.interact(local=globals())
+                </script>
+        <div id="examples_list"></div>
+        <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
+    </body>
+</html>

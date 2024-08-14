@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="mini-coi.js"></script>
+        <title>Title</title>
+        <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
+    </head>
+    <body>
+        <script type="mpy" config="/mpdisplay/app_configs/pyscript.toml" terminal worker>
+            from pyscript import document
+            term = document.querySelector('script[terminal]').terminal
+            term.resize(80, 24)
+        
+            import code
+            code.interact(local=globals())
+        </script>
+        <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
+    </body>
+</html>
