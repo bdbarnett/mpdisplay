@@ -10,7 +10,7 @@ repo_dir = "/home/brad/gh/mpdisplay/"
 src_dir = "mpdisplay/"
 output_dir = repo_dir
 packages_dir = "packages/"
-toml_full_path = output_dir + src_dir + "app_configs/mpdisplay.toml"
+toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
 # list of package directories and extra files in that package
@@ -51,7 +51,7 @@ for package_path, extra_files in packages:
             toml_dest = f'/{"/".join(dest_file.split("/")[:-1])}/'
             if toml_dest == "//":
                 toml_dest = "/"
-            master_toml.append(f'"../{dest_file}" = "{toml_dest}"')
+            master_toml.append(f'"../{src_dir + dest_file}" = "{toml_dest}"')
 
     for root, _, files in os.walk(full_path):
         for f in files:
@@ -64,7 +64,7 @@ for package_path, extra_files in packages:
                 toml_dest = f'/{"/".join(dest_file.split("/")[:-1])}/'
                 if toml_dest == "//":
                     toml_dest = "/"
-                master_toml.append(f'"../{dest_file}" = "{toml_dest}"')
+                master_toml.append(f'"../{src_dir + dest_file}" = "{toml_dest}"')
     if package_name not in master_exclude:
         master_toml.append("")
 

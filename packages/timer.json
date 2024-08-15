@@ -5,6 +5,10 @@
             "github:bdbarnett/mpdisplay/mpdisplay/lib/showtimer.py"
         ],
         [
+            "lib/timer/_sdl2.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/_sdl2.py"
+        ],
+        [
             "lib/timer/_librt.py",
             "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/_librt.py"
         ],
@@ -13,12 +17,20 @@
             "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/_timerbase.py"
         ],
         [
-            "lib/timer/_sdl2.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/_sdl2.py"
-        ],
-        [
             "lib/timer/__init__.py",
             "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/__init__.py"
+        ],
+        [
+            "lib/timer/__pycache__/_sdl2.cpython-312.pyc",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/__pycache__/_sdl2.cpython-312.pyc"
+        ],
+        [
+            "lib/timer/__pycache__/_timerbase.cpython-312.pyc",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/__pycache__/_timerbase.cpython-312.pyc"
+        ],
+        [
+            "lib/timer/__pycache__/__init__.cpython-312.pyc",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/__pycache__/__init__.cpython-312.pyc"
         ]
     ],
     "version": "0.1"
