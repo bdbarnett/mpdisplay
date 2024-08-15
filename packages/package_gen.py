@@ -25,7 +25,7 @@ packages = [
     ["examples", []],
     ]
 
-master_exclude = ["examples", "extras"]
+master_exclude = ["examples"]
 
 
 package_dicts = dict()
