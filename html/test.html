@@ -7,18 +7,16 @@
     </head>
     <body>
         <script type="mpy" config="../mpdisplay/app_configs/mpdisplay.toml" id="main" terminal worker>
-            import path
-            import os
-            import js
             from pyscript import document
-
-
             term = document.querySelector('script[terminal]').terminal
             term.resize(80, 24)
 
             import mip
-            mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target="./")
+            mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
+            import path
       
+            import os
+            import js
             output = js.document.getElementById('examples_list')
             for file in os.listdir("/examples"):
                 if file.endswith('.py'):
