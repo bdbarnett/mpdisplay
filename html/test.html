@@ -15,6 +15,9 @@
 
             term = document.querySelector('script[terminal]').terminal
             term.resize(80, 24)
+
+            import mip
+            mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target="./")
       
             output = js.document.getElementById('examples_list')
             for file in os.listdir("/examples"):
