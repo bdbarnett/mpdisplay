@@ -24,11 +24,17 @@
             def click_handler(e):
                 global module
                 if module and hasattr(module, "task"):
-                    print(f"Running task.close()")
+                    result = module.task.close()
+                    print(f"Task closed: {result=}")
                 file = e.target.id.split('.')[0]
-                # output.style.display = 'none'
+                output.style.display = 'none'
                 module = __import__(file)
                 print(f"Loaded {file=} ({dir(module)=})")
+                if hasattr(module, "task"):
+                    if module.task.done():
+                        module.task = module.loop.create_task(module.main())
+                else:
+                    print(f"No task found in {file=}")
 
             click_proxy = create_proxy(click_handler)
             
