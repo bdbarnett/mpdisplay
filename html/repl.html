@@ -10,6 +10,9 @@
             from pyscript import document
             term = document.querySelector('script[terminal]').terminal
             term.resize(80, 24)
+            print('To download example code, type:')
+            print('  import mip')
+            print('  mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target="./")')
         
             import code
             code.interact(local=globals())
