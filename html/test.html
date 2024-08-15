@@ -6,34 +6,38 @@
         <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
     </head>
     <body>
-        <script type="mpy" config="../mpdisplay/app_configs/mpdisplay.toml" id="main">
+        <script type="mpy" config="../mpdisplay/app_configs/mpdisplay.toml" id="main" terminal worker>
             from pyscript import document
-            # term = document.querySelector('script[terminal]').terminal
-            # term.resize(80, 24)
+            term = document.querySelector('script[terminal]').terminal
+            term.resize(80, 24)
 
             import mip
             mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
             import path
       
             import os
-            import js
             from pyscript.ffi import create_proxy
 
-            def click_handler(*args, **kwargs):
-                print(f"click_handler: {args}, {kwargs}")
+            output = document.getElementById('examples_list')
+
+            def click_handler(e):
+                file = e.target.id.split('.')[0]
+                output.style.display = 'none'
+                module = __import__(file)
+                print(f"Loaded {file=} ({dir(module)=})")
 
             click_proxy = create_proxy(click_handler)
             
-            output = js.document.getElementById('examples_list')
             for file in os.listdir("/examples"):
                 if file.endswith('.py'):
-                    output.innerHTML += f'<button id={file}>{file}</button>'
-                    btn = document.getElementById(file)
-                    print(f"{btn.id=}")
-                    btn.addEventListener("click", click_proxy)
+                    new_btn = document.createElement('button')
+                    new_btn.id = file
+                    new_btn.textContent = file
+                    output.appendChild(new_btn)
+                    new_btn.addEventListener("click", click_proxy)
 
-            # import code
-            # code.interact(local=globals())
+            import code
+            code.interact(local=globals())
         </script>
         <div id="examples_list"></div>
         <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
