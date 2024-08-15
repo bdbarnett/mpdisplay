@@ -83,7 +83,7 @@ async def main():
             break
 
 loop = asyncio.get_event_loop()
-loop.create_task(main())
+task = loop.create_task(main())
 if hasattr(loop, "is_running") and loop.is_running():
     pass
 else:

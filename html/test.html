@@ -19,10 +19,14 @@
             from pyscript.ffi import create_proxy
 
             output = document.getElementById('examples_list')
+            module = None
 
             def click_handler(e):
+                global module
+                if module and hasattr(module, "task"):
+                    print(f"Running task.close()")
                 file = e.target.id.split('.')[0]
-                output.style.display = 'none'
+                # output.style.display = 'none'
                 module = __import__(file)
                 print(f"Loaded {file=} ({dir(module)=})")
 
