@@ -7,6 +7,10 @@
     </head>
     <body>
         <script type="mpy" config="../mpdisplay/app_configs/mpdisplay.toml" id="main">
+            from pyscript import document
+            # term = document.querySelector('script[terminal]').terminal
+            # term.resize(80, 24)
+
             import mip
             mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
             import path
@@ -14,11 +18,9 @@
             import os
             import js
             from pyscript.ffi import create_proxy
-            from pyscript import document
 
-
-            def click_handler(e):
-                print(f"click_handler: {e}")
+            def click_handler(*args, **kwargs):
+                print(f"click_handler: {args}, {kwargs}")
 
             click_proxy = create_proxy(click_handler)
             
@@ -29,6 +31,9 @@
                     btn = document.getElementById(file)
                     print(f"{btn.id=}")
                     btn.addEventListener("click", click_proxy)
+
+            # import code
+            # code.interact(local=globals())
         </script>
         <div id="examples_list"></div>
         <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
