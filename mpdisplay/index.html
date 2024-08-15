@@ -6,6 +6,11 @@
     </head>
     <body>
         <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
-        <script type="mpy" config="app_configs/pyscript.toml">import path, calculator</script>
+        <script type="mpy" config="app_configs/mpdisplay.toml">
+            import mip
+            mip.install("github:bdbarnett/mpdisplay/mpdisplay/examples/calculator.py")
+            import path
+            calculator
+        </script>
     </body>
 </html>

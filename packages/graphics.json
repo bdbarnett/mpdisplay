@@ -1,0 +1,45 @@
+{
+    "urls": [
+        [
+            "lib/framebuf.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/framebuf.py"
+        ],
+        [
+            "lib/graphics/_displaybuf_viper.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/_displaybuf_viper.py"
+        ],
+        [
+            "lib/graphics/shapes.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/shapes.py"
+        ],
+        [
+            "lib/graphics/displaybuf.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/displaybuf.py"
+        ],
+        [
+            "lib/graphics/__init__.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/__init__.py"
+        ],
+        [
+            "lib/graphics/framebuf_plus.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/framebuf_plus.py"
+        ],
+        [
+            "lib/graphics/binfont/binfont_8x14.bin",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/binfont/binfont_8x14.bin"
+        ],
+        [
+            "lib/graphics/binfont/binfont_8x8.bin",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/binfont/binfont_8x8.bin"
+        ],
+        [
+            "lib/graphics/binfont/__init__.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/binfont/__init__.py"
+        ],
+        [
+            "lib/graphics/binfont/binfont_8x16.bin",
+            "github:bdbarnett/mpdisplay/mpdisplay/lib/graphics/binfont/binfont_8x16.bin"
+        ]
+    ],
+    "version": "0.1"
+}

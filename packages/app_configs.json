@@ -1,0 +1,33 @@
+{
+    "urls": [
+        [
+            "board_config.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/board_config.py"
+        ],
+        [
+            "path.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/path.py"
+        ],
+        [
+            "app_configs/color_setup.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/color_setup.py"
+        ],
+        [
+            "app_configs/lv_config.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/lv_config.py"
+        ],
+        [
+            "app_configs/tft_config.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/tft_config.py"
+        ],
+        [
+            "app_configs/mpdisplay.toml",
+            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/mpdisplay.toml"
+        ],
+        [
+            "app_configs/hardware_setup.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/hardware_setup.py"
+        ]
+    ],
+    "version": "0.1"
+}
