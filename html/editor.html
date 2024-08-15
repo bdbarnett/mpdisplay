@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="mini-coi.js"></script>
+        <title>Title</title>
+        <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
+    </head>
+    <body>
+        <script type="mpy-editor" config="../mpdisplay/app_configs/mpdisplay.toml">
+            import mip
+            mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
+        
+            import path
+            import mpdisplay_simpletest
+        </script>
+        <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
+    </body>
+</html>

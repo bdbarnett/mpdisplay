@@ -6,25 +6,30 @@
         <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
     </head>
     <body>
-        <script type="mpy" config="../mpdisplay/app_configs/mpdisplay.toml" id="main" terminal worker>
-            from pyscript import document
-            term = document.querySelector('script[terminal]').terminal
-            term.resize(80, 24)
-
+        <script type="mpy" config="../mpdisplay/app_configs/mpdisplay.toml" id="main">
             import mip
             mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
             import path
       
             import os
             import js
+            from pyscript.ffi import create_proxy
+            from pyscript import document
+
+
+            def click_handler(e):
+                print(f"click_handler: {e}")
+
+            click_proxy = create_proxy(click_handler)
+            
             output = js.document.getElementById('examples_list')
             for file in os.listdir("/examples"):
                 if file.endswith('.py'):
-                    output.innerHTML += f'<button onclick="runScript(\'/examples/{file[:-3]}\')">{file}</button>'
-
-            import code
-            code.interact(local=globals())
-                </script>
+                    output.innerHTML += f'<button id={file}>{file}</button>'
+                    btn = document.getElementById(file)
+                    print(f"{btn.id=}")
+                    btn.addEventListener("click", click_proxy)
+        </script>
         <div id="examples_list"></div>
         <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
     </body>
