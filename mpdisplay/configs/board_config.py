@@ -13,8 +13,8 @@ except ImportError:
     except NameError:
         pass
 
-width = 320
-height = 240
+width = 480
+height = 320
 
 if _ps:
     from displays.psdisplay import PSDisplay
