@@ -37,7 +37,7 @@ Copy-Item -Path $REPO/displays/lib -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/displays/fonts -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/displays/examples -Destination $TARGET/ -Recurse -Force
 Copy-Item -Path $REPO/displays/extras/* -Destination $TARGET/lib/ -Force
-Copy-Item -Path $REPO/displays/app_configs/* -Destination $TARGET/ -Force
+Copy-Item -Path $REPO/displays/configs/* -Destination $TARGET/ -Force
 
 Copy-Item -Path $REPO/lcd_bus/lcd_bus -Destination $TARGET/lib/ -Recurse -Force
 

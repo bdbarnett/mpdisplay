@@ -138,7 +138,7 @@ cp -u $REPO/$BOARD_CONFIG $TARGET/
 cp -ur $REPO/displays/lib $TARGET/
 cp -ur $REPO/displays/examples $TARGET/
 cp -ur $REPO/displays/extras $TARGET/
-cp -u $REPO/displays/app_configs/* $TARGET/
+cp -u $REPO/displays/configs/* $TARGET/
 
 cp -ur $REPO/lcd_bus/lcd_bus $TARGET/lib/
 

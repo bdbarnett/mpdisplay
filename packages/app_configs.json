@@ -9,20 +9,20 @@
             "github:bdbarnett/mpdisplay/mpdisplay/path.py"
         ],
         [
-            "app_configs/tft_config.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/tft_config.py"
+            "configs/tft_config.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/configs/tft_config.py"
         ],
         [
-            "app_configs/lv_config.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/lv_config.py"
+            "configs/lv_config.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/configs/lv_config.py"
         ],
         [
-            "app_configs/hardware_setup.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/hardware_setup.py"
+            "configs/hardware_setup.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/configs/hardware_setup.py"
         ],
         [
-            "app_configs/color_setup.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/app_configs/color_setup.py"
+            "configs/color_setup.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/configs/color_setup.py"
         ]
     ],
     "version": "0.1"

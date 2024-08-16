@@ -16,7 +16,7 @@ Does not work for nested directories.
 
 def update():
     # Edit this list to include the directories you want to add to the path.
-    directories = ("lib", "extras", "examples", "app_configs")
+    directories = ("lib", "extras", "examples", "configs")
 
     import sys
     import os
