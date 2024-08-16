@@ -71,7 +71,6 @@
 "../mpdisplay/lib/palettes/__pycache__/material_design.cpython-312.pyc" = "/lib/palettes/__pycache__/"
 "../mpdisplay/lib/palettes/__pycache__/__init__.cpython-312.pyc" = "/lib/palettes/__pycache__/"
 
-"../mpdisplay/lib/showtimer.py" = "/lib/"
 "../mpdisplay/lib/timer/_sdl2.py" = "/lib/timer/"
 "../mpdisplay/lib/timer/_librt.py" = "/lib/timer/"
 "../mpdisplay/lib/timer/_timerbase.py" = "/lib/timer/"

@@ -38,7 +38,7 @@ elif _jn:
 
     display_drv = JNDisplay(width, height)
 
-    import showtimer  # noqa: F401
+    display_drv.auto_refresh = 33
 else:
     from displays.dtdisplay import DTDisplay, poll # type: ignore
     from eventsys.devices import Devices, Broker # type: ignore

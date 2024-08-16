@@ -6,4 +6,4 @@ from displays.jndisplay import JNDisplay
 
 display_drv = JNDisplay(320, 240)
 
-import showtimer
+display_drv.auto_refresh = 33

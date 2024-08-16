@@ -269,10 +269,6 @@
             "github:bdbarnett/mpdisplay/mpdisplay/lib/palettes/__pycache__/__init__.cpython-312.pyc"
         ],
         [
-            "lib/showtimer.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/lib/showtimer.py"
-        ],
-        [
             "lib/timer/_sdl2.py",
             "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/_sdl2.py"
         ],

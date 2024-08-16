@@ -20,7 +20,7 @@ packages = [
     ["lib/eventsys", []],
     ["lib/graphics", ["framebuf.py"]],
     ["lib/palettes", []],
-    ["lib/timer", ["showtimer.py"]],
+    ["lib/timer", []],
     ["extras", []],
     ["examples", []],
     ]

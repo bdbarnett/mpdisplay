@@ -49,6 +49,18 @@ if not viper:
 
 gc.collect()
 
+def refresh_timer(canvas=None, period=33):
+    """
+    Creates and returns a timer to periodically call the .show() method on a canvas object
+    """
+    from timer import Timer
+    from sys import platform
+
+    if canvas is None:
+        from board_config import display_drv as canvas
+    tim = Timer(-1 if platform == "rp2" else 1)
+    tim.init(mode = Timer.PERIODIC, period=period, callback=lambda t: canvas.show())
+    return tim
 
 class _BaseDisplay:
     def __init__(self):
@@ -58,6 +70,7 @@ class _BaseDisplay:
         self.draw = None  # Placeholder for instance of Draw class for drawing shapes
         self.broker = None  # Placeholder for instance of Broker class for handling events
         self._rotation_callback = None
+        self._auto_refresh_timer = None
         print(f"MPDisplay:  Using {self.__class__.__name__}")
         gc.collect()
 
@@ -145,10 +158,34 @@ class _BaseDisplay:
         # override this method in subclasses to handle rotation
         pass
 
-    @staticmethod
-    def alloc_buffer(size):
-        # Define how buffers are allocated.  Allows being overridden by platforms with DMA specific allocations, such as ESP32's heap_caps.
-        return bytearray(size)
+    @property
+    def auto_refresh(self):
+        """
+        The auto refresh setting.
+
+        :return: Whether auto refresh is enabled.
+        :rtype: bool
+        """
+        return self._auto_refresh_timer is not None
+    
+    @auto_refresh.setter
+    def auto_refresh(self, period=0):
+        """
+        Sets the auto refresh setting.
+
+        :param period: The period to refresh the display in milliseconds.  0 disables auto refresh.
+        :type period: int
+        """
+        if period == 0:
+            if self._auto_refresh_timer is not None:
+                self._auto_refresh_timer.deinit()
+                self._auto_refresh_timer = None
+        else:
+            if self._auto_refresh_timer is None:
+                self._auto_refresh_timer = refresh_timer(self, period)
+            else:
+                raise ValueError("Auto refresh timer already running")
+        return self.auto_refresh
 
     def fill(self, color):
         """

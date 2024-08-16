@@ -1,10 +1,6 @@
 {
     "urls": [
         [
-            "lib/showtimer.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/lib/showtimer.py"
-        ],
-        [
             "lib/timer/_sdl2.py",
             "github:bdbarnett/mpdisplay/mpdisplay/lib/timer/_sdl2.py"
         ],
