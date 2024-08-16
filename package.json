@@ -1,10 +1,6 @@
 {
     "urls": [
         [
-            "board_config.py",
-            "github:bdbarnett/mpdisplay/mpdisplay/board_config.py"
-        ],
-        [
             "path.py",
             "github:bdbarnett/mpdisplay/mpdisplay/path.py"
         ],
@@ -19,6 +15,10 @@
         [
             "configs/hardware_setup.py",
             "github:bdbarnett/mpdisplay/mpdisplay/configs/hardware_setup.py"
+        ],
+        [
+            "configs/board_config.py",
+            "github:bdbarnett/mpdisplay/mpdisplay/configs/board_config.py"
         ],
         [
             "configs/color_setup.py",

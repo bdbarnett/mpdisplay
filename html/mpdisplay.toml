@@ -1,9 +1,9 @@
 [files]
-"../mpdisplay/board_config.py" = "/"
 "../mpdisplay/path.py" = "/"
 "../mpdisplay/configs/tft_config.py" = "/configs/"
 "../mpdisplay/configs/lv_config.py" = "/configs/"
 "../mpdisplay/configs/hardware_setup.py" = "/configs/"
+"../mpdisplay/configs/board_config.py" = "/configs/"
 "../mpdisplay/configs/color_setup.py" = "/configs/"
 
 "../mpdisplay/lib/area.py" = "/lib/"

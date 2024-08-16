@@ -15,7 +15,7 @@ master_package_name = "package"
 
 # list of package directories and extra files in that package
 packages = [
-    ["configs", ["board_config.py", "path.py"]],
+    ["configs", ["path.py"]],
     ["lib/displays", ["area.py", "micropython.py"]],
     ["lib/eventsys", []],
     ["lib/graphics", ["framebuf.py"]],
