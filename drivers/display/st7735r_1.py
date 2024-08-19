@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-from displays.busdisplay import BusDisplay
+from busdisplay import BusDisplay
 
 
 _INIT_SEQUENCE = [

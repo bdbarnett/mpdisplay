@@ -23,7 +23,7 @@ are set to 128, 96 regardless of what you enter.
 from usb_video import USBFramebuffer
 from framebufferio import FramebufferDisplay
 from displayio import release_displays
-from displays.fbdisplay import FBDisplay
+from fbdisplay import FBDisplay
 
 
 release_displays()

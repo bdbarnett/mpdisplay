@@ -41,7 +41,7 @@ Implementation Notes
   <https://www.adafruit.com/product/3315>
 """
 
-from displays.busdisplay import BusDisplay
+from busdisplay import BusDisplay
 
 _INIT_SEQUENCE = (
     b"\x01\x80\x80"  # Software reset then delay 0x80 (128ms)

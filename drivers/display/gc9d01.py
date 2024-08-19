@@ -23,7 +23,7 @@ Implementation Notes
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/tylercrumpton/CircuitPython_GC9D01.git"
 
-from displays.busdisplay import BusDisplay
+from busdisplay import BusDisplay
 
 _INIT_SEQUENCE = bytearray(
     b"\xFE\x00"  # Inter Register Enable1 (FEh)

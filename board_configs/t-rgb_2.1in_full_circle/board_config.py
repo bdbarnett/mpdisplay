@@ -89,7 +89,7 @@ touch_drv = CST8XX(i2c, rst_pin=tp_rst)
 touch_read_func = touch_drv.get_point
 touch_rotation_table=None
 
-touch_dev = display_drv.broker.create_device(
+touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,

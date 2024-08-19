@@ -1,0 +1,25 @@
+{
+    "urls": [
+        [
+            "lib/displays/_basedisplay.py",
+            "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay.py"
+        ],
+        [
+            "lib/displays/_basedisplay_numpy.py",
+            "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_numpy.py"
+        ],
+        [
+            "lib/displays/_basedisplay_viper.py",
+            "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
+        ],
+        [
+            "lib/displays/psdisplay/psdevices.py",
+            "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
+        ],
+        [
+            "lib/displays/psdisplay/__init__.py",
+            "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
+        ]
+    ],
+    "version": "0.1"
+}

@@ -4,7 +4,7 @@ Aapted from: https://files.waveshare.com/upload/8/8d/LCD_Module_RPI_code.zip
 LCD_Module_RPI_code.zip\LCD_Module_RPI_code\RaspberryPi\python\lib
 """
 
-from displays.busdisplay import BusDisplay
+from busdisplay import BusDisplay
 
 
 _INIT_SEQUENCE = [

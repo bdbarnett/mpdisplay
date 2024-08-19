@@ -2,7 +2,7 @@
 see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp32s3/boards/LILYGO_T-RGB/modules
 """
 
-from displays.busdisplay import BusDisplay
+from busdisplay import BusDisplay
 
 
 _INIT_SEQUENCE = [

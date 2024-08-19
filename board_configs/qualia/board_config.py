@@ -1,7 +1,7 @@
 """ Qualia with 4.0" 720x720 display """
 
 from lcd_bus import RGBBus
-from displays.busdisplay import BusDisplay
+from busdisplay import BusDisplay
 from machine import I2C, Pin
 from cst8xx import CST8XX
 from eventsys.devices import Devices
@@ -70,7 +70,7 @@ touch_drv = CST8XX(i2c)
 touch_read_func = touch_drv.touches
 touch_rotation_table=None
 
-touch_dev = display_drv.broker.create_device(
+touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
     data=touch_rotation_table,

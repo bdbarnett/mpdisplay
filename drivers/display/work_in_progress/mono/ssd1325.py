@@ -33,7 +33,7 @@ except ImportError:
 # Support both 8.x.x and 9.x.x. Change when 8.x.x is discontinued as a stable release.
 try:
     from fourwire import FourWire
-    from displays.busdisplay import BusDisplay
+    from busdisplay import BusDisplay
     from i2cdisplaybus import I2CDisplayBus
 except ImportError:
     from displayio import FourWire

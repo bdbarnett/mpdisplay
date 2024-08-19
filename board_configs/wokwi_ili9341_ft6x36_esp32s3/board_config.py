@@ -54,8 +54,8 @@ touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=(6, 3, 0, 5)
 
-if display_drv.broker is not None:  # For troubleshooting only!
-    touch_dev = display_drv.broker.create_device(
+if broker is not None:  # For troubleshooting only!
+    touch_dev = broker.create_device(
         type=Devices.TOUCH,
         read=touch_read_func,
         data=touch_rotation_table,
