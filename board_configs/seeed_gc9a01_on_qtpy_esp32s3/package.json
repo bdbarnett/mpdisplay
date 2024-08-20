@@ -1,8 +1,8 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/displays/board_configs/seeed_gc9a01_on_qtpy_esp32s3/board_config.py"],
-      ["drivers/gc9a01.py", "github:bdbarnett/displays/drivers/display/gc9a01.py"],
-      ["drivers/chsc6x.py", "github:bdbarnett/displays/drivers/touch/chsc6x.py"]
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/seeed_gc9a01_on_qtpy_esp32s3/board_config.py"],
+      ["drivers/gc9a01.py", "github:bdbarnett/mpdisplay/drivers/display/gc9a01.py"],
+      ["drivers/chsc6x.py", "github:bdbarnett/mpdisplay/drivers/touch/chsc6x.py"]
     ],
     "version": "0.1"
   }

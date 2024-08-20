@@ -1,9 +1,9 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/displays/board_configs/t-rgb_2.1in_full_circle/board_config.py"],
-      ["drivers/st7701.py", "github:bdbarnett/displays/drivers/display/st7701.py"],
-      ["drivers/cst8xx.py", "github:bdbarnett/displays/drivers/touch/cst8xx.py"],
-      ["drivers/xl9535.py", "github:bdbarnett/displays/drivers/io_expander/xl9535.py"]
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-rgb_2.1in_full_circle/board_config.py"],
+      ["drivers/st7701.py", "github:bdbarnett/mpdisplay/drivers/display/st7701.py"],
+      ["drivers/cst8xx.py", "github:bdbarnett/mpdisplay/drivers/touch/cst8xx.py"],
+      ["drivers/xl9535.py", "github:bdbarnett/mpdisplay/drivers/io_expander/xl9535.py"]
     ],
     "version": "0.1"
   }
