@@ -35,10 +35,10 @@ if _ps:
     )
 elif _jn:
     from jndisplay import JNDisplay
-    from show_timer import show_timer
+    from timer import refresh_timer
 
     display_drv = JNDisplay(width, height)
-    tim = show_timer(display_drv)
+    tim = refresh_timer(display_drv.show)
 else:
     from dtdisplay import DTDisplay, poll # type: ignore
     from eventsys.devices import Devices, Broker # type: ignore

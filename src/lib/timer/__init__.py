@@ -31,3 +31,13 @@ except ImportError:
         from ._sdl2 import Timer
     else:
         Timer = None
+
+
+def refresh_timer(callback, period=33):
+    """
+    Creates and returns a timer to periodically call the callback function
+    """
+
+    tim = Timer(-1 if sys.platform == "rp2" else 1)
+    tim.init(mode = Timer.PERIODIC, period=period, callback=lambda t: callback())
+    return tim
