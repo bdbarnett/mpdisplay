@@ -44,4 +44,8 @@ def update():
         print(f"path.py:  Added {added} to sys.path.")
 
 
+def add(directory):
+    directories.append(directory)
+    update()
+
 update()
