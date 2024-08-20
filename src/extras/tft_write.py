@@ -100,7 +100,7 @@ def write(canvas, font, string, x, y, fg=WHITE, bg=BLACK):
             pass
     return Area(x, y, x_pos - x, font.HEIGHT)
 
-def write_width(canvas, font, string):
+def write_width(font, string):
     """
     Returns the width in pixels of the string if it was written with the
     specified font

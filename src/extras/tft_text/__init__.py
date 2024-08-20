@@ -39,30 +39,18 @@ from area import Area
 
 if implementation.name == "micropython":
     try:
-        from ._pytext_viper import _pack8, _pack16
+        from ._viper import _pack8, _pack16
     except Exception:
-        from ._pytext_python import _pack8, _pack16
+        from ._python import _pack8, _pack16
 else:
-        from ._pytext_python import _pack8, _pack16
+        from ._python import _pack8, _pack16
 
 
 WHITE = const(0xFFFF)
 BLACK = const(0x0000)
 
-_default_font = None
 
-def pytext(canvas, firstarg, *args, **kwargs):
-    global _default_font
-    if type(firstarg) is str:
-        if _default_font is None:
-            from .fonts import vga1_8x8
-
-            _default_font = vga1_8x8
-        return _text(canvas, _default_font, firstarg, *args, **kwargs)
-    else:
-        return _text(canvas, firstarg, *args, **kwargs)
-
-def _text(canvas, font, text, x0, y0, color=WHITE, background=BLACK):
+def text(canvas, font, text, x0, y0, color=WHITE, background=BLACK):
     """
     Draw text on display in specified font and colors. 8 and 16 bit wide
     fonts are supported.
