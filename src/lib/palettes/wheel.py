@@ -44,7 +44,7 @@ class WheelPalette(_Palette):
             self._value = value if value is not None else 1.0
             if not 0 <= self._saturation <= 1 or not 0 <= self._value <= 1:
                 raise ValueError("Saturation and value must be in the range of 0-1")
-        from ._win16 import WIN16 as NAMES
+        from . import WIN16 as NAMES
         self._names = NAMES
 
         super().__init__(name + str(self._length), color_depth, swapped, cached)
