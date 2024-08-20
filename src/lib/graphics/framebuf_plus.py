@@ -226,7 +226,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
 
-    def text(self, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
+    def text(self, s, x, y, c=1):
         """
         Draw text at the given location, using the given font and color.
 
@@ -238,5 +238,5 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             scale (int): Scale factor (default: 1)
             inverted (bool): Invert the text (default: False)
         """
-        super().text(self, s, x, y, c, scale, inverted, font_file, font_height)
-        return Area(x, y, len(s) * 8 * scale, font_height * scale)
+        super().text(s, x, y, c)
+        return Area(x, y, len(s) * 8, 8)
