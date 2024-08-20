@@ -34,7 +34,7 @@ except ImportError:
         sleep(ms / 1000)
 
 import tft_config
-
+import tft_bitmap
 palette = tft_config.palette
 import alien_bitmap as alien
 
@@ -57,7 +57,7 @@ def main():
     while True:
         last = ticks_ms()
         tft.draw.fill_rect(last_col, old_row, alien.WIDTH, alien.HEIGHT, 0)
-        tft.draw.bitmap(alien, col, row)
+        tft_bitmap.bitmap(tft, alien, col, row)
         last_col, old_row = col, row
         col, row = col + xd, row + yd
         xd = -xd if col <= 0 or col >= width - alien.WIDTH else xd

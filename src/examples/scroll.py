@@ -23,8 +23,7 @@ Only works with fonts with heights that are even multiples of the screen height,
 """
 
 import time
-import random
-
+import tft_text
 import tft_config
 
 palette = tft_config.palette
@@ -48,7 +47,7 @@ def main():
         tft.draw.fill_rect(0, scroll, tft.width, 1, palette.BLUE)
 
         if scroll % font.HEIGHT == 0:
-            tft.draw.text(
+            tft_text.text(tft, 
                 font,
                 f"x{character:02x} {chr(character)}",
                 col,

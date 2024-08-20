@@ -9,7 +9,8 @@ from board_config import display_drv
 from graphics.binfont import BinFont
 import random
 from graphics.displaybuf import DisplayBuffer
-from graphics.palettes import get_palette
+from palettes import get_palette
+import os
 
 display = DisplayBuffer(display_drv)
 
@@ -35,9 +36,13 @@ def main():
     text_len = len(write_text)
     iterations = 32
 
-    font1 = BinFont("fonts/binfont_8x8.bin")
-    font2 = BinFont("fonts/binfont_8x14.bin")
-    font3 = BinFont("fonts/binfont_8x16.bin")
+    cwd = os.getcwd()
+    if cwd[-1] != "/":
+        cwd += "/"
+
+    font1 = BinFont(f"{cwd}lib/graphics/binfont/binfont_8x8.bin")
+    font2 = BinFont(f"{cwd}lib/graphics/binfont/binfont_8x14.bin")
+    font3 = BinFont(f"{cwd}lib/graphics/binfont/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.font_width for font in fonts])

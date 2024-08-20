@@ -22,7 +22,7 @@ Writes "Hello!" in a tiny font in random colors at random locations on the Displ
 
 import random
 import time
-
+import tft_text
 import tft_config
 
 palette = tft_config.palette
@@ -36,7 +36,7 @@ def center(text, fg=palette.WHITE, bg=palette.BLACK):
     Centers the given text on the display.
     """
     length = len(text)
-    tft.draw.text(
+    tft_text.text(tft, 
         font,
         text,
         tft.width // 2 - length // 2 * font.WIDTH,
@@ -64,7 +64,7 @@ def main():
             row_max = tft.height - font.HEIGHT
 
             for _ in range(128):
-                tft.draw.text(
+                tft_text.text(tft, 
                     font,
                     "Hello!",
                     random.randint(0, col_max),

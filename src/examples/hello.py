@@ -24,9 +24,10 @@ https://www.youtube.com/watch?v=atBa0BYPAAc
 import random
 
 import tft_config
+import tft_text
+import vga2_bold_16x32 as font
 
 palette = tft_config.palette
-import vga2_bold_16x32 as font
 
 
 def main():
@@ -45,7 +46,7 @@ def main():
                 raise RuntimeError("This font is too big to display on this screen.")
 
             for _ in range(100):
-                tft.draw.text(
+                tft_text.text(tft, 
                     font,
                     "Hello",
                     random.randint(0, col_max),

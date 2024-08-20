@@ -23,9 +23,9 @@ number and the color of the display background.
 
 import time
 import tft_config
-
-palette = tft_config.palette
+import tft_text
 import vga1_16x16 as font
+palette = tft_config.palette
 
 
 def center_on(display, using_font, text, y, fg, bg):
@@ -33,7 +33,7 @@ def center_on(display, using_font, text, y, fg, bg):
     Center the text on the display
     """
     x = (display.width - len(text) * font.WIDTH) // 2
-    display.draw.text(using_font, text, x, y, fg, bg)
+    tft_text.text(display, using_font, text, x, y, fg, bg)
 
 
 def clear_screen(display, color):

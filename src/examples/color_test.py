@@ -21,13 +21,13 @@ gradient.  Then repeatedly draws a borders around the display in the same colors
 
 """
 
-import random
 from time import sleep
-
 import tft_config
+import tft_text
+import vga2_bold_16x32 as font # type: ignore
+
 
 palette = tft_config.palette
-import vga2_bold_16x32 as font
 
 
 def interpolate(value1, value2, position, total_range):
@@ -73,7 +73,7 @@ def main():
         name = names[i]
         text_x = (tft.width - font.WIDTH * len(name)) // 2
         text_y = start_row + (end_row - start_row - font.HEIGHT) // 2
-        tft.draw.text(font, name, text_x, text_y, palette.WHITE, color)
+        tft_text.text(tft, font, name, text_x, text_y, palette.WHITE, color)
 
     while True:
         for color in [palette.RED, palette.GREEN, palette.BLUE]:

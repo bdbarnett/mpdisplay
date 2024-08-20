@@ -13,15 +13,19 @@ from graphics.binfont import BinFont
 from framebuf import FrameBuffer, RGB565
 import os
 
-
+display_drv.fill(0)
 y_pos = 0
 
 
 def main():
     global y_pos
 
+    cwd = os.getcwd()
+    if cwd[-1] != "/":
+        cwd += "/"
+
     # Specify the directory containing the .bin files
-    directory = "fonts"
+    directory = f"{cwd}lib/graphics/binfont"
 
     def gather_font_files(directory):
         font_files = []

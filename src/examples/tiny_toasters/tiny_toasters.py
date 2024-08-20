@@ -31,7 +31,7 @@ Tiny Flying Toasters for smaller displays using a converted BMP spritesheet modu
 import gc
 import time
 import random
-
+import tft_bitmap
 import tft_config
 
 palette = tft_config.palette
@@ -184,7 +184,7 @@ def main():
         def draw(self):
             """if the location is not 0,0 draw current frame of sprite at it's location"""
             if self.col and self.row:
-                tft.draw.bitmap(self.bitmaps, self.col, self.row, self.frames[self.step])
+                tft_bitmap.bitmap(tft, self.bitmaps, self.col, self.row, self.frames[self.step])
 
     # configure display driver
     tft = tft_config.config(tft_config.WIDE)

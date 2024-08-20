@@ -27,12 +27,13 @@ https://www.youtube.com/watch?v=2cnAhEucPD4
 import time
 
 import tft_config
-
-palette = tft_config.palette
+import tft_text
 import vga2_8x8 as font1
 import vga2_8x16 as font2
 import vga2_bold_16x16 as font3
 import vga2_bold_16x32 as font4
+
+palette = tft_config.palette
 
 
 def main():
@@ -46,7 +47,7 @@ def main():
             col = 0
 
             for char in range(font.FIRST, font.LAST):
-                tft.draw.text(font, chr(char), col, line, palette.WHITE, palette.BLUE)
+                tft_text.text(tft, font, chr(char), col, line, palette.WHITE, palette.BLUE)
                 col += font.WIDTH
                 if col > tft.width - font.WIDTH:
                     col = 0

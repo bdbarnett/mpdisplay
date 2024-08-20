@@ -1,5 +1,5 @@
 from board_config import display_drv
-from graphics.bmp565 import BMP565
+from bmp565 import BMP565
 from time import sleep
 from random import choice
 from collections import namedtuple

@@ -30,7 +30,7 @@ palette = tft_config.palette
 import NotoSans_32 as noto_sans
 import NotoSerif_32 as noto_serif
 import NotoSansMono_32 as noto_mono
-
+import tft_write
 
 def main():
     """main"""
@@ -50,9 +50,9 @@ def main():
         """
 
         screen = tft.width  # get screen width
-        width = tft.draw.write_width(font, string)  # get the width of the string
+        width = tft_write.write_width(font, string)  # get the width of the string
         col = tft.width // 2 - width // 2 if width and width < screen else 0
-        tft.draw.write(font, string, col, row, color)  # and write the string
+        tft_write.write(tft, font, string, col, row, color)  # and write the string
 
     # initialize the display
     tft = tft_config.config(tft_config.WIDE)

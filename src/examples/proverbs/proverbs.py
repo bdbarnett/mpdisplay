@@ -27,7 +27,7 @@ The fonts were converted from True Type fonts using the
 """
 
 import time
-
+import tft_write
 import tft_config
 
 palette = tft_config.palette
@@ -81,9 +81,9 @@ def main():
             tft.draw.fill(palette.BLACK)
 
             for count, proverb_line in enumerate(proverb_lines):
-                half_length = tft.draw.write_width(font, proverb_line) // 2
+                half_length = tft_write.write_width(font, proverb_line) // 2
 
-                tft.draw.write(
+                tft_write.write(tft, 
                     font,
                     proverb_line,
                     half_width - half_length,

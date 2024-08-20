@@ -123,7 +123,15 @@ def loop():
         print("Set the `touch_rotation_table` in board_config.py to the following:")
     else:
         print("Demo complete.")
-    print(f"    touch_rotation_table = {tuple(touch_rotation_table)}")
+    out_text = f"touch_rotation_table = {tuple(touch_rotation_table)}"
+    print("    ", out_text, "\n")
+    text16(
+            display_drv,
+            out_text,
+            (display_drv.width - len(out_text) * 8) // 2,
+            (display_drv.height - 8) // 2,
+            FG_COLOR,
+        )
     return True
 
 

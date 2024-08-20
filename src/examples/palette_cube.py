@@ -1,5 +1,5 @@
 from board_config import display_drv
-from graphics.palettes import get_palette
+from palettes import get_palette
 from graphics.binfont import text16
 from graphics.framebuf_plus import FrameBuffer, RGB565
 from time import sleep
