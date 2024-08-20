@@ -33,10 +33,6 @@
             "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
         ],
         [
-            "extras/show_timer.py",
-            "github:bdbarnett/mpdisplay/src/extras/show_timer.py"
-        ],
-        [
             "extras/wifi.py",
             "github:bdbarnett/mpdisplay/src/extras/wifi.py"
         ],

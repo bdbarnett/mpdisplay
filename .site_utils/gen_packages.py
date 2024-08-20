@@ -13,7 +13,7 @@ packages_dir = "packages/"
 toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
-displays_shared = ["_basedisplay.py", "_basedisplay_numpy.py", "_basedisplay_viper.py"]
+displays_shared = ["_basedisplay.py", "_basedisplay_numpy.py", "_basedisplay_viper.py", "splash.py"]
 # list of package directories and extra files in that package
 packages = [
     ["configs", ["path.py"]],

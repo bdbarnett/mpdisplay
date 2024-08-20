@@ -57,10 +57,6 @@
             "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
         ],
         [
-            "extras/show_timer.py",
-            "github:bdbarnett/mpdisplay/src/extras/show_timer.py"
-        ],
-        [
             "extras/wifi.py",
             "github:bdbarnett/mpdisplay/src/extras/wifi.py"
         ],
@@ -151,6 +147,10 @@
         [
             "lib/displays/_basedisplay_viper.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
+        ],
+        [
+            "lib/displays/splash.py",
+            "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
         ],
         [
             "lib/displays/busdisplay/__init__.py",
