@@ -21,13 +21,13 @@ Usage:
         from color_setup import ssd
         <your code here>
 """
-from . import framebuf_plus as framebuf
+from .. import framebuf_plus as framebuf
 import gc
 import sys
 from area import Area  # for _show16
 
 if sys.implementation.name == "micropython":
-    from ._displaybuf_viper import _bounce8, _bounce4
+    from ._viper import _bounce8, _bounce4
 else:
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
@@ -37,6 +37,10 @@ else:
 
 
 gc.collect()
+
+
+def alloc_buffer(size):
+    return memoryview(bytearray(size))
 
 
 class DisplayBuffer(framebuf.FrameBuffer):
@@ -98,14 +102,14 @@ class DisplayBuffer(framebuf.FrameBuffer):
         elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 is not None:
             self._buffer_depth = 8
             self._stride = stride
-            self._bounce_buf = display_drv.alloc_buffer(width * self._stride * BPP)
+            self._bounce_buf = alloc_buffer(width * self._stride * BPP)
             self._buffer = bytearray(width * height)
             self.show = self._show8
         elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB is not None:
             self._buffer_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
-            self._bounce_buf = display_drv.alloc_buffer(width * self._stride * BPP)
+            self._bounce_buf = alloc_buffer(width * self._stride * BPP)
             self._buffer = bytearray(width * height // 2)
             self.show = self._show4
         else:
@@ -226,7 +230,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             DisplayBuffer, "lut"
         ):  # If the ssd doesn't use a LUT in its current format
             return c  # Return the color as-is
-        if idx is not None:  # If no index was provided
+        if idx is None:  # If no index was provided
             if (
                 DisplayBuffer.colors_registered < 16
             ):  # If there are fewer than 16 colors registered
