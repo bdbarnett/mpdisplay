@@ -25,8 +25,24 @@
             "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
         ],
         [
+            "configs/__pycache__/color_setup.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/configs/__pycache__/color_setup.cpython-310.pyc"
+        ],
+        [
+            "configs/__pycache__/tft_config.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/configs/__pycache__/tft_config.cpython-310.pyc"
+        ],
+        [
+            "configs/__pycache__/board_config.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/configs/__pycache__/board_config.cpython-310.pyc"
+        ],
+        [
             "extras/keypins.py",
             "github:bdbarnett/mpdisplay/src/extras/keypins.py"
+        ],
+        [
+            "extras/tft_bitmap.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_bitmap.py"
         ],
         [
             "extras/lv_mpdisplay.py",
@@ -37,12 +53,8 @@
             "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
         ],
         [
-            "extras/write.py",
-            "github:bdbarnett/mpdisplay/src/extras/write.py"
-        ],
-        [
-            "extras/bitmap.py",
-            "github:bdbarnett/mpdisplay/src/extras/bitmap.py"
+            "extras/tft_write.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_write.py"
         ],
         [
             "extras/touch_keypad.py",
@@ -69,76 +81,144 @@
             "github:bdbarnett/mpdisplay/src/extras/pbm.py"
         ],
         [
-            "extras/pytext/_pytext_viper.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/_pytext_viper.py"
+            "extras/tft_text/_viper.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/_viper.py"
         ],
         [
-            "extras/pytext/_pytext_python.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/_pytext_python.py"
+            "extras/tft_text/_python.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/_python.py"
         ],
         [
-            "extras/pytext/__init__.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/__init__.py"
+            "extras/tft_text/__init__.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/__init__.py"
         ],
         [
-            "extras/pytext/fonts/vga2_16x32.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga2_16x32.py"
+            "extras/tft_text/fonts/vga2_16x32.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x32.py"
         ],
         [
-            "extras/pytext/fonts/vga2_bold_16x32.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga2_bold_16x32.py"
+            "extras/tft_text/fonts/vga2_bold_16x32.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
         ],
         [
-            "extras/pytext/fonts/vga1_8x16.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga1_8x16.py"
+            "extras/tft_text/fonts/vga1_8x16.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x16.py"
         ],
         [
-            "extras/pytext/fonts/vga2_bold_16x16.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga2_bold_16x16.py"
+            "extras/tft_text/fonts/vga2_bold_16x16.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x16.py"
         ],
         [
-            "extras/pytext/fonts/vga2_8x16.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga2_8x16.py"
+            "extras/tft_text/fonts/vga2_8x16.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_8x16.py"
         ],
         [
-            "extras/pytext/fonts/vga1_bold_16x16.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga1_bold_16x16.py"
+            "extras/tft_text/fonts/vga1_bold_16x16.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x16.py"
         ],
         [
-            "extras/pytext/fonts/vga1_16x32.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga1_16x32.py"
+            "extras/tft_text/fonts/vga1_16x32.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x32.py"
         ],
         [
-            "extras/pytext/fonts/vga2_16x16.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga2_16x16.py"
+            "extras/tft_text/fonts/vga2_16x16.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x16.py"
         ],
         [
-            "extras/pytext/fonts/vga1_8x8.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga1_8x8.py"
+            "extras/tft_text/fonts/vga1_8x8.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x8.py"
         ],
         [
-            "extras/pytext/fonts/vga1_16x16.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga1_16x16.py"
+            "extras/tft_text/fonts/vga1_16x16.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x16.py"
         ],
         [
-            "extras/pytext/fonts/vga1_bold_16x32.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga1_bold_16x32.py"
+            "extras/tft_text/fonts/vga1_bold_16x32.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x32.py"
         ],
         [
-            "extras/pytext/fonts/vga2_8x8.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/vga2_8x8.py"
+            "extras/tft_text/fonts/vga2_8x8.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_8x8.py"
         ],
         [
-            "extras/pytext/fonts/compile_upload.sh",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/compile_upload.sh"
+            "extras/tft_text/fonts/compile_upload.sh",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/compile_upload.sh"
         ],
         [
-            "extras/pytext/fonts/__init__.py",
-            "github:bdbarnett/mpdisplay/src/extras/pytext/fonts/__init__.py"
+            "extras/tft_text/fonts/__init__.py",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__init__.py"
+        ],
+        [
+            "extras/tft_text/fonts/__pycache__/vga1_16x16.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__pycache__/vga1_16x16.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/fonts/__pycache__/vga1_8x8.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__pycache__/vga1_8x8.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/fonts/__pycache__/vga2_8x8.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__pycache__/vga2_8x8.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/fonts/__pycache__/vga2_bold_16x16.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__pycache__/vga2_bold_16x16.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/fonts/__pycache__/vga2_bold_16x32.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__pycache__/vga2_bold_16x32.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/fonts/__pycache__/vga2_8x16.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__pycache__/vga2_8x16.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/__pycache__/_python.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/__pycache__/_python.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "extras/tft_text/__pycache__/_pytext_python.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/tft_text/__pycache__/_pytext_python.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/touch_keypad.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/touch_keypad.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/tft_write.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/tft_write.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/bmp565.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/bmp565.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/tft_bitmap.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/tft_bitmap.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/keypins.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/keypins.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/ezfont.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/ezfont.cpython-310.pyc"
+        ],
+        [
+            "extras/__pycache__/write.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/extras/__pycache__/write.cpython-310.pyc"
         ],
         [
             "lib/area/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/area/__init__.py"
+        ],
+        [
+            "lib/area/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/area/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/displays/_basedisplay.py",
@@ -161,12 +241,24 @@
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
         ],
         [
+            "lib/displays/dtdisplay/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
             "lib/displays/dtdisplay/sdldisplay/_poll.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
         ],
         [
             "lib/displays/dtdisplay/sdldisplay/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__init__.py"
+        ],
+        [
+            "lib/displays/dtdisplay/sdldisplay/__pycache__/_poll.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__pycache__/_poll.cpython-310.pyc"
+        ],
+        [
+            "lib/displays/dtdisplay/sdldisplay/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_cpython.py",
@@ -183,6 +275,18 @@
         [
             "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py"
+        ],
+        [
+            "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_cpython.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_cpython.cpython-310.pyc"
+        ],
+        [
+            "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_constants.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_constants.cpython-310.pyc"
         ],
         [
             "lib/displays/dtdisplay/pgdisplay/__init__.py",
@@ -221,20 +325,32 @@
             "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
         ],
         [
+            "lib/eventsys/__pycache__/devices.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/devices.cpython-310.pyc"
+        ],
+        [
+            "lib/eventsys/__pycache__/events.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/events.cpython-310.pyc"
+        ],
+        [
+            "lib/eventsys/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/eventsys/__pycache__/keys.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/keys.cpython-310.pyc"
+        ],
+        [
             "lib/framebuf/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/framebuf/__init__.py"
         ],
         [
-            "lib/graphics/_displaybuf_viper.py",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/_displaybuf_viper.py"
+            "lib/framebuf/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/framebuf/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/graphics/shapes.py",
             "github:bdbarnett/mpdisplay/src/lib/graphics/shapes.py"
-        ],
-        [
-            "lib/graphics/displaybuf.py",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf.py"
         ],
         [
             "lib/graphics/__init__.py",
@@ -243,6 +359,34 @@
         [
             "lib/graphics/framebuf_plus.py",
             "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus.py"
+        ],
+        [
+            "lib/graphics/__pycache__/displaybuf.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/displaybuf.cpython-310.pyc"
+        ],
+        [
+            "lib/graphics/__pycache__/framebuf_plus.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/framebuf_plus.cpython-310.pyc"
+        ],
+        [
+            "lib/graphics/__pycache__/shapes.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/shapes.cpython-310.pyc"
+        ],
+        [
+            "lib/graphics/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/graphics/displaybuf/_viper.py",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/_viper.py"
+        ],
+        [
+            "lib/graphics/displaybuf/__init__.py",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__init__.py"
+        ],
+        [
+            "lib/graphics/displaybuf/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/graphics/binfont/binfont_8x14.bin",
@@ -259,6 +403,10 @@
         [
             "lib/graphics/binfont/binfont_8x16.bin",
             "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x16.bin"
+        ],
+        [
+            "lib/graphics/binfont/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/palettes/_material_design.py",
@@ -297,6 +445,42 @@
             "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
         ],
         [
+            "lib/palettes/__pycache__/material_design.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/material_design.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/wheel.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/wheel.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_material_design.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_material_design.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube8.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube8.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/cube.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/cube.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube64.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube64.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube125.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube125.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube27.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube27.cpython-310.pyc"
+        ],
+        [
             "lib/timer/_librt.py",
             "github:bdbarnett/mpdisplay/src/lib/timer/_librt.py"
         ],
@@ -311,6 +495,18 @@
         [
             "lib/timer/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/timer/__init__.py"
+        ],
+        [
+            "lib/timer/__pycache__/_sdl2.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_sdl2.cpython-310.pyc"
+        ],
+        [
+            "lib/timer/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/timer/__pycache__/_timerbase.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_timerbase.cpython-310.pyc"
         ]
     ],
     "version": "0.1"
