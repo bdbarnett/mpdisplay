@@ -169,26 +169,6 @@
             "github:bdbarnett/mpdisplay/src/examples/noto_fonts/noto_fonts.py"
         ],
         [
-            "examples/noto_fonts/__pycache__/NotoSans_32.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/noto_fonts/__pycache__/NotoSans_32.cpython-310.pyc"
-        ],
-        [
-            "examples/noto_fonts/__pycache__/NotoSansMono_32.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/noto_fonts/__pycache__/NotoSansMono_32.cpython-310.pyc"
-        ],
-        [
-            "examples/noto_fonts/__pycache__/NotoSerif_32.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/noto_fonts/__pycache__/NotoSerif_32.cpython-310.pyc"
-        ],
-        [
-            "examples/noto_fonts/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/noto_fonts/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
-            "examples/noto_fonts/__pycache__/noto_fonts.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/noto_fonts/__pycache__/noto_fonts.cpython-310.pyc"
-        ],
-        [
             "examples/tiny_toasters/make_tiny_toast_bitmaps.sh",
             "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/make_tiny_toast_bitmaps.sh"
         ],
@@ -209,170 +189,6 @@
             "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
         ],
         [
-            "examples/tiny_toasters/__pycache__/tiny_toasters.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/__pycache__/tiny_toasters.cpython-310.pyc"
-        ],
-        [
-            "examples/tiny_toasters/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
-            "examples/tiny_toasters/__pycache__/tiny_toasters_bitmaps.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/__pycache__/tiny_toasters_bitmaps.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/color_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/color_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/palette_material.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/palette_material.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/keypins_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/keypins_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/binfont_simpletest3.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/binfont_simpletest3.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/palette_wheel.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/palette_wheel.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/mpdisplay_touch_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/mpdisplay_touch_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/binfont_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/binfont_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/hello.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/hello.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/palette_cube.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/palette_cube.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/shapes_area_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/shapes_area_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/feathers.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/feathers.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/tiny_hello.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/tiny_hello.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/shapes_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/shapes_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/mpdisplay_event_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/mpdisplay_event_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/palette_name_check.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/palette_name_check.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/mpdisplay_block_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/mpdisplay_block_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/mpdisplay_logo.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/mpdisplay_logo.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/numpy_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/numpy_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/displaybuf_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/displaybuf_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/binfont_list.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/binfont_list.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/calculator.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/calculator.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/bmp565_scroll.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/bmp565_scroll.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/paint.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/paint.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/binfont_simpletest2.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/binfont_simpletest2.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/rotations.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/rotations.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/mpdisplay_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/mpdisplay_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/bmp565_sprite_transparent.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/bmp565_sprite_transparent.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/boxlines.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/boxlines.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/fonts.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/fonts.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/framebuf_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/framebuf_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/mpdisplay_encoder_test.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/mpdisplay_encoder_test.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/ezfont_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/ezfont_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/timer_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/timer_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/bmp565_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/bmp565_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/scroll.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/scroll.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/nano_gui_simpletest.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/nano_gui_simpletest.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/bmp565_sprite.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/bmp565_sprite.cpython-310.pyc"
-        ],
-        [
-            "examples/__pycache__/bmp565_scroll_sprite.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/__pycache__/bmp565_scroll_sprite.cpython-310.pyc"
-        ],
-        [
             "examples/chango/chango_16.py",
             "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
         ],
@@ -391,26 +207,6 @@
         [
             "examples/chango/chango.py",
             "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
-        ],
-        [
-            "examples/chango/__pycache__/chango_64.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/chango/__pycache__/chango_64.cpython-310.pyc"
-        ],
-        [
-            "examples/chango/__pycache__/chango.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/chango/__pycache__/chango.cpython-310.pyc"
-        ],
-        [
-            "examples/chango/__pycache__/chango_32.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/chango/__pycache__/chango_32.cpython-310.pyc"
-        ],
-        [
-            "examples/chango/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/chango/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
-            "examples/chango/__pycache__/chango_16.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/chango/__pycache__/chango_16.cpython-310.pyc"
         ],
         [
             "examples/assets/runner.bmp",
@@ -445,22 +241,6 @@
             "github:bdbarnett/mpdisplay/src/examples/proverbs/__init__.py"
         ],
         [
-            "examples/proverbs/__pycache__/proverbs_20.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/proverbs/__pycache__/proverbs_20.cpython-310.pyc"
-        ],
-        [
-            "examples/proverbs/__pycache__/proverbs_30.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/proverbs/__pycache__/proverbs_30.cpython-310.pyc"
-        ],
-        [
-            "examples/proverbs/__pycache__/proverbs.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/proverbs/__pycache__/proverbs.cpython-310.pyc"
-        ],
-        [
-            "examples/proverbs/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/proverbs/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
             "examples/alien/alien.py",
             "github:bdbarnett/mpdisplay/src/examples/alien/alien.py"
         ],
@@ -479,14 +259,6 @@
         [
             "examples/alien/make_alien_bitmap.sh",
             "github:bdbarnett/mpdisplay/src/examples/alien/make_alien_bitmap.sh"
-        ],
-        [
-            "examples/alien/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/alien/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
-            "examples/alien/__pycache__/alien.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/examples/alien/__pycache__/alien.cpython-310.pyc"
         ]
     ],
     "version": "0.1"

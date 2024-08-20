@@ -13,32 +13,12 @@
             "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus.py"
         ],
         [
-            "lib/graphics/__pycache__/displaybuf.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/displaybuf.cpython-310.pyc"
-        ],
-        [
-            "lib/graphics/__pycache__/framebuf_plus.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/framebuf_plus.cpython-310.pyc"
-        ],
-        [
-            "lib/graphics/__pycache__/shapes.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/shapes.cpython-310.pyc"
-        ],
-        [
-            "lib/graphics/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
             "lib/graphics/displaybuf/_viper.py",
             "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/_viper.py"
         ],
         [
             "lib/graphics/displaybuf/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__init__.py"
-        ],
-        [
-            "lib/graphics/displaybuf/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/graphics/binfont/binfont_8x14.bin",
@@ -55,10 +35,6 @@
         [
             "lib/graphics/binfont/binfont_8x16.bin",
             "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x16.bin"
-        ],
-        [
-            "lib/graphics/binfont/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/__pycache__/__init__.cpython-310.pyc"
         ]
     ],
     "version": "0.1"

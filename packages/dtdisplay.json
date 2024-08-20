@@ -17,24 +17,12 @@
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
         ],
         [
-            "lib/displays/dtdisplay/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
             "lib/displays/dtdisplay/sdldisplay/_poll.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
         ],
         [
             "lib/displays/dtdisplay/sdldisplay/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__init__.py"
-        ],
-        [
-            "lib/displays/dtdisplay/sdldisplay/__pycache__/_poll.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__pycache__/_poll.cpython-310.pyc"
-        ],
-        [
-            "lib/displays/dtdisplay/sdldisplay/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__pycache__/__init__.cpython-310.pyc"
         ],
         [
             "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_cpython.py",
@@ -51,18 +39,6 @@
         [
             "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py"
-        ],
-        [
-            "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/__init__.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/__init__.cpython-310.pyc"
-        ],
-        [
-            "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_cpython.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_cpython.cpython-310.pyc"
-        ],
-        [
-            "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_constants.cpython-310.pyc",
-            "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__pycache__/_constants.cpython-310.pyc"
         ],
         [
             "lib/displays/dtdisplay/pgdisplay/__init__.py",
