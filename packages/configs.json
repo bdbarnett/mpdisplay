@@ -23,6 +23,18 @@
         [
             "configs/hardware_setup.py",
             "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
+        ],
+        [
+            "configs/__pycache__/color_setup.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/configs/__pycache__/color_setup.cpython-310.pyc"
+        ],
+        [
+            "configs/__pycache__/tft_config.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/configs/__pycache__/tft_config.cpython-310.pyc"
+        ],
+        [
+            "configs/__pycache__/board_config.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/configs/__pycache__/board_config.cpython-310.pyc"
         ]
     ],
     "version": "0.1"

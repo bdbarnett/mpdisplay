@@ -96,3 +96,5 @@ for package_name, contents in package_dicts.items():
 with open(toml_full_path, "w") as f:
     for line in master_toml:
         f.write(line + "\n")
+
+print(f"{__file__.split('/')[-1]} finished\n")

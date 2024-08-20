@@ -3,6 +3,10 @@
         [
             "lib/area/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/area/__init__.py"
+        ],
+        [
+            "lib/area/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/area/__pycache__/__init__.cpython-310.pyc"
         ]
     ],
     "version": "0.1"

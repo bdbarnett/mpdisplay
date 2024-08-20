@@ -15,6 +15,18 @@
         [
             "lib/timer/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/timer/__init__.py"
+        ],
+        [
+            "lib/timer/__pycache__/_sdl2.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_sdl2.cpython-310.pyc"
+        ],
+        [
+            "lib/timer/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/timer/__pycache__/_timerbase.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_timerbase.cpython-310.pyc"
         ]
     ],
     "version": "0.1"

@@ -35,6 +35,42 @@
         [
             "lib/palettes/cube.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
+        ],
+        [
+            "lib/palettes/__pycache__/material_design.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/material_design.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/wheel.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/wheel.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_material_design.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_material_design.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube8.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube8.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/cube.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/cube.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube64.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube64.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/__init__.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/__init__.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube125.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube125.cpython-310.pyc"
+        ],
+        [
+            "lib/palettes/__pycache__/_cube27.cpython-310.pyc",
+            "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_cube27.cpython-310.pyc"
         ]
     ],
     "version": "0.1"
