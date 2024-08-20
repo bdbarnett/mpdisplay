@@ -63,6 +63,7 @@ else:
     )
 
 try:
-    import mpdisplay_logo  # noqa: F401
+    from displays.splash import splash
+    splash(display_drv)
 except Exception:
     pass
