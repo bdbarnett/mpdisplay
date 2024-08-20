@@ -35,10 +35,10 @@ if _ps:
     )
 elif _jn:
     from jndisplay import JNDisplay
+    from show_timer import show_timer
 
     display_drv = JNDisplay(width, height)
-
-    display_drv.auto_refresh = 33
+    tim = show_timer(display_drv)
 else:
     from dtdisplay import DTDisplay, poll # type: ignore
     from eventsys.devices import Devices, Broker # type: ignore
