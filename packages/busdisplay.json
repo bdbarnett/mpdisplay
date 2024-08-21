@@ -17,7 +17,7 @@
             "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
         ],
         [
-            "__init__.py",
+            "busdisplay/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
         ]
     ],

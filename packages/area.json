@@ -1,7 +1,7 @@
 {
     "urls": [
         [
-            "__init__.py",
+            "area/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/area/__init__.py"
         ]
     ],

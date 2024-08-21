@@ -46,8 +46,10 @@ for package_path, extra_files in packages:
     parent_path = os.path.join("/".join(full_path.split("/")[:-1]))
     if package_name == package_path:
         trim_path = full_path.split(package_name)[0]
+        package_sub_dir = ""
     else:
         trim_path = full_path
+        package_sub_dir = package_name + "/"
     package_dicts[package_name] = {"urls": [], "version": package_ver}
     print(f"Processing {package_name}:\n",
             f"  package_path: {package_path}\n",
@@ -76,13 +78,14 @@ for package_path, extra_files in packages:
     for root, _, files in os.walk(full_path):
         for f in files:
             full_file_path = os.path.join(root, f)
-            dest_file = os.path.relpath(full_file_path, trim_path)
+            dest_file = package_sub_dir + os.path.relpath(full_file_path, trim_path)
             src_file = repo_url + os.path.relpath(full_file_path, repo_dir)
             package_dicts[package_name]["urls"].append([dest_file, src_file])
 
             if package_name not in master_exclude:
                 master_dest_file = os.path.relpath(full_file_path, repo_dir + src_dir)
                 master_package["urls"].append([master_dest_file, src_file])
+
                 toml_dest_dir = "/".join(master_dest_file.split("/")[:-1])
                 if toml_dest_dir == "//":
                     toml_dest_dir = "/"

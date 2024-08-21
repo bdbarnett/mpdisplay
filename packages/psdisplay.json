@@ -17,11 +17,11 @@
             "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
         ],
         [
-            "psdevices.py",
+            "psdisplay/psdevices.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
         ],
         [
-            "__init__.py",
+            "psdisplay/__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
         ]
     ],
