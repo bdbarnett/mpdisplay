@@ -21,7 +21,7 @@ object has these methods.
 """
 
 from . import Area
-from .binfont import text, text8, text14, text16
+from ..binfont import text, text8, text14, text16
 import math
 
 

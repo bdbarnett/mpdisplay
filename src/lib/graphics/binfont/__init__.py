@@ -9,7 +9,7 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from area import Area
+from . import Area
 
 
 # get the path this module is in

@@ -21,10 +21,10 @@ Usage:
         from color_setup import ssd
         <your code here>
 """
-from .. import framebuf_plus as framebuf
 import gc
 import sys
-from area import Area  # for _show16
+from .. import framebuf_plus as framebuf
+from . import Area  # for _show16
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
