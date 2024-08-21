@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Title</title>
+        <title>Calculator</title>
         <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
     </head>
     <body>
         <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
         <script type="mpy" config="./mpdisplay.toml">
             import mip
-            mip.install("github:bdbarnett/mpdisplay/mpdisplay/examples/calculator.py", target="./examples")
+            mip.install("github:bdbarnett/mpdisplay/src/examples/calculator.py", target="./examples")
             import path
             import calculator
         </script>

@@ -2,14 +2,14 @@
 <html>
     <head>
         <script src="mini-coi.js"></script>
-        <title>Title</title>
+        <title>Editor</title>
         <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
     </head>
     <body>
         <canvas id="display_canvas" width="1" height="1" style="background-color: black; border:2px solid black;"></canvas>
         <script type="mpy-editor" config="./mpdisplay.toml">
             import mip
-            mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
+            mip.install("github:bdbarnett/mpdisplay/src/examples/mpdisplay_simpletest.py", target="./examples")
         
             import path
             import mpdisplay_simpletest
