@@ -1,7 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/wokwi_ili9341_esp32s3_no_touch/board_config.py"],
-      ["drivers/ili9341.py", "github:bdbarnett/mpdisplay/drivers/display/ili9341.py"]
+      ["ili9341.py", "github:bdbarnett/mpdisplay/drivers/display/ili9341.py"]
     ],
     "version": "0.1"
   }
