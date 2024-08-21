@@ -63,7 +63,7 @@ else:
     )
 
 try:
-    from displays.splash import splash
+    from splash import splash
     splash(display_drv)
 except Exception:
     pass

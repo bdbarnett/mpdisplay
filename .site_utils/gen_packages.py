@@ -42,40 +42,52 @@ extra_files_added_to_master = []
 
 for package_path, extra_files in packages:
     package_name = package_path.split("/")[-1]
-    if package_name == package_path:
-        package_sub_dir = ""
-    else:
-        package_sub_dir = "/".join(package_path.split("/")[:-1])
-    package_dicts[package_name] = {"urls": [], "version": package_ver}
     full_path = os.path.join(repo_dir, src_dir, package_path)
-
+    parent_path = os.path.join("/".join(full_path.split("/")[:-1]))
+    if package_name == package_path:
+        trim_path = full_path.split(package_name)[0]
+    else:
+        trim_path = full_path
+    package_dicts[package_name] = {"urls": [], "version": package_ver}
+    print(f"Processing {package_name}:\n",
+            f"  package_path: {package_path}\n",
+            f"  full_path: {full_path}\n",
+            f"  parent_path: {parent_path}\n",
+            f"  trim_path: {trim_path}\n",
+            f"  extra_files: {extra_files}\n",
+    )
     for extra_file in extra_files:
-        full_file_path = os.path.join(repo_dir, src_dir, package_sub_dir, extra_file)
-        dest_file = os.path.relpath(full_file_path, repo_dir + src_dir)
-        src_file = repo_url + src_dir + dest_file
-        package_dicts[package_name]["urls"].append([dest_file, src_file])
+        full_file_path = os.path.join(full_path.split(package_name)[0], extra_file)
+        src_file = repo_url + os.path.relpath(full_file_path, repo_dir)
+        package_dicts[package_name]["urls"].append([extra_file, src_file])
+
         if package_name not in master_exclude:
             if full_file_path not in extra_files_added_to_master:
                 # Add the file to both the master package and the TOML file
-                master_package["urls"].append([dest_file, src_file])
-                toml_dest = f'/{"/".join(dest_file.split("/")[:-1])}/'
-                if toml_dest == "//":
-                    toml_dest = "/"
-                master_toml.append(f'"../{src_dir + dest_file}" = "{toml_dest}"')
+                master_dest_file = os.path.relpath(full_file_path, repo_dir + src_dir)
+                master_package["urls"].append([master_dest_file, src_file])
+
+                toml_dest_dir = "/" + "/".join(master_dest_file.split("/")[:-1]) + "/"
+                if toml_dest_dir == "//":
+                    toml_dest_dir = "/"
+                master_toml.append(f'"../{os.path.relpath(full_file_path, repo_dir)}" = "{toml_dest_dir}"')
                 extra_files_added_to_master.append(full_file_path)
 
     for root, _, files in os.walk(full_path):
         for f in files:
             full_file_path = os.path.join(root, f)
-            dest_file = os.path.relpath(full_file_path, repo_dir + src_dir)
-            src_file = repo_url + src_dir  + dest_file
+            dest_file = os.path.relpath(full_file_path, trim_path)
+            src_file = repo_url + os.path.relpath(full_file_path, repo_dir)
             package_dicts[package_name]["urls"].append([dest_file, src_file])
+
             if package_name not in master_exclude:
-                master_package["urls"].append([dest_file, src_file])
-                toml_dest = f'/{"/".join(dest_file.split("/")[:-1])}/'
-                if toml_dest == "//":
-                    toml_dest = "/"
-                master_toml.append(f'"../{src_dir + dest_file}" = "{toml_dest}"')
+                master_dest_file = os.path.relpath(full_file_path, repo_dir + src_dir)
+                master_package["urls"].append([master_dest_file, src_file])
+                toml_dest_dir = "/".join(master_dest_file.split("/")[:-1])
+                if toml_dest_dir == "//":
+                    toml_dest_dir = "/"
+                toml_src_file = src_dir + master_dest_file
+                master_toml.append(f'"../{toml_src_file}" = "/{toml_dest_dir}/"')
     if package_name not in master_exclude:
         master_toml.append("")
 

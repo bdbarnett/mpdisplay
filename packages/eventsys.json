@@ -1,19 +1,19 @@
 {
     "urls": [
         [
-            "lib/eventsys/keys.py",
+            "keys.py",
             "github:bdbarnett/mpdisplay/src/lib/eventsys/keys.py"
         ],
         [
-            "lib/eventsys/events.py",
+            "events.py",
             "github:bdbarnett/mpdisplay/src/lib/eventsys/events.py"
         ],
         [
-            "lib/eventsys/__init__.py",
+            "__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/eventsys/__init__.py"
         ],
         [
-            "lib/eventsys/devices.py",
+            "devices.py",
             "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
         ]
     ],

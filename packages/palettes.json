@@ -1,39 +1,39 @@
 {
     "urls": [
         [
-            "lib/palettes/_material_design.py",
+            "_material_design.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/_material_design.py"
         ],
         [
-            "lib/palettes/_cube8.py",
+            "_cube8.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/_cube8.py"
         ],
         [
-            "lib/palettes/wheel.py",
+            "wheel.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
         ],
         [
-            "lib/palettes/_cube64.py",
+            "_cube64.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
         ],
         [
-            "lib/palettes/_cube27.py",
+            "_cube27.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/_cube27.py"
         ],
         [
-            "lib/palettes/material_design.py",
+            "material_design.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
         ],
         [
-            "lib/palettes/_cube125.py",
+            "_cube125.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
         ],
         [
-            "lib/palettes/__init__.py",
+            "__init__.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/__init__.py"
         ],
         [
-            "lib/palettes/cube.py",
+            "cube.py",
             "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
         ]
     ],
