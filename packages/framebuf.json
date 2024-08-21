@@ -1,9 +1,9 @@
 {
-    "urls": [
-        [
-            "framebuf/__init__.py",
-            "github:bdbarnett/mpdisplay/src/lib/framebuf/__init__.py"
-        ]
-    ],
-    "version": "0.1"
+  "urls": [
+    [
+      "framebuf/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/framebuf/__init__.py"
+    ]
+  ],
+  "version": "0.1"
 }

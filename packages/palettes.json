@@ -1,41 +1,41 @@
 {
-    "urls": [
-        [
-            "palettes/_material_design.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/_material_design.py"
-        ],
-        [
-            "palettes/_cube8.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/_cube8.py"
-        ],
-        [
-            "palettes/wheel.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
-        ],
-        [
-            "palettes/_cube64.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
-        ],
-        [
-            "palettes/_cube27.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/_cube27.py"
-        ],
-        [
-            "palettes/material_design.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
-        ],
-        [
-            "palettes/_cube125.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
-        ],
-        [
-            "palettes/__init__.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/__init__.py"
-        ],
-        [
-            "palettes/cube.py",
-            "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
-        ]
+  "urls": [
+    [
+      "palettes/_material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_material_design.py"
     ],
-    "version": "0.1"
+    [
+      "palettes/_cube8.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube8.py"
+    ],
+    [
+      "palettes/wheel.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
+    ],
+    [
+      "palettes/_cube64.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
+    ],
+    [
+      "palettes/_cube27.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube27.py"
+    ],
+    [
+      "palettes/material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
+    ],
+    [
+      "palettes/_cube125.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
+    ],
+    [
+      "palettes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/__init__.py"
+    ],
+    [
+      "palettes/cube.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
+    ]
+  ],
+  "version": "0.1"
 }

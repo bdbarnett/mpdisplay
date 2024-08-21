@@ -1,25 +1,25 @@
 {
-    "urls": [
-        [
-            "_basedisplay.py",
-            "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay.py"
-        ],
-        [
-            "_basedisplay_numpy.py",
-            "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_numpy.py"
-        ],
-        [
-            "_basedisplay_viper.py",
-            "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
-        ],
-        [
-            "splash.py",
-            "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
-        ],
-        [
-            "busdisplay/__init__.py",
-            "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
-        ]
+  "urls": [
+    [
+      "_basedisplay.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay.py"
     ],
-    "version": "0.1"
+    [
+      "_basedisplay_numpy.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_numpy.py"
+    ],
+    [
+      "_basedisplay_viper.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
+    ],
+    [
+      "splash.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
+    ],
+    [
+      "busdisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
+    ]
+  ],
+  "version": "0.1"
 }
