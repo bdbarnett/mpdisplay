@@ -14,7 +14,7 @@ mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
 ```
 """
 
-import mip
+import mip # type: ignore
 
 
 src_base = "github:bdbarnett/mpdisplay/packages/"
