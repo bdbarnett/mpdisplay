@@ -1,16 +1,16 @@
 {
   "urls": [
     [
+      "timer/_sdl2.py",
+      "github:bdbarnett/mpdisplay/src/lib/timer/_sdl2.py"
+    ],
+    [
       "timer/_librt.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/_librt.py"
     ],
     [
       "timer/_timerbase.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/_timerbase.py"
-    ],
-    [
-      "timer/_sdl2.py",
-      "github:bdbarnett/mpdisplay/src/lib/timer/_sdl2.py"
     ],
     [
       "timer/__init__.py",
