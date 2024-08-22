@@ -28,8 +28,8 @@ from framebuf import (
     GS4_HMSB,
     GS8,
 )
-from . import Area
-from . import shapes
+from .. import Area
+from .. import shapes
 
 
 class ExtendedShapes:
