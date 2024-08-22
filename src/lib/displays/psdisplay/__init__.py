@@ -6,7 +6,7 @@
 PSDisplay class for MPDisplay on PyScript
 """
 
-from js import document, console
+from js import document, console # type: ignore
 from _basedisplay import _BaseDisplay, Area, colors
 
 

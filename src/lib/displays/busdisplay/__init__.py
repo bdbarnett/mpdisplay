@@ -7,7 +7,7 @@ BusDisplay class for MicroPython and CircuitPython.
 """
 
 from _basedisplay import _BaseDisplay, Area, swap_bytes
-from micropython import const
+from micropython import const # type: ignore
 import struct
 import sys
 import gc
@@ -15,11 +15,11 @@ import gc
 if sys.implementation.name == "micropython":
     from machine import Pin # type: ignore
     from time import sleep_ms
-    from micropython import alloc_emergency_exception_buf
+    from micropython import alloc_emergency_exception_buf # type: ignore
 
     alloc_emergency_exception_buf(256)
 elif sys.implementation.name == "circuitpython":
-    import digitalio
+    import digitalio # type: ignore
     from time import sleep
 
     def sleep_ms(ms):
