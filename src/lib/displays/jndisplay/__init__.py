@@ -6,7 +6,7 @@
 JNDisplay class for MPDisplay on Jupyter Notebook
 """
 
-from _basedisplay import _BaseDisplay, Area
+from _basedisplay import _BaseDisplay, Area, colors
 from IPython.display import display, update_display
 from PIL import Image, ImageDraw
 
@@ -48,7 +48,7 @@ class JNDisplay(_BaseDisplay):
 
     def fill_rect(self, x, y, w, h, c):
         color = c & 0xFFFF
-        r, g, b = self.color_rgb(color)
+        r, g, b = colors.color_rgb(color)
         x2 = x + w
         y2 = y + h
         top = min(y, y2)
@@ -73,6 +73,6 @@ class JNDisplay(_BaseDisplay):
         return Area(x, y, w, h)
 
     def pixel(self, x, y, c):
-        r, g, b = self.color_rgb(c)
+        r, g, b = colors.color_rgb(c)
         self._draw.point((x, y), fill=(r, g, b))
         return Area(x, y, 1, 1)

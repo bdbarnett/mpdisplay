@@ -7,7 +7,7 @@ PGDisplay class for CPython.
 """
 
 import pygame as pg
-from .. import _BaseDisplay, Area
+from .. import _BaseDisplay, Area, colors
 
 
 def poll(self):
@@ -110,7 +110,7 @@ class PGDisplay(_BaseDisplay):
         for i in range(h):
             for j in range(w):
                 pixel_index = (i * w + j) * self._bytes_per_pixel
-                color = self.color_rgb(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
+                color = colors.color_rgb(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
                 self._buffer.set_at((x + j, y + i), color)
         self.show(blitRect)
         return Area(x, y, w, h)
@@ -134,7 +134,7 @@ class PGDisplay(_BaseDisplay):
         :type c: int
         """
         fillRect = pg.Rect(x, y, w, h)
-        self._buffer.fill(self.color_rgb(c), fillRect)
+        self._buffer.fill(colors.color_rgb(c), fillRect)
         self.show(fillRect)
         return Area(x, y, w, h)
 
