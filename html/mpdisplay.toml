@@ -40,6 +40,7 @@
 "../src/lib/displays/_basedisplay_viper.py" = "/lib/displays/"
 "../src/lib/displays/splash.py" = "/lib/displays/"
 "../src/lib/displays/area.py" = "/lib/displays/"
+"../src/lib/displays/colors.py" = "/lib/displays/"
 "../src/lib/displays/framebuf.py" = "/lib/displays/"
 "../src/lib/displays/busdisplay/__init__.py" = "/lib/displays/busdisplay/"
 

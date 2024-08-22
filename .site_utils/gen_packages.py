@@ -21,6 +21,7 @@ displays_shared = [
     "_basedisplay_viper.py",
     "splash.py",
     "area.py",
+    "colors.py",
     "framebuf.py",
     ]
 # list of package directories and extra files in that package

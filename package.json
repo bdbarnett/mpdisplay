@@ -157,6 +157,10 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
     ],
     [
+      "lib/displays/colors.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/colors.py"
+    ],
+    [
       "lib/displays/framebuf.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/framebuf.py"
     ],
