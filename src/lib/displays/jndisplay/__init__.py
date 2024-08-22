@@ -35,9 +35,6 @@ class JNDisplay(_BaseDisplay):
 
         self.init()
 
-    def show(self):
-        update_display(self._buffer, display_id=self._display_id)
-
     ############### Required API Methods ################
 
     def init(self):
@@ -76,3 +73,8 @@ class JNDisplay(_BaseDisplay):
         r, g, b = colors.color_rgb(c)
         self._draw.point((x, y), fill=(r, g, b))
         return Area(x, y, 1, 1)
+
+    ############### Optional API Methods ################
+
+    def show(self):
+        update_display(self._buffer, display_id=self._display_id)

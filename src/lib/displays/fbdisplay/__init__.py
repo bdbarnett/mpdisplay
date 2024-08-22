@@ -6,7 +6,7 @@
 FBDisplay class for MPDisplay.
 """
 
-from _basedisplay import _BaseDisplay, np, Area
+from _basedisplay import _BaseDisplay, np, Area, swap_bytes
 if not np:
     raise ImportError("This module depends on the numpy module. Please install it.")
 
@@ -32,9 +32,6 @@ class FBDisplay(_BaseDisplay):
         self.color_depth = 16
 
         self.init()
-
-    def show(self):
-        self._raw_buffer.refresh()
 
     ############### Required API Methods ################
 
@@ -98,7 +95,7 @@ class FBDisplay(_BaseDisplay):
         :rtype: Area
         """
         if self.requires_byte_swap:
-            self._swap_bytes(buf, w * h)
+            swap_bytes(buf, w * h)
 
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
@@ -134,3 +131,8 @@ class FBDisplay(_BaseDisplay):
             self._raw_buffer[x, y] = c
         else:
             return self._raw_buffer[x, y]
+
+    ############### Optional API Methods ################
+
+    def show(self):
+        self._raw_buffer.refresh()

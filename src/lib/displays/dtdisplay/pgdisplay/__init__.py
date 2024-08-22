@@ -138,11 +138,19 @@ class PGDisplay(_BaseDisplay):
         self.show(fillRect)
         return Area(x, y, w, h)
 
-    def deinit(self):
+    def pixel(self, x, y, c):
         """
-        Deinitializes the pygame instance.
+        Set a pixel on the display.
+
+        :param x: The x-coordinate of the pixel.
+        :type x: int
+        :param y: The y-coordinate of the pixel.
+        :type y: int
+        :param c: The color of the pixel.
+        :type c: int
         """
-        pg.quit()
+        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
+        return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 
@@ -230,3 +238,9 @@ class PGDisplay(_BaseDisplay):
                 self._window.blit(buffer, bfaRect, bfaRect)
 
         pg.display.flip()
+
+    def deinit(self):
+        """
+        Deinitializes the pygame instance.
+        """
+        pg.quit()

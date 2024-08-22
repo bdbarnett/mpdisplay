@@ -186,14 +186,19 @@ class SDLDisplay(_BaseDisplay):
         self.show(fillRect)
         return Area(x, y, w, h)
 
-    def deinit(self):
+    def pixel(self, x, y, c):
         """
-        Deinitializes the sdl2lcd instance.
+        Set a pixel on the display.
+
+        :param x: The x-coordinate of the pixel.
+        :type x: int
+        :param y: The y-coordinate of the pixel.
+        :type y: int
+        :param c: The color of the pixel.
+        :type c: int
         """
-        retcheck(SDL_DestroyTexture(self._buffer))
-        retcheck(SDL_DestroyRenderer(self._renderer))
-        retcheck(SDL_DestroyWindow(self._window))
-        retcheck(SDL_Quit())
+        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
+        return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 
@@ -297,3 +302,11 @@ class SDLDisplay(_BaseDisplay):
 
         retcheck(SDL_RenderPresent(self._renderer))
 
+    def deinit(self):
+        """
+        Deinitializes the sdl2lcd instance.
+        """
+        retcheck(SDL_DestroyTexture(self._buffer))
+        retcheck(SDL_DestroyRenderer(self._renderer))
+        retcheck(SDL_DestroyWindow(self._window))
+        retcheck(SDL_Quit())

@@ -6,7 +6,7 @@
 BusDisplay class for MicroPython and CircuitPython.
 """
 
-from _basedisplay import _BaseDisplay, Area
+from _basedisplay import _BaseDisplay, Area, swap_bytes
 from micropython import const
 import struct
 import sys
@@ -290,7 +290,7 @@ class BusDisplay(_BaseDisplay):
         :type buf: memoryview
         """
         if self.requires_byte_swap:
-            self._swap_bytes(buf, w * h)
+            swap_bytes(buf, w * h)
 
         x1 = x + self._colstart
         x2 = x1 + w - 1
@@ -332,11 +332,19 @@ class BusDisplay(_BaseDisplay):
                 self.blit_rect(memoryview(raw_data[:]), x, row, w, 1)
         return Area(x, y, w, h)
 
-    def deinit(self):
+    def pixel(self, x, y, c):
         """
-        Deinitializes the display instance.  Not yet implemented.
+        Set a pixel on the display.
+
+        :param x: The x-coordinate of the pixel.
+        :type x: int
+        :param y: The y-coordinate of the pixel.
+        :type y: int
+        :param c: The color of the pixel.
+        :type c: int
         """
-        pass
+        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
+        return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 
@@ -375,27 +383,7 @@ class BusDisplay(_BaseDisplay):
         else:
             return super().vscsad()
 
-    def set_render_mode_full(self, render_mode_full=False):
-        """
-        Set the render mode of the display.
-
-        This method sets the render mode of the display. If the render_mode_full
-        parameter is True, the display will be set to render the full screen each
-        time the .blit_rect() method is called. Otherwise, the window will be set each
-        time the .blit_rect() method is called.
-
-        :param render_mode_full: Whether to set the display to render the full screen
-         each time the .blit_rect() method is called (default is False).
-        :type render_mode_full: bool, optional
-        """
-        # If rendering the full screen, set the window now
-        # and pass each time .blit_rect() is called.
-        if render_mode_full:
-            self._set_window(0, 0, self.width, self.height)
-            self.set_window = self._pass
-        # Otherwise, set the window each time .blit_rect() is called.
-        else:
-            self.set_window = self._set_window
+    ############### Optional API Methods ################
 
     @property
     def power(self):
@@ -471,6 +459,18 @@ class BusDisplay(_BaseDisplay):
                     self._brightness_command, struct.pack("B", int(value * 255))
                 )
 
+    def invert_colors(self, value):
+        """
+        Invert the colors of the display.
+
+        :param value: If True, invert the colors of the display. If False, do not invert the colors of the display.
+        :type value: bool
+        """
+        if value:
+            self.set_params(_INVON, b"")
+        else:
+            self.set_params(_INVOFF, b"")
+
     def reset(self):
         """
         Reset display.
@@ -513,16 +513,27 @@ class BusDisplay(_BaseDisplay):
 
     ############### Class Specific Methods ##############
 
-    def set_params(self, cmd, params=None, *args, **kwargs):
+    def set_render_mode_full(self, render_mode_full=False):
         """
-        Send cmd and parameters to the display.
+        Set the render mode of the display.
 
-        :param cmd: The command to send.
-        :type cmd: int
-        :param params: The parameters to send.
-        :type params: bytes
+        This method sets the render mode of the display. If the render_mode_full
+        parameter is True, the display will be set to render the full screen each
+        time the .blit_rect() method is called. Otherwise, the window will be set each
+        time the .blit_rect() method is called.
+
+        :param render_mode_full: Whether to set the display to render the full screen
+         each time the .blit_rect() method is called (default is False).
+        :type render_mode_full: bool, optional
         """
-        self._tx_param(cmd, params)
+        # If rendering the full screen, set the window now
+        # and pass each time .blit_rect() is called.
+        if render_mode_full:
+            self._set_window(0, 0, self.width, self.height)
+            self.set_window = self._pass
+        # Otherwise, set the window each time .blit_rect() is called.
+        else:
+            self.set_window = self._set_window
 
     def bus_swap_disable(self, value):
         """
@@ -549,28 +560,16 @@ class BusDisplay(_BaseDisplay):
         print(f"MPDisplay:  display driver byte swapping: {self.requires_byte_swap}")
         return value
 
-    def register_callback(self, callback):
+    def set_params(self, cmd, params=None, *args, **kwargs):
         """
-        Register a callback function.
-        """
-        if hasattr(self.display_bus, "register_callback"):
-            self.display_bus.register_callback(callback)
-        else:
-            raise NotImplementedError(
-                "register_callback() not implemented in display_bus.  Set blocking = True"
-            )
+        Send cmd and parameters to the display.
 
-    def invert_colors(self, value):
+        :param cmd: The command to send.
+        :type cmd: int
+        :param params: The parameters to send.
+        :type params: bytes
         """
-        Invert the colors of the display.
-
-        :param value: If True, invert the colors of the display. If False, do not invert the colors of the display.
-        :type value: bool
-        """
-        if value:
-            self.set_params(_INVON, b"")
-        else:
-            self.set_params(_INVOFF, b"")
+        self._tx_param(cmd, params)
 
     def _pass(*_, **__):
         """Do nothing.  Used to replace self.set_window when render_mode_full is True."""

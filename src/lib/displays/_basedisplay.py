@@ -59,7 +59,13 @@ class _BaseDisplay:
         print(f"Loaded display_drv as {self.__class__.__name__}(...)")
         gc.collect()
 
-    ############### Common API Methods ################
+    def __del__(self):
+        """
+        Deinitializes the display instance.
+        """
+        self.deinit()
+
+    ############### Universal API Methods, not usually overridden ################
 
     @property
     def width(self):
@@ -85,30 +91,6 @@ class _BaseDisplay:
         """
         return self._rotation
 
-    @property
-    def rotation_callback(self):
-        """
-        The rotation callback function.
-
-        :return: The rotation callback function.
-        :rtype: function
-        """
-        return self._rotation_callback
-    
-    @rotation_callback.setter
-    def rotation_callback(self, value):
-        """
-        Sets the rotation callback function.
-
-        :param value: The rotation callback function.
-        :type value: function
-        """
-        if callable(value) or value is None:
-            self._rotation_callback = value
-        else:
-            raise ValueError("Rotation callback must be callable")
-        self._rotation_callback(self.rotation)
-
     @rotation.setter
     def rotation(self, value):
         """
@@ -133,15 +115,29 @@ class _BaseDisplay:
 
         self.init()
 
-    def _rotation_helper(self, value):
+    @property
+    def rotation_callback(self):
         """
-        Helper function to set the rotation of the display.
+        The rotation callback function.
 
-        :param value: The rotation of the display.
-        :type value: int
+        :return: The rotation callback function.
+        :rtype: function
         """
-        # override this method in subclasses to handle rotation
-        pass
+        return self._rotation_callback
+
+    @rotation_callback.setter
+    def rotation_callback(self, value):
+        """
+        Sets the rotation callback function.
+
+        :param value: The rotation callback function.
+        :type value: function
+        """
+        if callable(value) or value is None:
+            self._rotation_callback = value
+        else:
+            raise ValueError("Rotation callback must be callable")
+        self._rotation_callback(self.rotation)
 
     def fill(self, color):
         """
@@ -152,20 +148,6 @@ class _BaseDisplay:
         """
         self.fill_rect(0, 0, self.width, self.height, color)
         return Area(0, 0, self.width, self.height)
-
-    def pixel(self, x, y, c):
-        """
-        Set a pixel on the display.
-
-        :param x: The x-coordinate of the pixel.
-        :type x: int
-        :param y: The y-coordinate of the pixel.
-        :type y: int
-        :param c: The color of the pixel.
-        :type c: int
-        """
-        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
-        return Area(x, y, 1, 1)
 
     def scroll(self, dx, dy):
         """
@@ -184,11 +166,7 @@ class _BaseDisplay:
         if dx != 0:
             raise NotImplementedError("Horizontal scrolling not supported")
 
-    def __del__(self):
-        """
-        Deinitializes the display instance.
-        """
-        self.deinit()
+    ############### Common API Methods, sometimes overridden ################
 
     def vscrdef(self, tfa, vsa, bfa):
         """
@@ -223,8 +201,17 @@ class _BaseDisplay:
         else:
             return self._vssa
 
-    def set_render_mode_full(self, render_mode_full=False):
-        return
+    def _rotation_helper(self, value):
+        """
+        Helper function to set the rotation of the display.
+
+        :param value: The rotation of the display.
+        :type value: int
+        """
+        # override this method in subclasses to handle rotation
+        pass
+
+    ############### Empty API Methods, must be overridden if applicable ################
 
     @property
     def power(self):
@@ -257,14 +244,8 @@ class _BaseDisplay:
     def sleep_mode(self, value):
         return
 
-    @staticmethod
-    def _swap_bytes(buf, buf_size_pix):
-        """
-        Swap the bytes in a buffer of RGB565 data.
-
-        :param buf: Buffer of RGB565 data
-        :type buf: memoryview
-        :param buf_size_px: Size of the buffer in pixels
-        :type buf_size_px: int
-        """
-        swap_bytes(buf, buf_size_pix)
+    def deinit(self):
+        return
+    
+    def show(self, *args, **kwargs):
+        return
