@@ -14,20 +14,26 @@ packages_dir = "packages/"
 toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
-displays_shared = ["_basedisplay.py", "_basedisplay_numpy.py", "_basedisplay_viper.py", "splash.py"]
+# Extra files to be installed with all display packages
+displays_shared = [
+    "_basedisplay.py",
+    "_basedisplay_numpy.py",
+    "_basedisplay_viper.py",
+    "splash.py",
+    "area.py",
+    "framebuf.py",
+    ]
 # list of package directories and extra files in that package
 packages = [
     ["configs", ["path.py", "jupyter_notebook.ipynb"]],
     ["examples", []],
     ["extras", []],
-    ["lib/area", []],
     ["lib/displays/busdisplay", displays_shared],
     ["lib/displays/dtdisplay", displays_shared],
     ["lib/displays/fbdisplay", displays_shared],
     ["lib/displays/jndisplay", displays_shared],
     ["lib/displays/psdisplay", displays_shared],
     ["lib/eventsys", []],
-    ["lib/framebuf", []],
     ["lib/graphics", []],
     ["lib/palettes", []],
     ["lib/timer", []],

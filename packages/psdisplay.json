@@ -17,6 +17,14 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
     ],
     [
+      "area.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
+    ],
+    [
+      "framebuf.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/framebuf.py"
+    ],
+    [
       "psdisplay/psdevices.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
     ],

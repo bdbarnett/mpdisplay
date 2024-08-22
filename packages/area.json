@@ -1,9 +1,0 @@
-{
-  "urls": [
-    [
-      "area/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/area/__init__.py"
-    ]
-  ],
-  "version": "0.1"
-}

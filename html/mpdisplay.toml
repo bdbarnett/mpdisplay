@@ -35,12 +35,12 @@
 "../src/extras/tft_text/fonts/__init__.py" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/compile_upload.sh" = "/extras/tft_text/fonts/"
 
-"../src/lib/area/__init__.py" = "/lib/area/"
-
 "../src/lib/displays/_basedisplay.py" = "/lib/displays/"
 "../src/lib/displays/_basedisplay_numpy.py" = "/lib/displays/"
 "../src/lib/displays/_basedisplay_viper.py" = "/lib/displays/"
 "../src/lib/displays/splash.py" = "/lib/displays/"
+"../src/lib/displays/area.py" = "/lib/displays/"
+"../src/lib/displays/framebuf.py" = "/lib/displays/"
 "../src/lib/displays/busdisplay/__init__.py" = "/lib/displays/busdisplay/"
 
 "../src/lib/displays/dtdisplay/__init__.py" = "/lib/displays/dtdisplay/"
@@ -63,8 +63,6 @@
 "../src/lib/eventsys/devices.py" = "/lib/eventsys/"
 "../src/lib/eventsys/keys.py" = "/lib/eventsys/"
 "../src/lib/eventsys/__init__.py" = "/lib/eventsys/"
-
-"../src/lib/framebuf/__init__.py" = "/lib/framebuf/"
 
 "../src/lib/graphics/__init__.py" = "/lib/graphics/"
 "../src/lib/graphics/shapes/__init__.py" = "/lib/graphics/shapes/"
