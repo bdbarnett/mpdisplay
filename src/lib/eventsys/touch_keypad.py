@@ -38,8 +38,13 @@ class Keypad:
             col = x // (self._width // self._cols)
             row = y // (self._height // self._rows)
             # BUG:  Sometimes throws an IndexError in Wokwi if the touch is on the last line
-            key = self._keys[row * self._cols + col]
-            return key
+            # Instead of doing a bounds check like x = max(min(x, self._cols - 1), 0); y = max(min(y, self._rows - 1), 0)
+            # we will just catch the exception.
+            try:
+                key = self._keys[row * self._cols + col]
+                return key
+            except IndexError:
+                pass
 
         if event and event.type == Events.KEYDOWN:
             key = event.key
