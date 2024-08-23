@@ -37,6 +37,7 @@ class Keypad:
             x, y = event.pos
             col = x // (self._width // self._cols)
             row = y // (self._height // self._rows)
+            # BUG:  Sometimes throws an IndexError in Wokwi if the touch is on the last line
             key = self._keys[row * self._cols + col]
             return key
 
