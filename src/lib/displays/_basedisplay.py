@@ -137,7 +137,7 @@ class _BaseDisplay:
         if hasattr(value, "rotation") or value is None:
             self._touch_device = value
         else:
-            raise ValueError("Rotation callback must be callable")
+            raise ValueError("touch_device must have a rotation attribute")
         self._touch_device.rotation = self.rotation
 
     def fill(self, color):
