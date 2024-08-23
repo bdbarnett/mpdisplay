@@ -5,8 +5,8 @@
       "github:bdbarnett/mpdisplay/src/lib/buses/_basebus.py"
     ],
     [
-      "i80bus/_i80bus_rp2_wip.py",
-      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/_i80bus_rp2_wip.py"
+      "i80bus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/__init__.py"
     ],
     [
       "i80bus/_gpio_data.py",
@@ -17,8 +17,8 @@
       "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/_gpio_pin.py"
     ],
     [
-      "i80bus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/__init__.py"
+      "i80bus/_i80bus_rp2_wip.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/_i80bus_rp2_wip.py"
     ]
   ],
   "version": "0.1"

@@ -13,10 +13,6 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
     ],
     [
-      "splash.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
-    ],
-    [
       "area.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
     ],
@@ -29,12 +25,16 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/framebuf.py"
     ],
     [
-      "psdisplay/psdevices.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
+      "splash.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
     ],
     [
       "psdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
+    ],
+    [
+      "psdisplay/psdevices.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
     ]
   ],
   "version": "0.1"

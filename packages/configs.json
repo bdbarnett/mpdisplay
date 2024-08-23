@@ -1,20 +1,24 @@
 {
   "urls": [
     [
+      "jupyter_notebook.ipynb",
+      "github:bdbarnett/mpdisplay/src/jupyter_notebook.ipynb"
+    ],
+    [
       "path.py",
       "github:bdbarnett/mpdisplay/src/path.py"
     ],
     [
-      "jupyter_notebook.ipynb",
-      "github:bdbarnett/mpdisplay/src/jupyter_notebook.ipynb"
+      "configs/board_config.py",
+      "github:bdbarnett/mpdisplay/src/configs/board_config.py"
     ],
     [
       "configs/color_setup.py",
       "github:bdbarnett/mpdisplay/src/configs/color_setup.py"
     ],
     [
-      "configs/board_config.py",
-      "github:bdbarnett/mpdisplay/src/configs/board_config.py"
+      "configs/hardware_setup.py",
+      "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
     ],
     [
       "configs/lv_config.py",
@@ -23,10 +27,6 @@
     [
       "configs/tft_config.py",
       "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
-    ],
-    [
-      "configs/hardware_setup.py",
-      "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
     ]
   ],
   "version": "0.1"

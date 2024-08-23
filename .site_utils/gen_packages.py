@@ -67,7 +67,7 @@ for package_path, extra_files in packages:
     package_dicts[package_name] = {"urls": [], "version": package_ver}
 
     # Iterate over the extra files in the package
-    for extra_file in extra_files:
+    for extra_file in sorted(extra_files):
         # Add the extra file to the package
         full_file_path = os.path.join(full_path.split(package_name)[0], extra_file)
         src_file = repo_url + os.path.relpath(full_file_path, repo_dir)
@@ -88,8 +88,8 @@ for package_path, extra_files in packages:
 
     # Iterate over the directories in the package
     for root, _, files in os.walk(full_path):
-        # Iterate over the files in the directory
-        for f in files:
+        # Iterate over the sorted files list
+        for f in sorted(files):
             # Add the file to the package
             full_file_path = os.path.join(root, f)
             dest_file = package_sub_dir + os.path.relpath(full_file_path, trim_path)

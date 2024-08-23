@@ -13,10 +13,6 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
     ],
     [
-      "splash.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
-    ],
-    [
       "area.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
     ],
@@ -29,24 +25,20 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/framebuf.py"
     ],
     [
-      "dtdisplay/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
+      "splash.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
     ],
     [
-      "dtdisplay/sdldisplay/_poll.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
+      "dtdisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
     ],
     [
       "dtdisplay/sdldisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__init__.py"
     ],
     [
-      "dtdisplay/sdldisplay/sdl2_lib/_cpython.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_cpython.py"
-    ],
-    [
-      "dtdisplay/sdldisplay/sdl2_lib/_micropython.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_micropython.py"
+      "dtdisplay/sdldisplay/_poll.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
     ],
     [
       "dtdisplay/sdldisplay/sdl2_lib/__init__.py",
@@ -55,6 +47,14 @@
     [
       "dtdisplay/sdldisplay/sdl2_lib/_constants.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py"
+    ],
+    [
+      "dtdisplay/sdldisplay/sdl2_lib/_cpython.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_cpython.py"
+    ],
+    [
+      "dtdisplay/sdldisplay/sdl2_lib/_micropython.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_micropython.py"
     ],
     [
       "dtdisplay/pgdisplay/__init__.py",
