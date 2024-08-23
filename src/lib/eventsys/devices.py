@@ -481,11 +481,13 @@ class TouchDevice(_Device):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self._data is None:
-            raise ValueError("TouchDevice requires a display device as 'data2'")
+            raise ValueError("TouchDevice requires a display device as 'data'")
         if self._data2 is None:  # self._data is a rotation table
-            self._data = _DEFAULT_TOUCH_ROTATION_TABLE
+            self._data2 = _DEFAULT_TOUCH_ROTATION_TABLE
 
+        print(f"{self._data=}, {type(self._data)=}")
         self._data.touch_device = self
+        self.rotation = self._data.rotation
 
     @property
     def rotation(self):
