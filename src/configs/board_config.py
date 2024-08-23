@@ -31,7 +31,7 @@ if _ps:
     touch_dev = broker.create_device(
         type=Devices.TOUCH,
         read=touch_drv.get_mouse_pos,
-        data=None,
+        data=display_drv,
     )
 elif _jn:
     from jndisplay import JNDisplay
