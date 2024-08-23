@@ -40,7 +40,7 @@ async def main():
             block_width,  # width
             block_height,  # height
         )
-        await asyncio.sleep(0.001)
+        await asyncio.sleep(0.01)
 
 loop = asyncio.get_event_loop()
 loop.create_task(main())
