@@ -34,6 +34,14 @@
 "../src/extras/tft_text/fonts/compile_upload.sh" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/__init__.py" = "/extras/tft_text/fonts/"
 
+"../src/lib/buses/_basebus.py" = "/lib/buses/"
+"../src/lib/buses/spibus/__init__.py" = "/lib/buses/spibus/"
+
+"../src/lib/buses/i80bus/_i80bus_rp2_wip.py" = "/lib/buses/i80bus/"
+"../src/lib/buses/i80bus/_gpio_data.py" = "/lib/buses/i80bus/"
+"../src/lib/buses/i80bus/_gpio_pin.py" = "/lib/buses/i80bus/"
+"../src/lib/buses/i80bus/__init__.py" = "/lib/buses/i80bus/"
+
 "../src/lib/displays/_basedisplay.py" = "/lib/displays/"
 "../src/lib/displays/_basedisplay_numpy.py" = "/lib/displays/"
 "../src/lib/displays/_basedisplay_viper.py" = "/lib/displays/"

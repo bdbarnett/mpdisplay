@@ -29,6 +29,8 @@ packages = [
     ["configs", ["path.py", "jupyter_notebook.ipynb"]],
     ["examples", []],
     ["extras", []],
+    ["lib/buses/spibus", ["_basebus.py"]],
+    ["lib/buses/i80bus", ["_basebus.py"]],
     ["lib/displays/busdisplay", displays_shared],
     ["lib/displays/dtdisplay", displays_shared],
     ["lib/displays/fbdisplay", displays_shared],

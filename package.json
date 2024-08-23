@@ -133,6 +133,30 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__init__.py"
     ],
     [
+      "lib/buses/_basebus.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/_basebus.py"
+    ],
+    [
+      "lib/buses/spibus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/spibus/__init__.py"
+    ],
+    [
+      "lib/buses/i80bus/_i80bus_rp2_wip.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/_i80bus_rp2_wip.py"
+    ],
+    [
+      "lib/buses/i80bus/_gpio_data.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/_gpio_data.py"
+    ],
+    [
+      "lib/buses/i80bus/_gpio_pin.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/_gpio_pin.py"
+    ],
+    [
+      "lib/buses/i80bus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/__init__.py"
+    ],
+    [
       "lib/displays/_basedisplay.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay.py"
     ],
