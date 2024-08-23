@@ -1,20 +1,24 @@
 {
   "urls": [
     [
-      "eventsys/events.py",
-      "github:bdbarnett/mpdisplay/src/lib/eventsys/events.py"
-    ],
-    [
-      "eventsys/devices.py",
-      "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
-    ],
-    [
       "eventsys/keys.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/keys.py"
     ],
     [
+      "eventsys/events.py",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/events.py"
+    ],
+    [
+      "eventsys/touch_keypad.py",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
+    ],
+    [
       "eventsys/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/__init__.py"
+    ],
+    [
+      "eventsys/devices.py",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
     ]
   ],
   "version": "0.1"

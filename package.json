@@ -9,64 +9,60 @@
       "github:bdbarnett/mpdisplay/src/jupyter_notebook.ipynb"
     ],
     [
-      "configs/tft_config.py",
-      "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
-    ],
-    [
-      "configs/lv_config.py",
-      "github:bdbarnett/mpdisplay/src/configs/lv_config.py"
-    ],
-    [
-      "configs/hardware_setup.py",
-      "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
+      "configs/color_setup.py",
+      "github:bdbarnett/mpdisplay/src/configs/color_setup.py"
     ],
     [
       "configs/board_config.py",
       "github:bdbarnett/mpdisplay/src/configs/board_config.py"
     ],
     [
-      "configs/color_setup.py",
-      "github:bdbarnett/mpdisplay/src/configs/color_setup.py"
+      "configs/lv_config.py",
+      "github:bdbarnett/mpdisplay/src/configs/lv_config.py"
     ],
     [
-      "extras/micropython.py",
-      "github:bdbarnett/mpdisplay/src/extras/micropython.py"
+      "configs/tft_config.py",
+      "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
     ],
     [
-      "extras/wifi.py",
-      "github:bdbarnett/mpdisplay/src/extras/wifi.py"
-    ],
-    [
-      "extras/ezfont.py",
-      "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
-    ],
-    [
-      "extras/bmp565.py",
-      "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
-    ],
-    [
-      "extras/touch_keypad.py",
-      "github:bdbarnett/mpdisplay/src/extras/touch_keypad.py"
-    ],
-    [
-      "extras/lv_mpdisplay.py",
-      "github:bdbarnett/mpdisplay/src/extras/lv_mpdisplay.py"
+      "configs/hardware_setup.py",
+      "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
     ],
     [
       "extras/keypins.py",
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
     ],
     [
-      "extras/pbm.py",
-      "github:bdbarnett/mpdisplay/src/extras/pbm.py"
-    ],
-    [
       "extras/tft_bitmap.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_bitmap.py"
     ],
     [
+      "extras/lv_mpdisplay.py",
+      "github:bdbarnett/mpdisplay/src/extras/lv_mpdisplay.py"
+    ],
+    [
+      "extras/bmp565.py",
+      "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
+    ],
+    [
       "extras/tft_write.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_write.py"
+    ],
+    [
+      "extras/micropython.py",
+      "github:bdbarnett/mpdisplay/src/extras/micropython.py"
+    ],
+    [
+      "extras/ezfont.py",
+      "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
+    ],
+    [
+      "extras/wifi.py",
+      "github:bdbarnett/mpdisplay/src/extras/wifi.py"
+    ],
+    [
+      "extras/pbm.py",
+      "github:bdbarnett/mpdisplay/src/extras/pbm.py"
     ],
     [
       "extras/tft_text/_viper.py",
@@ -81,12 +77,8 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/__init__.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_8x8.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x8.py"
-    ],
-    [
-      "extras/tft_text/fonts/vga2_bold_16x16.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x16.py"
+      "extras/tft_text/fonts/vga2_16x32.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x32.py"
     ],
     [
       "extras/tft_text/fonts/vga2_bold_16x32.py",
@@ -97,24 +89,8 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_16x32.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x32.py"
-    ],
-    [
-      "extras/tft_text/fonts/vga1_16x16.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x16.py"
-    ],
-    [
-      "extras/tft_text/fonts/vga1_bold_16x32.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x32.py"
-    ],
-    [
-      "extras/tft_text/fonts/vga2_16x16.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x16.py"
-    ],
-    [
-      "extras/tft_text/fonts/vga1_16x32.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x32.py"
+      "extras/tft_text/fonts/vga2_bold_16x16.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x16.py"
     ],
     [
       "extras/tft_text/fonts/vga2_8x16.py",
@@ -125,16 +101,36 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x16.py"
     ],
     [
+      "extras/tft_text/fonts/vga1_16x32.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x32.py"
+    ],
+    [
+      "extras/tft_text/fonts/vga2_16x16.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x16.py"
+    ],
+    [
+      "extras/tft_text/fonts/vga1_8x8.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x8.py"
+    ],
+    [
+      "extras/tft_text/fonts/vga1_16x16.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x16.py"
+    ],
+    [
+      "extras/tft_text/fonts/vga1_bold_16x32.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x32.py"
+    ],
+    [
       "extras/tft_text/fonts/vga2_8x8.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_8x8.py"
     ],
     [
-      "extras/tft_text/fonts/__init__.py",
-      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__init__.py"
-    ],
-    [
       "extras/tft_text/fonts/compile_upload.sh",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/compile_upload.sh"
+    ],
+    [
+      "extras/tft_text/fonts/__init__.py",
+      "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__init__.py"
     ],
     [
       "lib/displays/_basedisplay.py",
@@ -173,20 +169,12 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
     ],
     [
-      "lib/displays/dtdisplay/pgdisplay/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/pgdisplay/__init__.py"
-    ],
-    [
       "lib/displays/dtdisplay/sdldisplay/_poll.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
     ],
     [
       "lib/displays/dtdisplay/sdldisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__init__.py"
-    ],
-    [
-      "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py"
     ],
     [
       "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_cpython.py",
@@ -199,6 +187,14 @@
     [
       "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__init__.py"
+    ],
+    [
+      "lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py"
+    ],
+    [
+      "lib/displays/dtdisplay/pgdisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/pgdisplay/__init__.py"
     ],
     [
       "lib/displays/fbdisplay/__init__.py",
@@ -217,24 +213,32 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
     ],
     [
+      "lib/eventsys/keys.py",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/keys.py"
+    ],
+    [
       "lib/eventsys/events.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/events.py"
     ],
     [
-      "lib/eventsys/devices.py",
-      "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
-    ],
-    [
-      "lib/eventsys/keys.py",
-      "github:bdbarnett/mpdisplay/src/lib/eventsys/keys.py"
+      "lib/eventsys/touch_keypad.py",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
     ],
     [
       "lib/eventsys/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/__init__.py"
     ],
     [
+      "lib/eventsys/devices.py",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
+    ],
+    [
       "lib/graphics/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/__init__.py"
+    ],
+    [
+      "lib/graphics/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus/__init__.py"
     ],
     [
       "lib/graphics/shapes/__init__.py",
@@ -249,14 +253,6 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__init__.py"
     ],
     [
-      "lib/graphics/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus/__init__.py"
-    ],
-    [
-      "lib/graphics/binfont/binfont_8x16.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x16.bin"
-    ],
-    [
       "lib/graphics/binfont/binfont_8x14.bin",
       "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x14.bin"
     ],
@@ -269,8 +265,8 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/__init__.py"
     ],
     [
-      "lib/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
+      "lib/graphics/binfont/binfont_8x16.bin",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x16.bin"
     ],
     [
       "lib/palettes/_material_design.py",
@@ -281,8 +277,12 @@
       "github:bdbarnett/mpdisplay/src/lib/palettes/_cube8.py"
     ],
     [
-      "lib/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
+      "lib/palettes/wheel.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
+    ],
+    [
+      "lib/palettes/_cube64.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
     ],
     [
       "lib/palettes/_cube27.py",
@@ -293,20 +293,16 @@
       "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
     ],
     [
-      "lib/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
-    ],
-    [
-      "lib/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
+      "lib/palettes/_cube125.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
     ],
     [
       "lib/palettes/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/palettes/__init__.py"
     ],
     [
-      "lib/timer/_sdl2.py",
-      "github:bdbarnett/mpdisplay/src/lib/timer/_sdl2.py"
+      "lib/palettes/cube.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
     ],
     [
       "lib/timer/_librt.py",
@@ -315,6 +311,10 @@
     [
       "lib/timer/_timerbase.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/_timerbase.py"
+    ],
+    [
+      "lib/timer/_sdl2.py",
+      "github:bdbarnett/mpdisplay/src/lib/timer/_sdl2.py"
     ],
     [
       "lib/timer/__init__.py",

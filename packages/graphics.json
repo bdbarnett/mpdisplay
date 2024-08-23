@@ -5,6 +5,10 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/__init__.py"
     ],
     [
+      "graphics/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus/__init__.py"
+    ],
+    [
       "graphics/shapes/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/shapes/__init__.py"
     ],
@@ -17,14 +21,6 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__init__.py"
     ],
     [
-      "graphics/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus/__init__.py"
-    ],
-    [
-      "graphics/binfont/binfont_8x16.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x16.bin"
-    ],
-    [
       "graphics/binfont/binfont_8x14.bin",
       "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x14.bin"
     ],
@@ -35,6 +31,10 @@
     [
       "graphics/binfont/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/__init__.py"
+    ],
+    [
+      "graphics/binfont/binfont_8x16.bin",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x16.bin"
     ]
   ],
   "version": "0.1"

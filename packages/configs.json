@@ -9,24 +9,24 @@
       "github:bdbarnett/mpdisplay/src/jupyter_notebook.ipynb"
     ],
     [
-      "configs/tft_config.py",
-      "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
-    ],
-    [
-      "configs/lv_config.py",
-      "github:bdbarnett/mpdisplay/src/configs/lv_config.py"
-    ],
-    [
-      "configs/hardware_setup.py",
-      "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
+      "configs/color_setup.py",
+      "github:bdbarnett/mpdisplay/src/configs/color_setup.py"
     ],
     [
       "configs/board_config.py",
       "github:bdbarnett/mpdisplay/src/configs/board_config.py"
     ],
     [
-      "configs/color_setup.py",
-      "github:bdbarnett/mpdisplay/src/configs/color_setup.py"
+      "configs/lv_config.py",
+      "github:bdbarnett/mpdisplay/src/configs/lv_config.py"
+    ],
+    [
+      "configs/tft_config.py",
+      "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
+    ],
+    [
+      "configs/hardware_setup.py",
+      "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
     ]
   ],
   "version": "0.1"
