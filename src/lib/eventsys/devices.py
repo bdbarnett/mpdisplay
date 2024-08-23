@@ -275,11 +275,8 @@ class Broker(_Device):
     type = Devices.BROKER
     responses = Events.filter
 
-    def __init__(self, owner=None):
+    def __init__(self):
         super().__init__()
-        self.owner = owner
-        if hasattr(owner, "touch_scale"):
-            self.touch_scale = owner.touch_scale
         self.devices = []  # List of devices to poll
         self._device_callbacks = dict()
         # Function to call when the window close button is clicked.
@@ -483,10 +480,12 @@ class TouchDevice(_Device):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self._data is None:  # self._data is a rotation table
+        if self._data is None:
+            raise ValueError("TouchDevice requires a display device as 'data2'")
+        if self._data2 is None:  # self._data is a rotation table
             self._data = _DEFAULT_TOUCH_ROTATION_TABLE
 
-        self.rotation = 0
+        self._data.touch_device = self
 
     @property
     def rotation(self):
@@ -510,7 +509,7 @@ class TouchDevice(_Device):
 
         # _mask is an integer from 0 to 7 (or 0b001 to 0b111, 3 bits)
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
-        self._mask = self._data[self._rotation // 90]
+        self._mask = self._data2[self._rotation // 90]
 
     def _poll(self):
         """
@@ -531,9 +530,9 @@ class TouchDevice(_Device):
             if self._mask & SWAP_XY:
                 x, y = y, x
             if self._mask & REVERSE_X:
-                x = self._broker.owner.width - x - 1
+                x = self._data.width - x - 1
             if self._mask & REVERSE_Y:
-                y = self._broker.owner.height - y - 1
+                y = self._data.height - y - 1
             self._state = (x, y)
             if last_pos is not None:
                 last_x, last_y = last_pos

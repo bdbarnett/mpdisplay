@@ -17,9 +17,10 @@ Supported display classes:
     - 'PGDisplay': Uses the Pygame library
 - 'FBDisplay': Uses a framebuffer object such as CircuitPython's framebuffers
 - 'JNDisplay': Uses a Jupyter Notebook
+- 'PSDisplay': Uses PyScript
 """
 from area import Area
-import colors
+import colors  # noqa: F401
 import gc
 from sys import implementation
 
@@ -55,7 +56,7 @@ class _BaseDisplay:
         gc.collect()
         self._vssa = False  # False means no vertical scroll
         self.requires_byte_swap = False
-        self._rotation_callback = None
+        self._touch_device = None
         print(f"Loaded display_drv as {self.__class__.__name__}(...)")
         gc.collect()
 
@@ -110,34 +111,34 @@ class _BaseDisplay:
 
         self._rotation = value
 
-        if callable(self.rotation_callback):
-            self.rotation_callback(value)
+        if self._touch_device is not None:
+            self._touch_device.rotation = value
 
         self.init()
 
     @property
-    def rotation_callback(self):
+    def touch_device(self):
         """
-        The rotation callback function.
+        The associated touch_device.
 
-        :return: The rotation callback function.
-        :rtype: function
+        :return: The touch_device.
+        :rtype: object
         """
-        return self._rotation_callback
+        return self._touch_device
 
-    @rotation_callback.setter
-    def rotation_callback(self, value):
+    @touch_device.setter
+    def touch_device(self, value):
         """
-        Sets the rotation callback function.
+        Sets the touch_device.
 
-        :param value: The rotation callback function.
-        :type value: function
+        :param value: The touch_device.
+        :type value: object
         """
-        if callable(value) or value is None:
-            self._rotation_callback = value
+        if hasattr(value, "rotation") or value is None:
+            self._touch_device = value
         else:
             raise ValueError("Rotation callback must be callable")
-        self._rotation_callback(self.rotation)
+        self._touch_device.rotation = self.rotation
 
     def fill(self, color):
         """

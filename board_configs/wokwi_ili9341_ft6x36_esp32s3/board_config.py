@@ -56,11 +56,9 @@ touch_rotation_table=(6, 3, 0, 5)
 
 broker = Broker()
 
-if broker is not None:  # For troubleshooting only!
-    touch_dev = broker.create_device(
-        type=Devices.TOUCH,
-        read=touch_read_func,
-        data=touch_rotation_table,
-    )
-else:
-    print("eventsys is not available, touch device not created")
+touch_dev = broker.create_device(
+    type=Devices.TOUCH,
+    read=touch_read_func,
+    data=display_drv,
+    data2=touch_rotation_table,
+)
