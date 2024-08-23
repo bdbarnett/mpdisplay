@@ -484,8 +484,6 @@ class TouchDevice(_Device):
             raise ValueError("TouchDevice requires a display device as 'data'")
         if self._data2 is None:  # self._data is a rotation table
             self._data2 = _DEFAULT_TOUCH_ROTATION_TABLE
-
-        print(f"{self._data=}, {type(self._data)=}")
         self._data.touch_device = self
         self.rotation = self._data.rotation
 
