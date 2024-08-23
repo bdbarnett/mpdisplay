@@ -6,11 +6,16 @@
 An implementation of a SPI bus driver written in MicroPython.
 """
 
-from _basebus import BaseBus
 from machine import Pin, SPI # type: ignore
+import struct
+import micropython  # type: ignore
 
 
-class SPIBus(BaseBus):
+class Optional:  # For typing
+    pass
+
+
+class SPIBus():
     """
     SPI bus implementation of the base bus.
 
@@ -51,7 +56,6 @@ class SPIBus(BaseBus):
     :param sio_mode: Whether to use SIO mode. Defaults to False.
     :type sio_mode: bool, optional
     """
-
     name = "MicroPython SPIBus driver"
 
     def __init__(
@@ -62,44 +66,41 @@ class SPIBus(BaseBus):
         miso: int = -1,
         sclk: int = -1,
         cs: int = -1,
-        freq: int = 10_000_000,
-        *,
+        baudrate: int = 10_000_000,
         tx_only: bool = True,
-        dc_low_on_data: bool = False,
         lsb_first: bool = False,
-        cs_high_active: bool = False,
         spi_mode: int = 0,
-        cmd_bits: int = 8,
-        param_bits: int = 8,
-        wp: int = -1,  # Not yet suppported
-        hd: int = -1,  # Not yet supported
-        quad_spi: bool = False,  # Not yet supported
-        sio_mode: bool = False,  # Not yet supported
         ) -> None:
         """
         Initialize the SPI bus with the given parameters.
         """
-        super().__init__()
+        self._buf1: bytearray = bytearray(1)
 
-        self._dc_cmd: bool = dc_low_on_data
-        self._dc_data: bool = not dc_low_on_data
+        self._dc_cmd: bool = False
+        self._dc_data: bool = True
 
-        self._cs_active: bool = cs_high_active
-        self._cs_inactive: bool = not cs_high_active
+        self._cs_active: bool = False
+        self._cs_inactive: bool = True
+
+        self._baudrate: int = baudrate
+        self._polarity = spi_mode & 0b10
+        self._phase = spi_mode & 0b01
+        self._bits = 8
+        self._firstbit = SPI.LSB if lsb_first else SPI.MSB
 
         if mosi == -1 and miso == -1 and sclk == -1:
-            self.spi: SPI = SPI(
+            self._spi: SPI = SPI(
                 host,
-                baudrate=freq,
-                polarity=spi_mode & 0b10,
-                phase=spi_mode & 0b01,
+                baudrate=self._baudrate,
+                polarity=self._polarity,
+                phase=self._phase,
                 bits=8,
                 firstbit=SPI.LSB if lsb_first else SPI.MSB,
             )
         else:
-            self.spi: SPI = SPI(
+            self._spi: SPI = SPI(
                 host,
-                baudrate=freq,
+                baudrate=baudrate,
                 polarity=spi_mode & 0b10,
                 phase=spi_mode & 0b01,
                 bits=8,
@@ -110,17 +111,51 @@ class SPIBus(BaseBus):
             )
 
         # DC and CS pins must be set AFTER the SPI bus is initialized on some boards
-        self.dc: Pin = Pin(dc, Pin.OUT, value=self._dc_data)
-        self.cs: Pin = Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
+        self._dc: Pin = Pin(dc, Pin.OUT, value=self._dc_data)
+        self._cs: Pin = Pin(cs, Pin.OUT, value=self._cs_inactive) if cs != -1 else lambda val: None
 
-    def _write(self, data: memoryview, len: int) -> None:
-        """ Write data to the SPI bus. """
-        self.spi.write(data)
+    @micropython.native
+    def send(self, cmd: Optional[int] = None, data: Optional[memoryview] = None) -> None:
+        """
+        Transmit parameters over the bus.
+
+        :param cmd: Command to send before the data
+        :type cmd: int
+        :param data: Parameter data
+        :type data: memoryview
+        """
+
+        self._spi.init(
+            baudrate=self._spi.baudrate,
+            polarity=self._spi.polarity,
+            phase=self._spi.phase,
+            bits=self._spi.bits,
+            firstbit=self._spi.firstbit,
+        )
+
+        self._cs(self._cs_active)
+
+        if cmd is not None:
+            struct.pack_into("B", self._buf1, 0, cmd)
+            self._dc(self._dc_cmd)
+            self._spi.write(self._buf1)
+
+        if data and len(data):
+            self._dc(self._dc_data)
+            self._spi.write(data)
+
+        self._cs(self._cs_inactive)
 
     def deinit(self):
         """ Deinitialize the SPI bus. """
-        self.spi.deinit()
-        self.dc = None
-        self.cs = None
-        self.spi = None
-        super().deinit()
+        self._spi.deinit()
+        self._dc = None
+        self._cs = None
+        self._spi = None
+        self._buf1 = None
+
+    def __del__(self):
+        """
+        Deinitialize the bus.
+        """
+        self.deinit()
