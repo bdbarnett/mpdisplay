@@ -93,7 +93,7 @@ class ST7701(BusDisplay):
 #         self.rotation_table = _ROTATION_TABLE
         super.init(render_mode_full=True)
 
-    def set_params(self, cmd, params=None):
+    def _send(self, cmd, params=None):
         self._tx_cmd(cmd)
         if params:
             self._tx_data(params)

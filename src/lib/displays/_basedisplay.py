@@ -55,9 +55,10 @@ class _BaseDisplay:
     def __init__(self):
         gc.collect()
         self._vssa = False  # False means no vertical scroll
-        self.requires_byte_swap = False
+        self._requires_byte_swap = False
+        self._auto_byte_swap_enabled = self._requires_byte_swap
         self._touch_device = None
-        print(f"Loaded display_drv as {self.__class__.__name__}(...)")
+        print(f"{self.__class__.__name__} initialized.")
         gc.collect()
 
     def __del__(self):
@@ -166,6 +167,44 @@ class _BaseDisplay:
                 self.vscsad(dy)
         if dx != 0:
             raise NotImplementedError("Horizontal scrolling not supported")
+
+    def disable_auto_byte_swap(self, value):
+        """
+        Disable byte swapping in the display driver.
+
+        If self.requires_bus_swap and the guest application is capable of byte swapping color data
+        check to see if byte swapping can be disabled in the display bus.  If so, disable it.
+
+        Guest applications that are capable of byte swapping should include:
+
+            # If byte swapping is required and the display driver is capable of having byte swapping disabled,
+            # disable it and set a flag so we can swap the color bytes as they are created.
+            if display_drv.requires_byte_swap:
+                needs_swap = display_drv.disable_auto_byte_swap(True)
+            else:
+                needs_swap = False
+
+        :param value: Whether to disable byte swapping in the display bus.
+        :type value: bool
+        :return: True if the bus swap was disabled, False if it was not.
+        :rtype: bool
+        """
+        if self._requires_byte_swap:
+            self._auto_byte_swap_enabled = not value
+        else:
+            self._auto_byte_swap_enabled = False
+        print(f"{self.__class__.__name__}:  auto byte swapping = {self._auto_byte_swap_enabled}")
+        return not self._auto_byte_swap_enabled
+
+    @property
+    def requires_byte_swap(self):
+        """
+        Whether the display requires byte swapping.
+
+        :return: Whether the display requires byte swapping.
+        :rtype: bool
+        """
+        return self._requires_byte_swap
 
     ############### Common API Methods, sometimes overridden ################
 

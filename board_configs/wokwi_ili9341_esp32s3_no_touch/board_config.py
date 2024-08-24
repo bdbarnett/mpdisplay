@@ -5,24 +5,17 @@ from ili9341 import ILI9341
 
 
 display_bus = SPIBus(
-    dc=16,
-    host=1,
+    id=1,
+    baudrate=60_000_000,
+    sck=36,
     mosi=35,
     miso=37,
-    sclk=36,
+    dc=16,
     cs=5,
-    freq=60_000_000,
-    wp=-1,
-    hd=-1,
-    quad_spi=False,
-    tx_only=False,  # This line changed for Wokwi
-    cmd_bits=8,
-    param_bits=8,
-    dc_low_on_data=False,
-    sio_mode=False,
-    lsb_first=False,
-    cs_high_active=False,
-    spi_mode=0,
+    # polarity=0,
+    # phase=0,
+    # bits=8,
+    # lsb_first=False,
 )
 
 display_drv = ILI9341(

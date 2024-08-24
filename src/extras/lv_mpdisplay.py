@@ -47,7 +47,7 @@ class DisplayDriver:
         # If byte swapping is required and the display bus is capable of having byte swapping disabled,
         # disable it and set a flag so we can swap the color bytes as they are created.
         if self.display_drv.requires_byte_swap:
-            self.needs_swap = self.display_drv.bus_swap_disable(True)
+            self.needs_swap = self.display_drv.disable_auto_byte_swap(True)
         else:
             self.needs_swap = False
 

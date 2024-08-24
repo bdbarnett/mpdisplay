@@ -34,19 +34,19 @@ class ST7796(BusDisplay):
         param_buf = bytearray(14)
         param_mv = memoryview(param_buf)
 
-        self.set_params(_SWRESET)
+        self._send(_SWRESET)
 
         sleep_ms(120)
 
-        self.set_params(_SLPOUT)
+        self._send(_SLPOUT)
 
         sleep_ms(120)
 
         param_buf[0] = 0xC3
-        self.set_params(_CSCON, param_mv[:1])
+        self._send(_CSCON, param_mv[:1])
 
         param_buf[0] = 0x96
-        self.set_params(_CSCON, param_mv[:1])
+        self._send(_CSCON, param_mv[:1])
 
         if self.color_depth // 8 == 2:  # NOQA
             pixel_format = 0x55
@@ -59,27 +59,27 @@ class ST7796(BusDisplay):
             )
 
         param_buf[0] = pixel_format
-        self.set_params(_COLMOD, param_mv[:1])
+        self._send(_COLMOD, param_mv[:1])
 
         param_buf[0] = 0x01
-        self.set_params(_DIC, param_mv[:1])
+        self._send(_DIC, param_mv[:1])
 
         param_buf[0] = 0x80
         param_buf[1] = 0x02
         param_buf[2] = 0x3B
-        self.set_params(_DFC, param_mv[:3])
+        self._send(_DFC, param_mv[:3])
 
         param_buf[:8] = bytearray([0x40, 0x8A, 0x00, 0x00, 0x29, 0x19, 0xA5, 0x33])
         self.display_bus.tx_param(_DOCA, param_mv[:8])
 
         param_buf[0] = 0x06
-        self.set_params(_PWR2, param_mv[:1])
+        self._send(_PWR2, param_mv[:1])
 
         param_buf[0] = 0xA7
-        self.set_params(_PWR3, param_mv[:1])
+        self._send(_PWR3, param_mv[:1])
 
         param_buf[0] = 0x18
-        self.set_params(_VCMPCTL, param_mv[:1])
+        self._send(_VCMPCTL, param_mv[:1])
 
         sleep_ms(120)
 
@@ -101,7 +101,7 @@ class ST7796(BusDisplay):
                 0x1B,
             ]
         )
-        self.set_params(_PGC, param_mv[:14])
+        self._send(_PGC, param_mv[:14])
 
         param_buf[:14] = bytearray(
             [
@@ -121,19 +121,19 @@ class ST7796(BusDisplay):
                 0x1B,
             ]
         )
-        self.set_params(_NGC, param_mv[:14])
+        self._send(_NGC, param_mv[:14])
 
         sleep_ms(120)
 
         param_buf[0] = 0x3C
-        self.set_params(_CSCON, param_mv[:1])
+        self._send(_CSCON, param_mv[:1])
 
         param_buf[0] = 0x69
-        self.set_params(_CSCON, param_mv[:1])
+        self._send(_CSCON, param_mv[:1])
 
         sleep_ms(120)
 
-        self.set_params(_DISPON)
+        self._send(_DISPON)
 
         sleep_ms(120)
 

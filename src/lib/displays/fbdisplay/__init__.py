@@ -27,7 +27,8 @@ class FBDisplay(_BaseDisplay):
         self._buffer = memoryview(buffer)
         self._width = width if width else buffer.width
         self._height = height if height else buffer.height
-        self.requires_byte_swap = reverse_bytes_in_word
+        self._requires_byte_swap = reverse_bytes_in_word
+        self._auto_byte_swap_enabled = self._requires_byte_swap
         self._rotation = 0
         self.color_depth = 16
 
@@ -59,7 +60,7 @@ class FBDisplay(_BaseDisplay):
         :return: The Area object representing the rectangle.
         :rtype: Area
         """
-        if self.requires_byte_swap:
+        if self._auto_byte_swap_enabled:
             c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
 
         x2 = x + w
@@ -94,7 +95,7 @@ class FBDisplay(_BaseDisplay):
         :return: The Area object representing the blit.
         :rtype: Area
         """
-        if self.requires_byte_swap:
+        if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
 
         BPP = self.color_depth // 8
@@ -126,7 +127,7 @@ class FBDisplay(_BaseDisplay):
         :rtype: int or None
         """
         if c is not None:
-            if self.requires_byte_swap:
+            if self._auto_byte_swap_enabled:
                 c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
             self._raw_buffer[x, y] = c
         else:

@@ -27,7 +27,8 @@ class PSDisplay(_BaseDisplay):
         self._ctx = self._canvas.getContext("2d")
         self._width = width or self._canvas.width
         self._height = height or self._canvas.height
-        self.requires_byte_swap = False
+        self._requires_byte_swap = False
+        self._auto_byte_swap_enabled = self._requires_byte_swap
         self._rotation = 0
         self.color_depth = 16
         self._draw = self._ctx

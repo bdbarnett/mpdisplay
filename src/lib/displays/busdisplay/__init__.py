@@ -158,7 +158,8 @@ class BusDisplay(_BaseDisplay):
         self.color_depth = color_depth
         self.bgr = bgr
         self._invert = invert
-        self.requires_byte_swap = reverse_bytes_in_word
+        self._requires_byte_swap = reverse_bytes_in_word
+        self._auto_byte_swap_enabled = self._requires_byte_swap
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
@@ -193,29 +194,6 @@ class BusDisplay(_BaseDisplay):
                 # PWM not implemented on this platform or Pin
                 self._backlight_is_pwm = False
 
-        # Define the set_window method.  May be overriden by set_render_mode_full.
-        self.set_window = self._set_window
-
-        # Define the _tx_param and _tx_color methods based on the display bus capabilities.
-        if hasattr(display_bus, "tx_color"):
-            # lcd_bus and mp_lcd_bus use tx_color and tx_param to send color data and parameters
-            self._tx_param = display_bus.tx_param
-            self._tx_color = display_bus.tx_color
-        else:
-            # CircuitPython uses send() to send color data and parameters
-            self._tx_param = display_bus.send
-            self._tx_color = self.set_params
-
-        # Initialize the display bus if necessary
-        if hasattr(display_bus, "init"):
-            display_bus.init(
-                self._width,
-                self._height,
-                self.color_depth,
-                self._width * self._height * self.color_depth // 8,
-                False, # disable bus byte swapping because it swaps in place
-            )
-
         # Run the display driver init_sequence.
         if type(init_sequence) is bytes:
             self._init_bytes(init_sequence)
@@ -233,30 +211,24 @@ class BusDisplay(_BaseDisplay):
         # Set COLMOD (color mode) based on color_depth
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
         self._param_buf[0] = pixel_formats[self.color_depth]
-        self.set_params(_COLMOD, self._param_mv[:1])
+        self._send(_COLMOD, self._param_mv[:1])
 
         self.brightness = brightness
 
-        # self.fill_rect(0, 0, self.width, self.height, 0x0)
+        self.fill(0)  # Clear the display
 
         gc.collect()
 
     ############### Required API Methods ################
 
-    def init(self, render_mode_full=None):
+    def init(self):
         """
         Post initialization tasks may be added here.
 
         This method may be overridden by subclasses to perform any post initialization.
         If it is overridden, it must call super().init() or set self._initialized = True.
-
-        :param render_mode_full: Whether to set the display to render the full screen each
-         time the .blit_rect() method is called (default is False).
-        :type render_mode_full: bool, optional
         """
         self._initialized = True
-        if render_mode_full is not None:
-            self.set_render_mode_full(render_mode_full)
 
         # Convert from degrees to one quarter rotations.  Wrap at the number of entries in the rotations table.
         # For example, rotation = 90 -> index = 1.  With 4 entries in the rotation table, rotation = 540 -> index = 2
@@ -264,7 +236,7 @@ class BusDisplay(_BaseDisplay):
 
         # Set the display MADCTL bits for the given rotation.
         self._param_buf[0] = self.rotation_table[index] | _BGR if self.bgr else _RGB
-        self.set_params(_MADCTL, self._param_mv[:1])
+        self._send(_MADCTL, self._param_mv[:1])
 
         # Set the display inversion mode
         self.invert_colors(self._invert)
@@ -289,7 +261,7 @@ class BusDisplay(_BaseDisplay):
         :param buf: The buffer containing the pixel data to be written to the display.
         :type buf: memoryview
         """
-        if self.requires_byte_swap:
+        if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
 
         x1 = x + self._colstart
@@ -297,8 +269,8 @@ class BusDisplay(_BaseDisplay):
         y1 = y + self._rowstart
         y2 = y1 + h - 1
 
-        self.set_window(x1, y1, x2, y2)
-        self._tx_color(self._write_ram_command, buf, x1, y1, x2, y2)
+        self._set_window(x1, y1, x2, y2)
+        self._send(self._write_ram_command, buf)
         return Area(x1, y1, w, h)
 
     def fill_rect(self, x, y, w, h, c):
@@ -366,7 +338,7 @@ class BusDisplay(_BaseDisplay):
         :type bfa: int
         """
         super().vscrdef(tfa, vsa, bfa)
-        self.set_params(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+        self._send(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
     def vscsad(self, vssa=None):
         """
@@ -379,7 +351,7 @@ class BusDisplay(_BaseDisplay):
             super().vscsad(vssa)
             if vssa is False:
                 vssa = 0
-            self.set_params(_VSCSAD, struct.pack(">H", vssa))
+            self._send(_VSCSAD, struct.pack(">H", vssa))
         else:
             return super().vscsad()
 
@@ -455,9 +427,8 @@ class BusDisplay(_BaseDisplay):
                     elif sys.implementation.name == "circuitpython":
                         self._backlight_pin.value = value > 0.5
             elif self._brightness_command is not None:
-                self.set_params(
-                    self._brightness_command, struct.pack("B", int(value * 255))
-                )
+                self._param_buf[0] = int(value * 255)
+                self._send(self._brightness_command, self._param_mv[:1])
 
     def invert_colors(self, value):
         """
@@ -467,9 +438,9 @@ class BusDisplay(_BaseDisplay):
         :type value: bool
         """
         if value:
-            self.set_params(_INVON, b"")
+            self._send(_INVON)
         else:
-            self.set_params(_INVOFF, b"")
+            self._send(_INVOFF)
 
     def reset(self):
         """
@@ -496,7 +467,7 @@ class BusDisplay(_BaseDisplay):
         """
         Soft reset display.
         """
-        self.set_params(_SWRESET)
+        self._send(_SWRESET)
         sleep_ms(150)
 
     def sleep_mode(self, value):
@@ -506,74 +477,20 @@ class BusDisplay(_BaseDisplay):
         :param value: If True, enable sleep mode. If False, disable sleep mode.
         :type value: bool
         """
-        if value:
-            self.set_params(_SLPIN)
-        else:
-            self.set_params(_SLPOUT)
+        self._send(_SLPIN if value else _SLPOUT)
 
     ############### Class Specific Methods ##############
 
-    def set_render_mode_full(self, render_mode_full=False):
+    def _send(self, command, data=None):
         """
-        Set the render mode of the display.
+        Send command and data to the display.
 
-        This method sets the render mode of the display. If the render_mode_full
-        parameter is True, the display will be set to render the full screen each
-        time the .blit_rect() method is called. Otherwise, the window will be set each
-        time the .blit_rect() method is called.
-
-        :param render_mode_full: Whether to set the display to render the full screen
-         each time the .blit_rect() method is called (default is False).
-        :type render_mode_full: bool, optional
+        :param command: The command to send.
+        :type command: int
+        :param data: The data to send.
+        :type data: bytes
         """
-        # If rendering the full screen, set the window now
-        # and pass each time .blit_rect() is called.
-        if render_mode_full:
-            self._set_window(0, 0, self.width, self.height)
-            self.set_window = self._pass
-        # Otherwise, set the window each time .blit_rect() is called.
-        else:
-            self.set_window = self._set_window
-
-    def bus_swap_disable(self, value):
-        """
-        Disable byte swapping in the display driver.
-
-        If self.requires_bus_swap and the guest application is capable of byte swapping color data
-        check to see if byte swapping can be disabled in the display bus.  If so, disable it.
-
-        Guest applications that are capable of byte swapping should include:
-
-            # If byte swapping is required and the display bus is capable of having byte swapping disabled,
-            # disable it and set a flag so we can swap the color bytes as they are created.
-            if display_drv.requires_byte_swap:
-                swap_color_bytes = display_drv.bus_swap_disable(True)
-            else:
-                swap_color_bytes = False
-
-        :param value: Whether to disable byte swapping in the display bus.
-        :type value: bool
-        :return: True if the bus swap was disabled, False if it was not.
-        :rtype: bool
-        """
-        self.requires_byte_swap = not value
-        print(f"MPDisplay:  display driver byte swapping: {self.requires_byte_swap}")
-        return value
-
-    def set_params(self, cmd, params=None, *args, **kwargs):
-        """
-        Send cmd and parameters to the display.
-
-        :param cmd: The command to send.
-        :type cmd: int
-        :param params: The parameters to send.
-        :type params: bytes
-        """
-        self._tx_param(cmd, params)
-
-    def _pass(*_, **__):
-        """Do nothing.  Used to replace self.set_window when render_mode_full is True."""
-        pass
+        self.display_bus.send(command, data)
 
     def _set_window(self, x1, y1, x2, y2):
         """
@@ -596,14 +513,14 @@ class BusDisplay(_BaseDisplay):
         self._param_buf[1] = x1 & 0xFF
         self._param_buf[2] = (x2 >> 8) & 0xFF
         self._param_buf[3] = x2 & 0xFF
-        self.set_params(self._set_column_command, self._param_mv[:4])
+        self._send(self._set_column_command, self._param_mv[:4])
 
         # Row addresses
         self._param_buf[0] = (y1 >> 8) & 0xFF
         self._param_buf[1] = y1 & 0xFF
         self._param_buf[2] = (y2 >> 8) & 0xFF
         self._param_buf[3] = y2 & 0xFF
-        self.set_params(self._set_row_command, self._param_mv[:4])
+        self._send(self._set_row_command, self._param_mv[:4])
 
     def _init_bytes(self, init_sequence):
         """
@@ -629,7 +546,7 @@ class BusDisplay(_BaseDisplay):
             delay = (data_size & DELAY) != 0
             data_size &= ~DELAY
 
-            self.set_params(command, init_sequence[i + 2 : i + 2 + data_size])
+            self._send(command, init_sequence[i + 2 : i + 2 + data_size])
 
             delay_time_ms = 10
             if delay:
@@ -657,7 +574,7 @@ class BusDisplay(_BaseDisplay):
         :type init_sequence: list
         """
         for line in init_sequence:
-            self.set_params(line[0], line[1])
+            self._send(line[0], line[1])
             if line[2] != 0:
                 sleep_ms(line[2])
 

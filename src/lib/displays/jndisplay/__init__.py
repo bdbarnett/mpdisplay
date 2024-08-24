@@ -27,7 +27,8 @@ class JNDisplay(_BaseDisplay):
         JNDisplay._next_display_id += 1
         self._width = width
         self._height = height
-        self.requires_byte_swap = False
+        self._requires_byte_swap = False
+        self._auto_byte_swap_enabled = self._requires_byte_swap
         self._rotation = 0
         self.color_depth = 16
         self._buffer = Image.new("RGB", (self.width, self.height))
