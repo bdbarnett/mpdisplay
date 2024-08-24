@@ -133,10 +133,6 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
     ],
     [
-      "lib/buses/_basebus.py",
-      "github:bdbarnett/mpdisplay/src/lib/buses/_basebus.py"
-    ],
-    [
       "lib/buses/spibus/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/buses/spibus/__init__.py"
     ],

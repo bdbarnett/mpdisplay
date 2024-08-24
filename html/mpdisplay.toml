@@ -34,7 +34,6 @@
 "../src/extras/tft_text/fonts/vga2_bold_16x16.py" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/vga2_bold_16x32.py" = "/extras/tft_text/fonts/"
 
-"../src/lib/buses/_basebus.py" = "/lib/buses/"
 "../src/lib/buses/spibus/__init__.py" = "/lib/buses/spibus/"
 
 "../src/lib/buses/i80bus/__init__.py" = "/lib/buses/i80bus/"
