@@ -16,6 +16,9 @@ Only directories that already exist in the current working directory will be add
 # Edit this list to include the directories you want to add to the path.
 directories = ["lib", "extras", "examples", "drivers", "configs", "lib/displays", "lib/buses"]
 
+# Set to True to use relative paths instead of absolute paths.
+RELPATH = True
+
 def update():
 
     import sys
@@ -34,11 +37,12 @@ def update():
 
     added = []
     for directory in directories:
-        full_path = cwd + directory
-        if find_dir(full_path):
-            if full_path not in sys.path:
-                sys.path.append(full_path)
-                added.append(full_path)
+        if find_dir(cwd + directory):
+            if not RELPATH:
+                directory = cwd + directory
+            if directory not in sys.path:
+                sys.path.append(directory)
+                added.append(directory)
 
     if added:
         print(f"path.py:  Added {added} to sys.path.")
