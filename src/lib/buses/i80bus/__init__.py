@@ -9,10 +9,11 @@ The I80BBus class is VERY slow and is intended for use cases where speed is not 
 or as an example to be rewritten in C or in Python taking advantage of platform specific features.
 """
 
-from _basebus import BaseBus
 from array import array
 from uctypes import addressof # type: ignore
+import struct
 import micropython
+from micropython import const
 
 # _I80BaseBus will work with either Pin class, but I80Bus will only work with GPIO_Pin
 try:
@@ -23,7 +24,19 @@ except ImportError:
 if 0:
     ptr8 = ptr16 = ptr32 = None  # For type hints
 
-class _I80BaseBus(BaseBus):
+
+DC_CMD = const(0)
+DC_DATA = const(1)
+CS_ACTIVE = const(0)
+CS_INACTIVE = const(1)
+WR_ACTIVE = const(1)
+WR_INACTIVE = const(0)
+
+
+class Optional:  # For typing
+    pass
+
+class _I80BaseBus():
     """
     Represents an I80 bus interface for controlling GPIO pins.  Not to be used directly.
     Must be subclassed to implement the _setup and _write methods.
@@ -64,76 +77,62 @@ class _I80BaseBus(BaseBus):
 
     def __init__(
         self,
-        dc,
-        cs,
-        wr,
-        data0,
-        data1,
-        data2,
-        data3,
-        data4,
-        data5,
-        data6,
-        data7,
-        data8 = None,
-        data9 = None,
-        data10 = None,
-        data11 = None,
-        data12 = None,
-        data13 = None,
-        data14 = None,
-        data15 = None,
-        cs_active_high=False,
-        dc_data_level=1,
-        pclk_active_neg=False,
-        swap_color_bytes=False,
-        *,
-        freq=20_000_000,  # Not used here but may be used in a subclass like _i80bus_rp2.py
-        cmd_bits=8,  # Not used here; left in for compatibility with mp_lcd_bus
-        param_bits=8,  # ditto
-        reverse_color_bits=False,  # ditto
-        pclk_idle_low=False,  # ditto
-        dc_idle_level=0,  # ditto
-        dc_cmd_level=0,  # ditto
-        dc_dummy_level=0,  # ditto
+        dc: int,
+        cs: int,
+        wr: int,
+        data: list[int],
+        freq: int =20_000_000,  # Not used here but may be used in a subclass like _i80bus_rp2.py
         ) -> None:
 
-        super().__init__()
-
         self._freq = freq  # Not used in this class; may be used in subclasses like _i80bus_rp2.py
-        self._swap_enabled = swap_color_bytes  # Save the swap enabled setting for the base class
 
         # Create a list of Pin objects for the data pins
         # NOTE:  data8-15 are optional and not implemented in most subclasses
-        data_pins = []
-        for pin in [data0, data1, data2, data3, data4, data5, data6, data7,
-                    data8, data9, data10, data11, data12, data13, data14, data15]:
-            if pin is not None:
-                data_pins.append(Pin(pin, Pin.OUT))
-            else:
-                break  # Stop when we reach the first None
+        data_pins = [Pin(pin, Pin.OUT) for pin in data]
 
         # Setup the control pins
-        # _dc_data, _dc_cmd, _cs_active, _cs_inactive, _wr_active, _wr_inactive are boolean values
+        # _wr_active, _wr_inactive are boolean values
         # indicating the level of the pin in that state.  True is high, False is low.
-        self._dc_data: bool = bool(dc_data_level)
-        self._dc_cmd: bool = not self._dc_data
-        self.dc: Pin = Pin(dc, Pin.OUT)
-        self.dc(self._dc_cmd)  # Set the DC pin to the command level
+        self._dc: Pin = Pin(dc, Pin.OUT)
+        self._dc(DC_CMD)  # Set the DC pin to the command level
 
-        self._cs_active: bool = cs_active_high
-        self._cs_inactive: bool = not self._cs_active
         # If cs was not specified, set it to a lambda that does nothing
         # so lines like the next won't fail.
-        self.cs: Pin = Pin(cs, Pin.OUT) if cs != -1 else lambda val: None
-        self.cs(self._cs_inactive)  # Set the CS pin to the inactive level
+        self._cs: Pin = Pin(cs, Pin.OUT) if cs != -1 else lambda val: None
+        self._cs(CS_INACTIVE)  # Set the CS pin to the inactive level
 
-        self._wr_active: bool = not pclk_active_neg
-        self._wr_inactive: bool = not self._wr_active  # not used in this class, may be used in a subclass
-        self.wr: Pin = Pin(wr, Pin.OUT)
-        self.wr(self._wr_inactive)  # Set the WR pin to the inactive level
+        self._wr: Pin = Pin(wr, Pin.OUT)
+        self._wr(WR_INACTIVE)  # Set the WR pin to the inactive level
+
+        self._buf1: bytearray = bytearray(1)
 
         self._setup(data_pins)
+
+    @micropython.native
+    def send(
+        self,
+        command: Optional[int] = None,
+        data: Optional[memoryview] = None,
+    ) -> None:
+
+        self._cs(CS_ACTIVE)
+
+        if command is not None:
+            struct.pack_into("B", self._buf1, 0, command)
+            self._dc(DC_CMD)
+            self._write(self._buf1)
+
+        if data and len(data):
+            self._dc(DC_DATA)
+            self._write(data)
+
+        self._cs(CS_INACTIVE)
+
+    def deinit(self):
+        pass
+
+    def __del__(self):
+        self.deinit()
 
 class I80Bus(_I80BaseBus):
     """
@@ -154,22 +153,22 @@ class I80Bus(_I80BaseBus):
         # If self._is_32bit is True the _write method will use a 32-bit set and a 32-bit
         # clear register.  Otherwise, the _write method will use set_reset registers
         # which use the lower 16 bits for set and the upper 16 bits for clear.
-        self._is_32bit = True if self.wr.BSRR is None else False
+        self._is_32bit = True if self._wr.BSRR is None else False
 
         # Both lut mode and sequential mode need the write pin registers and masks saved to use in viper.
         # Subclasses may not need the write pin registers and masks, so they are defined here instead of
         # in __init__.   Subclasses should override _setup.
         if self._is_32bit:
-            self._wr_mask = self._wr_not_mask = 1 << self.wr.pin()
-            self._wr_reg = self.wr.gpio() + (self.wr.SET if self._wr_active else self.wr.CLR)
-            self._wr_not_reg = self.wr.gpio() + (self.wr.CLR if self._wr_active else self.wr.SET)
+            self._wr_mask = self._wr_not_mask = 1 << self._wr.pin()
+            self._wr_reg = self._wr.gpio() + (self._wr.SET if self._wr_active else self._wr.CLR)
+            self._wr_not_reg = self._wr.gpio() + (self._wr.CLR if self._wr_active else self._wr.SET)
         else:
-            self._wr_reg = self._wr_not_reg = self.wr.gpio() + self.wr.BSRR
-            self._wr_mask = 1 << (self.wr.pin() + (0 if self._wr_active else 16))
-            self._wr_not_mask = 1 << (self.wr.pin() + (16 if self._wr_active else 0))
+            self._wr_reg = self._wr_not_reg = self._wr.gpio() + self._wr.BSRR
+            self._wr_mask = 1 << (self._wr.pin() + (0 if self._wr_active else 16))
+            self._wr_not_mask = 1 << (self._wr.pin() + (16 if self._wr_active else 0))
 
         if False:  # Set to True to print the write pin registers and masks
-            print(f"\n{self.wr=}\n    {self._wr_reg=:#010x}, {self._wr_mask=:#034b}\n    {self._wr_not_reg=:#010x}, {self._wr_not_mask=:#034b}\n")
+            print(f"\n{self._wr=}\n    {self._wr_reg=:#010x}, {self._wr_mask=:#034b}\n    {self._wr_not_reg=:#010x}, {self._wr_not_mask=:#034b}\n")
 
         # Determine which mode, lut or sequential, to use
         # If all pins are on the same port and sequential:
