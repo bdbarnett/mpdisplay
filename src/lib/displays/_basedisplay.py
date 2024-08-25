@@ -47,8 +47,30 @@ if not viper:
         def swap_bytes(buf, buf_size_pix):
             buf[::2], buf[1::2] = buf[1::2], buf[::2]
 
-
 gc.collect()
+
+
+def color_rgb(color):
+    """
+    color can be an integer or a tuple, list or bytearray of 2 or 3 integers
+    """
+    if isinstance(color, int):
+        # convert color from int to bytes
+        # currently only 16-bit ints are supported
+        if True:
+            # convert 16-bit int color to 2 bytes
+            color = (color & 0xFF, color >> 8)
+        else:
+            # convert 24-bit int color to 3 bytes
+            color = (color & 0xFF, (color >> 8) & 0xFF, color >> 16)
+    if len(color) == 2:
+        r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
+        g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
+        b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
+    else:
+        r, g, b = color
+    return (r, g, b)
+
 
 class _BaseDisplay:
     def __init__(self):

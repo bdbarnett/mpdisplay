@@ -7,7 +7,7 @@ PSDisplay class for MPDisplay on PyScript
 """
 
 from js import document, console # type: ignore
-from _basedisplay import _BaseDisplay, Area, colors
+from _basedisplay import _BaseDisplay, Area, color_rgb
 
 
 def log(*args):
@@ -45,7 +45,7 @@ class PSDisplay(_BaseDisplay):
         self._canvas.height = self.height
 
     def fill_rect(self, x, y, w, h, c):
-        r, g, b = colors.color_rgb(c)
+        r, g, b = color_rgb(c)
         self._ctx.fillStyle = f"rgb({r},{g},{b})"
         self._ctx.fillRect(x, y, w, h)
         return Area(x, y, w, h)
@@ -58,7 +58,7 @@ class PSDisplay(_BaseDisplay):
             raise ValueError("The source buffer is not the correct size")
         img_data = self._ctx.createImageData(w, h)
         for i in range(0, len(buf), BPP):
-            r, g, b = colors.color_rgb(buf[i: i + BPP])
+            r, g, b = color_rgb(buf[i: i + BPP])
             j = i * 2
             img_data.data[j] = r
             img_data.data[j+1] = g

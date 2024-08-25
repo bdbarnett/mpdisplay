@@ -1,7 +1,7 @@
 """
 dtdisplay - autoloads either SDLDisplay or PGDisplay
 """
-from _basedisplay import _BaseDisplay, Area, colors  # noqa: F401
+from _basedisplay import _BaseDisplay, Area, color_rgb  # noqa: F401
 
 _poller = None
 

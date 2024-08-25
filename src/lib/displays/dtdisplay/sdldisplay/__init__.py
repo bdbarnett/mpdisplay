@@ -15,7 +15,7 @@ from .sdl2_lib import (
     SDL_BLENDMODE_NONE, SDL_RENDERER_ACCELERATED, SDL_RENDERER_PRESENTVSYNC, SDL_WINDOWPOS_CENTERED,
     SDL_WINDOW_SHOWN, SDL_INIT_EVERYTHING, SDL_Rect,
 )
-from .. import _BaseDisplay, Area, colors
+from .. import _BaseDisplay, Area, color_rgb
 from sys import implementation
 if implementation.name == 'cpython':
     import ctypes
@@ -177,7 +177,7 @@ class SDLDisplay(_BaseDisplay):
         :type color: int
         """
         fillRect = SDL_Rect(x, y, w, h)
-        r, g, b = colors.color_rgb(c)
+        r, g, b = color_rgb(c)
 
         retcheck(SDL_SetRenderTarget(self._renderer, self._buffer))  # Set the render target to the texture
         retcheck(SDL_SetRenderDrawColor(self._renderer, r, g, b, 255))  # Set the color to fill the rectangle
