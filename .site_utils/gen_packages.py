@@ -19,7 +19,6 @@ displays_shared = [
     "_basedisplay.py",
     "_basedisplay_numpy.py",
     "_basedisplay_viper.py",
-    "splash.py",
     ]
 # list of package directories and extra files in that package
 packages = [

@@ -8,6 +8,7 @@
 "../src/configs/tft_config.py" = "/configs/"
 
 "../src/extras/bmp565.py" = "/extras/"
+"../src/extras/colors.py" = "/extras/"
 "../src/extras/ezfont.py" = "/extras/"
 "../src/extras/keypins.py" = "/extras/"
 "../src/extras/lv_mpdisplay.py" = "/extras/"
@@ -44,10 +45,6 @@
 "../src/lib/displays/_basedisplay.py" = "/lib/displays/"
 "../src/lib/displays/_basedisplay_numpy.py" = "/lib/displays/"
 "../src/lib/displays/_basedisplay_viper.py" = "/lib/displays/"
-"../src/lib/displays/area.py" = "/lib/displays/"
-"../src/lib/displays/colors.py" = "/lib/displays/"
-"../src/lib/displays/framebuf.py" = "/lib/displays/"
-"../src/lib/displays/splash.py" = "/lib/displays/"
 "../src/lib/displays/busdisplay/__init__.py" = "/lib/displays/busdisplay/"
 
 "../src/lib/displays/dtdisplay/__init__.py" = "/lib/displays/dtdisplay/"
@@ -72,6 +69,7 @@
 "../src/lib/eventsys/keys.py" = "/lib/eventsys/"
 "../src/lib/eventsys/touch_keypad.py" = "/lib/eventsys/"
 
+"../src/lib/framebuf.py" = "/lib/"
 "../src/lib/graphics/__init__.py" = "/lib/graphics/"
 "../src/lib/graphics/framebuf_plus/__init__.py" = "/lib/graphics/framebuf_plus/"
 "../src/lib/graphics/shapes/__init__.py" = "/lib/graphics/shapes/"

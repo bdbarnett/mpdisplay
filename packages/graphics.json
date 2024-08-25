@@ -1,6 +1,10 @@
 {
   "urls": [
     [
+      "framebuf.py",
+      "github:bdbarnett/mpdisplay/src/lib/framebuf.py"
+    ],
+    [
       "graphics/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/__init__.py"
     ],

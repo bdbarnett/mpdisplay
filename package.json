@@ -33,6 +33,10 @@
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
     [
+      "extras/colors.py",
+      "github:bdbarnett/mpdisplay/src/extras/colors.py"
+    ],
+    [
       "extras/ezfont.py",
       "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
     ],
@@ -165,22 +169,6 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
     ],
     [
-      "lib/displays/area.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
-    ],
-    [
-      "lib/displays/colors.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/colors.py"
-    ],
-    [
-      "lib/displays/framebuf.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/framebuf.py"
-    ],
-    [
-      "lib/displays/splash.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/splash.py"
-    ],
-    [
       "lib/displays/busdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
     ],
@@ -251,6 +239,10 @@
     [
       "lib/eventsys/touch_keypad.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
+    ],
+    [
+      "lib/framebuf.py",
+      "github:bdbarnett/mpdisplay/src/lib/framebuf.py"
     ],
     [
       "lib/graphics/__init__.py",
