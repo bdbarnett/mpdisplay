@@ -221,6 +221,48 @@ class _BaseDisplay:
         """
         return self._requires_byte_swap
 
+    def blit_transparent(self, buf, x, y, w, h, key):
+        """
+        Blit a buffer with transparency.
+
+        :param buf: Buffer to blit
+        :type buf: memoryview
+        :param x: X-coordinate to blit to
+        :type x: int
+        :param y: Y-coordinate to blit to
+        :type y: int
+        :param w: Width of the buffer
+        :type w: int
+        :param h: Height of the buffer
+        :type h: int
+        :param key: Key value for transparency
+        :type key: int
+        """
+        BPP = self.color_depth // 8
+        key_bytes = key.to_bytes(BPP, "little")
+        stride = w * BPP
+        for j in range(h):
+            rowstart = j * stride
+            colstart = 0
+            # iterate over each pixel looking for the first non-key pixel
+            while colstart < stride:
+                startoffset = rowstart + colstart
+                if buf[startoffset : startoffset + BPP] != key_bytes:
+                    # found a non-key pixel
+                    # then iterate over each pixel looking for the next key pixel
+                    colend = colstart
+                    while colend < stride:
+                        endoffset = rowstart + colend
+                        if buf[endoffset : endoffset + BPP] == key_bytes:
+                            break
+                        colend += BPP
+                    # blit the non-key pixels
+                    self.blit_rect(buf[rowstart + colstart : rowstart + colend], x + colstart // BPP, y + j, (colend - colstart) // BPP, 1)
+                    colstart = colend
+                else:
+                    colstart += BPP
+        return Area(x, y, w, h)
+
     ############### Common API Methods, sometimes overridden ################
 
     def vscrdef(self, tfa, vsa, bfa):
