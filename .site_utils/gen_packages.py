@@ -20,9 +20,6 @@ displays_shared = [
     "_basedisplay_numpy.py",
     "_basedisplay_viper.py",
     "splash.py",
-    "area.py",
-    "colors.py",
-    "framebuf.py",
     ]
 # list of package directories and extra files in that package
 packages = [
@@ -37,7 +34,7 @@ packages = [
     ["lib/displays/jndisplay", displays_shared],
     ["lib/displays/psdisplay", displays_shared],
     ["lib/eventsys", []],
-    ["lib/graphics", []],
+    ["lib/graphics", ["framebuf.py",]],
     ["lib/palettes", []],
     ["lib/timer", []],
     ]

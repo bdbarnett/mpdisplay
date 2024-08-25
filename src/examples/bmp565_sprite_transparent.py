@@ -4,7 +4,7 @@ from bmp565 import BMP565
 from time import sleep
 from random import choice
 from collections import namedtuple
-from area import Area
+
 
 show = canvas.show if hasattr(canvas, "show") else lambda _: None
 
@@ -28,8 +28,7 @@ for col in [fwd, left, right, back]:
     print(f"{(a, col)} {(b, col)} {(c, col)} {(b, col)}")
 
 def draw_sprite(dest_x, dest_y, source_x, source_y, source_image=image, width=sprite_width, height=sprite_height):
-    canvas.blit_transparent(source_image[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height, transparent)
-    return Area(dest_x, dest_y, width, height)
+    return canvas.blit_transparent(source_image[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height, transparent)
 
 
 canvas.fill(bg)

@@ -20,7 +20,6 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 from graphics import shapes
-from area import Area
 
 try:
     from ulab import numpy as np # type: ignore
@@ -340,7 +339,7 @@ class FrameBuffer(BasicShapes):
     def fill_rect(self, x, y, w, h, c):
         """Draw a filled rectangle at the given location, size and color."""
         self._format.fill_rect(self, x, y, w, h, c)
-        return Area(x, y, w, h)
+        return (x, y, w, h)
 
     def pixel(self, x, y, c=None):
         """If ``c`` is not given, get the color value of the specified pixel. If ``c`` is
@@ -350,12 +349,12 @@ class FrameBuffer(BasicShapes):
         if c is None:
             return self._format.get_pixel(self, x, y)
         self._format.set_pixel(self, x, y, c)
-        return Area(x, y, 1, 1)
+        return (x, y, 1, 1)
 
     def fill(self, c):
         """Fill the entire FrameBuffer with the specified color."""
         self._format.fill(self, c)
-        return Area(0, 0, self._width, self._height)
+        return (0, 0, self._width, self._height)
 
     def scroll(self, xstep, ystep):
         """
