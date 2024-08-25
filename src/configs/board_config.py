@@ -62,8 +62,4 @@ else:
         # data=Events.filter,
     )
 
-try:
-    from splash import splash
-    splash(display_drv)
-except Exception:
-    pass
+display_drv.fill(0xACED)
