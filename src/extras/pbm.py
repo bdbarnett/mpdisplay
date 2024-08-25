@@ -31,7 +31,6 @@ Example:
 
 import math
 from array import array
-import sys
 
 
 class PBM:
@@ -50,22 +49,21 @@ class PBM:
             raise ValueError('Invalid arguments')
 
     def read(self):
-        with open(self._filename, "r") as f:
+        with open(self._filename, "rb") as f:
 
             # Read the header
-            header = f.readline().strip()
-            if header != "P1" and header != "P4":
-                print("Error: Invalid PBM header")
-                sys.exit(1)
-
-            # Read the dimensions
-            dimensions = f.readline().strip().split()
-            self.width = int(dimensions[0])
-            self.height = int(dimensions[1])
+            header = f.read(3)[:2]
+            if header != b"P1" and header != b"P4":
+                raise ValueError("Invalid PBM header")
 
             # Read the data
-            if header == "P1":
+            if header == b"P1":
                 # ASCII
+                print("ASCII")
+                # Read the dimensions
+                dimensions = f.readline().strip().split()
+                self.width = int(dimensions[0])
+                self.height = int(dimensions[1])
                 self._buffer = array("B", [0] * math.ceil(self.width * self.height / 8))
                 self._mv = memoryview(self._buffer)
                 for i in range(self.height):
@@ -73,8 +71,17 @@ class PBM:
                     for j in range(self.width):
                         if line[j] == "1":
                             self._mv[i * self.width + j // 8] |= 1 << (7 - j % 8)
-            elif header == "P4":
+            elif header == b"P4":
                 # Binary
+                print("Binary")
+                next_line = f.readline().strip()
+                if next_line[0] == 35:  # 35 is the ASCII code for #
+                    print(f"Comment: {next_line}")
+                    next_line = f.readline().strip()
+                dimensions = next_line.split()
+                self.width = int(dimensions[0])
+                self.height = int(dimensions[1])
+                print(f"Dimensions: {self.width}x{self.height}")
                 self._buffer = array("B", f.read())
                 self._mv = memoryview(self._buffer)
 
@@ -92,6 +99,36 @@ class PBM:
                     for j in range(self.width):
                         f.write("1" if self._mv[i * self.width + j // 8] & (1 << (7 - j % 8)) else "0")
                     f.write("\n")
+
+    def render(self, canvas, x, y, fg=0, bg=None):
+        col = row = 0
+        for i in range(len(self._buffer)):
+            for bit in self.iterbits(self._buffer[i]):
+                if bit:
+                    canvas.pixel(x + col, y + row, fg)
+                elif bg is not None:
+                    canvas.pixel(x + col, y + row, bg)
+                col += 1
+                if col >= self.width:
+                    col = 0
+                    row += 1
+
+    def iterbits(self, b):
+        """
+        generator to iterate over the bits in a byte (character)
+        """
+        in_char = self.reverse(b)
+        for i in range(8):
+            yield (in_char >> i) & 1
+
+    def reverse(self, b: int) -> int:
+        """
+        reverse bit order so the iterbits works
+        """
+        b = (b & 0xF0) >> 4 | (b & 0x0F) << 4
+        b = (b & 0xCC) >> 2 | (b & 0x33) << 2
+        b = (b & 0xAA) >> 1 | (b & 0x55) << 1
+        return b
 
     def map16(self, palette, to_buffer=None, x=0, y=0, stride=0):
         # fg and bg are 16-bit colors
