@@ -2,31 +2,32 @@
 A class to handle PBM files - WIP - Not working yet
 
 Example:
-    pbm = PBM('image.pbm')
-    print(pbm.width, pbm.height)
-    print(pbm[0])  # Get the first byte
-    print(pbm[0, 0])  # Get the first bit
-    print(pbm[0:10])  # Get the first 10 bytes as a memoryview object
-    print(pbm[0:10, 0:10])  # Get a 10x10 slice of the image as a bytearray object
-    pbm[0] = 0xFF  # Set the first byte
-    pbm[0, 0] = 1  # Set the first bit
-    pbm[0:10] = b'\xFF' * 10  # Set the first 10 bytes
-    pbm[0:10, 0:10] = b'\xFF' * 10 * 10  # Set a 10x10 slice of the image
-    pbm.save('image.pbm')  # Save the image to a file
-    pbm.map16((0xFFFF, 0x0000))  # Convert the image to a 16-bit color map
-    pbm.map16((0xFFFF, 0x0000), to_buffer)  # Convert the image to a 16-bit color map and store it in the to_buffer array
-    pbm.write('image.pbm', binary=False)  # Save the image to a file in ASCII format
+    from board_config import display_drv
+    from framebuf import FrameBuffer, RGB565
+    from pbm import PBM
 
-    from framebuf import FrameBuffer, MONO_HLSB, MONO_VLSB, MONO_HMSB, MONO_VMSB, RGB565
-    fb = FrameBuffer(pbm, pbm.width, pbm.height, MONO_HLSB)
-    pal = (0xFFFF, 0x0000)
+    logo = PBM("examples/assets/micropython.pbm")
 
-    # Display buffer for a 320x240 display
-    display = bytearray(320 * 240 * 2)
-    display_mv = memoryview(display)
-    display_fb = FrameBuffer(display_mv, 320, 240, RGB565)
+    # render direct to the display with fg and bg colors
+    logo.render(display_drv, 0, 0, 0xFFFF, 0x0000)
 
-    # Convert the image to a 16-bit color map
+    # render direct to the display with fg and transparent bg
+    logo.render(display_drv, 0, display_drv.height//2, 0xFFFF)
+
+    # blit to a frame buffer
+    buf = bytearray(logo.width * logo.height * 2)
+    fb = FrameBuffer(buf, logo.width, logo.height, RGB565)
+    palette = FrameBuffer(memoryview(bytearray(2 * 2)), 2, 1, RGB565)
+    palette.pixel(0, 0, 0x0FF0)
+    palette.pixel(1, 0, 0xFFFF)
+    fb.blit(logo, 0, 0, palette.pixel(0, 0), palette)
+
+    # blit the frame buffer to the display
+    display_drv.blit_rect(buf, display_drv.width * 2 // 3, 0, logo.width, logo.height)
+
+    # blit the frame buffer to the display with transparent bg
+    display_drv.blit_transparent(buf, display_drv.width * 2 // 3, display_drv.height//2, logo.width, logo.height, 0x000F)
+
 """
 
 from array import array
