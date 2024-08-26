@@ -53,11 +53,11 @@ class PBM(FrameBuffer):
                 while next_line[0] == 35:  # 35 is the ASCII code for #
                     next_line = f.readline().strip()
                 dimensions = next_line.split()
-                self.width = int(dimensions[0])
-                self.height = int(dimensions[1])
+                self._width = int(dimensions[0])
+                self._height = int(dimensions[1])
                 self._buffer = array("B", f.read())
                 self._mv = memoryview(self._buffer)
-        super().__init__(self._mv, self.width, self.height, MONO_HLSB)
+        super().__init__(self._mv, self._width, self._height, MONO_HLSB)
 
     def render(self, canvas, x, y, fg=0, bg=None):
         col = row = 0
@@ -68,7 +68,7 @@ class PBM(FrameBuffer):
                 elif bg is not None:
                     canvas.pixel(x + col, y + row, bg)
                 col += 1
-                if col >= self.width:
+                if col >= self._width:
                     col = 0
                     row += 1
 
@@ -85,8 +85,40 @@ class PBM(FrameBuffer):
             yield (b >> i) & 1
 
     def __str__(self):
-        return f"PBM: {self.width}x{self.height}"
+        return f"PBM: {self._width}x{self._height}"
     
     def __repr__(self):
-        return f"PBM: {self.width}x{self.height}"
+        return f"PBM: {self._width}x{self._height}"
 
+    def save(self, filename):
+        with open(filename, "wb") as f:
+            f.write(b"P4\n")
+            f.write(f"{self._width} {self._height}\n")
+            f.write(self._buffer)
+
+    def export(self):
+        src_filename_ext = self._filename.split("/")[-1]
+        directory = "" # self._filename.replace(src_filename_ext, "")
+        filename = src_filename_ext.replace(".pbm", "")
+        out = []
+
+        out.append(f"WIDTH = {self._width}")
+        out.append(f"HEIGHT = {self._height}")
+        out.append(f"BPP = 1")
+        out.append(f"PALLETTE = [0x0000, 0xFFFF]")
+        out.append(f"_bitmap =\\")
+
+        bytes_per_row = len(self._buffer) // self._height
+        for y in range(self._height):
+            row = "b'"
+            for x in range(bytes_per_row):
+                row += f"\\x{self._buffer[y * bytes_per_row + x]:02x}"
+            row += "'"
+            if y < self._height - 1:
+                row += "\\"
+            out.append(row)
+
+        out.append(f"BITMAP = memoryview(_bitmap)")
+
+        with open(directory + filename + ".py", "w") as f:
+            f.write("\n".join(out))
