@@ -21,11 +21,12 @@ class BMP565:
         self._filename = filename
         self._streamed = streamed
         self._mirrored = mirrored
+        self._buffer = None
+        self._mv = None
         if source is not None:
             self.width = width
             self.height = height
             self._buffer = source
-            self._mv = memoryview(self._buffer)
         elif filename is not None:
             if self._streamed is True:
                 self._file = open(filename, "rb")
@@ -36,10 +37,13 @@ class BMP565:
                     self._read_data(f)
         else:
             raise ValueError('Invalid arguments')
+        
+        if self._buffer is not None:
+            self._mv = memoryview(self._buffer)
 
     @property
     def buffer(self):
-        return self._buffer
+        return self._mv
 
     @staticmethod
     def _exists(filename):
@@ -110,7 +114,6 @@ class BMP565:
         for i in range(self.height):
             f.seek(self.data_offset + (self.height - i - 1) * self.width * 2)
             self._buffer += f.read(self.width * 2)
-        self._mv = memoryview(self._buffer)
 
     def __getitem__(self, key):
         if isinstance(key, tuple):

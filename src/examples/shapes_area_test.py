@@ -10,7 +10,7 @@ Area objects have the attributes x, y, w and h.  They may be added together, suc
 and may be unpacked, such as:
     x, y, w, h = area3
 or as a function argument:
-    shapes.rect(display_drv, *area3, display_drv.color565(0, 0, 255))
+    shapes.rect(display_drv, *area3, 0x00FF)
 
 """
 
@@ -18,8 +18,8 @@ from board_config import display_drv
 from graphics import shapes
 
 
-dirty = shapes.circle(display_drv, 120, 120, 50, display_drv.color565(255, 0, 0), True)
+dirty = shapes.circle(display_drv, 120, 120, 50, 0XFF00, True)
 dirty += shapes.ellipse(
-    display_drv, 100, 85, 50, 30, display_drv.color565(0, 255, 0), True, 0b1111
+    display_drv, 100, 85, 50, 30, 0X0FF0, True, 0b1111
 )
-shapes.rect(display_drv, *dirty, display_drv.color565(0, 0, 255))
+shapes.rect(display_drv, *dirty, 0x00FF)
