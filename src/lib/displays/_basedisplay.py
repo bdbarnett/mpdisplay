@@ -19,7 +19,6 @@ Supported display classes:
 - 'JNDisplay': Uses a Jupyter Notebook
 - 'PSDisplay': Uses PyScript
 """
-import colors  # noqa: F401
 import gc
 from sys import implementation
 

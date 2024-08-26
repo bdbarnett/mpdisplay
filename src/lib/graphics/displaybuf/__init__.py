@@ -24,7 +24,7 @@ Usage:
 import gc
 import sys
 from .. import framebuf_plus as framebuf
-from .. import Area  # for _show16
+from .. import Area, color565, color565_swapped, color332
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
@@ -85,12 +85,12 @@ class DisplayBuffer(framebuf.FrameBuffer):
 
         # Set the DisplayBuffer.rgb function to the appropriate one for the format and byte swapping
         if format == DisplayBuffer.GS8 and DisplayBuffer.GS8 is not None:
-            DisplayBuffer.rgb = self.display_drv.color332
+            DisplayBuffer.rgb = color332
         else:
             if self.needs_swap:
-                DisplayBuffer.rgb = self.display_drv.color565_swapped
+                DisplayBuffer.rgb = color565_swapped
             else:
-                DisplayBuffer.rgb = self.display_drv.color565
+                DisplayBuffer.rgb = color565
 
         # Set the show function to the appropriate one for the format and
         # allocate the buffer.  Also create the line buffer and lut if needed.
