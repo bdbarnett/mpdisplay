@@ -192,11 +192,9 @@ class RGB565Format:
     def get_pixel(framebuf, x, y):
         """Get the color of a given pixel"""
         index = (y * framebuf._stride + x) * 2
-        lobyte, hibyte = framebuf._buffer[index : index + 2]
-        r = hibyte & 0xF8
-        g = ((hibyte & 0x07) << 5) | ((lobyte & 0xE0) >> 5)
-        b = (lobyte & 0x1F) << 3
-        return (r << 16) | (g << 8) | b
+        color = framebuf._buffer[index : index + 2]
+        color = int.from_bytes(color, "little")
+        return color
 
     @staticmethod
     def fill(framebuf, color):
