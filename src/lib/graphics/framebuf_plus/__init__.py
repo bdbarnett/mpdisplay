@@ -103,15 +103,17 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         super().fill_rect(x, y, w, h, c)
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c):
+    def pixel(self, x, y, c=None):
         """
         Draw a single pixel at the given location and color.
 
         Args:
             x (int): x coordinate
             y (int): y coordinate
-            c (int): 565 encoded color
+            c (int): 565 encoded color (default: None)
         """
+        if c is None:
+            return super().pixel(x, y)
         super().pixel(x, y, c)
         return Area(x, y, 1, 1)
 
