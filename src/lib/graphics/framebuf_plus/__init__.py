@@ -88,7 +88,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
     @property
     def buffer(self):
         return self._buffer
-    
+
     def fill_rect(self, x, y, w, h, c):
         """
         Fill the given rectangle with the given color.
@@ -240,3 +240,17 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         """
         super().text(s, x, y, c)
         return Area(x, y, len(s) * 8, 8)
+
+    def blit(self, buf, x, y, key=-1, palette=None):
+        """
+        Blit the given buffer at the given location.
+
+        Args:
+            buf (FrameBuffer): FrameBuffer to blit
+            x (int): x coordinate
+            y (int): y coordinate
+            key (int): Color key (default: -1)
+            palette (list): Palette (default: None)
+        """
+        super().blit(buf, x, y, key, palette)
+        return Area(x, y, buf.width, buf.height)
