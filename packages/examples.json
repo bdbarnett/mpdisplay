@@ -77,6 +77,10 @@
       "github:bdbarnett/mpdisplay/src/examples/framebuf_simpletest.py"
     ],
     [
+      "examples/gui_test.py",
+      "github:bdbarnett/mpdisplay/src/examples/gui_test.py"
+    ],
+    [
       "examples/hello.py",
       "github:bdbarnett/mpdisplay/src/examples/hello.py"
     ],

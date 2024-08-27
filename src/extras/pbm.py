@@ -72,6 +72,14 @@ class PBM(FrameBuffer):
                     col = 0
                     row += 1
 
+    @property
+    def width(self):
+        return self._width
+    
+    @property
+    def height(self):
+        return self._height
+
     @staticmethod
     def _bitgen(b):
         """
@@ -104,9 +112,9 @@ class PBM(FrameBuffer):
 
         out.append(f"WIDTH = {self._width}")
         out.append(f"HEIGHT = {self._height}")
-        out.append(f"BPP = 1")
-        out.append(f"PALLETTE = [0x0000, 0xFFFF]")
-        out.append(f"_bitmap =\\")
+        out.append("BPP = 1")
+        out.append("PALLETTE = [0x0000, 0xFFFF]")
+        out.append("_bitmap =\\")
 
         bytes_per_row = len(self._buffer) // self._height
         for y in range(self._height):
@@ -118,7 +126,7 @@ class PBM(FrameBuffer):
                 row += "\\"
             out.append(row)
 
-        out.append(f"BITMAP = memoryview(_bitmap)")
+        out.append("BITMAP = memoryview(_bitmap)")
 
         with open(directory + filename + ".py", "w") as f:
             f.write("\n".join(out))
