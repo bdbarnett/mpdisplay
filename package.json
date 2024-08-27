@@ -33,10 +33,6 @@
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
     [
-      "extras/colors.py",
-      "github:bdbarnett/mpdisplay/src/extras/colors.py"
-    ],
-    [
       "extras/ezfont.py",
       "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
     ],
@@ -55,6 +51,10 @@
     [
       "extras/pbm.py",
       "github:bdbarnett/mpdisplay/src/extras/pbm.py"
+    ],
+    [
+      "extras/png.py",
+      "github:bdbarnett/mpdisplay/src/extras/png.py"
     ],
     [
       "extras/tft_bitmap.py",

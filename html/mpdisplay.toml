@@ -8,12 +8,12 @@
 "../src/configs/tft_config.py" = "/configs/"
 
 "../src/extras/bmp565.py" = "/extras/"
-"../src/extras/colors.py" = "/extras/"
 "../src/extras/ezfont.py" = "/extras/"
 "../src/extras/keypins.py" = "/extras/"
 "../src/extras/lv_mpdisplay.py" = "/extras/"
 "../src/extras/micropython.py" = "/extras/"
 "../src/extras/pbm.py" = "/extras/"
+"../src/extras/png.py" = "/extras/"
 "../src/extras/tft_bitmap.py" = "/extras/"
 "../src/extras/tft_write.py" = "/extras/"
 "../src/extras/wifi.py" = "/extras/"

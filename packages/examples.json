@@ -17,6 +17,10 @@
       "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest3.py"
     ],
     [
+      "examples/bmp565_blit.py",
+      "github:bdbarnett/mpdisplay/src/examples/bmp565_blit.py"
+    ],
+    [
       "examples/bmp565_scroll.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_scroll.py"
     ],
@@ -47,6 +51,10 @@
     [
       "examples/color_test.py",
       "github:bdbarnett/mpdisplay/src/examples/color_test.py"
+    ],
+    [
+      "examples/displaybuf_blit.py",
+      "github:bdbarnett/mpdisplay/src/examples/displaybuf_blit.py"
     ],
     [
       "examples/displaybuf_simpletest.py",
@@ -123,6 +131,10 @@
     [
       "examples/palette_wheel.py",
       "github:bdbarnett/mpdisplay/src/examples/palette_wheel.py"
+    ],
+    [
+      "examples/pbm_simpletest.py",
+      "github:bdbarnett/mpdisplay/src/examples/pbm_simpletest.py"
     ],
     [
       "examples/rotations.py",
@@ -211,6 +223,14 @@
     [
       "examples/assets/longstreet.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/longstreet.bmp"
+    ],
+    [
+      "examples/assets/micropython-ascii.pbm",
+      "github:bdbarnett/mpdisplay/src/examples/assets/micropython-ascii.pbm"
+    ],
+    [
+      "examples/assets/micropython.pbm",
+      "github:bdbarnett/mpdisplay/src/examples/assets/micropython.pbm"
     ],
     [
       "examples/assets/runner.bmp",
