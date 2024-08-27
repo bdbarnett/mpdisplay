@@ -1,5 +1,5 @@
 from board_config import display_drv
-from palettes import get_palette
+from graphics.palettes import get_palette
 from graphics.binfont import text16
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,

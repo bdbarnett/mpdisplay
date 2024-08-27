@@ -257,6 +257,42 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/shapes/__init__.py"
     ],
     [
+      "lib/graphics/palettes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/__init__.py"
+    ],
+    [
+      "lib/graphics/palettes/_cube125.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/_cube125.py"
+    ],
+    [
+      "lib/graphics/palettes/_cube27.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/_cube27.py"
+    ],
+    [
+      "lib/graphics/palettes/_cube64.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/_cube64.py"
+    ],
+    [
+      "lib/graphics/palettes/_cube8.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/_cube8.py"
+    ],
+    [
+      "lib/graphics/palettes/_material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/_material_design.py"
+    ],
+    [
+      "lib/graphics/palettes/cube.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/cube.py"
+    ],
+    [
+      "lib/graphics/palettes/material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/material_design.py"
+    ],
+    [
+      "lib/graphics/palettes/wheel.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/wheel.py"
+    ],
+    [
       "lib/graphics/displaybuf/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__init__.py"
     ],
@@ -279,42 +315,6 @@
     [
       "lib/graphics/binfont/binfont_8x8.bin",
       "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x8.bin"
-    ],
-    [
-      "lib/palettes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/__init__.py"
-    ],
-    [
-      "lib/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
-    ],
-    [
-      "lib/palettes/_cube27.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube27.py"
-    ],
-    [
-      "lib/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
-    ],
-    [
-      "lib/palettes/_cube8.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube8.py"
-    ],
-    [
-      "lib/palettes/_material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/_material_design.py"
-    ],
-    [
-      "lib/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
-    ],
-    [
-      "lib/palettes/material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
-    ],
-    [
-      "lib/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
     ],
     [
       "lib/timer/__init__.py",

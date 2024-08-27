@@ -37,7 +37,6 @@ packages = [
     ("psdisplay", "/lib/displays"),
     ("eventsys", "/lib"),
     ("graphics", "/lib"),
-    ("palettes", "/lib"),
     ("timer", "/lib"),
 ]
 

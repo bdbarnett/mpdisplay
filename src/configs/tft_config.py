@@ -1,5 +1,5 @@
 from board_config import display_drv
-from palettes import get_palette
+from graphics.palettes import get_palette
 from graphics.shapes import Draw
 import tft_text
 import sys
