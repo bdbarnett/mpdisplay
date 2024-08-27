@@ -1,5 +1,6 @@
+#!/usr/bin/micropython
 """
-NOTE:  This file will be removed from the repository in the future
+NOTE:  This file may be removed from the repository in the future
 and it's contents will be put into a documenation file such as INSTALL.md.
 
 mip install script for mpdisplay with control over each package.
