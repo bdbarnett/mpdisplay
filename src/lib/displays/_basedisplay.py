@@ -425,7 +425,25 @@ class Area:
             max(self.x + self.w, other.x + other.w) - min(self.x, other.x),
             max(self.y + self.h, other.y + other.h) - min(self.y, other.y)
         )
-    
+
+    def intersects(self, other):
+        """
+        Checks if the current Area object intersects with another Area object.
+
+        Args:
+            other (Area): The other Area object to check for overlap.
+
+        Returns:
+            bool: True if the two Area objects intersect, False otherwise.
+        """
+        # Check if one rectangle is to the left of the other
+        if self.x + self.w <= other.x or other.x + other.w <= self.x:
+            return False
+        # Check if one rectangle is above the other
+        if self.y + self.h <= other.y or other.y + other.h <= self.y:
+            return False
+        return True
+        
     def __len__(self):
         """
         Returns the number of elements in the Area object.
