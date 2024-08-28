@@ -34,7 +34,6 @@ packages = [
     ["lib/displays/psdisplay", displays_shared],
     ["lib/eventsys", []],
     ["lib/graphics", ["framebuf.py",]],
-    ["lib/palettes", []],
     ["lib/timer", []],
     ]
 
