@@ -1,65 +1,89 @@
-from color_setup import ssd
-from pbm import PBM
+############## file:  __init__.py
 from graphics.palettes import get_palette
-from micropython import const
-from board_config import broker
-from eventsys.events import Events
-from graphics import Area
+
+colors = get_palette()
 
 
-_image_path = "/home/brad/od/pbm/materialicons/"
-
-OFF = const(0)
-ON = const(1)
-HIDDEN = const(2)
-DISABLED = const(4)
+class Styles(dict):
+    def get(self, obj: object, part: int, state: int) -> int:
+        return self[obj][part][state]
 
 
-p = get_palette()
-BACKGROUND = p.BLUE
-colors = {
-    OFF: p.GREY,
-    ON: p.GREEN,
-    HIDDEN: BACKGROUND,
-    DISABLED: p.YELLOW,
-}
+STYLES = Styles()
+
+
+############## file:  states.py
+from micropython import const  # noqa: E402
+
+
+class states:
+    DEFAULT = const(-1)
+    OFF = const(0)
+    ON = const(1)
+    HIDDEN = const(2)
+    DISABLED = const(4)
+
+
+############## file:  parts.py
+class parts:
+    BG = const(0)
+    FG = const(1)
+
+
+############## file:  screen.py
+from graphics import Area  # noqa: E402
 
 
 class Screen:
-    def __init__(self, display: object, color: int = 0):
+    def __init__(self, display: object, styles: Styles = None):
         self._display = display
-        self._color = color
+        self._styles = styles or STYLES
         self._state_changed = True
         self._children = set()
 
+    @property
+    def width(self) -> int:
+        return self._display.width
+    
+    @property
+    def height(self) -> int:
+        return self._display.height
+    
     def add_child(self, child: object):
         self._children.add(child)
 
     def remove_child(self, child: object):
         self._children.remove(child)
 
-    def hit_test(self, x: int, y: int) -> object:
-        something_touched = False
+    def hit_test(self, x: int, y: int) -> bool:
+        hit = False
         for child in self._children:
             if child.hit_test(x, y):
-                something_touched = True
-                child.click()
-        return something_touched
+                hit = True
+                child.click(x, y)
+        return hit
 
-    def render(self):
-        dirty = None
+    def render(self) -> Area:
+        dirty_list = []
         if self._state_changed:
-            dirty = self._display.fill(self._color)
+            if d := self._display.fill(self._styles.get(Screen, parts.BG, states.DEFAULT)):
+                dirty_list.append(d)
             self._state_changed = False
         for child in self._children:
             if child.state_changed:
                 if d := child.render(self._display):
-                    if dirty:
-                        dirty += d
-                    else:
-                        dirty = d
-        return dirty
+                    dirty_list.append(d)
+        return dirty_list
     
+    def redraw(self, area: Area):
+        dirty_list = [area]
+        for child in self._children:
+            if area.intersects(Area(child.x, child.y, child.width, child.height)):
+                if d:= child.render(self._display):
+                    dirty_list.append(d)
+        for area in dirty_list:
+            self.show(area)
+
     def show(self, dirty: object = None):
         if dirty:
             self._display.show(dirty)
@@ -67,26 +91,42 @@ class Screen:
             self._display.show()
 
 
+STYLES[Screen] = {parts.BG: {states.DEFAULT: colors.WHITE}}
+
+
+############## file:  icon_button.py
+from pbm import PBM  # noqa: E402
+
+
 class IconButton:
-    def __init__(self, parent: object, file: str, x: int, y: int, state: int = OFF):
+    def __init__(
+        self,
+        parent: Screen,
+        image: PBM,
+        x: int,
+        y: int,
+        state: int = states.OFF,
+        styles: Styles = None,
+    ):
         self._parent = parent
-        self._file = file
         self._x = x
         self._y = y
         self._state = state
         self._state_changed = True
-        self._image = PBM(file)
+        self._image = image
         self._width = self._image.width
         self._height = self._image.height
         self._parent.add_child(self)
+        self._styles = styles or self._parent._styles
 
-    def hit_test(self, x: int, y: int) -> bool:
-        return self._x <= x < self._x + self._width and self._y <= y < self._y + self._height
-    
+    @property
+    def state_changed(self) -> bool:
+        return self._state_changed
+
     @property
     def state(self) -> int:
         return self._state
-    
+
     @state.setter
     def state(self, value: int):
         if value == self._state:
@@ -96,48 +136,115 @@ class IconButton:
         return
 
     @property
-    def state_changed(self) -> bool:
-        return self._state_changed
+    def width(self) -> int:
+        return self._width
     
-    def disable(self):
-        self.state = DISABLED
-
-    def enable(self):
-        self.state = OFF
-
-    def hide(self):
-        self.state = HIDDEN
-
-    def unhide(self):
-        self.state = OFF
-
-    def click(self):
-        if self._state == DISABLED or self._state == HIDDEN:
-            return False
-        self.state = ON if self.state == OFF else OFF
-        return True
-
+    @property
+    def height(self) -> int:
+        return self._height
+    
+    @property
+    def x(self) -> int:
+        return self._x
+    
+    @property
+    def y(self) -> int:
+        return self._y
+    
     def render(self, display: object):
-        if not self._state_changed:
-            return None
         self._state_changed = False
-        self._image.render(display, self._x, self._y, colors[self._state])
+        self._image.fg = self._styles.get(IconButton, parts.FG, self._state)
+        # display.blit(self._image, self._x, self._y, self._image.bg, self._image.palette)
+        self._image.render(display, self._x, self._y, self._image.fg)
         return Area(self._x, self._y, self._width, self._height)
 
+    def hit_test(self, x: int, y: int) -> bool:
+        return (
+            self._x <= x < self._x + self._width
+            and self._y <= y < self._y + self._height
+        )
 
-SETTINGS = _image_path + "action-settings.pbm"
+    def click(self, x, y):
+        if self._state == states.DISABLED or self._state == states.HIDDEN:
+            return False
+        self.state = states.ON if self.state == states.OFF else states.OFF
+        return True
+
+    def on(self, state=True):
+        self.state = states.ON if state else states.OFF
+
+    def disable(self, state=True):
+        self.state = states.DISABLED if state else states.ON
+
+    def hide(self, state=True):
+        self.state = states.HIDDEN if state else states.OFF
+
+
+STYLES[IconButton] = {
+    parts.FG: {
+        states.OFF: colors.RED,
+        states.ON: colors.GREEN,
+        states.HIDDEN: colors.BLUE,
+        states.DISABLED: colors.YELLOW,
+    }
+}
+
+
+############## file:  main.py
+# from color_setup import ssd as display  # noqa: E402
+from board_config import display_drv  as display  # noqa: E402
+from board_config import broker  # noqa: E402
+from eventsys.events import Events  # noqa: E402
+from time import ticks_ms, ticks_diff  # noqa: E402
+
+_image_path = "/home/brad/od/pbm/materialicons/"
+settings = _image_path + "action-settings.pbm"
+heart = _image_path + "action-favorite.pbm"
+screen = Screen(display)
+btn1 = IconButton(screen, p := PBM(settings, colors.BLACK, colors.WHITE), 0, screen.height - p.height)  # noqa: F841
+btn2 = IconButton(screen, p := PBM(heart, colors.BLACK, colors.WHITE), screen.width - p.width, screen.height - p.height)  # noqa: F841
+
+busy = False
+# count = line = 0
+def tick():
+    global busy # , count, line
+    if busy:
+        return
+    busy = True
+
+    # screen.redraw(display.pixel(count, line, colors[count % 256]))
+    # count += 1
+    # if count >= display.width:
+    #     count = 0
+    #     line += 1
+    #     if line >= display.height:
+    #         line = 0
+
+    if e := broker.poll():
+        if e.type == Events.MOUSEBUTTONDOWN:
+            screen.hit_test(*e.pos)
+    if dirty_list := screen.render():
+        for area in dirty_list:
+            screen.show(area)
+    busy = False
 
 def main():
-    screen = Screen(ssd, BACKGROUND)
+    state = False
+    def toggle():
+        nonlocal state
+        state = not state
+        return state
 
-    btn1 = IconButton(screen, SETTINGS, 108, 108)  # noqa: F841
-
-    while True:
-        dirty = screen.render()
-        if dirty:
-            screen.show(dirty)
-        if e := broker.poll():
-            if e.type == Events.MOUSEBUTTONDOWN:
-                screen.hit_test(*e.pos)
+    heartbeact = 1000
+    last = ticks_ms()
+    print("Press Ctrl+C to exit")
+    try:
+        while True:
+            tick()
+            if ticks_diff(ticks_ms(), last) > heartbeact:
+                last = ticks_ms()
+                btn2.on(toggle())
+    except KeyboardInterrupt:
+        print("Exiting")
 
 main()
