@@ -185,24 +185,24 @@
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/noto_fonts.py"
     ],
     [
-      "examples/tiny_toasters/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/__init__.py"
+      "examples/assets/longstreet.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/assets/longstreet.bmp"
     ],
     [
-      "examples/tiny_toasters/make_tiny_toast_bitmaps.sh",
-      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/make_tiny_toast_bitmaps.sh"
+      "examples/assets/micropython-ascii.pbm",
+      "github:bdbarnett/mpdisplay/src/examples/assets/micropython-ascii.pbm"
     ],
     [
-      "examples/tiny_toasters/tiny_toasters.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters.bmp"
+      "examples/assets/micropython.pbm",
+      "github:bdbarnett/mpdisplay/src/examples/assets/micropython.pbm"
     ],
     [
-      "examples/tiny_toasters/tiny_toasters.py",
-      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters.py"
+      "examples/assets/runner.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/assets/runner.bmp"
     ],
     [
-      "examples/tiny_toasters/tiny_toasters_bitmaps.py",
-      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
+      "examples/assets/warrior.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
     ],
     [
       "examples/chango/__init__.py",
@@ -223,26 +223,6 @@
     [
       "examples/chango/chango_64.py",
       "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
-    ],
-    [
-      "examples/assets/longstreet.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/assets/longstreet.bmp"
-    ],
-    [
-      "examples/assets/micropython-ascii.pbm",
-      "github:bdbarnett/mpdisplay/src/examples/assets/micropython-ascii.pbm"
-    ],
-    [
-      "examples/assets/micropython.pbm",
-      "github:bdbarnett/mpdisplay/src/examples/assets/micropython.pbm"
-    ],
-    [
-      "examples/assets/runner.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/assets/runner.bmp"
-    ],
-    [
-      "examples/assets/warrior.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
     ],
     [
       "examples/proverbs/__init__.py",
@@ -283,6 +263,26 @@
     [
       "examples/alien/make_alien_bitmap.sh",
       "github:bdbarnett/mpdisplay/src/examples/alien/make_alien_bitmap.sh"
+    ],
+    [
+      "examples/tiny_toasters/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/__init__.py"
+    ],
+    [
+      "examples/tiny_toasters/make_tiny_toast_bitmaps.sh",
+      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/make_tiny_toast_bitmaps.sh"
+    ],
+    [
+      "examples/tiny_toasters/tiny_toasters.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters.bmp"
+    ],
+    [
+      "examples/tiny_toasters/tiny_toasters.py",
+      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters.py"
+    ],
+    [
+      "examples/tiny_toasters/tiny_toasters_bitmaps.py",
+      "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
     ]
   ],
   "version": "0.1"
