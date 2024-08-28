@@ -31,11 +31,11 @@ Example:
 """
 
 from array import array
-from framebuf import FrameBuffer, MONO_HLSB
+from framebuf import FrameBuffer, MONO_HLSB, RGB565
 
 
 class PBM(FrameBuffer):
-    def __init__(self, filename):
+    def __init__(self, filename, fg=0xFFFF, bg=0x0000, format=RGB565):
         self._filename = filename
         with open(self._filename, "rb") as f:
             # Read the header
@@ -58,6 +58,9 @@ class PBM(FrameBuffer):
                 self._buffer = array("B", f.read())
                 self._mv = memoryview(self._buffer)
         super().__init__(self._mv, self._width, self._height, MONO_HLSB)
+        self._palette = FrameBuffer(memoryview(bytearray(2 * 2)), 2, 1, RGB565)
+        self.bg = bg
+        self.fg = fg
 
     def render(self, canvas, x, y, fg=0, bg=None):
         col = row = 0
@@ -79,6 +82,30 @@ class PBM(FrameBuffer):
     @property
     def height(self):
         return self._height
+    
+    @property
+    def buffer(self):
+        return self._buffer
+    
+    @property
+    def fg(self):
+        return self._palette.pixel(1, 0)
+    
+    @fg.setter
+    def fg(self, color):
+        self._palette.pixel(1, 0, color)
+    
+    @property
+    def bg(self):
+        return self._palette.pixel(0, 0)
+    
+    @bg.setter
+    def bg(self, color):
+        self._palette.pixel(0, 0, color)
+
+    @property
+    def palette(self):
+        return self._palette
 
     @staticmethod
     def _bitgen(b):
@@ -93,10 +120,10 @@ class PBM(FrameBuffer):
             yield (b >> i) & 1
 
     def __str__(self):
-        return f"PBM: {self._width}x{self._height}"
+        return f"PBM({self._filename}, {self.fg}, {self.bg})"
     
     def __repr__(self):
-        return f"PBM: {self._width}x{self._height}"
+        return f"PBM({self._filename}, {self.fg}, {self.bg})"
 
     def save(self, filename):
         with open(filename, "wb") as f:
@@ -105,6 +132,11 @@ class PBM(FrameBuffer):
             f.write(self._buffer)
 
     def export(self):
+        """
+        Export the PBM file as a Python file with the bitmap data
+        
+        EXPERIMENTAL - Not complete.  Haven't found a use for it yet.
+        """
         src_filename_ext = self._filename.split("/")[-1]
         directory = "" # self._filename.replace(src_filename_ext, "")
         filename = src_filename_ext.replace(".pbm", "")
@@ -113,7 +145,7 @@ class PBM(FrameBuffer):
         out.append(f"WIDTH = {self._width}")
         out.append(f"HEIGHT = {self._height}")
         out.append("BPP = 1")
-        out.append("PALLETTE = [0x0000, 0xFFFF]")
+        out.append(f"PALLETTE = [{hex(self.bg)}, {hex(self.fg)}]")
         out.append("_bitmap =\\")
 
         bytes_per_row = len(self._buffer) // self._height
