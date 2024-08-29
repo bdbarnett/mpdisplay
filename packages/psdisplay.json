@@ -15,10 +15,6 @@
     [
       "psdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
-    ],
-    [
-      "psdisplay/psdevices.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
     ]
   ],
   "version": "0.1"

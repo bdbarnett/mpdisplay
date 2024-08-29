@@ -41,10 +41,6 @@
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
     ],
     [
-      "extras/lv_mpdisplay.py",
-      "github:bdbarnett/mpdisplay/src/extras/lv_mpdisplay.py"
-    ],
-    [
       "extras/micropython.py",
       "github:bdbarnett/mpdisplay/src/extras/micropython.py"
     ],
@@ -181,10 +177,6 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__init__.py"
     ],
     [
-      "lib/displays/dtdisplay/sdldisplay/_poll.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
-    ],
-    [
       "lib/displays/dtdisplay/sdldisplay/sdl2_lib/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__init__.py"
     ],
@@ -211,10 +203,6 @@
     [
       "lib/displays/psdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
-    ],
-    [
-      "lib/displays/psdisplay/psdevices.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/psdevices.py"
     ],
     [
       "lib/eventsys/__init__.py",

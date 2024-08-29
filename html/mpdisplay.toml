@@ -10,7 +10,6 @@
 "../src/extras/bmp565.py" = "/extras/"
 "../src/extras/ezfont.py" = "/extras/"
 "../src/extras/keypins.py" = "/extras/"
-"../src/extras/lv_mpdisplay.py" = "/extras/"
 "../src/extras/micropython.py" = "/extras/"
 "../src/extras/pbm.py" = "/extras/"
 "../src/extras/png.py" = "/extras/"
@@ -49,7 +48,6 @@
 "../src/lib/displays/dtdisplay/__init__.py" = "/lib/displays/dtdisplay/"
 "../src/lib/displays/dtdisplay/pgdisplay/__init__.py" = "/lib/displays/dtdisplay/pgdisplay/"
 "../src/lib/displays/dtdisplay/sdldisplay/__init__.py" = "/lib/displays/dtdisplay/sdldisplay/"
-"../src/lib/displays/dtdisplay/sdldisplay/_poll.py" = "/lib/displays/dtdisplay/sdldisplay/"
 "../src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__init__.py" = "/lib/displays/dtdisplay/sdldisplay/sdl2_lib/"
 "../src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_constants.py" = "/lib/displays/dtdisplay/sdldisplay/sdl2_lib/"
 "../src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/_cpython.py" = "/lib/displays/dtdisplay/sdldisplay/sdl2_lib/"
@@ -60,7 +58,6 @@
 "../src/lib/displays/jndisplay/__init__.py" = "/lib/displays/jndisplay/"
 
 "../src/lib/displays/psdisplay/__init__.py" = "/lib/displays/psdisplay/"
-"../src/lib/displays/psdisplay/psdevices.py" = "/lib/displays/psdisplay/"
 
 "../src/lib/eventsys/__init__.py" = "/lib/eventsys/"
 "../src/lib/eventsys/devices.py" = "/lib/eventsys/"
@@ -87,7 +84,6 @@
 "../src/lib/graphics/binfont/binfont_8x14.bin" = "/lib/graphics/binfont/"
 "../src/lib/graphics/binfont/binfont_8x16.bin" = "/lib/graphics/binfont/"
 "../src/lib/graphics/binfont/binfont_8x8.bin" = "/lib/graphics/binfont/"
-
 
 "../src/lib/timer/__init__.py" = "/lib/timer/"
 "../src/lib/timer/_librt.py" = "/lib/timer/"

@@ -25,10 +25,6 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/__init__.py"
     ],
     [
-      "dtdisplay/sdldisplay/_poll.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/_poll.py"
-    ],
-    [
       "dtdisplay/sdldisplay/sdl2_lib/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/sdldisplay/sdl2_lib/__init__.py"
     ],

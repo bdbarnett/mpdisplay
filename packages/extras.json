@@ -13,10 +13,6 @@
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
     ],
     [
-      "extras/lv_mpdisplay.py",
-      "github:bdbarnett/mpdisplay/src/extras/lv_mpdisplay.py"
-    ],
-    [
       "extras/micropython.py",
       "github:bdbarnett/mpdisplay/src/extras/micropython.py"
     ],
