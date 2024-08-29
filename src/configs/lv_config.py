@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Brad Barnett and Kevin Schlosser
+# SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
 
@@ -19,27 +19,26 @@ def main():
         lv.init()
 
     try:
-        # lv_micropython provides lv_utils
+        # lv_micropython provides 'lv_utils'
         import lv_utils # type: ignore
 
         if not lv_utils.event_loop.is_running():
             _eventloop = lv_utils.event_loop()
     except ImportError:
-        # lvgl_micropython provides task_handler
+        # lvgl_micropython provides 'task_handler'
         import task_handler # type: ignore
 
         _task_handler = task_handler.TaskHandler()
 
-        display = DisplayDriver(  # noqa: F841
-            display_drv,
-            lv.COLOR_FORMAT.RGB565,
-            blocking=True,
-            devices=broker.devices,
-        )
+    display = DisplayDriver(  # noqa: F841
+        display_drv,
+        lv.COLOR_FORMAT.RGB565,
+        blocking=True,
+        devices=broker.devices,
+    )
 
 
 class DisplayDriver:
-    name = "DisplayDriver"
 
     def __init__(
         self,
@@ -64,8 +63,11 @@ class DisplayDriver:
         self.lv_display.set_draw_buffers(draw_buf1, draw_buf2)
         self.lv_display.set_render_mode(lv.DISPLAY_RENDER_MODE.PARTIAL)
 
+        self.create_indevs(devices)
+
+    def create_indevs(self, devices):
         # Create an input device for each device in the 'devices' list
-        # and set its type and read callback function.  Save a reverence to the indev object
+        # and set its type and read callback function.  Save a reference to the indev object
         # in the device's user_data attribute to enable changing the indev's group or display
         # later with:
         #     indev = device.user_data
@@ -78,15 +80,15 @@ class DisplayDriver:
                 indev.set_group(lv.group_get_default())
                 device.user_data = indev
                 if device.type == Devices.TOUCH:
-                    device.set_read_cb(self._touch_cb)
+                    device.set_read_cb(self._touch_cb)  # Called by device
                     indev.set_type(lv.INDEV_TYPE.POINTER)
                 elif device.type == Devices.ENCODER:
-                    device.set_read_cb(self._encoder_cb)
+                    device.set_read_cb(self._encoder_cb)  # Called by device
                     indev.set_type(lv.INDEV_TYPE.ENCODER)
                 elif device.type == Devices.KEYPAD:
-                    device.set_read_cb(self._keypad_cb)
+                    device.set_read_cb(self._keypad_cb)  # Called by device
                     indev.set_type(lv.INDEV_TYPE.KEYPAD)
-                indev.set_read_cb(device.read_cb)
+                indev.set_read_cb(device.read_cb)  # Called by lv task handler
 
     def _flush_cb(self, disp_drv, area, color_p):
         width = area.x2 - area.x1 + 1
