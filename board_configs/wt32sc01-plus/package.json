@@ -1,8 +1,8 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/wt32sc01-plus/board_config.py"],
-      ["drivers/st7796.py", "github:bdbarnett/mpdisplay/drivers/display/st7796.py"],
-      ["drivers/ft6x36.py", "github:bdbarnett/mpdisplay/drivers/touch/ft6x36.py"]
+      ["st7796.py", "github:bdbarnett/mpdisplay/drivers/display/st7796.py"],
+      ["ft6x36.py", "github:bdbarnett/mpdisplay/drivers/touch/ft6x36.py"]
     ],
     "version": "0.1"
   }
