@@ -8,7 +8,7 @@ import busio
 import board
 import adafruit_focaltouch
 from fbdisplay import FBDisplay
-from eventsys.devices import Devices
+from eventsys.devices import Devices, Broker
 
 
 tft_pins = dict(board.TFT_PINS)
@@ -55,8 +55,11 @@ def touch_read_func():
 
 touch_rotation_table=(0, 0, 0, 0)
 
+broker = Broker()
+
 touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
-    data=touch_rotation_table,
+    data=display_drv,
+    data2=touch_rotation_table,
 )

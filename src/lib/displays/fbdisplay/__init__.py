@@ -112,26 +112,18 @@ class FBDisplay(_BaseDisplay):
             arr[dest_begin : dest_end] = buf[source_begin : source_end]
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c=None):
+    def pixel(self, x, y, c):
         """
-        Gets or sets the color of the pixel at the given coordinates.
+        Gets the color of the pixel at the given coordinates.
 
         :param x: The x-coordinate of the pixel.
         :type x: int
         :param y: The y-coordinate of the pixel.
         :type y: int
-        :param c: The color to set the pixel to.  If None, the current color is returned.
+        :param c: The color to set the pixel to.
         :type c: int
-        
-        :return: The color of the pixel if c is None, otherwise None.
-        :rtype: int or None
         """
-        if c is not None:
-            if self._auto_byte_swap_enabled:
-                c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
-            self._raw_buffer[x, y] = c
-        else:
-            return self._raw_buffer[x, y]
+        self.fill_rect(x, y, 1, 1, c)
 
     ############### Optional API Methods ################
 

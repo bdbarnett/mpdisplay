@@ -167,6 +167,10 @@ class BusDisplay(_BaseDisplay):
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
 
+        if hasattr(display_bus, "tx_color"):
+            self.send_color = self.display_bus.tx_color
+            self.send = self.display_bus.tx_param
+
         self.rotation_table = (
             _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
         )
@@ -270,7 +274,7 @@ class BusDisplay(_BaseDisplay):
         y2 = y1 + h - 1
 
         self._set_window(x1, y1, x2, y2)
-        self.send(self._write_ram_command, buf)
+        self.send_color(self._write_ram_command, buf, x1, x2, y1, y2)
         return Area(x1, y1, w, h)
 
     def fill_rect(self, x, y, w, h, c):
@@ -489,6 +493,17 @@ class BusDisplay(_BaseDisplay):
         :type command: int
         :param data: The data to send.
         :type data: bytes
+        """
+        self.display_bus.send(command, data)
+
+    def send_color(self, command, data, *_):
+        """
+        Send color data to the display.
+
+        :param command: The command to send.
+        :type command: int
+        :param data: The color data to send.
+        :type data: memoryview
         """
         self.display_bus.send(command, data)
 
