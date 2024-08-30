@@ -13,6 +13,10 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
     ],
     [
+      "area.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
+    ],
+    [
       "psdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/psdisplay/__init__.py"
     ]

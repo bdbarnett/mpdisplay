@@ -5,7 +5,7 @@
 Graphics module.
 """
 
-from displays._basedisplay import Area  # noqa: F401
+from area import Area  # noqa: F401
 
 def color888(r, g, b):
     """

@@ -255,4 +255,4 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             palette (list): Palette (default: None)
         """
         super().blit(buf, x, y, key, palette)
-        return Area(x, y, buf.width, buf.height)
+        return

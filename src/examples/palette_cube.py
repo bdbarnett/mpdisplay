@@ -11,6 +11,8 @@ if display_drv.requires_byte_swap:
 else:
     needs_swap = False
 
+display_drv.rotation = 0
+
 palette = get_palette(name="cube", size=5, color_depth=16, swapped=needs_swap)
 # palette = get_palette(name="wheel", length=522, color_depth=16, swapped=needs_swap)
 

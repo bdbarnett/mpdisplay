@@ -8,6 +8,8 @@ if display_drv.requires_byte_swap:
 else:
     needs_swap = False
 
+display_drv.rotation = 0
+
 palette = get_palette(name="wheel", swapped=needs_swap, length=256, saturation=1.0)
 # palette = get_palette(name="wheel", color_depth=16, length=256)
 

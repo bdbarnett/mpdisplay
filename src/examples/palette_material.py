@@ -9,6 +9,8 @@ if display_drv.requires_byte_swap:
 else:
     needs_swap = False
 
+display_drv.rotation = 0
+
 palette = get_palette(name="material_design", color_depth=16, swapped=needs_swap)
 
 families =[

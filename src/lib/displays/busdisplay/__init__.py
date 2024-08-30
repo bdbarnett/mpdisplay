@@ -211,7 +211,7 @@ class BusDisplay(_BaseDisplay):
         # Set COLMOD (color mode) based on color_depth
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
         self._param_buf[0] = pixel_formats[self.color_depth]
-        self._send(_COLMOD, self._param_mv[:1])
+        self.send(_COLMOD, self._param_mv[:1])
 
         self.brightness = brightness
 
@@ -236,7 +236,7 @@ class BusDisplay(_BaseDisplay):
 
         # Set the display MADCTL bits for the given rotation.
         self._param_buf[0] = self.rotation_table[index] | _BGR if self.bgr else _RGB
-        self._send(_MADCTL, self._param_mv[:1])
+        self.send(_MADCTL, self._param_mv[:1])
 
         # Set the display inversion mode
         self.invert_colors(self._invert)
@@ -270,7 +270,7 @@ class BusDisplay(_BaseDisplay):
         y2 = y1 + h - 1
 
         self._set_window(x1, y1, x2, y2)
-        self._send(self._write_ram_command, buf)
+        self.send(self._write_ram_command, buf)
         return Area(x1, y1, w, h)
 
     def fill_rect(self, x, y, w, h, c):
@@ -338,7 +338,7 @@ class BusDisplay(_BaseDisplay):
         :type bfa: int
         """
         super().vscrdef(tfa, vsa, bfa)
-        self._send(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
+        self.send(_VSCRDEF, struct.pack(">HHH", tfa, vsa, bfa))
 
     def vscsad(self, vssa=None):
         """
@@ -351,7 +351,7 @@ class BusDisplay(_BaseDisplay):
             super().vscsad(vssa)
             if vssa is False:
                 vssa = 0
-            self._send(_VSCSAD, struct.pack(">H", vssa))
+            self.send(_VSCSAD, struct.pack(">H", vssa))
         else:
             return super().vscsad()
 
@@ -428,7 +428,7 @@ class BusDisplay(_BaseDisplay):
                         self._backlight_pin.value = value > 0.5
             elif self._brightness_command is not None:
                 self._param_buf[0] = int(value * 255)
-                self._send(self._brightness_command, self._param_mv[:1])
+                self.send(self._brightness_command, self._param_mv[:1])
 
     def invert_colors(self, value):
         """
@@ -438,9 +438,9 @@ class BusDisplay(_BaseDisplay):
         :type value: bool
         """
         if value:
-            self._send(_INVON)
+            self.send(_INVON)
         else:
-            self._send(_INVOFF)
+            self.send(_INVOFF)
 
     def reset(self):
         """
@@ -467,7 +467,7 @@ class BusDisplay(_BaseDisplay):
         """
         Soft reset display.
         """
-        self._send(_SWRESET)
+        self.send(_SWRESET)
         sleep_ms(150)
 
     def sleep_mode(self, value):
@@ -477,11 +477,11 @@ class BusDisplay(_BaseDisplay):
         :param value: If True, enable sleep mode. If False, disable sleep mode.
         :type value: bool
         """
-        self._send(_SLPIN if value else _SLPOUT)
+        self.send(_SLPIN if value else _SLPOUT)
 
     ############### Class Specific Methods ##############
 
-    def _send(self, command, data=None):
+    def send(self, command, data=None):
         """
         Send command and data to the display.
 
@@ -513,14 +513,14 @@ class BusDisplay(_BaseDisplay):
         self._param_buf[1] = x1 & 0xFF
         self._param_buf[2] = (x2 >> 8) & 0xFF
         self._param_buf[3] = x2 & 0xFF
-        self._send(self._set_column_command, self._param_mv[:4])
+        self.send(self._set_column_command, self._param_mv[:4])
 
         # Row addresses
         self._param_buf[0] = (y1 >> 8) & 0xFF
         self._param_buf[1] = y1 & 0xFF
         self._param_buf[2] = (y2 >> 8) & 0xFF
         self._param_buf[3] = y2 & 0xFF
-        self._send(self._set_row_command, self._param_mv[:4])
+        self.send(self._set_row_command, self._param_mv[:4])
 
     def _init_bytes(self, init_sequence):
         """
@@ -546,7 +546,7 @@ class BusDisplay(_BaseDisplay):
             delay = (data_size & DELAY) != 0
             data_size &= ~DELAY
 
-            self._send(command, init_sequence[i + 2 : i + 2 + data_size])
+            self.send(command, init_sequence[i + 2 : i + 2 + data_size])
 
             delay_time_ms = 10
             if delay:
@@ -574,7 +574,7 @@ class BusDisplay(_BaseDisplay):
         :type init_sequence: list
         """
         for line in init_sequence:
-            self._send(line[0], line[1])
+            self.send(line[0], line[1])
             if line[2] != 0:
                 sleep_ms(line[2])
 

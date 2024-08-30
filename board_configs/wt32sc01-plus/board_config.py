@@ -16,17 +16,9 @@ reset=Pin(4, Pin.OUT, value=1)
 
 display_bus = I80Bus(
     dc=0,
-    wr=47,
     cs=6,
-    data0=9,
-    data1=46,
-    data2=3,
-    data3=8,
-    data4=18,
-    data5=17,
-    data6=16,
-    data7=15,
-    freq=10_000_000,
+    wr=47,
+    data=[9, 46, 3, 8, 18, 17, 16, 15],
 )
 
 display_drv = ST7796(

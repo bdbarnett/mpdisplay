@@ -33,6 +33,10 @@
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
     [
+      "extras/console.py",
+      "github:bdbarnett/mpdisplay/src/extras/console.py"
+    ],
+    [
       "extras/ezfont.py",
       "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
     ],
@@ -161,6 +165,10 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
     ],
     [
+      "lib/displays/area.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
+    ],
+    [
       "lib/displays/busdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
     ],
@@ -225,12 +233,24 @@
       "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
     ],
     [
+      "lib/area.py",
+      "github:bdbarnett/mpdisplay/src/lib/area.py"
+    ],
+    [
       "lib/framebuf.py",
       "github:bdbarnett/mpdisplay/src/lib/framebuf.py"
     ],
     [
       "lib/graphics/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/__init__.py"
+    ],
+    [
+      "lib/graphics/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus/__init__.py"
+    ],
+    [
+      "lib/graphics/shapes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/shapes/__init__.py"
     ],
     [
       "lib/graphics/palettes/__init__.py",
@@ -269,20 +289,12 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/palettes/wheel.py"
     ],
     [
-      "lib/graphics/shapes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/shapes/__init__.py"
-    ],
-    [
       "lib/graphics/displaybuf/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/__init__.py"
     ],
     [
       "lib/graphics/displaybuf/_viper.py",
       "github:bdbarnett/mpdisplay/src/lib/graphics/displaybuf/_viper.py"
-    ],
-    [
-      "lib/graphics/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/framebuf_plus/__init__.py"
     ],
     [
       "lib/graphics/binfont/__init__.py",

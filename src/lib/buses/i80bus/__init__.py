@@ -120,11 +120,11 @@ class _I80BaseBus():
         if command is not None:
             struct.pack_into("B", self._buf1, 0, command)
             self._dc(DC_CMD)
-            self._write(self._buf1)
+            self._write(self._buf1, 1)
 
         if data and len(data):
             self._dc(DC_DATA)
-            self._write(data)
+            self._write(data, len(data))
 
         self._cs(CS_INACTIVE)
 
@@ -160,12 +160,12 @@ class I80Bus(_I80BaseBus):
         # in __init__.   Subclasses should override _setup.
         if self._is_32bit:
             self._wr_mask = self._wr_not_mask = 1 << self._wr.pin()
-            self._wr_reg = self._wr.gpio() + (self._wr.SET if self._wr_active else self._wr.CLR)
-            self._wr_not_reg = self._wr.gpio() + (self._wr.CLR if self._wr_active else self._wr.SET)
+            self._wr_reg = self._wr.gpio() + (self._wr.SET if WR_ACTIVE else self._wr.CLR)
+            self._wr_not_reg = self._wr.gpio() + (self._wr.CLR if WR_ACTIVE else self._wr.SET)
         else:
             self._wr_reg = self._wr_not_reg = self._wr.gpio() + self._wr.BSRR
-            self._wr_mask = 1 << (self._wr.pin() + (0 if self._wr_active else 16))
-            self._wr_not_mask = 1 << (self._wr.pin() + (16 if self._wr_active else 0))
+            self._wr_mask = 1 << (self._wr.pin() + (0 if WR_ACTIVE else 16))
+            self._wr_not_mask = 1 << (self._wr.pin() + (16 if WR_ACTIVE else 0))
 
         if False:  # Set to True to print the write pin registers and masks
             print(f"\n{self._wr=}\n    {self._wr_reg=:#010x}, {self._wr_mask=:#034b}\n    {self._wr_not_reg=:#010x}, {self._wr_not_mask=:#034b}\n")

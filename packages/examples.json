@@ -53,6 +53,14 @@
       "github:bdbarnett/mpdisplay/src/examples/color_test.py"
     ],
     [
+      "examples/console_advanced_demo.py",
+      "github:bdbarnett/mpdisplay/src/examples/console_advanced_demo.py"
+    ],
+    [
+      "examples/console_simpletest.py",
+      "github:bdbarnett/mpdisplay/src/examples/console_simpletest.py"
+    ],
+    [
       "examples/displaybuf_blit.py",
       "github:bdbarnett/mpdisplay/src/examples/displaybuf_blit.py"
     ],
@@ -157,6 +165,10 @@
       "github:bdbarnett/mpdisplay/src/examples/shapes_simpletest.py"
     ],
     [
+      "examples/testris.py",
+      "github:bdbarnett/mpdisplay/src/examples/testris.py"
+    ],
+    [
       "examples/timer_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/timer_simpletest.py"
     ],
@@ -203,26 +215,6 @@
     [
       "examples/assets/warrior.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
-    ],
-    [
-      "examples/chango/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
-    ],
-    [
-      "examples/chango/chango.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
-    ],
-    [
-      "examples/chango/chango_16.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
-    ],
-    [
-      "examples/chango/chango_32.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
-    ],
-    [
-      "examples/chango/chango_64.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ],
     [
       "examples/proverbs/__init__.py",
@@ -283,6 +275,26 @@
     [
       "examples/tiny_toasters/tiny_toasters_bitmaps.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
+    ],
+    [
+      "examples/chango/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
+    ],
+    [
+      "examples/chango/chango.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
+    ],
+    [
+      "examples/chango/chango_16.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
+    ],
+    [
+      "examples/chango/chango_32.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
+    ],
+    [
+      "examples/chango/chango_64.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ]
   ],
   "version": "0.1"
