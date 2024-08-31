@@ -1,8 +1,14 @@
-#!/usr/bin/micropython
 """
 Install script for mpdisplay with control over each package.
+Uses 'mip' to download directly to a MicroPython device or
+uses 'mpremote' to download to an attached microcontroller
+from Python.
+
 Comment out the packages you don't want to install and 
 change the target directories if needed.
+
+Usage (MicroPython or CPython):
+    import install
 
 Equivalent to copying the contents of the 'src' directory of the repository
 to your working directory / microcontroller.
