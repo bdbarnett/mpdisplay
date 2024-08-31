@@ -6,8 +6,8 @@
 PGDisplay class for CPython.
 """
 
-import pygame as pg
-from .. import _BaseDisplay, Area, color_rgb
+import pygame as pg # type: ignore
+from .. import BaseDisplay, Area, color_rgb
 
 
 def poll(self):
@@ -20,7 +20,7 @@ def poll(self):
     return pg.event.poll()
 
 
-class PGDisplay(_BaseDisplay):
+class PGDisplay(BaseDisplay):
     '''
     A class to emulate an LCD using pygame.
     Provides scrolling and rotation functions similar to an LCD.  The .texture

@@ -29,5 +29,6 @@
       "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
     ]
   ],
+  "deps": [],
   "version": "0.1"
 }

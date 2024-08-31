@@ -6,7 +6,7 @@
 BusDisplay class for MicroPython and CircuitPython.
 """
 
-from _basedisplay import _BaseDisplay, Area, swap_bytes
+from basedisplay import BaseDisplay, Area, swap_bytes
 from micropython import const # type: ignore
 import struct
 import sys
@@ -73,7 +73,7 @@ _MIRRORED_ROTATION_TABLE = (
 )
 # fmt: on
 
-class BusDisplay(_BaseDisplay):
+class BusDisplay(BaseDisplay):
     """
     A class used to represent a display connected to a bus.
 

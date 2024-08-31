@@ -35,17 +35,17 @@
 "../src/extras/tft_text/fonts/vga2_bold_16x16.py" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/vga2_bold_16x32.py" = "/extras/tft_text/fonts/"
 
+"../src/lib/area/__init__.py" = "/lib/area/"
+
 "../src/lib/buses/spibus/__init__.py" = "/lib/buses/spibus/"
 
 "../src/lib/buses/i80bus/__init__.py" = "/lib/buses/i80bus/"
 "../src/lib/buses/i80bus/_i80bus_rp2_wip.py" = "/lib/buses/i80bus/"
 "../src/lib/buses/i80bus/gpio_pin.py" = "/lib/buses/i80bus/"
 
-"../src/lib/displays/_basedisplay.py" = "/lib/displays/"
-"../src/lib/displays/_basedisplay_numpy.py" = "/lib/displays/"
-"../src/lib/displays/_basedisplay_viper.py" = "/lib/displays/"
-"../src/lib/displays/area.py" = "/lib/displays/"
-"../src/lib/displays/busdisplay/__init__.py" = "/lib/displays/busdisplay/"
+"../src/lib/displays/basedisplay/__init__.py" = "/lib/displays/basedisplay/"
+"../src/lib/displays/basedisplay/_basedisplay_numpy.py" = "/lib/displays/basedisplay/"
+"../src/lib/displays/basedisplay/_basedisplay_viper.py" = "/lib/displays/basedisplay/"
 
 "../src/lib/displays/dtdisplay/__init__.py" = "/lib/displays/dtdisplay/"
 "../src/lib/displays/dtdisplay/pgdisplay/__init__.py" = "/lib/displays/dtdisplay/pgdisplay/"
@@ -67,7 +67,6 @@
 "../src/lib/eventsys/keys.py" = "/lib/eventsys/"
 "../src/lib/eventsys/touch_keypad.py" = "/lib/eventsys/"
 
-"../src/lib/area.py" = "/lib/"
 "../src/lib/framebuf.py" = "/lib/"
 "../src/lib/graphics/__init__.py" = "/lib/graphics/"
 "../src/lib/graphics/framebuf_plus/__init__.py" = "/lib/graphics/framebuf_plus/"

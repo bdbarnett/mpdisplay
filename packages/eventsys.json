@@ -21,5 +21,6 @@
       "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
     ]
   ],
+  "deps": [],
   "version": "0.1"
 }

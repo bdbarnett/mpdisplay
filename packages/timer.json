@@ -17,5 +17,6 @@
       "github:bdbarnett/mpdisplay/src/lib/timer/_timerbase.py"
     ]
   ],
+  "deps": [],
   "version": "0.1"
 }

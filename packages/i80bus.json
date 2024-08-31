@@ -13,5 +13,11 @@
       "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/gpio_pin.py"
     ]
   ],
+  "deps": [
+    [
+      "github:bdbarnett/mpdisplay/packages/busdisplay",
+      "main"
+    ]
+  ],
   "version": "0.1"
 }

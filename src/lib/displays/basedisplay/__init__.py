@@ -24,21 +24,21 @@ try:
     import ulab.numpy as np  # type: ignore
 except ImportError:
     try:
-        import numpy as np
+        import numpy as np # type: ignore
     except ImportError:
         pass
 
 viper = False
 if implementation.name == "micropython":
     try:
-        from _basedisplay_viper import swap_bytes
+        from ._basedisplay_viper import swap_bytes
         viper = True
     except Exception as e:
         print(f"MPDisplay:  {e}")
 
 if not viper:
     if np:
-        from _basedisplay_numpy import swap_bytes
+        from ._basedisplay_numpy import swap_bytes
     else:
         def swap_bytes(buf, buf_size_pix):
             buf[::2], buf[1::2] = buf[1::2], buf[::2]
@@ -62,7 +62,7 @@ def color_rgb(color):
     return (r, g, b)
 
 
-class _BaseDisplay:
+class BaseDisplay:
     def __init__(self):
         gc.collect()
         self._vssa = False  # False means no vertical scroll

@@ -6,7 +6,7 @@
 PSDisplay class for MPDisplay on PyScript
 """
 
-from _basedisplay import _BaseDisplay, Area, color_rgb
+from basedisplay import BaseDisplay, Area, color_rgb
 from pyscript.ffi import create_proxy # type: ignore
 from js import document, console # type: ignore
 
@@ -70,7 +70,7 @@ class PSDevices():
         return False
 
 
-class PSDisplay(_BaseDisplay):
+class PSDisplay(BaseDisplay):
     '''
     A class to interface with canvas objects in PyScript.
     '''

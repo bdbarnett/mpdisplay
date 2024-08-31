@@ -18,7 +18,7 @@ from .sdl2_lib import (
     SDL_BUTTON_RMASK, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL,
     SDL_KEYDOWN, SDL_KEYUP
 )
-from .. import _BaseDisplay, Area, color_rgb
+from .. import BaseDisplay, Area, color_rgb
 from eventsys.events import Events
 from sys import implementation
 if implementation.name == 'cpython':
@@ -73,7 +73,7 @@ def retcheck(retvalue):
         raise RuntimeError(SDL_GetError())
 
 
-class SDLDisplay(_BaseDisplay):
+class SDLDisplay(BaseDisplay):
     '''
     A class to emulate an LCD using SDL2.
     Provides scrolling and rotation functions similar to an LCD.  The .texture

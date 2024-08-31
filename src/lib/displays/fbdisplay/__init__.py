@@ -6,12 +6,12 @@
 FBDisplay class for MPDisplay.
 """
 
-from _basedisplay import _BaseDisplay, np, Area, swap_bytes
+from basedisplay import BaseDisplay, np, Area, swap_bytes
 if not np:
     raise ImportError("This module depends on the numpy module. Please install it.")
 
 
-class FBDisplay(_BaseDisplay):
+class FBDisplay(BaseDisplay):
     '''
     A class to interface with CircuitPython FrameBuffer objects.
     '''

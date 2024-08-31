@@ -5,5 +5,11 @@
       "github:bdbarnett/mpdisplay/src/lib/buses/spibus/__init__.py"
     ]
   ],
+  "deps": [
+    [
+      "github:bdbarnett/mpdisplay/packages/busdisplay",
+      "main"
+    ]
+  ],
   "version": "0.1"
 }

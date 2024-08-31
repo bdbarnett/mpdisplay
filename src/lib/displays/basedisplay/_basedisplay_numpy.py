@@ -1,7 +1,7 @@
 try:
-    import numpy as np
+    import numpy as np # type: ignore
 except ImportError:
-    from ulab import numpy as np
+    from ulab import numpy as np # type: ignore
 
 
 def swap_bytes(buf, buf_size_pix):

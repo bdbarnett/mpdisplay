@@ -109,5 +109,6 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
     ]
   ],
+  "deps": [],
   "version": "0.1"
 }

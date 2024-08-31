@@ -14,28 +14,35 @@ packages_dir = "packages/"
 toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
-# Extra files to be installed with all display packages
-displays_shared = [
-    "_basedisplay.py",
-    "_basedisplay_numpy.py",
-    "_basedisplay_viper.py",
-    "area.py",
-    ]
-# list of package directories and extra files in that package
+display_deps = [
+    [f"{repo_url}{packages_dir}basedisplay", "main"],
+    [f"{repo_url}{packages_dir}area", "main"],
+]
+
+graphics_deps = [
+    [f"{repo_url}{packages_dir}area", "main"],
+]
+
+bus_deps = [
+    [f"{repo_url}{packages_dir}busdisplay", "main"],
+]
+
+# list of package directories, dependencies and extra files in that package
 packages = [
-    ["configs", ["path.py", "jupyter_notebook.ipynb"]],
-    ["examples", []],
-    ["extras", []],
-    ["lib/buses/spibus", []],
-    ["lib/buses/i80bus", []],
-    ["lib/displays/busdisplay", displays_shared],
-    ["lib/displays/dtdisplay", displays_shared],
-    ["lib/displays/fbdisplay", displays_shared],
-    ["lib/displays/jndisplay", displays_shared],
-    ["lib/displays/psdisplay", displays_shared],
-    ["lib/eventsys", []],
-    ["lib/graphics", ["framebuf.py", "area.py"]],
-    ["lib/timer", []],
+    ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],
+    ["examples", [], []],
+    ["extras", [], []],
+    ["lib/area", [], []],
+    ["lib/buses/spibus", bus_deps, []],
+    ["lib/buses/i80bus", bus_deps, []],
+    ["lib/displays/basedisplay", display_deps, []],
+    ["lib/displays/dtdisplay", display_deps, []],
+    ["lib/displays/fbdisplay", display_deps, []],
+    ["lib/displays/jndisplay", display_deps, []],
+    ["lib/displays/psdisplay", display_deps, []],
+    ["lib/eventsys", [], []],
+    ["lib/graphics", graphics_deps, ["framebuf.py",]],
+    ["lib/timer", [], []],
     ]
 
 master_exclude = ["examples"]
@@ -48,7 +55,7 @@ master_toml = ["[files]"]
 extra_files_added_to_master = []
 
 # Iterate over the packages and create the package files
-for package_path, extra_files in packages:
+for package_path, deps, extra_files in packages:
     # Define the package variables
     package_name = package_path.split("/")[-1]
     full_path = os.path.join(repo_dir, src_dir, package_path)
@@ -60,7 +67,7 @@ for package_path, extra_files in packages:
         trim_path = full_path
         package_sub_dir = package_name + "/"
     # Add a dictionary for the package
-    package_dicts[package_name] = {"urls": [], "version": package_ver}
+    package_dicts[package_name] = {"urls": [], "deps": deps, "version": package_ver}
 
     # Iterate over the extra files in the package
     for extra_file in sorted(extra_files):

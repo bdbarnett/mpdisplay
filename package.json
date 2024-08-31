@@ -137,6 +137,10 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
     ],
     [
+      "lib/area/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/area/__init__.py"
+    ],
+    [
       "lib/buses/spibus/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/buses/spibus/__init__.py"
     ],
@@ -153,24 +157,16 @@
       "github:bdbarnett/mpdisplay/src/lib/buses/i80bus/gpio_pin.py"
     ],
     [
-      "lib/displays/_basedisplay.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay.py"
+      "lib/displays/basedisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__init__.py"
     ],
     [
-      "lib/displays/_basedisplay_numpy.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_numpy.py"
+      "lib/displays/basedisplay/_basedisplay_numpy.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_basedisplay_numpy.py"
     ],
     [
-      "lib/displays/_basedisplay_viper.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/_basedisplay_viper.py"
-    ],
-    [
-      "lib/displays/area.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/area.py"
-    ],
-    [
-      "lib/displays/busdisplay/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
+      "lib/displays/basedisplay/_basedisplay_viper.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_basedisplay_viper.py"
     ],
     [
       "lib/displays/dtdisplay/__init__.py",
@@ -231,10 +227,6 @@
     [
       "lib/eventsys/touch_keypad.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
-    ],
-    [
-      "lib/area.py",
-      "github:bdbarnett/mpdisplay/src/lib/area.py"
     ],
     [
       "lib/framebuf.py",

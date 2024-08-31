@@ -6,12 +6,12 @@
 JNDisplay class for MPDisplay on Jupyter Notebook
 """
 
-from _basedisplay import _BaseDisplay, Area, color_rgb
-from IPython.display import display, update_display
-from PIL import Image, ImageDraw
+from basedisplay import BaseDisplay, Area, color_rgb
+from IPython.display import display, update_display # type: ignore
+from PIL import Image, ImageDraw # type: ignore
 
 
-class JNDisplay(_BaseDisplay):
+class JNDisplay(BaseDisplay):
     '''
     A class to interface with CircuitPython FrameBuffer objects.
     '''
