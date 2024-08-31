@@ -7,7 +7,7 @@ Usage:
 '''
 import network # type: ignore
 from time import sleep_ms
-_retries = 25
+_retries = 50
 
 class Radio:
     def __init__(self):
