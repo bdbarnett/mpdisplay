@@ -1,3 +1,8 @@
+print("This is a proof of concept for a GUI system for the author's use.")
+print("It is not likely to be useful to anyone else.")
+print("It is a work in progress and is not complete.")
+print("Please do not report errors or request changes.")
+
 ############## file:  __init__.py
 from graphics.palettes import get_palette
 
