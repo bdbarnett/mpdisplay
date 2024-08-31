@@ -15,16 +15,16 @@ toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
 display_deps = [
-    [f"{repo_url}{packages_dir}basedisplay", "main"],
-    [f"{repo_url}{packages_dir}area", "main"],
+    [f"{repo_url}{packages_dir}basedisplay.json", "main"],
+    [f"{repo_url}{packages_dir}area.json", "main"],
 ]
 
 graphics_deps = [
-    [f"{repo_url}{packages_dir}area", "main"],
+    [f"{repo_url}{packages_dir}area.json", "main"],
 ]
 
 bus_deps = [
-    [f"{repo_url}{packages_dir}busdisplay", "main"],
+    [f"{repo_url}{packages_dir}busdisplay.json", "main"],
 ]
 
 # list of package directories, dependencies and extra files in that package

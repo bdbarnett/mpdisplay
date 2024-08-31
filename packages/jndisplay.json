@@ -7,11 +7,11 @@
   ],
   "deps": [
     [
-      "github:bdbarnett/mpdisplay/packages/basedisplay",
+      "github:bdbarnett/mpdisplay/packages/basedisplay.json",
       "main"
     ],
     [
-      "github:bdbarnett/mpdisplay/packages/area",
+      "github:bdbarnett/mpdisplay/packages/area.json",
       "main"
     ]
   ],

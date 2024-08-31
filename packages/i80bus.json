@@ -15,7 +15,7 @@
   ],
   "deps": [
     [
-      "github:bdbarnett/mpdisplay/packages/busdisplay",
+      "github:bdbarnett/mpdisplay/packages/busdisplay.json",
       "main"
     ]
   ],
