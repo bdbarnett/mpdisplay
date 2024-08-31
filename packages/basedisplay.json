@@ -13,15 +13,6 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_basedisplay_viper.py"
     ]
   ],
-  "deps": [
-    [
-      "github:bdbarnett/mpdisplay/packages/area.json",
-      "main"
-    ],
-    [
-      "github:bdbarnett/mpdisplay/packages/eventsys.json",
-      "main"
-    ]
-  ],
+  "deps": [],
   "version": "0.1"
 }

@@ -15,12 +15,12 @@ toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
 bus_deps = [
-    [f"{repo_url}{packages_dir}busdisplay.json", "main"],
+    # [f"{repo_url}{packages_dir}busdisplay.json", "main"],
 ]
 
 basedisplay_deps = [
-    [f"{repo_url}{packages_dir}area.json", "main"],
-    [f"{repo_url}{packages_dir}eventsys.json", "main"],
+    # [f"{repo_url}{packages_dir}area.json", "main"],
+    # [f"{repo_url}{packages_dir}eventsys.json", "main"],
 ]
 
 displays_deps = [
