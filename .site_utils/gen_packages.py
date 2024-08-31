@@ -36,6 +36,7 @@ packages = [
     ["lib/buses/spibus", bus_deps, []],
     ["lib/buses/i80bus", bus_deps, []],
     ["lib/displays/basedisplay", display_deps, []],
+    ["lib/displays/busdisplay", display_deps, []],
     ["lib/displays/dtdisplay", display_deps, []],
     ["lib/displays/fbdisplay", display_deps, []],
     ["lib/displays/jndisplay", display_deps, []],
