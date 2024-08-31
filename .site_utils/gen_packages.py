@@ -14,15 +14,6 @@ packages_dir = "packages/"
 toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
-bus_deps = [
-    # [f"{repo_url}{packages_dir}busdisplay.json", "main"],
-]
-
-basedisplay_deps = [
-    # [f"{repo_url}{packages_dir}area.json", "main"],
-    # [f"{repo_url}{packages_dir}eventsys.json", "main"],
-]
-
 displays_deps = [
     [f"{repo_url}{packages_dir}basedisplay.json", "main"],
 ]
@@ -37,9 +28,9 @@ packages = [
     ["examples", [], []],
     ["extras", [], []],
     ["lib/area", [], []],
-    ["lib/buses/spibus", bus_deps, []],
-    ["lib/buses/i80bus", bus_deps, []],
-    ["lib/displays/basedisplay", basedisplay_deps, []],
+    ["lib/buses/spibus", [], []],
+    ["lib/buses/i80bus", [], []],
+    ["lib/displays/basedisplay", [], []],
     ["lib/displays/busdisplay", displays_deps, []],
     ["lib/displays/dtdisplay", displays_deps, []],
     ["lib/displays/fbdisplay", displays_deps, []],

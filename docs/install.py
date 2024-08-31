@@ -1,11 +1,8 @@
 #!/usr/bin/micropython
 """
-NOTE:  This file may be removed from the repository in the future
-and it's contents will be put into a documenation file such as INSTALL.md.
-
-mip install script for mpdisplay with control over each package.
+Install script for mpdisplay with control over each package.
 Comment out the packages you don't want to install and 
-change the target directory if needed.
+change the target directories if needed.
 
 Equivalent to copying the contents of the 'src' directory of the repository
 to your working directory / microcontroller.
@@ -17,8 +14,15 @@ mip.install("github:bdbarnett/mpdisplay", target=".")  # Does not include exampl
 mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
 ```
 """
-
-import mip # type: ignore
+from sys import implementation
+if implementation.name == "micropython":
+    import mip # type: ignore
+    def install(package, target):
+        mip.install(package, target=target)
+else:
+    import os
+    def install(package, target):
+        os.system(f"mpremote mip install --target {target} {package}")
 
 
 src_base = "github:bdbarnett/mpdisplay/packages/"
@@ -47,4 +51,4 @@ packages = [
 for name, path in packages:
     package = src_base + name + ".json"
     target = dest_base + path
-    mip.install(package, target=target)
+    install(package, target)
