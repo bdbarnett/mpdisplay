@@ -20,6 +20,7 @@ bus_deps = [
 
 basedisplay_deps = [
     [f"{repo_url}{packages_dir}area.json", "main"],
+    [f"{repo_url}{packages_dir}eventsys.json", "main"],
 ]
 
 displays_deps = [

@@ -17,6 +17,10 @@
     [
       "github:bdbarnett/mpdisplay/packages/area.json",
       "main"
+    ],
+    [
+      "github:bdbarnett/mpdisplay/packages/eventsys.json",
+      "main"
     ]
   ],
   "version": "0.1"
