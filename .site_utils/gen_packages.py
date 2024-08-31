@@ -14,17 +14,20 @@ packages_dir = "packages/"
 toml_full_path = output_dir + "html/mpdisplay.toml"
 master_package_name = "package"
 
-display_deps = [
-    [f"{repo_url}{packages_dir}basedisplay.json", "main"],
+bus_deps = [
+    [f"{repo_url}{packages_dir}busdisplay.json", "main"],
+]
+
+basedisplay_deps = [
     [f"{repo_url}{packages_dir}area.json", "main"],
+]
+
+displays_deps = [
+    [f"{repo_url}{packages_dir}basedisplay.json", "main"],
 ]
 
 graphics_deps = [
     [f"{repo_url}{packages_dir}area.json", "main"],
-]
-
-bus_deps = [
-    [f"{repo_url}{packages_dir}busdisplay.json", "main"],
 ]
 
 # list of package directories, dependencies and extra files in that package
@@ -35,12 +38,12 @@ packages = [
     ["lib/area", [], []],
     ["lib/buses/spibus", bus_deps, []],
     ["lib/buses/i80bus", bus_deps, []],
-    ["lib/displays/basedisplay", display_deps, []],
-    ["lib/displays/busdisplay", display_deps, []],
-    ["lib/displays/dtdisplay", display_deps, []],
-    ["lib/displays/fbdisplay", display_deps, []],
-    ["lib/displays/jndisplay", display_deps, []],
-    ["lib/displays/psdisplay", display_deps, []],
+    ["lib/displays/basedisplay", basedisplay_deps, []],
+    ["lib/displays/busdisplay", displays_deps, []],
+    ["lib/displays/dtdisplay", displays_deps, []],
+    ["lib/displays/fbdisplay", displays_deps, []],
+    ["lib/displays/jndisplay", displays_deps, []],
+    ["lib/displays/psdisplay", displays_deps, []],
     ["lib/eventsys", [], []],
     ["lib/graphics", graphics_deps, ["framebuf.py",]],
     ["lib/timer", [], []],

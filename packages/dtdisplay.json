@@ -33,10 +33,6 @@
     [
       "github:bdbarnett/mpdisplay/packages/basedisplay.json",
       "main"
-    ],
-    [
-      "github:bdbarnett/mpdisplay/packages/area.json",
-      "main"
     ]
   ],
   "version": "0.1"
