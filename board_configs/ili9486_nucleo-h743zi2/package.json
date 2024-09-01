@@ -1,7 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/ili9486_nucleo-h743zi2/board_config.py"],
-      ["drivers/ili9341.py", "github:bdbarnett/mpdisplay/drivers/display/ili9488.py"]
+      ["ili9341.py", "github:bdbarnett/mpdisplay/drivers/display/ili9488.py"]
     ],
     "version": "0.1"
   }

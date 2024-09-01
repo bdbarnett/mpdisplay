@@ -1,9 +1,9 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/bpi-centi-s3/board_config.py"],
-      ["drivers/st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"],
-      ["drivers/rotary.py", "github:miketeachman/micropython-rotary/rotary.py"],
-      ["drivers/rotary_irq_esp.py", "github:miketeachman/micropython-rotary/rotary_irq_esp.py"]
+      ["st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"],
+      ["rotary.py", "github:miketeachman/micropython-rotary/rotary.py"],
+      ["rotary_irq_esp.py", "github:miketeachman/micropython-rotary/rotary_irq_esp.py"]
     ],
     "version": "0.1"
   }

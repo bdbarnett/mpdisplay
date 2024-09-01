@@ -1,8 +1,8 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/rp2040-touch-lcd-1.28/board_config.py"],
-      ["drivers/gc9a01.py", "github:bdbarnett/mpdisplay/drivers/display/gc9a01.py"],
-      ["drivers/cst8xx.py", "github:bdbarnett/mpdisplay/drivers/touch/cst8xx.py"]
+      ["gc9a01.py", "github:bdbarnett/mpdisplay/drivers/display/gc9a01.py"],
+      ["cst8xx.py", "github:bdbarnett/mpdisplay/drivers/touch/cst8xx.py"]
     ],
     "version": "0.1"
   }
