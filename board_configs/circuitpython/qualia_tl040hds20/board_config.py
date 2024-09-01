@@ -49,8 +49,8 @@ touch_drv = adafruit_focaltouch.Adafruit_FocalTouch(i2c, address=0x48)
 
 def touch_read_func():
     touches = touch_drv.touches
-    for touch in touches:
-        return touch["x"], touch["y"]
+    if len(touches):
+        return touches[0]['x'], touches[0]['y']
     return None
 
 touch_rotation_table=(0, 0, 0, 0)

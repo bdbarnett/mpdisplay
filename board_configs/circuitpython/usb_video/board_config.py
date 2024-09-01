@@ -11,10 +11,10 @@ It is working on Unix, including ChromeOS.  To see how to enable external camera
     https://support.google.com/chromebook/thread/187930465/how-do-i-use-my-usb-webcam?hl=en
 
 The `auto_refresh` setting is not working, so `display_drv.show()` must be called after drawing
-to the buffer.  The only example with this implemented is `bmp565_sprite`.
+to the buffer.
 
 NOTE:  You must put the following 2 lines in your boot.py.  Currently, the width and height
-are set to 128, 96 regardless of what you enter.
+are set to 160 and 120 regardless of what you enter.
 
     from usb_video import enable_framebuffer
     enable_framebuffer(160, 120)

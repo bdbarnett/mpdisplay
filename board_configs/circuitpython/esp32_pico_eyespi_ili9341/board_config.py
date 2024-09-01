@@ -5,8 +5,9 @@ release_displays()
 
 from fourwire import FourWire
 from ili9341 import ILI9341
+import board
 from adafruit_focaltouch import Adafruit_FocalTouch
-from eventsys.devices import Devices, Brokerimport board
+from eventsys.devices import Devices, Broker
 
 
 display_bus = FourWire(
@@ -14,9 +15,6 @@ display_bus = FourWire(
     command=board.RX,
     chip_select=board.TX,
     baudrate=30_000_000,
-#     reset=None,
-#     polarity=0,
-#     phase=0,
 )
 
 display_drv = ILI9341(
@@ -42,13 +40,16 @@ display_drv = ILI9341(
 
 i2c = board.I2C()
 touch_drv = Adafruit_FocalTouch(i2c)
-touch_rotation_table=(6, 3, 0, 5)
 
 def touch_read_func():
     touches = touch_drv.touches
     if len(touches):
         return touches[0]['x'], touches[0]['y']
     return None
+
+touch_rotation_table=(6, 3, 0, 5)
+
+broker = Broker()
 
 touch_dev = broker.create_device(
     type=Devices.TOUCH,
