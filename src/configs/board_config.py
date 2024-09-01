@@ -1,8 +1,13 @@
 """
 Combination board configuration for desktop, pyscript and jupyter notebook platforms.
 """
-_ps = _jn = False
 
+width = 480
+height = 320
+rotation = 0
+scale = 1.0
+
+_ps = _jn = False
 try:
     import pyscript  # type: ignore # noqa: F401
     _ps = True
@@ -12,9 +17,6 @@ except ImportError:
         _jn = True
     except NameError:
         pass
-
-width = 480
-height = 320
 
 if _ps:
     from psdisplay import PSDisplay
@@ -44,14 +46,13 @@ else:
     from eventsys.devices import Devices, Broker # type: ignore
     import sys
 
-
     display_drv = DTDisplay(
         width=width,
         height=height,
-        rotation=0,
+        rotation=rotation,
         color_depth=16,
         title=f"{sys.implementation.name} on {sys.platform}",
-        scale=1.0,
+        scale=scale,
     )
 
     broker = Broker()
@@ -62,4 +63,4 @@ else:
         # data=Events.filter,
     )
 
-display_drv.fill(0xACED)
+display_drv.fill(0xACED)  # Something other than white or black to show display is working

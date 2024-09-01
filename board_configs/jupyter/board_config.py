@@ -6,5 +6,5 @@ from jndisplay import JNDisplay
 from timer import refresh_timer
 
 
-display_drv = JNDisplay(320, 240)
+display_drv = JNDisplay(480, 320)
 tim = refresh_timer(display_drv.show)
