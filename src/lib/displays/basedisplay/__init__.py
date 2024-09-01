@@ -7,7 +7,7 @@ MPDisplay is a module that provides a display interface for various environments
 It allows you to interact with different display devices and handle events.
 
 Supported display classes:
-- 'BusDisplay': Uses a bus library such as lcd_bus or CircuitPython's DisplayIO buses
+- 'BusDisplay': Uses a bus library such as mpbuses or CircuitPython's DisplayIO buses
 - 'DTDisplay': Automatically selects the correct desktop display to use
     - 'SDLDisplay': Uses the SDL2 library
     - 'PGDisplay': Uses the Pygame library
