@@ -2,7 +2,7 @@
 
 from i80bus import I80Bus
 from st7796 import ST7796
-from machine import I2C, Pin, freq  # See the note about reset below
+from machine import I2C, Pin  # type: ignore # See the note about reset below
 from ft6x36 import FT6x36
 from eventsys.devices import Devices, Broker
 
@@ -42,12 +42,12 @@ display_drv = ST7796(
     power_on_high=True,
 )
 
-broker = Broker()
-
 i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
 touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=None
+
+broker = Broker()
 
 touch_dev = broker.create_device(
     type=Devices.TOUCH,

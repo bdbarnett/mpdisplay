@@ -19,8 +19,7 @@ except ImportError:
         pass
 
 if _ps:
-    from psdisplay import PSDisplay
-    from psdisplay import PSDevices
+    from psdisplay import PSDisplay, PSDevices
     from eventsys.devices import Devices, Broker # type: ignore
 
 
