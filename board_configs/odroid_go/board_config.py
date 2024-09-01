@@ -4,24 +4,13 @@ from spibus import SPIBus
 from ili9341 import ILI9341
 
 display_bus = SPIBus(
-    dc=21,
-    host=2,
+    id=2,
+    baudrate=60_000_000,
+    sck=18,
     mosi=23,
     miso=19,
-    sclk=18,
+    dc=21,
     cs=5,
-    freq=60_000_000,
-    wp=-1,
-    hd=-1,
-    quad_spi=False,
-    tx_only=True,
-    cmd_bits=8,
-    param_bits=8,
-    dc_low_on_data=False,
-    sio_mode=False,
-    lsb_first=False,
-    cs_high_active=False,
-    spi_mode=0,
 )
 
 display_drv = ILI9341(

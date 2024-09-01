@@ -5,19 +5,12 @@ from gc9a01 import GC9A01  # same as GC9107
 
 
 display_bus = SPIBus(
-    dc=6,
+    id=1,
+    baudrate=60_000_000,
+    sck=3,
     cs=5,
     mosi=2,
-    sclk=3,
-    host=1,
-    tx_only=True,
-    freq=60_000_000,
-    spi_mode=0,
-    cmd_bits=8,
-    param_bits=8,
-    lsb_first=False,
-    dc_low_on_data=False,
-    cs_high_active=False,
+    dc=6,
 )
 
 display_drv = GC9A01(

@@ -6,21 +6,15 @@ from machine import Pin, I2C
 from chsc6x import CHSC6X
 from eventsys.devices import Devices, Broker
 
+
 display_bus = SPIBus(
-    dc=8,
-    cs=17,
+    id=1,
+    baudrate=60_000_000,
+    sck=36,
     mosi=35,
     miso=37,
-    sclk=36,
-    host=1,
-    tx_only=True,
-    freq=60_000_000,
-    spi_mode=0,
-    cmd_bits=8,
-    param_bits=8,
-    lsb_first=False,
-    dc_low_on_data=False,
-    cs_high_active=False,
+    dc=8,
+    cs=17,
 )
 
 display_drv = GC9A01(

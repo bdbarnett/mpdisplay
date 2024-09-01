@@ -7,26 +7,13 @@ from ft6x36 import FT6x36
 from eventsys.devices import Devices, Broker
 
 
-# The ILI9341 2.8" display has the reset pins of the display IC and the touch
-# tied together.  Controlling this pin with the display driver can lead to an
-# unresponsive touchscreen.  This case is uncommon.  If they aren't tied 
-# together on your board, define reset in ST7796 instead, like:
-#    ILI9341(reset=12)
 reset=Pin(12, Pin.OUT, value=1)
 
 display_bus = I80Bus(
     dc=14,
-    wr=13,
     cs=15,
-    data0=0,
-    data1=1,
-    data2=2,
-    data3=3,
-    data4=4,
-    data5=5,
-    data6=6,
-    data7=7,
-    freq=10_000_000,
+    wr=13,
+    data=[0, 1, 2, 3, 4, 5, 6, 7],
 )
 
 display_drv = ILI9341(

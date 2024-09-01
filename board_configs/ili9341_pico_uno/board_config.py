@@ -12,20 +12,13 @@ from ft6x36 import FT6x36
 from eventsys.devices import Devices, Broker
 
 display_bus = SPIBus(
-    dc=3,
-    cs=17,
+    id=0,
+    baudrate=62_500_000,
+    sck=18,
     mosi=19,
     miso=16, 
-    sclk=18,
-    host=0,
-    tx_only=True,
-    freq=62_500_000,
-    spi_mode=0,
-    cmd_bits=8,
-    param_bits=8,
-    lsb_first=False,
-    dc_low_on_data=False,
-    cs_high_active=False,
+    dc=3,
+    cs=17,
 )
 
 display_drv = ILI9341(

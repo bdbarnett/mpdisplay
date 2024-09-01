@@ -5,19 +5,12 @@ from st7735 import ST7735
 
 
 display_bus = SPIBus(
+    id=2,
+    baudrate=60_000_000,
+    sck=5,
+    mosi=3,
     dc=2,
     cs=4,
-    mosi=3,
-    sclk=5,
-    host=2,
-    tx_only=True,
-    freq=60_000_000,
-    spi_mode=0,
-    cmd_bits=8,
-    param_bits=8,
-    lsb_first=False,
-    dc_low_on_data=False,
-    cs_high_active=False,
 )
 
 display_drv = ST7735(

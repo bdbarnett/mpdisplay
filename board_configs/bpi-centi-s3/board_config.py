@@ -10,28 +10,10 @@ from eventsys.devices import Devices, Broker
 display_rd_pin = Pin(7, Pin.OUT, value=1)
 
 display_bus = I80Bus(
-    data0=8,
-    data1=9,
-    data2=10,
-    data3=11,
-    data4=12,
-    data5=13,
-    data6=14,
-    data7=15,
     dc=5,
-    wr=6,
     cs=4,
-    freq=16_000_000,
-    dc_idle_level=0,
-    dc_cmd_level=0,
-    dc_dummy_level=0,
-    dc_data_level=1,
-    cmd_bits=8,
-    param_bits=8,
-    cs_active_high=False,
-    reverse_color_bits=False,
-    pclk_active_neg=False,
-    pclk_idle_low=True,
+    wr=6,
+    data=[8, 9, 10, 11, 12, 13, 14, 15],
 )
 
 display_drv = ST7789(

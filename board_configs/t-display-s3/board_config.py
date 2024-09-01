@@ -16,27 +16,9 @@ display_reset_pin.value(1)
 
 display_bus = I80Bus(
     dc=7,
-    wr=8,
     cs=6,
-    data0=39,
-    data1=40,
-    data2=41,
-    data3=42,
-    data4=45,
-    data5=46,
-    data6=47,
-    data7=48,
-    freq=20000000,
-    dc_idle_level=0,
-    dc_cmd_level=0,
-    dc_dummy_level=0,
-    dc_data_level=1,
-    cmd_bits=8,
-    param_bits=8,
-    cs_active_high=False,
-    reverse_color_bits=False,
-    pclk_active_neg=False,
-    pclk_idle_low=False,
+    wr=8,
+    data=[39, 40, 41, 42, 45, 46, 47, 48],
 )
 
 display_drv = ST7789(

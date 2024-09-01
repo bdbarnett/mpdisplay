@@ -8,19 +8,12 @@ from eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(
+    id=1,
+    baudrate=60_000_000,
+    sck=36,
+    mosi=37,
     dc=35,
     cs=3,
-    mosi=37,
-    sck=36,
-    host=1,
-    tx_only=True,
-    freq=60_000_000,
-    spi_mode=0,
-    cmd_bits=8,
-    param_bits=8,
-    lsb_first=False,
-    dc_low_on_data=False,
-    cs_high_active=False,
 )
 
 display_drv = ILI9341(
