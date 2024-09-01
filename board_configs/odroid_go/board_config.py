@@ -1,6 +1,6 @@
 """ ODROID GO with ILI9341 2.4" display """
 
-from lcd_bus import SPIBus
+from spibus import SPIBus
 from ili9341 import ILI9341
 
 display_bus = SPIBus(

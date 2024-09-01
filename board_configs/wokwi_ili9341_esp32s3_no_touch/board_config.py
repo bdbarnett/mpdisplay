@@ -12,10 +12,6 @@ display_bus = SPIBus(
     miso=37,
     dc=16,
     cs=5,
-    # polarity=0,
-    # phase=0,
-    # bits=8,
-    # lsb_first=False,
 )
 
 display_drv = ILI9341(

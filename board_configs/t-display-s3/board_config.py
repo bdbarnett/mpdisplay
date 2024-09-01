@@ -1,6 +1,6 @@
 """ T-Display-S3 170x320 ST7789 display  """
 
-from lcd_bus import I80Bus
+from i80bus import I80Bus
 from st7789 import ST7789
 from machine import Pin
 from time import sleep_ms
@@ -59,4 +59,3 @@ display_drv = ST7789(
     power_pin=None,
     power_on_high=True,
 )
-

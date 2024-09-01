@@ -7,8 +7,8 @@ from ft6x36 import FT6x36
 from eventsys.devices import Devices, Broker
 import gc
 
-gc.collect()
 
+gc.collect()
 
 display_bus = SPIBus(
     id=0,
@@ -18,10 +18,6 @@ display_bus = SPIBus(
     miso=4, 
     dc=5,
     cs=20,
-    # polarity=0,
-    # phase=0,
-    # bits=8,
-    # lsb_first=False,
 )
 
 gc.collect()

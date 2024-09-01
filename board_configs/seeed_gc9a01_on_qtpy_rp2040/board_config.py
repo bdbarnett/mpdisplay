@@ -1,10 +1,10 @@
 """ Seeed Studio Round Display for XIAO GC9A01 240x240 display on Adafruit QT Py RP2040 """
 
-from lcd_bus import SPIBus
+from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-from eventsys.devices import Devices
+from eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(
@@ -50,8 +50,11 @@ touch_drv = CHSC6X(i2c, irq_pin=5)
 touch_read_func=touch_drv.touch_read
 touch_rotation_table=(0, 5, 6, 3)
 
+broker = Broker()
+
 touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
-    data=touch_rotation_table,
+    data=display_drv,
+    data2=touch_rotation_table,
 )

@@ -3,12 +3,11 @@ Adafruit 2.8" TFT Touch Shield for Arduino with Capacitive Touch
 on ST Micro STM32 Nucleo-H743ZI2
 """ 
 
-from lcd_bus import SPIBus
+from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-from eventsys.devices import Devices
-
+from eventsys.devices import Devices, Broker
 """
 The Nucleo-H743ZI/Nucleo-H743ZI2 do not have SPI1 defined.
 The following must be added to `mpconfigboard.h`:
@@ -62,8 +61,11 @@ touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=(6, 3, 0, 5)
 
+broker = Broker()
+
 touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
-    data=touch_rotation_table,
+    data=display_drv,
+    data2=touch_rotation_table,
 )

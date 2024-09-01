@@ -1,8 +1,7 @@
 """ LilyGo T-Dongle-S3 80x160 ST7735 display """
 
-from lcd_bus import SPIBus
+from spibus import SPIBus
 from st7735 import ST7735
-from machine import Pin, I2C
 
 
 display_bus = SPIBus(

@@ -1,10 +1,10 @@
 """ Waveshare RP2040-Touch-LCD-1.28 GC9A01 240x240 """
 
-from lcd_bus import SPIBus
+from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from cst8xx import CST8XX
-from eventsys.devices import Devices
+from eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(
@@ -50,8 +50,11 @@ touch_drv = CST8XX(i2c, irq_pin=21, rst_pin=22)
 touch_read_func = touch_drv.get_point
 touch_rotation_table = (0, 5, 6, 3)
 
+broker = Broker()
+
 touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
-    data=touch_rotation_table,
+    data=display_drv,
+    data2=touch_rotation_table,
 )

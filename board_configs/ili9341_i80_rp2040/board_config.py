@@ -1,10 +1,10 @@
 """ DIY Raspberry Pi Pico with ILI9341 2.8" display """
 
-from lcd_bus import I80Bus
+from i80bus import I80Bus
 from ili9341 import ILI9341
-from machine import I2C, Pin, freq  # See the note about reset below
+from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-from eventsys.devices import Devices
+from eventsys.devices import Devices, Broker
 
 
 # The ILI9341 2.8" display has the reset pins of the display IC and the touch
@@ -55,8 +55,11 @@ touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=None
 
+broker = Broker()
+
 touch_dev = broker.create_device(
     type=Devices.TOUCH,
     read=touch_read_func,
-    data=touch_rotation_table,
+    data=display_drv,
+    data2=touch_rotation_table,
 )

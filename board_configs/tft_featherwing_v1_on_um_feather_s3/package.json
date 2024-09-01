@@ -1,7 +1,0 @@
-{
-    "urls": [
-      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/tft_featherwing_v1_on_um_feather_s3/board_config.py"],
-      ["hx8357.py", "github:bdbarnett/mpdisplay/drivers/display/hx8357.py"]
-    ],
-    "version": "0.1"
-  }
