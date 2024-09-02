@@ -5,6 +5,10 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__init__.py"
     ],
     [
+      "basedisplay/_area.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_area.py"
+    ],
+    [
       "basedisplay/_basedisplay_numpy.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_basedisplay_numpy.py"
     ],

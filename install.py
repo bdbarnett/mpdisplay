@@ -39,7 +39,6 @@ packages = [
     ("configs", ""),
     ("examples", ""),
     ("extras", ""),
-    ("area", "/lib"),
     ("i80bus", "/lib/buses"),
     ("spibus", "/lib/buses"),
     ("basedisplay", "/lib/displays"),

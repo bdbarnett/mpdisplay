@@ -29,6 +29,10 @@
       "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
     ],
     [
+      "extras/adafruit_ticks.py",
+      "github:bdbarnett/mpdisplay/src/extras/adafruit_ticks.py"
+    ],
+    [
       "extras/bmp565.py",
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
@@ -137,10 +141,6 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
     ],
     [
-      "lib/area/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/area/__init__.py"
-    ],
-    [
       "lib/buses/spibus/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/buses/spibus/__init__.py"
     ],
@@ -159,6 +159,10 @@
     [
       "lib/displays/basedisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__init__.py"
+    ],
+    [
+      "lib/displays/basedisplay/_area.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_area.py"
     ],
     [
       "lib/displays/basedisplay/_basedisplay_numpy.py",

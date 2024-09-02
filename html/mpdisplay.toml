@@ -7,6 +7,7 @@
 "../src/configs/lv_config.py" = "/configs/"
 "../src/configs/tft_config.py" = "/configs/"
 
+"../src/extras/adafruit_ticks.py" = "/extras/"
 "../src/extras/bmp565.py" = "/extras/"
 "../src/extras/console.py" = "/extras/"
 "../src/extras/ezfont.py" = "/extras/"
@@ -35,8 +36,6 @@
 "../src/extras/tft_text/fonts/vga2_bold_16x16.py" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/vga2_bold_16x32.py" = "/extras/tft_text/fonts/"
 
-"../src/lib/area/__init__.py" = "/lib/area/"
-
 "../src/lib/buses/spibus/__init__.py" = "/lib/buses/spibus/"
 
 "../src/lib/buses/i80bus/__init__.py" = "/lib/buses/i80bus/"
@@ -44,6 +43,7 @@
 "../src/lib/buses/i80bus/gpio_pin.py" = "/lib/buses/i80bus/"
 
 "../src/lib/displays/basedisplay/__init__.py" = "/lib/displays/basedisplay/"
+"../src/lib/displays/basedisplay/_area.py" = "/lib/displays/basedisplay/"
 "../src/lib/displays/basedisplay/_basedisplay_numpy.py" = "/lib/displays/basedisplay/"
 "../src/lib/displays/basedisplay/_basedisplay_viper.py" = "/lib/displays/basedisplay/"
 

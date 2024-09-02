@@ -1,6 +1,10 @@
 {
   "urls": [
     [
+      "extras/adafruit_ticks.py",
+      "github:bdbarnett/mpdisplay/src/extras/adafruit_ticks.py"
+    ],
+    [
       "extras/bmp565.py",
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],

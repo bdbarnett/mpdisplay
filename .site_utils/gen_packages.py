@@ -18,16 +18,11 @@ displays_deps = [
     [f"{repo_url}{packages_dir}basedisplay.json", "main"],
 ]
 
-graphics_deps = [
-    [f"{repo_url}{packages_dir}area.json", "main"],
-]
-
 # list of package directories, dependencies and extra files in that package
 packages = [
     ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],
     ["examples", [], []],
     ["extras", [], []],
-    ["lib/area", [], []],
     ["lib/buses/spibus", [], []],
     ["lib/buses/i80bus", [], []],
     ["lib/displays/basedisplay", [], []],
@@ -37,7 +32,7 @@ packages = [
     ["lib/displays/jndisplay", displays_deps, []],
     ["lib/displays/psdisplay", displays_deps, []],
     ["lib/eventsys", [], []],
-    ["lib/graphics", graphics_deps, ["framebuf.py",]],
+    ["lib/graphics", [], ["framebuf.py",]],
     ["lib/timer", [], []],
     ]
 

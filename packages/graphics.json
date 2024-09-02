@@ -77,11 +77,6 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/binfont/binfont_8x8.bin"
     ]
   ],
-  "deps": [
-    [
-      "github:bdbarnett/mpdisplay/packages/area.json",
-      "main"
-    ]
-  ],
+  "deps": [],
   "version": "0.1"
 }
