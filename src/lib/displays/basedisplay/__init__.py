@@ -17,7 +17,7 @@ Supported display classes:
 """
 import gc
 from sys import implementation
-from area import Area
+from ._area import Area
 
 np = False
 try:
