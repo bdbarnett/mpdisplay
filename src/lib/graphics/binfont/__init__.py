@@ -7,21 +7,21 @@ A module to draw text to a canvas using fonts from
 https://github.com/spacerace/romfont
 """
 
-import os
+from os import stat, sep
 import struct
 from .. import Area
 
 
 # get the path this module is in
-font_dir = __file__.split("/")[0:-1]
-font_dir = "/".join(font_dir)
+font_dir = __file__.split(sep)[0:-1]
+font_dir = sep.join(font_dir) + sep
 
 # Default font file to use if none is specified.
 # Should be 8 pixels wide to keep framebuf.py compatible with MicroPython framebuf module
 _FONTS = {
-    8: f"{font_dir}/binfont_8x8.bin",
-    14: f"{font_dir}/binfont_8x14.bin",
-    16: f"{font_dir}/binfont_8x16.bin",
+    8: f"{font_dir}binfont_8x8.bin",
+    14: f"{font_dir}binfont_8x14.bin",
+    16: f"{font_dir}binfont_8x16.bin",
 }
 _DEFAULT_FONT = _FONTS[8]
 
@@ -100,7 +100,7 @@ class BinFont:
         self.font_file = (
             font_file if font_file else _FONTS.get(font_height, _DEFAULT_FONT)
         )
-        self.font_name = self.font_file.split("/")[-1].split(".")[0]
+        self.font_name = self.font_file.split(sep)[-1].split(".")[0]
         self._font_height = (
             font_height
             if font_height is not None
@@ -114,7 +114,7 @@ class BinFont:
             font_path = self.font_file
             self._font = open(font_path, "rb")
             # simple font file validation check based on expected file size
-            filesize = os.stat(font_path)[6]
+            filesize = stat(font_path)[6]
             if (
                 filesize != 256 * self.font_height
                 and filesize != 128 * self.font_height

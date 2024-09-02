@@ -32,6 +32,7 @@ Example:
 
 from array import array
 from framebuf import FrameBuffer, MONO_HLSB, RGB565
+from os import sep
 
 
 class PBM(FrameBuffer):
@@ -137,7 +138,7 @@ class PBM(FrameBuffer):
         
         EXPERIMENTAL - Not complete.  Haven't found a use for it yet.
         """
-        src_filename_ext = self._filename.split("/")[-1]
+        src_filename_ext = self._filename.split(sep)[-1]
         directory = "" # self._filename.replace(src_filename_ext, "")
         filename = src_filename_ext.replace(".pbm", "")
         out = []

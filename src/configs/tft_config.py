@@ -3,6 +3,7 @@ from graphics.palettes import get_palette
 from graphics.shapes import Draw
 import tft_text
 import sys
+from os import sep
 
 if sys.implementation.name == "esp32":
     from machine import freq # type: ignore
@@ -16,7 +17,7 @@ if BUFFERED:
     from timer import Timer
 
 
-font_dir = "/".join(tft_text.__file__.split("/")[:-1]) + "/fonts"
+font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"
 sys.path.append(font_dir)
 
 TFA = 0
