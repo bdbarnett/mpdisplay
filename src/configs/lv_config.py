@@ -12,8 +12,11 @@ from eventsys.devices import Devices
 import lvgl as lv # type: ignore
 import gc
 
-
-def main():
+def main(warn=True):
+    if warn:
+        print("\n\n\nlv_config.py - This file has not been thoroughly tested and may need to be modified.",
+            "Please create a pull request for any changes you make that are not unique to your configuration",
+            "and may help others.\n\n\n")
     gc.collect()
     if not lv.is_initialized():
         lv.init()
