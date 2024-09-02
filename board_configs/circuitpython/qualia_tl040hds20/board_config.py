@@ -6,10 +6,13 @@ from framebufferio import FramebufferDisplay
 from displayio import release_displays
 import busio
 import board
-import adafruit_focaltouch
+
 from fbdisplay import FBDisplay
+import adafruit_focaltouch
 from eventsys.devices import Devices, Broker
 
+
+# This first part is particular to CircuitPython-based framebuffer-based displays
 
 tft_pins = dict(board.TFT_PINS)
 
@@ -42,6 +45,9 @@ release_displays()
 fb = dotclockframebuffer.DotClockFramebuffer(**tft_pins, **tft_timings)
 display = FramebufferDisplay(fb, auto_refresh=True)
 display.root_group = None
+
+
+# Typical board_config.py setup from here on out
 
 display_drv = FBDisplay(fb)
 
