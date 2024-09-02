@@ -32,7 +32,13 @@ Example:
 
 from array import array
 from framebuf import FrameBuffer, MONO_HLSB, RGB565
-from os import sep
+import os
+
+
+if hasattr(os, "sep"):
+    sep = os.sep  # PyScipt doesn't have os.sep
+else:
+    sep = "/"
 
 
 class PBM(FrameBuffer):

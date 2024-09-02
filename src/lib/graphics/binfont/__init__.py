@@ -7,10 +7,15 @@ A module to draw text to a canvas using fonts from
 https://github.com/spacerace/romfont
 """
 
-from os import stat, sep
+import os
 import struct
 from .. import Area
 
+
+if hasattr(os, "sep"):
+    sep = os.sep  # PyScipt doesn't have os.sep
+else:
+    sep = "/"
 
 # get the path this module is in
 font_dir = __file__.split(sep)[0:-1]
@@ -114,7 +119,7 @@ class BinFont:
             font_path = self.font_file
             self._font = open(font_path, "rb")
             # simple font file validation check based on expected file size
-            filesize = stat(font_path)[6]
+            filesize = os.stat(font_path)[6]
             if (
                 filesize != 256 * self.font_height
                 and filesize != 128 * self.font_height

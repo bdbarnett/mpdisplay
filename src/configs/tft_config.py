@@ -3,7 +3,13 @@ from graphics.palettes import get_palette
 from graphics.shapes import Draw
 import tft_text
 import sys
-from os import sep
+import os
+
+
+if hasattr(os, "sep"):
+    sep = os.sep  # PyScipt doesn't have os.sep
+else:
+    sep = "/"
 
 if sys.implementation.name == "esp32":
     from machine import freq # type: ignore
