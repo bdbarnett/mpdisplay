@@ -55,7 +55,7 @@ def main():
         buffer = bytearray(display_drv.width * font_height * 2)
         fb = FrameBuffer(buffer, display_drv.width, font_height, RGB565)
         fb.fill(bg_color)
-        string = "".join([chr(i) for i in range(65, 91)]) + ": " + font_name
+        string = "".join([chr(i) for i in range(65, 91)]) + ": " + font_name.split("/")[-1]
         font.text(fb, string, 0, 0, fg_color, scale)
         display_drv.blit_rect(
             buffer, 0, y_pos % display_drv.height, display_drv.width, font_height
