@@ -10,7 +10,7 @@ import pygame as pg # type: ignore
 from .. import BaseDisplay, Area, color_rgb
 
 
-def poll(self):
+def poll():
     """
     Polls for an event and returns the event type and data.
 
