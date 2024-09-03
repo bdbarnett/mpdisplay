@@ -31,14 +31,14 @@ except ImportError:
 viper = False
 if implementation.name == "micropython":
     try:
-        from ._basedisplay_viper import swap_bytes
+        from ._viper import swap_bytes
         viper = True
     except Exception as e:
         print(f"PyDevices:  {e}")
 
 if not viper:
     if np:
-        from ._basedisplay_numpy import swap_bytes
+        from ._numpy import swap_bytes
     else:
         def swap_bytes(buf, buf_size_pix):
             buf[::2], buf[1::2] = buf[1::2], buf[::2]

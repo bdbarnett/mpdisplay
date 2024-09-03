@@ -36,13 +36,32 @@
 "../src/extras/tft_text/fonts/vga2_bold_16x16.py" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/vga2_bold_16x32.py" = "/extras/tft_text/fonts/"
 
+"../src/lib/buses/pyd_spibus/__init__.py" = "/lib/buses/pyd_spibus/"
 
+"../src/lib/buses/pyd_i80bus/__init__.py" = "/lib/buses/pyd_i80bus/"
+"../src/lib/buses/pyd_i80bus/_i80bus_rp2_wip.py" = "/lib/buses/pyd_i80bus/"
+"../src/lib/buses/pyd_i80bus/gpio_pin.py" = "/lib/buses/pyd_i80bus/"
 
+"../src/lib/displays/pyd_basedisplay/__init__.py" = "/lib/displays/pyd_basedisplay/"
+"../src/lib/displays/pyd_basedisplay/_area.py" = "/lib/displays/pyd_basedisplay/"
+"../src/lib/displays/pyd_basedisplay/_basedisplay_numpy.py" = "/lib/displays/pyd_basedisplay/"
+"../src/lib/displays/pyd_basedisplay/_basedisplay_viper.py" = "/lib/displays/pyd_basedisplay/"
 
+"../src/lib/displays/pyd_busdisplay/__init__.py" = "/lib/displays/pyd_busdisplay/"
 
+"../src/lib/displays/pyd_dtdisplay/__init__.py" = "/lib/displays/pyd_dtdisplay/"
+"../src/lib/displays/pyd_dtdisplay/pgdisplay/__init__.py" = "/lib/displays/pyd_dtdisplay/pgdisplay/"
+"../src/lib/displays/pyd_dtdisplay/sdldisplay/__init__.py" = "/lib/displays/pyd_dtdisplay/sdldisplay/"
+"../src/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/__init__.py" = "/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/"
+"../src/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/_constants.py" = "/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/"
+"../src/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/_cpython.py" = "/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/"
+"../src/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/_micropython.py" = "/lib/displays/pyd_dtdisplay/sdldisplay/sdl2_lib/"
 
+"../src/lib/displays/pyd_fbdisplay/__init__.py" = "/lib/displays/pyd_fbdisplay/"
 
+"../src/lib/displays/pyd_jndisplay/__init__.py" = "/lib/displays/pyd_jndisplay/"
 
+"../src/lib/displays/pyd_psdisplay/__init__.py" = "/lib/displays/pyd_psdisplay/"
 
 "../src/lib/pyd_eventsys/__init__.py" = "/lib/pyd_eventsys/"
 "../src/lib/pyd_eventsys/devices.py" = "/lib/pyd_eventsys/"

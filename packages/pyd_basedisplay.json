@@ -1,5 +1,22 @@
 {
-  "urls": [],
+  "urls": [
+    [
+      "pyd_basedisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/__init__.py"
+    ],
+    [
+      "pyd_basedisplay/_area.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_area.py"
+    ],
+    [
+      "pyd_basedisplay/_basedisplay_numpy.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_basedisplay_numpy.py"
+    ],
+    [
+      "pyd_basedisplay/_basedisplay_viper.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_basedisplay_viper.py"
+    ]
+  ],
   "deps": [],
   "version": "0.1"
 }
