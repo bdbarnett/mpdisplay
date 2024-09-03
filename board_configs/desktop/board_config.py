@@ -5,8 +5,8 @@ Tested with CPython on Linux, Windows and ChromeOS.
 Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
-from dtdisplay import DTDisplay, poll # type: ignore
-from eventsys.devices import Devices, Broker # type: ignore
+from pyd_dtdisplay import DTDisplay, poll # type: ignore
+from pyd_eventsys.devices import Devices, Broker # type: ignore
 import sys
 
 

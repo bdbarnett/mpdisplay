@@ -1,6 +1,6 @@
 """ LILYGO T-QT Pro GC9107 128x128 display """
 
-from spibus import SPIBus
+from pyd_spibus import SPIBus
 from gc9a01 import GC9A01  # same as GC9107
 
 

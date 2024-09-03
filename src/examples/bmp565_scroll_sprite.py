@@ -1,5 +1,5 @@
 from board_config import display_drv, broker
-from eventsys.events import Events
+from pyd_eventsys.events import Events
 from bmp565 import BMP565
 from time import sleep
 from collections import namedtuple

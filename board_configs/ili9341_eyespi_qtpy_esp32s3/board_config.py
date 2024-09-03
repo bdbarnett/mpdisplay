@@ -1,10 +1,10 @@
 """ QTPy ESP32S3 with EyeSPI and ILI9341 2.8" display """
 
-from spibus import SPIBus
+from pyd_spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-from eventsys.devices import Devices, Broker
+from pyd_eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(

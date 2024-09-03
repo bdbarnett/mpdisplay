@@ -6,12 +6,12 @@ Then it prints the touch_rotation_table that should be set in board_config.py.
 """
 
 from board_config import display_drv, broker
-from eventsys.events import Events
-from graphics import shapes
-from graphics.binfont import text16
+from pyd_eventsys.events import Events
+from pyd_graphics import shapes
+from pyd_graphics.binfont import text16
 
 if hasattr(display_drv, "set_device_data"):
-    from eventsys.devices import Device_types
+    from pyd_eventsys.devices import Device_types
 
     demo = False
 else:

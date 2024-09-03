@@ -33,7 +33,7 @@ https://github.com/devbis/st7789py_mpy.
 
 """
 
-from basedisplay import Area
+from pyd_basedisplay import Area
 
 
 def bitmap(canvas, bitmap, x, y, index=0):

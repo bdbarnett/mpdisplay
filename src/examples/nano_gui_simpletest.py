@@ -7,7 +7,7 @@ from gui.core.colors import RED, BLUE, GREEN
 from gui.core.nanogui import refresh
 
 refresh(ssd, True)  # Initialise and clear display.
-# Uncomment for ePaper displays; not supported by displaybuf or MPDisplay (yet).
+# Uncomment for ePaper displays; not supported by displaybuf or PyDevices (yet).
 # ssd.wait_until_ready()
 ssd.fill(0)
 ssd.line(0, 0, ssd.width - 1, ssd.height - 1, GREEN)  # Green diagonal corner-to-corner

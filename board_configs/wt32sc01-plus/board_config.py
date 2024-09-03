@@ -1,10 +1,10 @@
 """ WT32-SC01 Plus 320x480 ST7796 display """
 
-from i80bus import I80Bus
+from pyd_i80bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin  # type: ignore # See the note about reset below
 from ft6x36 import FT6x36
-from eventsys.devices import Devices, Broker
+from pyd_eventsys.devices import Devices, Broker
 
 
 # The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both

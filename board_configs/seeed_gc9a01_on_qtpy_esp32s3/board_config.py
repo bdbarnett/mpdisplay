@@ -1,10 +1,10 @@
 """ Seeed Studio Round Display for XIAO GC9A01 240x240 display on Adafruit QT Py ESP32-S3"""
 
-from spibus import SPIBus
+from pyd_spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-from eventsys.devices import Devices, Broker
+from pyd_eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(

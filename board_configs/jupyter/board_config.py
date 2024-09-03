@@ -2,8 +2,8 @@
 Board configuration for Jupyter Notebook.
 
 """
-from jndisplay import JNDisplay
-from timer import refresh_timer
+from pyd_jndisplay import JNDisplay
+from pyd_timer import refresh_timer
 
 
 display_drv = JNDisplay(480, 320)

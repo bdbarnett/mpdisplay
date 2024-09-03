@@ -4,8 +4,8 @@ Testris game implemented in MicroPython by Brad Barnett.
 
 # For the display & optional touch drivers
 from board_config import display_drv, broker # type: ignore
-from eventsys.touch_keypad import Keypad # type: ignore
-from eventsys.keys import Keys # type: ignore
+from pyd_eventsys.touch_keypad import Keypad # type: ignore
+from pyd_eventsys.keys import Keys # type: ignore
 from random import choice  # For random piece selection
 from json import load, dump  # For saving the high score
 from sys import exit  # For exiting the game

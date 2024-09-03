@@ -2,7 +2,7 @@
 The init sequence is written out line by line in .init()
 '''
 
-from busdisplay import BusDisplay
+from pyd_busdisplay import BusDisplay
 from time import sleep_ms
 from micropython import const
 

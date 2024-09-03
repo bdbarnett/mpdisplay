@@ -43,7 +43,7 @@ Implementation Notes
 
 """
 
-from busdisplay import BusDisplay
+from pyd_busdisplay import BusDisplay
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/electronut/Electronutlabs_CircuitPython_ILI9163.git"

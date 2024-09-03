@@ -1,10 +1,10 @@
 """ M5Stack CoreS3 with ILI9342 320x240 display """
 
-from spibus import SPIBus
+from pyd_spibus import SPIBus
 from ili9341 import ILI9341
 from machine import I2C, Pin
 from ft6x36 import FT6x36
-from eventsys.devices import Devices, Broker
+from pyd_eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(

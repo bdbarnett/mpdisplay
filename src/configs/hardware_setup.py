@@ -1,14 +1,14 @@
 '''
-hardware_setup.py - hardware setup for MicroPython-Touch using DisplayBuffer on MPDisplay
+hardware_setup.py - hardware setup for MicroPython-Touch using DisplayBuffer on PyDevices
 See:  https://github.com/peterhinch/micropython-touch
 
 Usage:
     from hardware_setup import display
     <your code here>
 '''
-from graphics.displaybuf import DisplayBuffer as SSD
+from pyd_graphics.displaybuf import DisplayBuffer as SSD
 from board_config import display_drv, broker
-from eventsys.events import Events
+from pyd_eventsys.events import Events
 
 # format = SSD.GS4_HMSB  # 4-bit (16 item) lookup table of 16-bit RGB565 colors; w*h/2 buffer
 # format = SSD.GS8  # 256 8-bit RGB332 colors; w*h buffer

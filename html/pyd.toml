@@ -1,0 +1,77 @@
+[files]
+"../src/jupyter_notebook.ipynb" = "/"
+"../src/path.py" = "/"
+"../src/configs/board_config.py" = "/configs/"
+"../src/configs/color_setup.py" = "/configs/"
+"../src/configs/hardware_setup.py" = "/configs/"
+"../src/configs/lv_config.py" = "/configs/"
+"../src/configs/tft_config.py" = "/configs/"
+
+"../src/extras/adafruit_ticks.py" = "/extras/"
+"../src/extras/bmp565.py" = "/extras/"
+"../src/extras/console.py" = "/extras/"
+"../src/extras/ezfont.py" = "/extras/"
+"../src/extras/keypins.py" = "/extras/"
+"../src/extras/micropython.py" = "/extras/"
+"../src/extras/pbm.py" = "/extras/"
+"../src/extras/png.py" = "/extras/"
+"../src/extras/tft_bitmap.py" = "/extras/"
+"../src/extras/tft_write.py" = "/extras/"
+"../src/extras/wifi.py" = "/extras/"
+"../src/extras/tft_text/__init__.py" = "/extras/tft_text/"
+"../src/extras/tft_text/_python.py" = "/extras/tft_text/"
+"../src/extras/tft_text/_viper.py" = "/extras/tft_text/"
+"../src/extras/tft_text/fonts/__init__.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/compile_upload.sh" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga1_16x16.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga1_16x32.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga1_8x16.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga1_8x8.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga1_bold_16x16.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga1_bold_16x32.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga2_16x16.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga2_16x32.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga2_8x16.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga2_8x8.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga2_bold_16x16.py" = "/extras/tft_text/fonts/"
+"../src/extras/tft_text/fonts/vga2_bold_16x32.py" = "/extras/tft_text/fonts/"
+
+
+
+
+
+
+
+
+
+"../src/lib/pyd_eventsys/__init__.py" = "/lib/pyd_eventsys/"
+"../src/lib/pyd_eventsys/devices.py" = "/lib/pyd_eventsys/"
+"../src/lib/pyd_eventsys/events.py" = "/lib/pyd_eventsys/"
+"../src/lib/pyd_eventsys/keys.py" = "/lib/pyd_eventsys/"
+"../src/lib/pyd_eventsys/touch_keypad.py" = "/lib/pyd_eventsys/"
+
+"../src/lib/framebuf.py" = "/lib/"
+"../src/lib/pyd_graphics/__init__.py" = "/lib/pyd_graphics/"
+"../src/lib/pyd_graphics/framebuf_plus/__init__.py" = "/lib/pyd_graphics/framebuf_plus/"
+"../src/lib/pyd_graphics/shapes/__init__.py" = "/lib/pyd_graphics/shapes/"
+"../src/lib/pyd_graphics/palettes/__init__.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/_cube125.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/_cube27.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/_cube64.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/_cube8.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/_material_design.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/cube.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/material_design.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/palettes/wheel.py" = "/lib/pyd_graphics/palettes/"
+"../src/lib/pyd_graphics/displaybuf/__init__.py" = "/lib/pyd_graphics/displaybuf/"
+"../src/lib/pyd_graphics/displaybuf/_viper.py" = "/lib/pyd_graphics/displaybuf/"
+"../src/lib/pyd_graphics/binfont/__init__.py" = "/lib/pyd_graphics/binfont/"
+"../src/lib/pyd_graphics/binfont/binfont_8x14.bin" = "/lib/pyd_graphics/binfont/"
+"../src/lib/pyd_graphics/binfont/binfont_8x16.bin" = "/lib/pyd_graphics/binfont/"
+"../src/lib/pyd_graphics/binfont/binfont_8x8.bin" = "/lib/pyd_graphics/binfont/"
+
+"../src/lib/pyd_timer/__init__.py" = "/lib/pyd_timer/"
+"../src/lib/pyd_timer/_librt.py" = "/lib/pyd_timer/"
+"../src/lib/pyd_timer/_sdl2.py" = "/lib/pyd_timer/"
+"../src/lib/pyd_timer/_timerbase.py" = "/lib/pyd_timer/"
+

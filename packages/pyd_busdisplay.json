@@ -1,0 +1,10 @@
+{
+  "urls": [],
+  "deps": [
+    [
+      "github:bdbarnett/mpdisplay/packages/pyd_basedisplay.json",
+      "main"
+    ]
+  ],
+  "version": "0.1"
+}

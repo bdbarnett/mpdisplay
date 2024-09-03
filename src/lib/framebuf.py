@@ -19,7 +19,7 @@ library.  It is recommended to use framebuf_plus.py instead of this if
 you need to use the returned Areas so your code will be transferable.
 
 """
-from graphics import shapes
+from pyd_graphics import shapes
 
 try:
     from ulab import numpy as np # type: ignore

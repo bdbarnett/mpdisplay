@@ -1,5 +1,5 @@
 """
-Install script for mpdisplay with control over each package.
+Install script for PyDevices with control over each package.
 Uses 'mip' to download directly to a MicroPython device or
 uses 'mpremote' to download to an attached microcontroller
 from Python.
@@ -39,17 +39,17 @@ packages = [
     ("configs", ""),
     ("examples", ""),
     ("extras", ""),
-    ("i80bus", "/lib/buses"),
-    ("spibus", "/lib/buses"),
-    ("basedisplay", "/lib/displays"),
-    ("busdisplay", "/lib/displays"),
-    ("dtdisplay", "/lib/displays"),
-    ("fbdisplay", "/lib/displays"),
-    ("jndisplay", "/lib/displays"),
-    ("psdisplay", "/lib/displays"),
-    ("eventsys", "/lib"),
-    ("graphics", "/lib"),
-    ("timer", "/lib"),
+    ("pyd_i80bus", "/lib/buses"),
+    ("pyd_spibus", "/lib/buses"),
+    ("pyd_basedisplay", "/lib/displays"),
+    ("pyd_busdisplay", "/lib/displays"),
+    ("pyd_dtdisplay", "/lib/displays"),
+    ("pyd_fbdisplay", "/lib/displays"),
+    ("pyd_jndisplay", "/lib/displays"),
+    ("pyd_psdisplay", "/lib/displays"),
+    ("pyd_eventsys", "/lib"),
+    ("pyd_graphics", "/lib"),
+    ("pyd_timer", "/lib"),
 ]
 
 # Install each package

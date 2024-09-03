@@ -11,11 +11,11 @@ repo_dir = "/home/brad/gh/mpdisplay/"
 src_dir = "src/"
 output_dir = repo_dir
 packages_dir = "packages/"
-toml_full_path = output_dir + "html/mpdisplay.toml"
+toml_full_path = output_dir + "html/pyd.toml"
 master_package_name = "package"
 
-displays_deps = [
-    [f"{repo_url}{packages_dir}basedisplay.json", "main"],
+display_deps = [
+    [f"{repo_url}{packages_dir}pyd_basedisplay.json", "main"],
 ]
 
 # list of package directories, dependencies and extra files in that package
@@ -23,17 +23,17 @@ packages = [
     ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],
     ["examples", [], []],
     ["extras", [], []],
-    ["lib/buses/spibus", [], []],
-    ["lib/buses/i80bus", [], []],
-    ["lib/displays/basedisplay", [], []],
-    ["lib/displays/busdisplay", displays_deps, []],
-    ["lib/displays/dtdisplay", displays_deps, []],
-    ["lib/displays/fbdisplay", displays_deps, []],
-    ["lib/displays/jndisplay", displays_deps, []],
-    ["lib/displays/psdisplay", displays_deps, []],
-    ["lib/eventsys", [], []],
-    ["lib/graphics", [], ["framebuf.py",]],
-    ["lib/timer", [], []],
+    ["lib/buses/pyd_spibus", [], []],
+    ["lib/buses/pyd_i80bus", [], []],
+    ["lib/displays/pyd_basedisplay", [], []],
+    ["lib/displays/pyd_busdisplay", display_deps, []],
+    ["lib/displays/pyd_dtdisplay", display_deps, []],
+    ["lib/displays/pyd_fbdisplay", display_deps, []],
+    ["lib/displays/pyd_jndisplay", display_deps, []],
+    ["lib/displays/pyd_psdisplay", display_deps, []],
+    ["lib/pyd_eventsys", [], []],
+    ["lib/pyd_graphics", [], ["framebuf.py",]],
+    ["lib/pyd_timer", [], []],
     ]
 
 master_exclude = ["examples"]

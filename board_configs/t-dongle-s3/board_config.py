@@ -1,6 +1,6 @@
 """ LilyGo T-Dongle-S3 80x160 ST7735 display """
 
-from spibus import SPIBus
+from pyd_spibus import SPIBus
 from st7735 import ST7735
 
 
