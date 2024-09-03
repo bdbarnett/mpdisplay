@@ -109,6 +109,4 @@ mpremote mip install "github:bdbarnett/mpdisplay/packages/pyd_eventsys.json"
 mpremote mip install "github:bdbarnett/mpdisplay/board_configs/<your_board>"
 mpremote mip install "github:bdbarnett/mpdisplay/src/configs/lv_config.py"
 ```
-
-
-
+See [this Wokwi project](https://wokwi.com/projects/404248867674669057) for an example of a minimum configuration.
