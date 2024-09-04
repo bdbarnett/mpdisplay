@@ -85,7 +85,7 @@ Only touchscreen input has been implemented in PyDevices for PyScript.  Key inpu
 You can see and interact with PyScript on the web at [https://bdbarnett.github.io/mpdisplay/](https://bdbarnett.github.io/mpdisplay/).  You can also run it from your computer by cloning the repository, cd to the root of the repository (not the src directory) and running `python -m http.server`.  Then open your browser to [http://localhost:8000/](http://localhost:8000/).
 
 # Minimum packages required:
-If you don't need the pyd_graphics library and don't plan to run many of the examples, you only need a couple of the packages.  For instance, if you plan to use PyDevices for another library such as LVGL or just the MicroPython framebuffer, you only need:
+If you don't need the pyd_gl library and don't plan to run many of the examples, you only need a couple of the packages.  For instance, if you plan to use PyDevices for another library such as LVGL or just the MicroPython framebuffer, you only need:
 1.  A display from [displays](../src/lib/displays/), such as [pyd_busdisplay.json](../packages/pyd_busdisplay.json)
   -  A bus from [buses](../src/lib/buses/) if you are using pyd_busdisplay in particular, such as [pyd_spibus.json](../packages/pyd_spibus.json) or [pyd_i80bus](../packages/pyd_i80bus.json)
 2.  The [pyd_eventsys](../src/lib/pyd_eventsys/) directory from [pyd_eventsys.json](../packages/pyd_eventsys.json) if you are using PyDevices for managing your touchscreen or other input devices.

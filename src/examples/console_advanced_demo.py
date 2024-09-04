@@ -3,10 +3,10 @@ console_advanced_demo.py - Advanced demo of the mpconsole module
 """
 
 from board_config import display_drv
-from pyd_graphics.palettes import get_palette
+from pyd_gl.palettes import get_palette
 from console import Console
 from sys import implementation, platform
-from pyd_graphics.binfont import text16
+from pyd_gl.binfont import text16
 
 SSID = "<ssid>"
 PASSPHRASE = "<passphrase>"

@@ -5,13 +5,13 @@
 Makes a color cube palette.
 
 Usage:
-    from pyd_graphics.palettes import get_palette
+    from pyd_gl.palettes import get_palette
     palette = get_palette(name="cube", size=5, color_depth=16, swapped=False)
     # OR
     palette = get_palette(name="cube")
 
     # OR
-    from pyd_graphics.palettes.cube import CubePalette
+    from pyd_gl.palettes.cube import CubePalette
     palette = CubePalette(size=5, color_depth=24)
 
     print(f"Palette: {palette.name}, Length: {len(palette)}")

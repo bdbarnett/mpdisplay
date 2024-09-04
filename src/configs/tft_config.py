@@ -1,6 +1,6 @@
 from board_config import display_drv
-from pyd_graphics.palettes import get_palette
-from pyd_graphics.shapes import Draw
+from pyd_gl.palettes import get_palette
+from pyd_gl.shapes import Draw
 import tft_text
 import sys
 import os
@@ -19,7 +19,7 @@ if sys.implementation.name == "esp32":
 BUFFERED = False
 
 if BUFFERED:
-    from pyd_graphics.displaybuf import DisplayBuffer
+    from pyd_gl.displaybuf import DisplayBuffer
     from pyd_timer import Timer
 
 

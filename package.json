@@ -241,76 +241,76 @@
       "github:bdbarnett/mpdisplay/src/lib/framebuf.py"
     ],
     [
-      "lib/pyd_graphics/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/__init__.py"
+      "lib/pyd_gl/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/__init__.py"
     ],
     [
-      "lib/pyd_graphics/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/framebuf_plus/__init__.py"
+      "lib/pyd_gl/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/framebuf_plus/__init__.py"
     ],
     [
-      "lib/pyd_graphics/shapes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/shapes/__init__.py"
+      "lib/pyd_gl/shapes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/shapes/__init__.py"
     ],
     [
-      "lib/pyd_graphics/palettes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/__init__.py"
+      "lib/pyd_gl/palettes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/__init__.py"
     ],
     [
-      "lib/pyd_graphics/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/_cube125.py"
+      "lib/pyd_gl/palettes/_cube125.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/_cube125.py"
     ],
     [
-      "lib/pyd_graphics/palettes/_cube27.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/_cube27.py"
+      "lib/pyd_gl/palettes/_cube27.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/_cube27.py"
     ],
     [
-      "lib/pyd_graphics/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/_cube64.py"
+      "lib/pyd_gl/palettes/_cube64.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/_cube64.py"
     ],
     [
-      "lib/pyd_graphics/palettes/_cube8.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/_cube8.py"
+      "lib/pyd_gl/palettes/_cube8.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/_cube8.py"
     ],
     [
-      "lib/pyd_graphics/palettes/_material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/_material_design.py"
+      "lib/pyd_gl/palettes/_material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/_material_design.py"
     ],
     [
-      "lib/pyd_graphics/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/cube.py"
+      "lib/pyd_gl/palettes/cube.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/cube.py"
     ],
     [
-      "lib/pyd_graphics/palettes/material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/material_design.py"
+      "lib/pyd_gl/palettes/material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/material_design.py"
     ],
     [
-      "lib/pyd_graphics/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/palettes/wheel.py"
+      "lib/pyd_gl/palettes/wheel.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/palettes/wheel.py"
     ],
     [
-      "lib/pyd_graphics/displaybuf/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/displaybuf/__init__.py"
+      "lib/pyd_gl/displaybuf/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/displaybuf/__init__.py"
     ],
     [
-      "lib/pyd_graphics/displaybuf/_viper.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/displaybuf/_viper.py"
+      "lib/pyd_gl/displaybuf/_viper.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/displaybuf/_viper.py"
     ],
     [
-      "lib/pyd_graphics/binfont/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/binfont/__init__.py"
+      "lib/pyd_gl/binfont/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/binfont/__init__.py"
     ],
     [
-      "lib/pyd_graphics/binfont/binfont_8x14.bin",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/binfont/binfont_8x14.bin"
+      "lib/pyd_gl/binfont/binfont_8x14.bin",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/binfont/binfont_8x14.bin"
     ],
     [
-      "lib/pyd_graphics/binfont/binfont_8x16.bin",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/binfont/binfont_8x16.bin"
+      "lib/pyd_gl/binfont/binfont_8x16.bin",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/binfont/binfont_8x16.bin"
     ],
     [
-      "lib/pyd_graphics/binfont/binfont_8x8.bin",
-      "github:bdbarnett/mpdisplay/src/lib/pyd_graphics/binfont/binfont_8x8.bin"
+      "lib/pyd_gl/binfont/binfont_8x8.bin",
+      "github:bdbarnett/mpdisplay/src/lib/pyd_gl/binfont/binfont_8x8.bin"
     ],
     [
       "lib/pyd_timer/__init__.py",

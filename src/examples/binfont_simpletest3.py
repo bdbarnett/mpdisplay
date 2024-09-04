@@ -6,10 +6,10 @@ Draws to a DisplayBuffer and only updates the area that has changed.
 """
 
 from board_config import display_drv
-from pyd_graphics.binfont import BinFont
+from pyd_gl.binfont import BinFont
 import random
-from pyd_graphics.displaybuf import DisplayBuffer
-from pyd_graphics.palettes import get_palette
+from pyd_gl.displaybuf import DisplayBuffer
+from pyd_gl.palettes import get_palette
 import os
 
 display = DisplayBuffer(display_drv)
@@ -40,9 +40,9 @@ def main():
     if cwd[-1] != "/":
         cwd += "/"
 
-    font1 = BinFont(f"{cwd}lib/pyd_graphics/binfont/binfont_8x8.bin")
-    font2 = BinFont(f"{cwd}lib/pyd_graphics/binfont/binfont_8x14.bin")
-    font3 = BinFont(f"{cwd}lib/pyd_graphics/binfont/binfont_8x16.bin")
+    font1 = BinFont(f"{cwd}lib/pyd_gl/binfont/binfont_8x8.bin")
+    font2 = BinFont(f"{cwd}lib/pyd_gl/binfont/binfont_8x14.bin")
+    font3 = BinFont(f"{cwd}lib/pyd_gl/binfont/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.font_width for font in fonts])

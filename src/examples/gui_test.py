@@ -4,7 +4,7 @@ print("It is a work in progress and is not complete.")
 print("Please do not report errors or request changes.")
 
 ############## file:  __init__.py
-from pyd_graphics.palettes import get_palette
+from pyd_gl.palettes import get_palette
 
 colors = get_palette()
 
@@ -36,7 +36,7 @@ class parts:
 
 
 ############## file:  screen.py
-from pyd_graphics import Area  # noqa: E402
+from pyd_gl import Area  # noqa: E402
 
 
 class Screen:

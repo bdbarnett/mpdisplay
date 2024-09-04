@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pyd_graphics`
+`pyd_gl`
 ====================================================
 Graphics primitives for drawing on a canvas.
 

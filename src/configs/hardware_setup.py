@@ -6,7 +6,7 @@ Usage:
     from hardware_setup import display
     <your code here>
 '''
-from pyd_graphics.displaybuf import DisplayBuffer as SSD
+from pyd_gl.displaybuf import DisplayBuffer as SSD
 from board_config import display_drv, broker
 from pyd_eventsys.events import Events
 

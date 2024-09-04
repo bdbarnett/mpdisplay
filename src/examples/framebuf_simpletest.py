@@ -4,7 +4,7 @@ Simple test example to demonstrate the use of framebuf.FrameBuffer.
 
 from board_config import display_drv
 from framebuf import FrameBuffer, RGB565
-from pyd_graphics.palettes import get_palette
+from pyd_gl.palettes import get_palette
 from array import array  # for defining a polygon
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,

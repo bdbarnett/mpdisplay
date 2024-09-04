@@ -48,7 +48,7 @@ packages = [
     ("pyd_jndisplay", "/lib/displays"),
     ("pyd_psdisplay", "/lib/displays"),
     ("pyd_eventsys", "/lib"),
-    ("pyd_graphics", "/lib"),
+    ("pyd_gl", "/lib"),
     ("pyd_timer", "/lib"),
 ]
 

@@ -15,7 +15,7 @@ or as a function argument:
 """
 
 from board_config import display_drv
-from pyd_graphics import shapes
+from pyd_gl import shapes
 
 
 dirty = shapes.circle(display_drv, 120, 120, 50, 0XFF00, True)

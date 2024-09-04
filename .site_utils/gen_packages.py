@@ -32,7 +32,7 @@ packages = [
     ["lib/displays/pyd_jndisplay", display_deps, []],
     ["lib/displays/pyd_psdisplay", display_deps, []],
     ["lib/pyd_eventsys", [], []],
-    ["lib/pyd_graphics", [], ["framebuf.py",]],
+    ["lib/pyd_gl", [], ["framebuf.py",]],
     ["lib/pyd_timer", [], []],
     ]
 

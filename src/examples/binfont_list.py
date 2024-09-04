@@ -9,7 +9,7 @@ The script iterates through the font files, creates a framebuffer, and renders t
 The rendered font is then displayed on the display driver.
 """
 from board_config import display_drv
-from pyd_graphics.binfont import BinFont
+from pyd_gl.binfont import BinFont
 from framebuf import FrameBuffer, RGB565
 import os
 
@@ -25,7 +25,7 @@ def main():
         cwd += "/"
 
     # Specify the directory containing the .bin files
-    directory = f"{cwd}lib/pyd_graphics/binfont"
+    directory = f"{cwd}lib/pyd_gl/binfont"
 
     def gather_font_files(directory):
         font_files = []
