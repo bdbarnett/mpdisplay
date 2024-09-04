@@ -39,13 +39,13 @@
 "../src/lib/buses/pyd_spibus/__init__.py" = "/lib/buses/pyd_spibus/"
 
 "../src/lib/buses/pyd_i80bus/__init__.py" = "/lib/buses/pyd_i80bus/"
-"../src/lib/buses/pyd_i80bus/_i80bus_rp2_wip.py" = "/lib/buses/pyd_i80bus/"
+"../src/lib/buses/pyd_i80bus/_rp2_wip.py" = "/lib/buses/pyd_i80bus/"
 "../src/lib/buses/pyd_i80bus/gpio_pin.py" = "/lib/buses/pyd_i80bus/"
 
 "../src/lib/displays/pyd_basedisplay/__init__.py" = "/lib/displays/pyd_basedisplay/"
 "../src/lib/displays/pyd_basedisplay/_area.py" = "/lib/displays/pyd_basedisplay/"
-"../src/lib/displays/pyd_basedisplay/_basedisplay_numpy.py" = "/lib/displays/pyd_basedisplay/"
-"../src/lib/displays/pyd_basedisplay/_basedisplay_viper.py" = "/lib/displays/pyd_basedisplay/"
+"../src/lib/displays/pyd_basedisplay/_numpy.py" = "/lib/displays/pyd_basedisplay/"
+"../src/lib/displays/pyd_basedisplay/_viper.py" = "/lib/displays/pyd_basedisplay/"
 
 "../src/lib/displays/pyd_busdisplay/__init__.py" = "/lib/displays/pyd_busdisplay/"
 

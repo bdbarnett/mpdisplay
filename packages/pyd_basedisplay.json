@@ -9,12 +9,12 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_area.py"
     ],
     [
-      "pyd_basedisplay/_basedisplay_numpy.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_basedisplay_numpy.py"
+      "pyd_basedisplay/_numpy.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_numpy.py"
     ],
     [
-      "pyd_basedisplay/_basedisplay_viper.py",
-      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_basedisplay_viper.py"
+      "pyd_basedisplay/_viper.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/pyd_basedisplay/_viper.py"
     ]
   ],
   "deps": [],
