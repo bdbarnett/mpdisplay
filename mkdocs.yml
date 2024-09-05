@@ -1,7 +1,15 @@
-site_name: "My Library"
+site_name: PyDevices Documentation
+
+repo_url: https://github.com/bdbarnett/mpdisplay/
+
+copyright: "Copyright 2024, Brad Barnett"
+
+docs_dir: docs
+
+site_dir: site
 
 theme:
-  name: "material"
+  name: "readthedocs"
 
 plugins:
 - search
@@ -16,9 +24,16 @@ plugins:
 
 nav:
 # rest of the navigation...
-- project:
-  - lorem: GETTING-STARTED.md
-  - ipsum: test-page.md
+- Details:
+  - Getting Started: GETTING-STARTED.md
+  - Another Level:
+    - And Another:
+      - Test Page: test-page.md
 # defer to gen-files + literate-nav
 - Code Reference: reference/  
 # rest of the navigation...
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      separator: "_"
