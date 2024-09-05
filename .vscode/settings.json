@@ -1,0 +1,12 @@
+{
+    "python.analysis.extraPaths": [
+        "./src",
+        "./src/configs",
+        "./src/examples",
+        "./src/extras",
+        "./src/lib",
+        "./src/lib/buses",
+        "./src/lib/displays"
+    ],
+    "python.analysis.typeCheckingMode": "off"
+}
