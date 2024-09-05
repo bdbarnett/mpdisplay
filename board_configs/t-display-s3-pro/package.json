@@ -1,7 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-display-s3-pro/board_config.py"],
-      ["st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"]
+      ["st7796.py", "github:bdbarnett/mpdisplay/drivers/display/st7796.py"]
     ],
     "version": "0.1"
   }
