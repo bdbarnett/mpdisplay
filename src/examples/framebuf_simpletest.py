@@ -4,7 +4,6 @@ Simple test example to demonstrate the use of framebuf.FrameBuffer.
 
 from board_config import display_drv
 from framebuf import FrameBuffer, RGB565
-from pyd_gl.palettes import get_palette
 from array import array  # for defining a polygon
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
@@ -24,7 +23,18 @@ ba = bytearray(WIDTH * HEIGHT * BPP)
 fb = FrameBuffer(ba, WIDTH, HEIGHT, RGB565)
 
 # Define color palette
-pal = get_palette(swapped=needs_swap)
+class pal:
+    BLACK = 0x0000
+    WHITE = 0xFFFF
+    RED = 0xF800 if not needs_swap else 0x00F8
+    GREEN = 0x07E0 if not needs_swap else 0xE007
+    BLUE = 0x001F if not needs_swap else 0xF800
+    CYAN = 0x07FF if not needs_swap else 0xFF07
+    MAGENTA = 0xF81F if not needs_swap else 0x1FF8
+    YELLOW = 0xFFE0 if not needs_swap else 0xE0FF
+    ORANGE = 0xFD20 if not needs_swap else 0x20FD
+    PURPLE = 0x8010 if not needs_swap else 0x1080
+    GREY = 0x8410 if not needs_swap else 0x1084
 
 # Define objects
 triangle = array("h", [0, 0, WIDTH // 2, -HEIGHT // 4, WIDTH - 1, 0])
@@ -61,8 +71,8 @@ def main(
         display_drv.blit_rect(ba, 0, 0, WIDTH, HEIGHT)
 
 
-launch = lambda: main(animate=True)
+launch = lambda: main(animate=True)  # noqa: E731
 
-wipe = lambda: main(scroll=True)
+wipe = lambda: main(scroll=True)  # noqa: E731
 
 main()
