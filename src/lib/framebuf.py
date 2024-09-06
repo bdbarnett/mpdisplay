@@ -19,13 +19,14 @@ library.  It is recommended to use framebuf_plus.py instead of this if
 you need to use the returned Areas so your code will be transferable.
 
 """
+
 from pyd_gl import shapes
 
 try:
-    from ulab import numpy as np # type: ignore
+    from ulab import numpy as np  # type: ignore
 except ImportError:
     try:
-        import numpy as np # type: ignore
+        import numpy as np  # type: ignore
     except ImportError:
         np = None
 
@@ -169,9 +170,9 @@ class MHMSBFormat:
             offset = 7 - _x & 0x07
             for _y in range(y, y + height):
                 index = (_y * framebuf._stride + _x) // 8
-                framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
-                    (color != 0) << offset
-                )
+                framebuf._buffer[index] = (
+                    framebuf._buffer[index] & ~(0x01 << offset)
+                ) | ((color != 0) << offset)
 
 
 class RGB565Format:
@@ -325,11 +326,11 @@ class FrameBuffer(BasicShapes):
             self._format = GS8Format()
         else:
             raise ValueError("invalid format")
-        
+
     @property
     def width(self):
         return self._width
-    
+
     @property
     def height(self):
         return self._height
@@ -396,10 +397,14 @@ class FrameBuffer(BasicShapes):
             # Iterate over each column in the appropriate order (right to left for xstep > 0, left to right for xstep < 0)
             if xstep > 0:
                 for i in range(bytes_per_row - 1, (xstep * BPP) - 1, -1):
-                    self._buffer[new_offset + i] = self._buffer[offset + i - (xstep * BPP)]
+                    self._buffer[new_offset + i] = self._buffer[
+                        offset + i - (xstep * BPP)
+                    ]
             elif xstep < 0:
                 for i in range(-xstep * BPP, bytes_per_row):
-                    self._buffer[new_offset + i] = self._buffer[offset + i + (xstep * BPP)]
+                    self._buffer[new_offset + i] = self._buffer[
+                        offset + i + (xstep * BPP)
+                    ]
             else:
                 # If there is no x shift, copy the row as is
                 self._buffer[new_offset : new_offset + bytes_per_row] = self._buffer[

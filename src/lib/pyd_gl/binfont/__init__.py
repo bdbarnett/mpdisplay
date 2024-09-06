@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-A module to draw text to a canvas using fonts from 
+A module to draw text to a canvas using fonts from
 https://github.com/spacerace/romfont
 """
 
@@ -31,7 +31,6 @@ _FONTS = {
 _DEFAULT_FONT = _FONTS[8]
 
 
-
 def text(*args, font_height=8, **kwargs):
     if font_height == 8:
         return text8(*args, **kwargs)
@@ -40,6 +39,7 @@ def text(*args, font_height=8, **kwargs):
     if font_height == 16:
         return text16(*args, **kwargs)
     raise ValueError("Unsupported font height: %d" % font_height)
+
 
 def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
     """Place text on the canvas.  Breaks on \n to next line.
@@ -57,7 +57,9 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_he
     return BinFont._text8font.text(canvas, s, x, y, c, scale, inverted)
 
 
-def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=14):
+def text14(
+    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=14
+):
     """Place text on the screen.  Breaks on \n to next line.
 
     Does not break on line going off screen.
@@ -72,7 +74,10 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_h
 
     return BinFont._text14font.text(canvas, s, x, y, c, scale, inverted)
 
-def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16):
+
+def text16(
+    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16
+):
     """Place text on the screen.  Breaks on \n to next line.
 
     Does not break on line going off screen.

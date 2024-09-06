@@ -3,29 +3,48 @@
 # SPDX-License-Identifier: MIT
 
 """
-PGDisplay class for CPython.
+pyd_dtdisplay.pgdisplay - A Python library for emulating an LCD using pygame.
 """
 
-import pygame as pg # type: ignore
+import pygame as pg  # type: ignore
 from .. import BaseDisplay, Area, color_rgb
 
+try:
+    from typing import Optional
+except ImportError:
+    pass
 
-def poll():
+
+def poll() -> Optional[pg.event.Event]:
     """
     Polls for an event and returns the event type and data.
 
-    :return: The event type and data.
-    :rtype: tuple
+    Returns:
+        Optional[pg.event.Event]: The event type and data.
     """
     return pg.event.poll()
 
 
 class PGDisplay(BaseDisplay):
-    '''
+    """
     A class to emulate an LCD using pygame.
     Provides scrolling and rotation functions similar to an LCD.  The .texture
     object functions as the LCD's internal memory.
-    '''
+
+    Args:
+        width (int, optional): The width of the display. Defaults to 320.
+        height (int, optional): The height of the display. Defaults to 240.
+        rotation (int, optional): The rotation of the display. Defaults to 0.
+        color_depth (int, optional): The color depth of the display. Defaults to 16.
+        title (str, optional): The title of the display window. Defaults to "PyDevices".
+        scale (float, optional): The scale of the display. Defaults to 1.0.
+        window_flags (int, optional): The flags for creating the display window. Defaults to pg.SHOWN
+
+    Attributes:
+        color_depth (int): The color depth of the display.
+        touch_scale (float): The touch scale of the display.
+    """
+
     def __init__(
         self,
         width=320,
@@ -36,24 +55,6 @@ class PGDisplay(BaseDisplay):
         scale=1.0,
         window_flags=pg.SHOWN,
     ):
-        """
-        Initializes the display instance with the given parameters.
-
-        :param width: The width of the display (default is 320).
-        :type width: int
-        :param height: The height of the display (default is 240).
-        :type height: int
-        :param rotation: The rotation of the display (default is 0).
-        :type rotation: int
-        :param color_depth: The color depth of the display (default is 16).
-        :type color_depth: int
-        :param title: The title of the display window (default is "MicroPython").
-        :type title: str
-        :param scale: The scale of the display (default is None).
-        :type scale: float
-        :param window_flags: The flags for creating the display window (default is pg.SHOWN).
-        :type window_flags: int
-        """
         super().__init__()
         self._width = width
         self._height = height
@@ -68,135 +69,148 @@ class PGDisplay(BaseDisplay):
         self._bytes_per_pixel = color_depth // 8
 
         if self._scale != 1 and not hasattr(pg.transform, "scale_by"):
-            print(f"PGDisplay:  Scaling is set to {self._scale}, but pygame {pg.ver} does not support it.")
+            print(
+                f"PGDisplay:  Scaling is set to {self._scale}, but pygame {pg.ver} does not support it."
+            )
             self._scale = 1
 
         pg.init()
 
-        self._buffer = pg.Surface(size=(self._width, self._height), depth=self.color_depth)
+        self._buffer = pg.Surface(
+            size=(self._width, self._height), depth=self.color_depth
+        )
         self._buffer.fill((0, 0, 0))
 
         self.init()
 
     ############### Required API Methods ################
 
-    def init(self):
+    def init(self) -> None:
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        self._window = pg.display.set_mode(size=(int(self.width * self._scale), int(self.height * self._scale)), flags=self._window_flags, depth=self.color_depth, display=0, vsync=0)
+        self._window = pg.display.set_mode(
+            size=(int(self.width * self._scale), int(self.height * self._scale)),
+            flags=self._window_flags,
+            depth=self.color_depth,
+            display=0,
+            vsync=0,
+        )
         pg.display.set_caption(self._title)
 
-        super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling show
+        super().vscrdef(
+            0, self.height, 0
+        )  # Set the vertical scroll definition without calling show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
-    def blit_rect(self, buffer, x, y, w, h):
+    def blit_rect(self, buffer: memoryview, x: int, y: int, w: int, h: int) -> Area:
         """
         Blits a buffer to the display.
-        
-        :param x: The x-coordinate of the display.
-        :type x: int
-        :param y: The y-coordinate of the display.
-        :type y: int
-        :param w: The width of the display.
-        :type w: int
-        :param h: The height of the display.
-        :type h: int
-        :param buffer: The buffer to blit_rect to the display.
-        :type buffer: bytearray
+
+        Args:
+            buffer (memoryview): The buffer to blit.
+            x (int): The x-coordinate of the buffer.
+            y (int): The y-coordinate of the buffer.
+            w (int): The width to blit.
+            h (int): The height to blit.
+
+        Returns:
+            Area: The area of the buffer that was blitted.
         """
 
         blitRect = pg.Rect(x, y, w, h)
         for i in range(h):
             for j in range(w):
                 pixel_index = (i * w + j) * self._bytes_per_pixel
-                color = color_rgb(buffer[pixel_index:pixel_index + self._bytes_per_pixel])
+                color = color_rgb(
+                    buffer[pixel_index : pixel_index + self._bytes_per_pixel]
+                )
                 self._buffer.set_at((x + j, y + i), color)
         self.show(blitRect)
         return Area(x, y, w, h)
 
-    def fill_rect(self, x, y, w, h, c):
+    def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
         """
         Fill a rectangle with a color.
 
         Renders to the texture instead of directly to the window
         to facilitate scrolling and scaling.
 
-        :param x: The x-coordinate of the rectangle.
-        :type x: int
-        :param y: The y-coordinate of the rectangle.
-        :type y: int
-        :param w: The width of the rectangle.
-        :type w: int
-        :param h: The height of the rectangle.
-        :type h: int
-        :param c: The color of the rectangle.
-        :type c: int
+        Args:
+            x (int): The x-coordinate of the rectangle.
+            y (int): The y-coordinate of the rectangle.
+            w (int): The width of the rectangle.
+            h (int): The height of the rectangle.
+            c (int): The color of the rectangle.
+
+        Returns:
+            Area: The area of the rectangle that was filled.
         """
         fillRect = pg.Rect(x, y, w, h)
         self._buffer.fill(color_rgb(c), fillRect)
         self.show(fillRect)
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c):
+    def pixel(self, x: int, y: int, c: int) -> Area:
         """
         Set a pixel on the display.
 
-        :param x: The x-coordinate of the pixel.
-        :type x: int
-        :param y: The y-coordinate of the pixel.
-        :type y: int
-        :param c: The color of the pixel.
-        :type c: int
+        Args:
+            x (int): The x-coordinate of the pixel.
+            y (int): The y-coordinate of the pixel.
+            c (int): The color of the pixel.
+
+        Returns:
+            Area: The area of the pixel that was set.
         """
         self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
         return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 
-    def vscrdef(self, tfa, vsa, bfa):
+    def vscrdef(self, tfa: int, vsa: int, bfa: int) -> None:
         """
         Set the vertical scroll definition.
 
-        :param tfa: The top fixed area.
-        :type tfa: int
-        :param vsa: The vertical scroll area.
-        :type vsa: int
-        :param bfa: The bottom fixed area.
-        :type bfa: int
+        Args:
+            tfa (int): The top fixed area.
+            vsa (int): The vertical scroll area.
+            bfa (int): The bottom fixed area.
         """
         super().vscrdef(tfa, vsa, bfa)
         self.show()
 
-    def vscsad(self, vssa=None):
+    def vscsad(self, vssa: Optional[int] = None) -> int:
         """
         Set the vertical scroll start address.
-        
-        :param vssa: The vertical scroll start address.
-        :type vssa: int
+
+        Args:
+            vssa (Optional[int], optional): The vertical scroll start address. Defaults to None.
+
+        Returns:
+            int: The vertical scroll start address.
         """
         if vssa is not None:
             super().vscsad(vssa)
             self.show()
-        else:
-            return super().vscsad()
+        return super().vscsad()
 
     def _rotation_helper(self, value):
         """
         Helper function for the rotation setter.
         """
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
-                tempBuffer = pg.transform.rotate(self._buffer, -angle)
-                self._buffer = tempBuffer
+            tempBuffer = pg.transform.rotate(self._buffer, -angle)
+            self._buffer = tempBuffer
 
     ############### Class Specific Methods ##############
 
-    def show(self, renderRect=None):
+    def show(self, renderRect: Optional[pg.Rect] = None) -> None:
         """
         Show the display.  Automatically called after blitting or filling the display.
 
-        :param renderRect: The rectangle to render (default is None).
-        :type renderRect: pg.Rect
+        Args:
+            renderRect (Optional[pg.Rect], optional): The rectangle to render. Defaults to None.
         """
         s = self._scale
         if s != 1:
@@ -206,7 +220,7 @@ class PGDisplay(BaseDisplay):
         if not (y_start := self.vscsad()):
             if renderRect is not None:
                 x, y, w, h = renderRect
-                renderRect = pg.Rect(x*s, y*s, w*s, h*s)
+                renderRect = pg.Rect(x * s, y * s, w * s, h * s)
                 dest = renderRect
             else:
                 dest = (0, 0)
@@ -239,7 +253,7 @@ class PGDisplay(BaseDisplay):
 
         pg.display.flip()
 
-    def deinit(self):
+    def deinit(self) -> None:
         """
         Deinitializes the pygame instance.
         """

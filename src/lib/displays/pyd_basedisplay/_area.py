@@ -5,6 +5,7 @@
 This module defines the Area class, which represents a rectangular area defined by its position and dimensions.
 """
 
+
 class Area:
     """
     Represents a rectangular area defined by its position and dimensions.
@@ -33,7 +34,7 @@ class Area:
             str: A string representation of the Area object.
         """
         return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
-    
+
     def __str__(self):
         """
         Returns a string representation of the Area object.
@@ -42,7 +43,7 @@ class Area:
             str: A string representation of the Area object.
         """
         return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
-    
+
     def __eq__(self, other):
         """
         Checks if the current Area object is equal to another Area object.
@@ -53,8 +54,13 @@ class Area:
         Returns:
             bool: True if the two Area objects are equal, False otherwise.
         """
-        return self.x == other.x and self.y == other.y and self.w == other.w and self.h == other.h
-    
+        return (
+            self.x == other.x
+            and self.y == other.y
+            and self.w == other.w
+            and self.h == other.h
+        )
+
     def __ne__(self, other):
         """
         Checks if the current Area object is not equal to another Area object.
@@ -66,7 +72,7 @@ class Area:
             bool: True if the two Area objects are not equal, False otherwise.
         """
         return not self.__eq__(other)
-    
+
     def __add__(self, other):
         """
         Computes the union of the current Area object and another Area object.
@@ -81,7 +87,7 @@ class Area:
             min(self.x, other.x),
             min(self.y, other.y),
             max(self.x + self.w, other.x + other.w) - min(self.x, other.x),
-            max(self.y + self.h, other.y + other.h) - min(self.y, other.y)
+            max(self.y + self.h, other.y + other.h) - min(self.y, other.y),
         )
 
     def intersects(self, other):
@@ -101,7 +107,7 @@ class Area:
         if self.y + self.h <= other.y or other.y + other.h <= self.y:
             return False
         return True
-        
+
     def __len__(self):
         """
         Returns the number of elements in the Area object.
@@ -129,7 +135,7 @@ class Area:
             int: The x-coordinate of the top-left corner of the area.
         """
         return self._x
-    
+
     @property
     def y(self):
         """
@@ -139,7 +145,7 @@ class Area:
             int: The y-coordinate of the top-left corner of the area.
         """
         return self._y
-    
+
     @property
     def w(self):
         """
@@ -149,7 +155,7 @@ class Area:
             int: The width of the area.
         """
         return self._w
-    
+
     @property
     def h(self):
         """
@@ -159,4 +165,3 @@ class Area:
             int: The height of the area.
         """
         return self._h
- 

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 """
 Cross-platform Timer class for *Python.
- 
+
 Enables using 'from pyd_timer import Timer' on MicroPython on microcontrollers,
 on MicroPython on Unix (which doesn't have a machine.Timer) and CPython (ditto).
 
@@ -25,6 +25,7 @@ try:
     from machine import Timer  # type: ignore # MicroPython on microcontrollers
 except ImportError:
     import sys
+
     if sys.implementation.name == "micropython":  # MicroPython on Unix
         from ._librt import Timer
     elif sys.implementation.name == "cpython":  # Big Python
@@ -39,5 +40,5 @@ def refresh_timer(callback, period=33):
     """
 
     tim = Timer(-1 if sys.platform == "rp2" else 1)
-    tim.init(mode = Timer.PERIODIC, period=period, callback=lambda t: callback())
+    tim.init(mode=Timer.PERIODIC, period=period, callback=lambda t: callback())
     return tim

@@ -1,9 +1,8 @@
-
 # Timer that matches machine.Timer (https://docs.micropython.org/en/latest/library/machine.Timer.html)
 # for the unix port.
 #
 # MIT license; Copyright (c) 2021 Amir Gonnen, 2024 Brad Barnett
-# 
+#
 # Based on timer.py from micropython-lib (https://github.com/micropython/micropython-lib/blob/master/unix-ffi/machine/machine/timer.py)
 
 from ._timerbase import _TimerBase
@@ -17,7 +16,7 @@ import os
 libc = ffi.open("libc.so.6")
 try:
     librt = ffi.open("librt.so")
-except OSError as e:
+except OSError:
     librt = libc
 
 
@@ -30,10 +29,10 @@ SIGEV_SIGNAL = 0
 # C structs
 
 sigaction_t = {
-    "sa_handler" : (0 | uctypes.UINT64),
-    "sa_mask"    : (8 | uctypes.ARRAY, 16 | uctypes.UINT64),
-    "sa_flags"   : (136 | uctypes.INT32),
-    "sa_restorer": (144 |uctypes.PTR, uctypes.UINT8), 
+    "sa_handler": (0 | uctypes.UINT64),
+    "sa_mask": (8 | uctypes.ARRAY, 16 | uctypes.UINT64),
+    "sa_flags": (136 | uctypes.INT32),
+    "sa_restorer": (144 | uctypes.PTR, uctypes.UINT8),
 }
 
 sigval_t = {
@@ -70,10 +69,12 @@ sigaction_ = libc.func("i", "sigaction", "iPp")
 
 # Create a new C struct
 
+
 def new(sdesc):
     buf = bytearray(uctypes.sizeof(sdesc))
     s = uctypes.struct(uctypes.addressof(buf), sdesc, uctypes.NATIVE)
     return s
+
 
 # Posix Signal handling
 
@@ -87,9 +88,11 @@ def sigaction(signum, handler, flags=0):
     r = sigaction_(signum, sa, sa_old)
     if r != 0:
         raise RuntimeError("sigaction_ error: %d (errno = %d)" % (r, os.errno()))
-    return cb # sa_old.sa_handler
+    return cb  # sa_old.sa_handler
+
 
 # Posix Timer handling
+
 
 def timer_create(sig_id):
     sev = new(sigevent_t)
@@ -103,10 +106,12 @@ def timer_create(sig_id):
     # print("timerid", hex(timerid[0]))
     return timerid[0]
 
+
 def timer_delete(tid):
     r = timer_delete_(tid)
     if r != 0:
         raise RuntimeError("timer_delete_ error: %d (errno = %d)" % (r, os.errno()))
+
 
 def timer_settime(tid, period_ms, periodic):
     period_ns = (period_ms * 1000000) % 1000000000
@@ -126,11 +131,15 @@ def timer_settime(tid, period_ms, periodic):
         raise RuntimeError("timer_settime_ error: %d (errno = %d)" % (r, os.errno()))
     # print("old_val:", bytes(old_val))
 
+
 # Timer class
+
 
 class Timer(_TimerBase):
     def _start(self):
-        self.id = self.id if self.id != -1 else 0xF  # id must be non-negative, so we use 0xF as a default
+        self.id = (
+            self.id if self.id != -1 else 0xF
+        )  # id must be non-negative, so we use 0xF as a default
         self._timer = timer_create(self.id)
         timer_settime(self._timer, self._interval, self._mode == Timer.PERIODIC)
         self._handler_ref = self._handler

@@ -25,7 +25,6 @@ from ..binfont import text, text8, text14, text16
 import math
 
 
-
 def arc(canvas, x, y, r, a0, a1, c):
     resolution = 60
     a0 = math.radians(a0)
@@ -52,12 +51,13 @@ def arc(canvas, x, y, r, a0, a1, c):
         y0 = y1
     return Area(x_min, y_min, x_max - x_min, y_max - y_min)
 
+
 def blit(canvas, source, x, y, key=-1, palette=None):
     if (
-        (-x >= source.width) or
-        (-y >= source.height) or
-        (x >= canvas.width) or
-        (y >= canvas.height)
+        (-x >= source.width)
+        or (-y >= source.height)
+        or (x >= canvas.width)
+        or (y >= canvas.height)
     ):
         # Out of bounds, no-op.
         return
@@ -81,6 +81,7 @@ def blit(canvas, source, x, y, key=-1, palette=None):
             cx1 += 1
         y1 += 1
     return Area(x0, y0, x0end - x0, y0end - y0)
+
 
 def blit_rect(canvas, buf, x, y, w, h):
     """
@@ -109,8 +110,9 @@ def blit_rect(canvas, buf, x, y, w, h):
         source_end = source_begin + w * BPP
         dest_begin = ((y + row) * canvas.width + x) * BPP
         dest_end = dest_begin + w * BPP
-        canvas.buffer[dest_begin : dest_end] = buf[source_begin : source_end]
+        canvas.buffer[dest_begin:dest_end] = buf[source_begin:source_end]
     return Area(x, y, w, h)
+
 
 def blit_transparent(canvas, buf, x, y, w, h, key):
     """
@@ -148,11 +150,19 @@ def blit_transparent(canvas, buf, x, y, w, h, key):
                         break
                     colend += BPP
                 # blit the non-key pixels
-                blit_rect(canvas, buf[rowstart + colstart : rowstart + colend], x + colstart // BPP, y + j, (colend - colstart) // BPP, 1)
+                blit_rect(
+                    canvas,
+                    buf[rowstart + colstart : rowstart + colend],
+                    x + colstart // BPP,
+                    y + j,
+                    (colend - colstart) // BPP,
+                    1,
+                )
                 colstart = colend
             else:
                 colstart += BPP
     return Area(x, y, w, h)
+
 
 def circle(canvas, x0, y0, r, c, f=False):
     """Circle drawing function.  Will draw a single pixel wide circle with
@@ -187,6 +197,7 @@ def circle(canvas, x0, y0, r, c, f=False):
         pixel(canvas, x0 - y, y0 - x, c)  # 180 to 135
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
 
+
 def _fill_circle(canvas, x0, y0, r, c):
     """Filled circle drawing function.  Will draw a filled circle with
     center at x0, y0 and the specified r."""
@@ -209,6 +220,7 @@ def _fill_circle(canvas, x0, y0, r, c):
         vline(canvas, x0 - x, y0 - y, 2 * y + 1, c)
         vline(canvas, x0 - y, y0 - x, 2 * x + 1, c)
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
+
 
 def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
     """
@@ -316,11 +328,15 @@ def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
             y1 -= 1
         sigma += b2 * ((4 * x1) + 6)
         x1 += 1
-    return Area(x0 - r1 - x_offset, y0 - r2 - y_offset, 2 * (r1 + x_offset), 2 * (r2 + y_offset))
+    return Area(
+        x0 - r1 - x_offset, y0 - r2 - y_offset, 2 * (r1 + x_offset), 2 * (r2 + y_offset)
+    )
+
 
 def fill(canvas, c):
     """Fill the entire canvas with a color."""
     return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
+
 
 def fill_rect(canvas, x, y, w, h, c):
     """Filled rectangle drawing function.  Will draw a filled
@@ -336,12 +352,14 @@ def fill_rect(canvas, x, y, w, h, c):
                 pixel(canvas, i, j, c)
     return Area(x, y, w, h)
 
+
 def hline(canvas, x0, y0, w, c):
     """Horizontal line drawing function.  Will draw a single pixel wide line."""
     if y0 < 0 or y0 > canvas.height or x0 < -w or x0 > canvas.width:
         return
     fill_rect(canvas, x0, y0, w, 1, c)
     return Area(x0, y0, w, 1)
+
 
 def line(canvas, x0, y0, x1, y1, c):
     """Line drawing function.  Will draw a single pixel wide line starting at
@@ -350,7 +368,7 @@ def line(canvas, x0, y0, x1, y1, c):
         return vline(canvas, x0, y0, abs(y1 - y0) + 1, c)
     if y0 == y1:
         return hline(canvas, x0, y0, abs(x1 - x0) + 1, c)
-    
+
     steep = abs(y1 - y0) > abs(x1 - x0)
     if steep:
         x0, y0 = y0, x0
@@ -378,14 +396,18 @@ def line(canvas, x0, y0, x1, y1, c):
         x0 += 1
     return Area(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0))
 
+
 def pixel(canvas, x, y, c):
     """A function to pass through in input pixel functionality."""
     if hasattr(canvas, "pixel"):
         canvas.pixel(x, y, c)
     else:
         rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
-        canvas.buffer[(y * canvas.width + x) * 2:(y * canvas.width + x) * 2 + 2] = rgb565_color
+        canvas.buffer[(y * canvas.width + x) * 2 : (y * canvas.width + x) * 2 + 2] = (
+            rgb565_color
+        )
     return Area(x, y, 1, 1)
+
 
 def poly(canvas, x, y, coords, c, f=False):
     """
@@ -465,6 +487,7 @@ def poly(canvas, x, y, coords, c, f=False):
             )
     return Area(left, top, right - left, bottom - top)
 
+
 def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
     """
     Draw a polygon on the display.
@@ -511,6 +534,7 @@ def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
     # fmt: on
     return Area(left, top, right - left, bottom - top)
 
+
 def rect(canvas, x0, y0, w, h, c, f=False):
     """Rectangle drawing function.  Will draw a single pixel wide rectangle
     starting in the upper left x0, y0 position and w, h pixels in
@@ -524,6 +548,7 @@ def rect(canvas, x0, y0, w, h, c, f=False):
     vline(canvas, x0, y0, h, c)
     vline(canvas, x0 + w - 1, y0, h, c)
     return Area(x0, y0, w, h)
+
 
 def round_rect(canvas, x0, y0, w, h, r, c, f=False):
     """Rectangle with rounded corners drawing function.
@@ -566,12 +591,13 @@ def round_rect(canvas, x0, y0, w, h, r, c, f=False):
             pixel(canvas, x0 + x + w - 2 * r, y0 - y, c)  # 90 to 45
             pixel(canvas, x0 + y + w - 2 * r, y0 - x, c)  # 0 to 45
             # bottom right
-            pixel(canvas, x0 + y + w - 2 * r, y0 + x + h - 2 * r, c) # 0 to 315
+            pixel(canvas, x0 + y + w - 2 * r, y0 + x + h - 2 * r, c)  # 0 to 315
             pixel(canvas, x0 + x + w - 2 * r, y0 + y + h - 2 * r, c)  # 270 to 315
             # bottom left
             pixel(canvas, x0 - x, y0 + y + h - 2 * r, c)  # 270 to 255
             pixel(canvas, x0 - y, y0 + x + h - 2 * r, c)  # 180 to 225
     return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
+
 
 def _fill_round_rect(canvas, x0, y0, w, h, r, c):
     """Filled circle drawing function.  Will draw a filled circle with
@@ -604,9 +630,14 @@ def _fill_round_rect(canvas, x0, y0, w, h, r, c):
             vline(canvas, x0 - y, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 0 to .25
             vline(canvas, x0 - x, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .25
             # top right
-            vline(canvas, x0 + x + w - 2 * r, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .75
-            vline(canvas, x0 + y + w - 2 * r, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 1 to .75
+            vline(
+                canvas, x0 + x + w - 2 * r, y0 - y, 2 * y + 1 + h - 2 * r, c
+            )  # .5 to .75
+            vline(
+                canvas, x0 + y + w - 2 * r, y0 - x, 2 * x + 1 + h - 2 * r, c
+            )  # 1 to .75
     return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
+
 
 def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     # pylint: disable=too-many-arguments
@@ -622,6 +653,7 @@ def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     right = max(x0, x1, x2)
     bottom = max(y0, y1, y2)
     return Area(left, top, right - left, bottom - top)
+
 
 def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
     # pylint: disable=too-many-arguments, too-many-locals, too-many-statements, too-many-branches
@@ -697,6 +729,7 @@ def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
     bottom = max(y0, y1, y2)
     return Area(left, top, right - left, bottom - top)
 
+
 def vline(canvas, x0, y0, h, c):
     """Vertical line drawing function.  Will draw a single pixel wide line."""
     if y0 < -h or y0 > canvas.height or x0 < 0 or x0 > canvas.width:
@@ -709,6 +742,7 @@ class Draw:
     """
     A Draw class to draw shapes onto a specified canvas.
     """
+
     def __init__(self, canvas):
         self.canvas = canvas
 

@@ -40,6 +40,7 @@ class Palette:
     """
     A class to represent a color palette.
     """
+
     def __init__(self, name="", color_depth=16, swapped=False, cached=False):
         self._name = name
         self._color_depth = color_depth
@@ -71,14 +72,14 @@ class Palette:
 
     def __len__(self):
         return self._length
-    
+
     def __getitem__(self, index):
         index = self._normalize(index)
 
         if self._cache is not None:
             if index in self._cache:
                 return self._cache[index]
-    
+
         r, g, b = self._get_rgb(index)
         if self._color_depth == 24 or self._color_depth == 4:
             return r << 16 | g << 8 | b
@@ -105,7 +106,7 @@ class Palette:
 
         color = (r & 0xF8) << 8 | (g & 0xFC) << 3 | b >> 3
         if self._swapped:
-            return (color & 0xFF) << 8 | (color & 0xFF00) >> 8 
+            return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
         else:
             return color
 
@@ -128,11 +129,11 @@ class Palette:
         if isinstance(r, (tuple, list)):
             r, g, b = r
         return self._names.get(r << 16 | g << 8 | b, f"#{r:02X}{g:02X}{b:02X}")
-    
+
     def luminance(self, index):
         r, g, b = self._get_rgb(index)
         return 0.299 * r + 0.587 * g + 0.114 * b
-    
+
     def brightness(self, index):
         r, g, b = self._get_rgb(index)
         return (r + g + b) / 3 / 255
@@ -146,11 +147,12 @@ class MappedPalette(Palette):
     """
     A class to represent a color palette with a color map.
     """
+
     def __init__(self, name, color_depth, swapped, color_map):
         self._color_map = color_map
         self._length = len(color_map) // 3
         super().__init__(name, color_depth, swapped)
 
     def _get_rgb(self, index):
-        r, g, b = self._color_map[index*3:index*3+3]
+        r, g, b = self._color_map[index * 3 : index * 3 + 3]
         return r, g, b

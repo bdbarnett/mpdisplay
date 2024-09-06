@@ -4,6 +4,7 @@
 try:
     from micropython import const, schedule
 except ImportError:
+
     def const(x):
         return x
 
@@ -11,7 +12,7 @@ except ImportError:
         cb(interval)
 
 
-class _TimerBase():
+class _TimerBase:
     """
     A class to create a timer with the same API and similar functionality to
     MicroPython's machine.Timer class.
@@ -47,7 +48,7 @@ class _TimerBase():
         self._interval = int(1000 / freq) if freq > 0 else period
         if self._interval < 1:
             raise ValueError("Invalid freq or period")
-        
+
         self._callback = callback
         self._timer = None
         self._busy = False
@@ -87,6 +88,6 @@ class _TimerBase():
 
     def _start(self):
         raise NotImplementedError("Subclasses must implement this method")
-    
+
     def _stop(self):
         raise NotImplementedError("Subclasses must implement this method")

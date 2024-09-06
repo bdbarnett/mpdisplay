@@ -10,7 +10,7 @@ Usage:
     palette = get_palette(name="material_design", color_depth=16, swapped=False)
     # OR
     palette = get_palette("material_design")
-    
+
     # OR
     from pyd_gl.palettes.material_design import MDPalette
     palette = MDPalette(size=5, color_depth=24)
@@ -43,11 +43,11 @@ Usage:
     # to iterate over all 256 colors:
         for x in palette:
             pass
-            
+
     # to iterate over all shades in a family:
         for x in palette.red:  # iterate over all 10 shades
             pass
-            
+
     # to iterate over all accents in a family:
         for x in palette.red.accents:  # iterate over all 4 accents
             pass
@@ -79,7 +79,18 @@ class Family(_Palette):
     A class to represent the color variants.
     """
 
-    _shades = ["S50", "S100", "S200", "S300", "S400", "S500", "S600", "S700", "S800", "S900"]
+    _shades = [
+        "S50",
+        "S100",
+        "S200",
+        "S300",
+        "S400",
+        "S500",
+        "S600",
+        "S700",
+        "S800",
+        "S900",
+    ]
 
     def __init__(self, name, color_depth, swapped, color_map):
         super().__init__(name, color_depth, swapped, color_map)
@@ -89,7 +100,12 @@ class Family(_Palette):
             for i, shade in enumerate(self._shades):
                 setattr(self, shade, self[i - 5])
         if len(self) > 10:
-            self.accents = Accents(self._name + "_accents", self._color_depth, self._swapped, self._color_map[-4 * 3 :])
+            self.accents = Accents(
+                self._name + "_accents",
+                self._color_depth,
+                self._swapped,
+                self._color_map[-4 * 3 :],
+            )
 
     def __getitem__(self, index):
         """Return the color variant as an integer with the number of bits specified in the color depth."""
@@ -124,6 +140,15 @@ class MDPalette(_Palette):
     def _define_named_colors(self):
         index = 0
         for name, length in zip(FAMILIES, LENGTHS):
-            setattr(self, name, Family(name, self._color_depth, self._swapped, self._color_map[index : index + length * 3]))
+            setattr(
+                self,
+                name,
+                Family(
+                    name,
+                    self._color_depth,
+                    self._swapped,
+                    self._color_map[index : index + length * 3],
+                ),
+            )
             setattr(self, name.upper(), getattr(self, name)[0])
             index += length * 3

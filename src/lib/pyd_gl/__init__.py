@@ -7,6 +7,7 @@ Graphics module.
 
 from pyd_basedisplay import Area  # noqa: F401
 
+
 def color888(r, g, b):
     """
     Convert RGB values to a 24-bit color value.
@@ -21,6 +22,7 @@ def color888(r, g, b):
     :rtype: int
     """
     return (r << 16) | (g << 8) | b
+
 
 def color565(r, g=0, b=0):
     """
@@ -39,6 +41,7 @@ def color565(r, g=0, b=0):
         r, g, b = r[:3]
     return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 
+
 def color565_swapped(r, g=0, b=0):
     # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
     # ggbbbbbb rrrrrggg
@@ -47,10 +50,12 @@ def color565_swapped(r, g=0, b=0):
     color = color565(r, g, b)
     return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
 
+
 def color332(r, g, b):
     # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
     # rrrgggbb
     return (r & 0xE0) | ((g >> 3) & 0x1C) | (b >> 6)
+
 
 def color_rgb(color):
     """
@@ -66,4 +71,3 @@ def color_rgb(color):
     else:
         r, g, b = color
     return (r, g, b)
-

@@ -1,15 +1,17 @@
-# SPDX-FileCopyrightText: 2023 Brad Barnett
-#
 # SPDX-License-Identifier: MIT
-
 """
-An implementation of a SPI bus driver written in MicroPython.
+pyd_spibus - A MicroPython library for SPI buses.
 """
 
-from machine import Pin, SPI # type: ignore
+from machine import Pin, SPI  # type: ignore
 import struct
 import micropython
 from micropython import const
+
+try:
+    from typing import Optional, Union
+except ImportError:
+    pass
 
 
 DC_CMD = const(0)
@@ -18,10 +20,27 @@ CS_ACTIVE = const(0)
 CS_INACTIVE = const(1)
 
 
-class Optional:  # For typing
-    pass
+class SPIBus:
+    """
+    Represents an SPI bus.
 
-class SPIBus():
+    Args:
+        id (int): The ID of the SPI bus.
+        baudrate (int): The baudrate of the SPI bus.
+        polarity (int): The polarity of the SPI bus.
+        phase (int): The phase of the SPI bus.
+        bits (int): The number of bits per transfer.
+        lsb_first (bool): Whether to send the least significant bit first.
+        sck (int): The pin number of the SCK pin.
+        mosi (int): The pin number of the MOSI pin.
+        miso (int): The pin number of the MISO pin.
+        dc (int): The pin number of the DC pin.
+        cs (int): The pin number of the CS pin.
+
+    Raises:
+        ValueError: If the DC pin is not specified.
+    """
+
     def __init__(
         self,
         *,
@@ -36,16 +55,15 @@ class SPIBus():
         miso: int = -1,
         dc: int = -1,
         cs: int = -1,
-        ) -> None:
-
+    ) -> None:
         if dc == -1:
             raise ValueError("DC pin must be specified")
-        
-        self._baudrate = baudrate
-        self._polarity = polarity
-        self._phase = phase
-        self._bits = bits
-        self._firstbit = SPI.LSB if lsb_first else SPI.MSB
+
+        self._baudrate: int = baudrate
+        self._polarity: int = polarity
+        self._phase: int = phase
+        self._bits: int = bits
+        self._firstbit: int = SPI.LSB if lsb_first else SPI.MSB
 
         if mosi == -1 and miso == -1 and sck == -1:
             self._spi: SPI = SPI(
@@ -71,7 +89,9 @@ class SPIBus():
 
         # DC and CS pins must be set AFTER the SPI bus is initialized on some boards
         self._dc: Pin = Pin(dc, Pin.OUT, value=DC_DATA)
-        self._cs: Pin = Pin(cs, Pin.OUT, value=CS_INACTIVE) if cs != -1 else lambda val: None
+        self._cs: Union[Pin, callable] = (
+            Pin(cs, Pin.OUT, value=CS_INACTIVE) if cs != -1 else lambda val: None
+        )
 
         self._buf1: bytearray = bytearray(1)
 
@@ -81,6 +101,17 @@ class SPIBus():
         command: Optional[int] = None,
         data: Optional[memoryview] = None,
     ) -> None:
+        """
+        Sends a command and/or data over the SPI bus.
+
+        Args:
+            command (int): The command to send.
+            data (memoryview): The data to send.
+
+        Returns:
+            None
+        """
+
         self._spi.init(
             baudrate=self._baudrate,
             polarity=self._polarity,
@@ -102,8 +133,15 @@ class SPIBus():
 
         self._cs(CS_INACTIVE)
 
-    def deinit(self):
+    def deinit(self) -> None:
+        """
+        Deinitializes the SPI bus.
+
+        Returns:
+            None
+        """
+
         self._spi.deinit()
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.deinit()

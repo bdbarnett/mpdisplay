@@ -3,25 +3,30 @@
 # SPDX-License-Identifier: MIT
 
 """
-FBDisplay class for PyDevices.
+pyd_fbdisplay - FrameBuffer Display class
 """
 
 from pyd_basedisplay import BaseDisplay, np, Area, swap_bytes
+
 if not np:
     raise ImportError("This module depends on the numpy module. Please install it.")
 
 
 class FBDisplay(BaseDisplay):
-    '''
+    """
     A class to interface with CircuitPython FrameBuffer objects.
-    '''
-    def __init__(self, buffer, width=None, height=None, reverse_bytes_in_word=False):
-        """
-        Initializes the display instance with the given parameters.
 
-        :param fb: The CircuitPython FrameBuffer object.
-        :type width: FrameBuffer
-        """
+    Args:
+        buffer (FrameBuffer): The CircuitPython FrameBuffer object.
+        width (int, optional): The width of the display. Defaults to None.
+        height (int, optional): The height of the display. Defaults to None.
+        reverse_bytes_in_word (bool, optional): Whether to reverse the bytes in a word. Defaults to False.
+
+    Attributes:
+        color_depth (int): The color depth of the display
+    """
+
+    def __init__(self, buffer, width=None, height=None, reverse_bytes_in_word=False):
         super().__init__()
         self._raw_buffer = buffer
         self._buffer = memoryview(buffer)
@@ -45,20 +50,16 @@ class FBDisplay(BaseDisplay):
     def fill_rect(self, x, y, w, h, c):
         """
         Fills a rectangle with the given color.
-               
-        :param x: The x-coordinate of the top-left corner of the rectangle.
-        :type x: int
-        :param y: The y-coordinate of the top-left corner of the rectangle.
-        :type y: int
-        :param w: The width of the rectangle.
-        :type w: int
-        :param h: The height of the rectangle.
-        :type h: int
-        :param c: The color of the rectangle.
-        :type c: int
-        
-        :return: The Area object representing the rectangle.
-        :rtype: Area
+
+        Args:
+            x (int): The x-coordinate of the top-left corner of the rectangle.
+            y (int): The y-coordinate of the top-left corner of the rectangle.
+            w (int): The width of the rectangle.
+            h (int): The height of the rectangle.
+            c (int): The color to fill the rectangle with.
+
+        Returns:
+            Area: The Area object representing the filled rectangle.
         """
         if self._auto_byte_swap_enabled:
             c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
@@ -72,28 +73,24 @@ class FBDisplay(BaseDisplay):
         color = c & 0xFFFF
         arr = np.frombuffer(self._buffer, dtype=np.uint16)
         for _y in range(y, y + h):
-            begin = (_y * self.width + left)
+            begin = _y * self.width + left
             end = begin + w
-            arr[begin : end] = color
+            arr[begin:end] = color
         return Area(left, top, right - left, bottom - top)
 
     def blit_rect(self, buf, x, y, w, h):
         """
         Blits a buffer to the display at the given coordinates.
 
-        :param buf: The buffer to blit.
-        :type buf: bytearray
-        :param x: The x-coordinate of the top-left corner of the blit.
-        :type x: int
-        :param y: The y-coordinate of the top-left corner of the blit.
-        :type y: int
-        :param w: The width of the blit.
-        :type w: int
-        :param h: The height of the blit.
-        :type h: int
+        Args:
+            buf (memoryview): The buffer to blit.
+            x (int): The x-coordinate of the buffer.
+            y (int): The y-coordinate of the buffer.
+            w (int): The width of the buffer.
+            h (int): The height of the buffer.
 
-        :return: The Area object representing the blit.
-        :rtype: Area
+        Returns:
+            Area: The Area object representing the blitted buffer.
         """
         if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
@@ -109,23 +106,27 @@ class FBDisplay(BaseDisplay):
             source_end = source_begin + w * BPP
             dest_begin = ((y + row) * self.width + x) * BPP
             dest_end = dest_begin + w * BPP
-            arr[dest_begin : dest_end] = buf[source_begin : source_end]
+            arr[dest_begin:dest_end] = buf[source_begin:source_end]
         return Area(x, y, w, h)
 
     def pixel(self, x, y, c):
         """
-        Gets the color of the pixel at the given coordinates.
+        Sets the color of the pixel at the given coordinates.
 
-        :param x: The x-coordinate of the pixel.
-        :type x: int
-        :param y: The y-coordinate of the pixel.
-        :type y: int
-        :param c: The color to set the pixel to.
-        :type c: int
+        Args:
+            x (int): The x-coordinate of the pixel.
+            y (int): The y-coordinate of the pixel.
+            c (int): The color of the pixel.
+
+        Returns:
+            Area: The Area object representing the pixel.
         """
-        self.fill_rect(x, y, 1, 1, c)
+        return self.fill_rect(x, y, 1, 1, c)
 
     ############### Optional API Methods ################
 
     def show(self):
+        """
+        Refreshes the display.
+        """
         self._raw_buffer.refresh()

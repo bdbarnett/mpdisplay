@@ -267,7 +267,7 @@ class Keys:
         K_ESCAPE: "Escape",
         K_SPACE: "Space",
         K_EXCLAIM: "!",
-        K_QUOTEDBL: "\"",
+        K_QUOTEDBL: '"',
         K_HASH: "#",
         K_DOLLAR: "$",
         K_PERCENT: "%",

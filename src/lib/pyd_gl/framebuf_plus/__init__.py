@@ -37,6 +37,7 @@ class ExtendedShapes:
     All the methods from shapes.py except for
     those implemented in framebuf.FrameBuffer.
     """
+
     arc = shapes.arc
     blit_rect = shapes.blit_rect
     blit_transparent = shapes.blit_transparent
@@ -55,7 +56,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         super().__init__(buffer, width, height, format, *args, **kwargs)
         self._width = width
         self._height = height
-        
+
         if format == MONO_VLSB:
             self._color_depth = 1
         elif format == MONO_HLSB:
@@ -76,15 +77,15 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
     @property
     def color_depth(self):
         return self._color_depth
-    
+
     @property
     def width(self):
         return self._width
-    
+
     @property
     def height(self):
         return self._height
-    
+
     @property
     def buffer(self):
         return self._buffer

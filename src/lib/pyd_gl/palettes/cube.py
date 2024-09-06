@@ -18,6 +18,7 @@ Usage:
     for i, color in enumerate(palette):
         for i, color in enumerate(palette):  print(f"{i}. {color:#06X} {palette.color_name(i)}")
 """
+
 from . import Palette as _Palette
 
 
@@ -25,10 +26,11 @@ class CubePalette(_Palette):
     """
     size specifies the number of values per color channel.
     """
+
     def __init__(self, name="", color_depth=16, swapped=False, cached=True, size=5):
         self._size = size
-        self._length = size ** 3
-        self._values = [round(i * (255 / (size - 1)) + .25) for i in range(size)]
+        self._length = size**3
+        self._values = [round(i * (255 / (size - 1)) + 0.25) for i in range(size)]
 
         if self._size == 2:
             from ._cube8 import CUBE8 as NAMES

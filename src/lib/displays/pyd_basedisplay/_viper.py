@@ -1,4 +1,4 @@
-import micropython # type: ignore
+import micropython  # type: ignore
 
 
 @micropython.viper

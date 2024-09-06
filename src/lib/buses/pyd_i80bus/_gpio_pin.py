@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-from machine import Pin as _Pin # type: ignore
+from machine import Pin as _Pin  # type: ignore
 from sys import platform, implementation
 
 
 if platform == "pyboard":
-    import stm # type: ignore
+    import stm  # type: ignore
 
     gpio_data = {
         "pyboard": {
@@ -39,13 +39,15 @@ else:
                 "samd51": (0x41008000, 0x41008080, 0x41008100, 0x41008180),
             },
         },
-        "rp2": {  # See 3.1.11 at https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf
+        "rp2": {
+            # See 3.1.11 at https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf
             "SET": 0x14,
             "CLR": 0x18,
             "gpios": {
                 "rp2040": (
+                    # The SIO registers start at a base address of 0xd0000000 (defined as SIO_BASE in SDK).
                     0xD0000000,
-                ),  # The SIO registers start at a base address of 0xd0000000 (defined as SIO_BASE in SDK).
+                ),
             },
         },
         "nrf": {
@@ -123,14 +125,13 @@ else:
 
 
 def _init_module():
-
     data = gpio_data[platform.lower()]
     if "BSRR" in data:
         GPIO_Pin.BSRR = data["BSRR"]
     else:
         GPIO_Pin.SET = data["SET"]
         GPIO_Pin.CLR = data["CLR"]
-    
+
     if hasattr(_Pin, "gpio"):  # If the gpio method is already implemented
         return
 
@@ -151,6 +152,13 @@ def _init_module():
 
 
 class GPIO_Pin(_Pin):
+    """
+    GPIO_Pin is a subclass of machine.Pin that provides additional methods for
+    accessing the GPIO registers on a microcontroller. It is used by the
+    I80Bus class to control the GPIO pins that are used to communicate with
+    the display.
+    """
+
     PPP = None
     SET = None
     CLR = None
@@ -168,20 +176,38 @@ class GPIO_Pin(_Pin):
             self.PPP = 16
 
     def pin(self):
+        """
+        Returns the pin number in the port of the GPIO pin.
+
+        Returns:
+            int: The pin number in the port of the GPIO pin
+        """
         if hasattr(super(), "pin"):
             return super().pin()
         if isinstance(self._id, int):
             return self._id & (self.PPP - 1)
         raise NotImplementedError("GPIO_Pin.pin not implemented for this platform")
 
-    def port(self):
+    def port(self) -> int:
+        """
+        Returns the port number of the GPIO pin.
+
+        Returns:
+            int: The port number of the GPIO pin.
+        """
         if hasattr(super(), "port"):
             return super().port()
         if isinstance(self._id, int):
             return self._id // self.PPP
         raise NotImplementedError("GPIO_Pin.port not implemented for this platform")
 
-    def gpio(self):
+    def gpio(self) -> int:
+        """
+        Returns the address of the GPIO pin.
+
+        Returns:
+            int: The address of the GPIO pin.
+        """
         if hasattr(super(), "gpio"):
             x = super().gpio()  # returns as signed int
             if x < 0:  # if it is negative

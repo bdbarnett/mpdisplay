@@ -4,15 +4,16 @@
 """
 Timer using SDL2 for CPython with the same API as machine.Timer in MicroPython.
 """
+
 from ._timerbase import _TimerBase
 import ctypes
 from sys import platform
 
 
-if platform == 'win32':
-    _libSDL2 = ctypes.CDLL('SDL2.dll')
+if platform == "win32":
+    _libSDL2 = ctypes.CDLL("SDL2.dll")
 else:
-    _libSDL2 = ctypes.CDLL('libSDL2-2.0.so.0')
+    _libSDL2 = ctypes.CDLL("libSDL2-2.0.so.0")
 
 SDL_INIT_TIMER = 0x00000001
 

@@ -41,11 +41,11 @@ class Events:
     Motion = namedtuple("Motion", "type pos rel buttons touch window")
     Button = namedtuple("Button", "type pos button touch window")
     Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple( "Key", "type name key mod scancode window")
-    Quit = namedtuple( "Quit", "type")
+    Key = namedtuple("Key", "type name key mod scancode window")
+    Quit = namedtuple("Quit", "type")
 
     @staticmethod
-    def new(types: list[str | tuple[str, int]]=[], classes: dict[str, str]={}):
+    def new(types: list[str | tuple[str, int]] = [], classes: dict[str, str] = {}):
         """
         Create new event types and classes for the Events class.
 
@@ -76,16 +76,26 @@ class Events:
                 value = None
             type_name = type_name.upper()
             if hasattr(Events, type_name):
-                raise ValueError(f"Event type {type_name} already exists in Events class.")
+                raise ValueError(
+                    f"Event type {type_name} already exists in Events class."
+                )
             else:
                 setattr(Events, type_name, value if value else Events._USER_TYPE_BASE)
                 if not value:
                     Events._USER_TYPE_BASE += 1
 
         for event_class_name, event_class_fields in classes.items():
-            event_class_name = event_class_name[0].upper() + event_class_name[1:].lower()
+            event_class_name = (
+                event_class_name[0].upper() + event_class_name[1:].lower()
+            )
             if hasattr(Events, event_class_name):
-                raise ValueError(f"Event class {event_class_name} already exists in Events class.")
+                raise ValueError(
+                    f"Event class {event_class_name} already exists in Events class."
+                )
             else:
                 event_class_fields = event_class_fields.lower()
-                setattr(Events, event_class_name, namedtuple(event_class_name, event_class_fields))
+                setattr(
+                    Events,
+                    event_class_name,
+                    namedtuple(event_class_name, event_class_fields),
+                )

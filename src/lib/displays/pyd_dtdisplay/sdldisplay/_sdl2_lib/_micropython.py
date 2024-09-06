@@ -20,11 +20,14 @@ _libSDL2 = ffi.open("libSDL2-2.0.so.0")
 #                          SDL2 structs                                       #
 ###############################################################################
 
+
 def SDL_Rect(x=0, y=0, w=0, h=0):
     return struct.pack("iiii", x, y, w, h)
 
+
 def SDL_Point(x=0, y=0):
     return struct.pack("ii", x, y)
+
 
 SDL_CommonEvent = {
     "type": uctypes.UINT32 | 0,
@@ -34,62 +37,77 @@ SDL_CommonEvent = {
 SDL_KeyboardEvent = {
     "type": uctypes.UINT32 | 0,
     "timestamp": uctypes.UINT32 | 4,
-    "key": (8, {
-        "windowID": uctypes.UINT32 | 0,
-        "state": uctypes.UINT8 | 4,
-        "repeat": uctypes.UINT8 | 5,
-        "padding2": uctypes.UINT8 | 6,
-        "padding3": uctypes.UINT8 | 7,
-        "keysym": (8, {
-            "scancode": 0 | uctypes.UINT32,
-            "sym": 4 | uctypes.UINT32,
-            "mod": 8 | uctypes.UINT16,
-            "unused": 10 | uctypes.UINT32,
-        })
-    })
+    "key": (
+        8,
+        {
+            "windowID": uctypes.UINT32 | 0,
+            "state": uctypes.UINT8 | 4,
+            "repeat": uctypes.UINT8 | 5,
+            "padding2": uctypes.UINT8 | 6,
+            "padding3": uctypes.UINT8 | 7,
+            "keysym": (
+                8,
+                {
+                    "scancode": 0 | uctypes.UINT32,
+                    "sym": 4 | uctypes.UINT32,
+                    "mod": 8 | uctypes.UINT16,
+                    "unused": 10 | uctypes.UINT32,
+                },
+            ),
+        },
+    ),
 }
 
 SDL_MouseMotionEvent = {
     "type": uctypes.UINT32 | 0,
     "timestamp": uctypes.UINT32 | 4,
-    "motion": (8, {
-        "windowID": uctypes.UINT32 | 0,
-        "which": uctypes.UINT32 | 4,
-        "state": uctypes.UINT32 | 8,
-        "x": uctypes.INT32 | 12,
-        "y": uctypes.INT32 | 16,
-        "xrel": uctypes.INT32 | 20,
-        "yrel": uctypes.INT32 | 8,
-    })
+    "motion": (
+        8,
+        {
+            "windowID": uctypes.UINT32 | 0,
+            "which": uctypes.UINT32 | 4,
+            "state": uctypes.UINT32 | 8,
+            "x": uctypes.INT32 | 12,
+            "y": uctypes.INT32 | 16,
+            "xrel": uctypes.INT32 | 20,
+            "yrel": uctypes.INT32 | 8,
+        },
+    ),
 }
 
 SDL_MouseButtonEvent = {
     "type": uctypes.UINT32 | 0,
     "timestamp": uctypes.UINT32 | 4,
-    "button": (8, {
-        "windowID": uctypes.UINT32 | 0,
-        "which": uctypes.UINT32 | 4,
-        "button": uctypes.UINT8 | 8,
-        "state": uctypes.UINT8 | 9,
-        "clicks": uctypes.UINT8 | 10,
-        "padding1": uctypes.UINT8 | 11,
-        "x": uctypes.INT32 | 12,
-        "y": uctypes.INT32 | 16,
-    })
+    "button": (
+        8,
+        {
+            "windowID": uctypes.UINT32 | 0,
+            "which": uctypes.UINT32 | 4,
+            "button": uctypes.UINT8 | 8,
+            "state": uctypes.UINT8 | 9,
+            "clicks": uctypes.UINT8 | 10,
+            "padding1": uctypes.UINT8 | 11,
+            "x": uctypes.INT32 | 12,
+            "y": uctypes.INT32 | 16,
+        },
+    ),
 }
 
 SDL_MouseWheelEvent = {
     "type": uctypes.UINT32 | 0,
     "timestamp": uctypes.UINT32 | 4,
-    "wheel": (8, {
-        "windowID": uctypes.UINT32 | 0,
-        "which": uctypes.UINT32 | 4,
-        "x": uctypes.INT32 | 8,
-        "y": uctypes.INT32 | 12,
-        "direction": uctypes.UINT32 | 16,
-        "preciseX": uctypes.FLOAT32 | 20,
-        "preciseY": uctypes.FLOAT32 | 24,
-    })
+    "wheel": (
+        8,
+        {
+            "windowID": uctypes.UINT32 | 0,
+            "which": uctypes.UINT32 | 4,
+            "x": uctypes.INT32 | 8,
+            "y": uctypes.INT32 | 12,
+            "direction": uctypes.UINT32 | 16,
+            "preciseX": uctypes.FLOAT32 | 20,
+            "preciseY": uctypes.FLOAT32 | 24,
+        },
+    ),
 }
 
 
@@ -133,6 +151,8 @@ SDL_UpdateTexture = _libSDL2.func("i", "SDL_UpdateTexture", "PPPi")
 # SDL timer functions  NOT WORKING
 SDL_AddTimer = _libSDL2.func("P", "SDL_AddTimer", "IPP")
 SDL_RemoveTimer = _libSDL2.func("i", "SDL_RemoveTimer", "P")
+
+
 def SDL_TimerCallback(tcb):
     return ffi.callback("I", tcb, "IP")
 
@@ -152,6 +172,7 @@ _event_struct_map = {
     SDL_POLLSENTINEL: SDL_CommonEvent,  # noqa: F405
 }
 
+
 def SDL_Event(event=None):
     """
     Convert event to an SDL_Event object using ctypes.
@@ -159,8 +180,8 @@ def SDL_Event(event=None):
     """
     if event is None:
         return bytearray(56)  # Size of the largest SDL_Event struct
-    
-    event_type = int.from_bytes(event[:4], 'little')
+
+    event_type = int.from_bytes(event[:4], "little")
 
     if event_type in _event_struct_map:
         return uctypes.struct(uctypes.addressof(event), _event_struct_map[event_type])

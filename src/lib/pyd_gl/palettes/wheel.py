@@ -21,6 +21,7 @@ Usage:
     x = palette.BLACK
 
 """
+
 from . import Palette as _Palette
 
 
@@ -29,8 +30,16 @@ class WheelPalette(_Palette):
     A class to represent a color wheel as a palette.
     """
 
-    def __init__(self, name="", color_depth=16, swapped=False, cached=True, length=256, saturation=1.0, value=None):
-
+    def __init__(
+        self,
+        name="",
+        color_depth=16,
+        swapped=False,
+        cached=True,
+        length=256,
+        saturation=1.0,
+        value=None,
+    ):
         self._length = length
 
         if saturation is None and value is None:
@@ -45,6 +54,7 @@ class WheelPalette(_Palette):
             if not 0 <= self._saturation <= 1 or not 0 <= self._value <= 1:
                 raise ValueError("Saturation and value must be in the range of 0-1")
         from . import WIN16 as NAMES
+
         self._names = NAMES
 
         super().__init__(name + str(self._length), color_depth, swapped, cached)
@@ -67,7 +77,7 @@ class WheelPalette(_Palette):
         else:
             index -= self._two_thirds
             return (int(index * self._spacing), 255 - int(index * self._spacing), 0)
-    
+
     def _hsv_to_rgb(self, h, s, v):
         # incoming values are in the range of 0-1
         # returns r, g, b values in the range of 0-255

@@ -3,26 +3,65 @@
 # SPDX-License-Identifier: MIT
 
 """
-SDL2Display class for MicroPython on Linux and CPython on available platforms.
+pyd_dtdisplay.sdldisplay - A Python library for emulating an LCD using SDL2.
 """
 
-from .sdl2_lib import (
-    SDL_Init, SDL_Quit, SDL_GetError, SDL_CreateWindow, SDL_CreateRenderer, SDL_DestroyWindow,
-    SDL_DestroyRenderer, SDL_DestroyTexture, SDL_SetRenderDrawColor, SDL_RenderPresent,
-    SDL_RenderSetLogicalSize, SDL_SetWindowSize, SDL_RenderCopyEx, SDL_SetRenderTarget, 
-    SDL_SetTextureBlendMode, SDL_RenderFillRect, SDL_RenderCopy, SDL_UpdateTexture, SDL_CreateTexture,
-    SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGB888, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET,
-    SDL_BLENDMODE_NONE, SDL_RENDERER_ACCELERATED, SDL_RENDERER_PRESENTVSYNC, SDL_WINDOWPOS_CENTERED,
-    SDL_WINDOW_SHOWN, SDL_INIT_EVERYTHING, SDL_Rect,
-    SDL_PollEvent, SDL_GetKeyName, SDL_Event, SDL_QUIT, SDL_BUTTON_LMASK, SDL_BUTTON_MMASK, 
-    SDL_BUTTON_RMASK, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL,
-    SDL_KEYDOWN, SDL_KEYUP
+from ._sdl2_lib import (
+    SDL_Init,
+    SDL_Quit,
+    SDL_GetError,
+    SDL_CreateWindow,
+    SDL_CreateRenderer,
+    SDL_DestroyWindow,
+    SDL_DestroyRenderer,
+    SDL_DestroyTexture,
+    SDL_SetRenderDrawColor,
+    SDL_RenderPresent,
+    SDL_RenderSetLogicalSize,
+    SDL_SetWindowSize,
+    SDL_RenderCopyEx,
+    SDL_SetRenderTarget,
+    SDL_SetTextureBlendMode,
+    SDL_RenderFillRect,
+    SDL_RenderCopy,
+    SDL_UpdateTexture,
+    SDL_CreateTexture,
+    SDL_PIXELFORMAT_ARGB8888,
+    SDL_PIXELFORMAT_RGB888,
+    SDL_PIXELFORMAT_RGB565,
+    SDL_TEXTUREACCESS_TARGET,
+    SDL_BLENDMODE_NONE,
+    SDL_RENDERER_ACCELERATED,
+    SDL_RENDERER_PRESENTVSYNC,
+    SDL_WINDOWPOS_CENTERED,
+    SDL_WINDOW_SHOWN,
+    SDL_INIT_EVERYTHING,
+    SDL_Rect,
+    SDL_PollEvent,
+    SDL_GetKeyName,
+    SDL_Event,
+    SDL_QUIT,
+    SDL_BUTTON_LMASK,
+    SDL_BUTTON_MMASK,
+    SDL_BUTTON_RMASK,
+    SDL_MOUSEBUTTONDOWN,
+    SDL_MOUSEBUTTONUP,
+    SDL_MOUSEMOTION,
+    SDL_MOUSEWHEEL,
+    SDL_KEYDOWN,
+    SDL_KEYUP,
 )
 from .. import BaseDisplay, Area, color_rgb
 from pyd_eventsys.events import Events
 from sys import implementation
-if implementation.name == 'cpython':
+
+try:
+    from typing import Optional
+except ImportError:
+    pass
+if implementation.name == "cpython":
     import ctypes
+
     is_cpython = True
 else:
     is_cpython = False
@@ -30,12 +69,13 @@ else:
 
 _event = SDL_Event()
 
-def poll():
+
+def poll() -> Optional[Events]:
     """
     Polls for an event and returns the event type and data.
 
-    :return: The event type and data.
-    :rtype: tuple
+    Returns:
+        Optional[Events]: The event type and data.
     """
     global _event
     if SDL_PollEvent(_event):
@@ -43,9 +83,10 @@ def poll():
             if _event.type in Events.filter:
                 return _convert(SDL_Event(_event))
         else:
-            if int.from_bytes(_event[:4], 'little') in Events.filter:
+            if int.from_bytes(_event[:4], "little") in Events.filter:
                 return _convert(SDL_Event(_event))
     return None
+
 
 def _convert(e):
     # Convert an SDL event to a Pygame event
@@ -53,19 +94,49 @@ def _convert(e):
         l = 1 if e.motion.state & SDL_BUTTON_LMASK else 0  # noqa: E741
         m = 1 if e.motion.state & SDL_BUTTON_MMASK else 0
         r = 1 if e.motion.state & SDL_BUTTON_RMASK else 0
-        evt = Events.Motion(e.type, (e.motion.x, e.motion.y), (e.motion.xrel, e.motion.yrel), (l, m, r), e.motion.which != 0, e.motion.windowID)
+        evt = Events.Motion(
+            e.type,
+            (e.motion.x, e.motion.y),
+            (e.motion.xrel, e.motion.yrel),
+            (l, m, r),
+            e.motion.which != 0,
+            e.motion.windowID,
+        )
     elif e.type in (SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP):
-        evt = Events.Button(e.type, (e.button.x, e.button.y), e.button.button, e.button.which != 0, e.button.windowID)
+        evt = Events.Button(
+            e.type,
+            (e.button.x, e.button.y),
+            e.button.button,
+            e.button.which != 0,
+            e.button.windowID,
+        )
     elif e.type == SDL_MOUSEWHEEL:
-        evt = Events.Wheel(e.type, e.wheel.direction != 0, e.wheel.x, e.wheel.y, e.wheel.preciseX, e.wheel.preciseY, e.wheel.which != 0, e.wheel.windowID)
+        evt = Events.Wheel(
+            e.type,
+            e.wheel.direction != 0,
+            e.wheel.x,
+            e.wheel.y,
+            e.wheel.preciseX,
+            e.wheel.preciseY,
+            e.wheel.which != 0,
+            e.wheel.windowID,
+        )
     elif e.type in (SDL_KEYDOWN, SDL_KEYUP):
         name = SDL_GetKeyName(e.key.keysym.sym)
-        evt = Events.Key(e.type, name, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.scancode, e.key.windowID)
+        evt = Events.Key(
+            e.type,
+            name,
+            e.key.keysym.sym,
+            e.key.keysym.mod,
+            e.key.keysym.scancode,
+            e.key.windowID,
+        )
     elif e.type == SDL_QUIT:
         evt = Events.Quit(e.type)
     else:
         evt = Events.Unknown(e.type)
     return evt
+
 
 def retcheck(retvalue):
     # Check the return value of an SDL function and raise an exception if it's not 0
@@ -74,11 +145,24 @@ def retcheck(retvalue):
 
 
 class SDLDisplay(BaseDisplay):
-    '''
+    """
     A class to emulate an LCD using SDL2.
     Provides scrolling and rotation functions similar to an LCD.  The .texture
     object functions as the LCD's internal memory.
-    '''
+
+    Args:
+        width (int, optional): The width of the display. Defaults to 320.
+        height (int, optional): The height of the display. Defaults to 240.
+        rotation (int, optional): The rotation of the display. Defaults to 0.
+        color_depth (int, optional): The color depth of the display. Defaults to 16.
+        title (str, optional): The title of the display window. Defaults to "SDL2 Display".
+        scale (float, optional): The scale of the display. Defaults to 1.0.
+        window_flags (int, optional): The flags for creating the display window. Defaults to SDL_WINDOW_SHOWN.
+        render_flags (int, optional): The flags for creating the renderer. Defaults to SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC.
+        x (int, optional): The x-coordinate of the display window's position. Defaults to SDL_WINDOWPOS_CENTERED.
+        y (int, optional): The y-coordinate of the display window's position. Defaults to SDL_WINDOWPOS_CENTERED.
+    """
+
     def __init__(
         self,
         width=320,
@@ -92,30 +176,6 @@ class SDLDisplay(BaseDisplay):
         x=SDL_WINDOWPOS_CENTERED,
         y=SDL_WINDOWPOS_CENTERED,
     ):
-        """
-        Initializes the display instance with the given parameters.
-
-        :param width: The width of the display (default is 320).
-        :type width: int
-        :param height: The height of the display (default is 240).
-        :type height: int
-        :param rotation: The rotation of the display (default is 0).
-        :type rotation: int
-        :param color_depth: The color depth of the display (default is 16).
-        :type color_depth: int
-        :param title: The title of the display window (default is "MicroPython").
-        :type title: str
-        :param scale: The scale factor for the display (default is 1).
-        :type scale: int
-        :param window_flags: The flags for creating the display window (default is SDL_WINDOW_SHOWN).
-        :type window_flags: int
-        :param render_flags: The flags for creating the renderer (default is SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC).
-        :type render_flags: int
-        :param x: The x-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
-        :type x: int
-        :param y: The y-coordinate of the display window's position (default is SDL_WINDOWPOS_CENTERED).
-        :type y: int
-        """
         super().__init__()
         self._width = width
         self._height = height
@@ -137,14 +197,27 @@ class SDLDisplay(BaseDisplay):
             raise ValueError("Unsupported color_depth")
 
         retcheck(SDL_Init(SDL_INIT_EVERYTHING))
-        self._window = SDL_CreateWindow(self._title.encode(), x, y, int(self.width*self._scale), int(self.height*self._scale), self._window_flags)
+        self._window = SDL_CreateWindow(
+            self._title.encode(),
+            x,
+            y,
+            int(self.width * self._scale),
+            int(self.height * self._scale),
+            self._window_flags,
+        )
         if not self._window:
             raise RuntimeError(f"{SDL_GetError()}")
         self._renderer = SDL_CreateRenderer(self._window, -1, render_flags)
         if not self._renderer:
             raise RuntimeError(f"{SDL_GetError()}")
-        
-        self._buffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.width, self.height)
+
+        self._buffer = SDL_CreateTexture(
+            self._renderer,
+            self._px_format,
+            SDL_TEXTUREACCESS_TARGET,
+            self.width,
+            self.height,
+        )
         if not self._buffer:
             raise RuntimeError(f"{SDL_GetError()}")
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
@@ -153,30 +226,37 @@ class SDLDisplay(BaseDisplay):
 
     ############### Required API Methods ################
 
-    def init(self):
+    def init(self) -> None:
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        retcheck(SDL_SetWindowSize(self._window, int(self.width*self._scale), int(self.height*self._scale)))
+        retcheck(
+            SDL_SetWindowSize(
+                self._window,
+                int(self.width * self._scale),
+                int(self.height * self._scale),
+            )
+        )
         retcheck(SDL_RenderSetLogicalSize(self._renderer, self.width, self.height))
-        
-        super().vscrdef(0, self.height, 0)  # Set the vertical scroll definition without calling _show
+
+        super().vscrdef(
+            0, self.height, 0
+        )  # Set the vertical scroll definition without calling _show
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
-    def blit_rect(self, buffer, x, y, w, h):
+    def blit_rect(self, buffer: memoryview, x: int, y: int, w: int, h: int) -> Area:
         """
         Blits a buffer to the display.
-        
-        :param x: The x-coordinate of the display.
-        :type x: int
-        :param y: The y-coordinate of the display.
-        :type y: int
-        :param w: The width of the display.
-        :type w: int
-        :param h: The height of the display.
-        :type h: int
-        :param buffer: The buffer to blit_rect to the display.
-        :type buffer: bytearray
+
+        Args:
+            buffer (memoryview): The buffer to blit.
+            x (int): The x-coordinate of the buffer.
+            y (int): The y-coordinate of the buffer.
+            w (int): The width to blit.
+            h (int): The height to blit.
+
+        Returns:
+            Area: The area of the buffer that was blitted.
         """
         pitch = int(w * self.color_depth // 8)
         if len(buffer) != pitch * h:
@@ -184,11 +264,15 @@ class SDLDisplay(BaseDisplay):
         blitRect = SDL_Rect(x, y, w, h)
         if is_cpython:
             if isinstance(buffer, memoryview):
-                buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(buffer.obj)
+                buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(
+                    buffer.obj
+                )
             elif type(buffer) is bytearray:
                 buffer_array = (ctypes.c_ubyte * len(buffer)).from_buffer(buffer)
             else:
-                raise ValueError(f"Buffer is of type {type(buffer)} instead of memoryview or bytearray")
+                raise ValueError(
+                    f"Buffer is of type {type(buffer)} instead of memoryview or bytearray"
+                )
             buffer_ptr = ctypes.c_void_p(ctypes.addressof(buffer_array))
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer_ptr, pitch))
         else:
@@ -196,76 +280,81 @@ class SDLDisplay(BaseDisplay):
         self.show(blitRect)
         return Area(x, y, w, h)
 
-    def fill_rect(self, x, y, w, h, c):
+    def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
         """
         Fill a rectangle with a color.
 
         Renders to the texture instead of directly to the window
         to facilitate scrolling and scaling.
 
-        :param x: The x-coordinate of the rectangle.
-        :type x: int
-        :param y: The y-coordinate of the rectangle.
-        :type y: int
-        :param w: The width of the rectangle.
-        :type w: int
-        :param h: The height of the rectangle.
-        :type h: int
-        :param c: The color of the rectangle.
-        :type color: int
+        Args:
+            x (int): The x-coordinate of the rectangle.
+            y (int): The y-coordinate of the rectangle.
+            w (int): The width of the rectangle.
+            h (int): The height of the rectangle.
+            c (int): The color of the rectangle.
+
+        Returns:
+            Area: The area of the rectangle that was filled.
         """
         fillRect = SDL_Rect(x, y, w, h)
         r, g, b = color_rgb(c)
 
-        retcheck(SDL_SetRenderTarget(self._renderer, self._buffer))  # Set the render target to the texture
-        retcheck(SDL_SetRenderDrawColor(self._renderer, r, g, b, 255))  # Set the color to fill the rectangle
-        retcheck(SDL_RenderFillRect(self._renderer, fillRect))  # Fill the rectangle on the texture
-        retcheck(SDL_SetRenderTarget(self._renderer, None))  # Reset the render target back to the window
+        retcheck(
+            SDL_SetRenderTarget(self._renderer, self._buffer)
+        )  # Set the render target to the texture
+        retcheck(
+            SDL_SetRenderDrawColor(self._renderer, r, g, b, 255)
+        )  # Set the color to fill the rectangle
+        retcheck(
+            SDL_RenderFillRect(self._renderer, fillRect)
+        )  # Fill the rectangle on the texture
+        retcheck(
+            SDL_SetRenderTarget(self._renderer, None)
+        )  # Reset the render target back to the window
         self.show(fillRect)
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c):
+    def pixel(self, x: int, y: int, c: int) -> Area:
         """
         Set a pixel on the display.
 
-        :param x: The x-coordinate of the pixel.
-        :type x: int
-        :param y: The y-coordinate of the pixel.
-        :type y: int
-        :param c: The color of the pixel.
-        :type c: int
+        Args:
+            x (int): The x-coordinate of the pixel.
+            y (int): The y-coordinate of the pixel.
+            c (int): The color of the pixel.
+
+        Returns:
+            Area: The area of the pixel that was set.
         """
         self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
         return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 
-    def vscrdef(self, tfa, vsa, bfa):
+    def vscrdef(self, tfa: int, vsa: int, bfa: int) -> None:
         """
         Set the vertical scroll definition.
 
-        :param tfa: The top fixed area.
-        :type tfa: int
-        :param vsa: The vertical scroll area.
-        :type vsa: int
-        :param bfa: The bottom fixed area.
-        :type bfa: int
+        Args:
+            tfa (int): The top fixed area.
+            vsa (int): The vertical scroll area.
+            bfa (int): The bottom fixed area.
         """
         super().vscrdef(tfa, vsa, bfa)
         self.show()
 
-    def vscsad(self, vssa=None):
+    def vscsad(self, vssa: Optional[int] = None) -> int:
         """
         Set the vertical scroll start address.
-        
+
         :param vssa: The vertical scroll start address.
         :type vssa: int
         """
         if vssa is not None:
             super().vscsad(vssa)
             self.show()
-        else:
-            return super().vscsad()
+        return super().vscsad()
 
     def _rotation_helper(self, value):
         """
@@ -277,8 +366,14 @@ class SDLDisplay(BaseDisplay):
         """
 
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
-            if implementation.name == 'cpython':
-                tempBuffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+            if implementation.name == "cpython":
+                tempBuffer = SDL_CreateTexture(
+                    self._renderer,
+                    self._px_format,
+                    SDL_TEXTUREACCESS_TARGET,
+                    self.height,
+                    self.width,
+                )
                 if not tempBuffer:
                     raise RuntimeError(f"{SDL_GetError()}")
 
@@ -289,34 +384,46 @@ class SDLDisplay(BaseDisplay):
                         (self.height - self.width) // 2,
                         (self.width - self.height) // 2,
                         self.width,
-                        self.height
+                        self.height,
                     )
                 else:
                     dstrect = None
-                retcheck(SDL_RenderCopyEx(self._renderer, self._buffer, None, dstrect, angle, None, 0))
+                retcheck(
+                    SDL_RenderCopyEx(
+                        self._renderer, self._buffer, None, dstrect, angle, None, 0
+                    )
+                )
                 retcheck(SDL_SetRenderTarget(self._renderer, None))
                 retcheck(SDL_DestroyTexture(self._buffer))
                 self._buffer = tempBuffer
             else:
                 retcheck(SDL_DestroyTexture(self._buffer))
-                self._buffer = SDL_CreateTexture(self._renderer, self._px_format, SDL_TEXTUREACCESS_TARGET, self.height, self.width)
+                self._buffer = SDL_CreateTexture(
+                    self._renderer,
+                    self._px_format,
+                    SDL_TEXTUREACCESS_TARGET,
+                    self.height,
+                    self.width,
+                )
                 if not self._buffer:
                     raise RuntimeError(f"{SDL_GetError()}")
                 retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
     ############### Class Specific Methods ##############
 
-    def show(self, renderRect=None):
+    def show(self, renderRect: Optional[SDL_Rect] = None):
         """
         Show the display.  Automatically called after blitting or filling the display.
 
-        :param renderRect: The rectangle to render (default is None).
-        :type renderRect: SDL_Rect
+        Args:
+            renderRect (Optional[SDL_Rect], optional): The rectangle to render. Defaults to None.
         """
         # if (y_start := self.vscsad()) == False:
         if False:
             # The following line is not working on Chromebooks, Ubuntu and Raspberry Pi OS
-            retcheck(SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect))
+            retcheck(
+                SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect)
+            )
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
             y_start = self.vscsad()
@@ -327,12 +434,22 @@ class SDLDisplay(BaseDisplay):
             vsaTopHeight = self._vsa + self._tfa - y_start
             vsaTopSrcRect = SDL_Rect(0, y_start, self.width, vsaTopHeight)
             vsaTopDestRect = SDL_Rect(0, self._tfa, self.width, vsaTopHeight)
-            retcheck(SDL_RenderCopy(self._renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect))
+            retcheck(
+                SDL_RenderCopy(
+                    self._renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect
+                )
+            )
 
             vsaBtmHeight = self._vsa - vsaTopHeight
             vsaBtmSrcRect = SDL_Rect(0, self._tfa, self.width, vsaBtmHeight)
-            vsaBtmDestRect = SDL_Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
-            retcheck(SDL_RenderCopy(self._renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect))
+            vsaBtmDestRect = SDL_Rect(
+                0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight
+            )
+            retcheck(
+                SDL_RenderCopy(
+                    self._renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect
+                )
+            )
 
             if self._bfa > 0:
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
@@ -340,7 +457,7 @@ class SDLDisplay(BaseDisplay):
 
         retcheck(SDL_RenderPresent(self._renderer))
 
-    def deinit(self):
+    def deinit(self) -> None:
         """
         Deinitializes the sdl2lcd instance.
         """

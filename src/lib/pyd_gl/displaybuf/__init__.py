@@ -21,6 +21,7 @@ Usage:
         from color_setup import ssd
         <your code here>
 """
+
 import gc
 import sys
 from .. import framebuf_plus as framebuf
@@ -29,10 +30,12 @@ from .. import Area, color565, color565_swapped, color332
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
 else:
+
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
             ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented for MicroPython."
         )
+
     _bounce4 = _bounce8
 
 
@@ -123,11 +126,11 @@ class DisplayBuffer(framebuf.FrameBuffer):
     @property
     def buffer(self):
         return self._buffer
-    
+
     @property
     def color_palette(self):
         return self._color_palette
-    
+
     @color_palette.setter
     def color_palette(self, palette):
         if len(palette) > 16:
@@ -206,7 +209,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             source_end = source_begin + w * BPP
             dest_begin = ((y + row) * self.width + x) * BPP
             dest_end = dest_begin + w * BPP
-            self._mvb[dest_begin : dest_end] = buf[source_begin : source_end]
+            self._mvb[dest_begin:dest_end] = buf[source_begin:source_end]
         return Area(x, y, w, h)
 
     @staticmethod

@@ -3,28 +3,24 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices is a module that provides a display interface for various environments
-It allows you to interact with different display devices and handle events.
-
-Supported display classes:
-- 'BusDisplay': Uses a bus library such as buses or CircuitPython's DisplayIO buses
-- 'DTDisplay': Automatically selects the correct desktop display to use
-    - 'SDLDisplay': Uses the SDL2 library
-    - 'PGDisplay': Uses the Pygame library
-- 'FBDisplay': Uses a framebuffer object such as CircuitPython's framebuffers
-- 'JNDisplay': Uses a Jupyter Notebook
-- 'PSDisplay': Uses PyScript
+pyd_basedisplay - Provides a base class for display drivers.
 """
+
 import gc
 from sys import implementation
 from ._area import Area
+
+try:
+    from typing import Optional
+except ImportError:
+    pass
 
 np = False
 try:
     import ulab.numpy as np  # type: ignore
 except ImportError:
     try:
-        import numpy as np # type: ignore
+        import numpy as np  # type: ignore
     except ImportError:
         pass
 
@@ -32,6 +28,7 @@ viper = False
 if implementation.name == "micropython":
     try:
         from ._viper import swap_bytes
+
         viper = True
     except Exception as e:
         print(f"PyDevices:  {e}")
@@ -40,16 +37,16 @@ if not viper:
     if np:
         from ._numpy import swap_bytes
     else:
+
         def swap_bytes(buf, buf_size_pix):
             buf[::2], buf[1::2] = buf[1::2], buf[::2]
+
 
 gc.collect()
 
 
 def color_rgb(color):
-    """
-    color can be an integer or a tuple, list or bytearray of 2 or 3 integers
-    """
+    # color can be an integer or a tuple, list or bytearray of 2 or 3 integers
     if isinstance(color, int):
         # convert 16-bit int color to 2 bytes
         color = (color & 0xFF, color >> 8)
@@ -73,44 +70,38 @@ class BaseDisplay:
         gc.collect()
 
     def __del__(self):
-        """
-        Deinitializes the display instance.
-        """
         self.deinit()
 
     ############### Universal API Methods, not usually overridden ################
 
     @property
-    def width(self):
+    def width(self) -> int:
         """The width of the display in pixels."""
         if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
             return self._height
         return self._width
 
     @property
-    def height(self):
+    def height(self) -> int:
         """The height of the display in pixels."""
         if ((self._rotation // 90) & 0x1) == 0x1:  # if rotation index is odd
             return self._width
         return self._height
 
     @property
-    def rotation(self):
+    def rotation(self) -> int:
         """
         The rotation of the display.
-
-        :return: The rotation of the display.
-        :rtype: int
         """
         return self._rotation
 
     @rotation.setter
-    def rotation(self, value):
+    def rotation(self, value) -> None:
         """
         Sets the rotation of the display.
 
-        :param value: The rotation of the display.
-        :type value: int
+        Args:
+            value (int): The rotation of the display in degrees.
         """
 
         if value % 90 != 0:
@@ -118,7 +109,7 @@ class BaseDisplay:
 
         if value == self._rotation:
             return
-        
+
         self._rotation_helper(value)
 
         self._rotation = value
@@ -129,22 +120,19 @@ class BaseDisplay:
         self.init()
 
     @property
-    def touch_device(self):
+    def touch_device(self) -> object:
         """
-        The associated touch_device.
-
-        :return: The touch_device.
-        :rtype: object
+        The touch device.
         """
         return self._touch_device
 
     @touch_device.setter
-    def touch_device(self, value):
+    def touch_device(self, value) -> None:
         """
-        Sets the touch_device.
+        Sets the touch device.
 
-        :param value: The touch_device.
-        :type value: object
+        Args:
+            value (object): The touch device.
         """
         if hasattr(value, "rotation") or value is None:
             self._touch_device = value
@@ -152,24 +140,26 @@ class BaseDisplay:
             raise ValueError("touch_device must have a rotation attribute")
         self._touch_device.rotation = self.rotation
 
-    def fill(self, color):
+    def fill(self, color) -> Area:
         """
         Fill the display with a color.
 
-        :param color: The color to fill the display with.
-        :type color: int
+        Args:
+            color: The color to fill the display with.
+
+        Returns:
+            Area: The area that was filled.
         """
         self.fill_rect(0, 0, self.width, self.height, color)
         return Area(0, 0, self.width, self.height)
 
-    def scroll(self, dx, dy):
+    def scroll(self, dx, dy) -> None:
         """
         Scroll the display.
 
-        :param dx: The x-coordinate to scroll.  Not supported.
-        :type dx: int
-        :param dy: The y-coordinate to scroll.
-        :type dy: int
+        Args:
+            dx (int): The number of pixels to scroll horizontally.
+            dy (int): The number of pixels to scroll vertically.
         """
         if dy != 0:
             if self._vssa is not None:
@@ -179,60 +169,62 @@ class BaseDisplay:
         if dx != 0:
             raise NotImplementedError("Horizontal scrolling not supported")
 
-    def disable_auto_byte_swap(self, value):
+    def disable_auto_byte_swap(self, value: bool) -> bool:
         """
         Disable byte swapping in the display driver.
 
-        If self.requires_bus_swap and the guest application is capable of byte swapping color data
-        check to see if byte swapping can be disabled in the display bus.  If so, disable it.
+        If self.requires_byte_swap and the guest application is capable of byte swapping color data
+        check to see if byte swapping can be disabled.  If so, disable it.
 
-        Guest applications that are capable of byte swapping should include:
-
+        Usage:
+            ```
             # If byte swapping is required and the display driver is capable of having byte swapping disabled,
             # disable it and set a flag so we can swap the color bytes as they are created.
             if display_drv.requires_byte_swap:
                 needs_swap = display_drv.disable_auto_byte_swap(True)
             else:
                 needs_swap = False
+            ```
 
-        :param value: Whether to disable byte swapping in the display bus.
-        :type value: bool
-        :return: True if the bus swap was disabled, False if it was not.
-        :rtype: bool
+        Args:
+            value (bool): Whether to disable byte swapping.
+
+        Returns:
+            bool: Whether byte swapping was disabled successfully.
+
         """
         if self._requires_byte_swap:
             self._auto_byte_swap_enabled = not value
         else:
             self._auto_byte_swap_enabled = False
-        print(f"{self.__class__.__name__}:  auto byte swapping = {self._auto_byte_swap_enabled}")
+        print(
+            f"{self.__class__.__name__}:  auto byte swapping = {self._auto_byte_swap_enabled}"
+        )
         return not self._auto_byte_swap_enabled
 
     @property
-    def requires_byte_swap(self):
+    def requires_byte_swap(self) -> bool:
         """
         Whether the display requires byte swapping.
-
-        :return: Whether the display requires byte swapping.
-        :rtype: bool
         """
         return self._requires_byte_swap
 
-    def blit_transparent(self, buf, x, y, w, h, key):
+    def blit_transparent(
+        self, buf: memoryview, x: int, y: int, w: int, h: int, key: int
+    ) -> Area:
         """
         Blit a buffer with transparency.
 
-        :param buf: Buffer to blit
-        :type buf: memoryview
-        :param x: X-coordinate to blit to
-        :type x: int
-        :param y: Y-coordinate to blit to
-        :type y: int
-        :param w: Width of the buffer
-        :type w: int
-        :param h: Height of the buffer
-        :type h: int
-        :param key: Key value for transparency
-        :type key: int
+        Args:
+            buf (memoryview): The buffer to blit.
+            x (int): The x coordinate to blit to.
+            y (int): The y coordinate to blit to.
+            w (int): The width to blit.
+            h (int): The height to blit.
+            key (int): The color key to use for transparency.
+
+        Returns:
+            Area: The area that was blitted.
         """
         BPP = self.color_depth // 8
         key_bytes = key.to_bytes(BPP, "little")
@@ -253,7 +245,13 @@ class BaseDisplay:
                             break
                         colend += BPP
                     # blit the non-key pixels
-                    self.blit_rect(buf[rowstart + colstart : rowstart + colend], x + colstart // BPP, y + j, (colend - colstart) // BPP, 1)
+                    self.blit_rect(
+                        buf[rowstart + colstart : rowstart + colend],
+                        x + colstart // BPP,
+                        y + j,
+                        (colend - colstart) // BPP,
+                        1,
+                    )
                     colstart = colend
                 else:
                     colstart += BPP
@@ -261,17 +259,15 @@ class BaseDisplay:
 
     ############### Common API Methods, sometimes overridden ################
 
-    def vscrdef(self, tfa, vsa, bfa):
+    def vscrdef(self, tfa: int, vsa: int, bfa: int) -> None:
         """
         Set the vertical scroll definition.  Should be overridden by the
         subclass and called as super().vscrdef(tfa, vsa, bfa).
 
-        :param tfa: The top fixed area.
-        :type tfa: int
-        :param vsa: The vertical scrolling area.
-        :type vsa: int
-        :param bfa: The bottom fixed area.
-        :type bfa: int
+        Args:
+            tfa (int): The top fixed area.
+            vsa (int): The vertical scroll area.
+            bfa (int): The bottom fixed area.
         """
         if tfa + vsa + bfa != self.height:
             raise ValueError(
@@ -281,18 +277,20 @@ class BaseDisplay:
         self._vsa = vsa
         self._bfa = bfa
 
-    def vscsad(self, vssa=None):
+    def vscsad(self, vssa: Optional[int] = None) -> int:
         """
-        Set the vertical scroll start address.  Should be overridden by the
+        Set or get the vertical scroll start address.  Should be overridden by the
         subclass and called as super().vscsad(y).
 
-        :param y: The vertical scroll start address.
-        :type y: int
+        Args:
+            vssa (int): The vertical scroll start address.
+
+        Returns:
+            int: The vertical scroll start address.
         """
         if vssa is not None:
             self._vssa = vssa
-        else:
-            return self._vssa
+        return self._vssa
 
     def _rotation_helper(self, value):
         """
@@ -307,39 +305,80 @@ class BaseDisplay:
     ############### Empty API Methods, must be overridden if applicable ################
 
     @property
-    def power(self):
+    def power(self) -> bool:
+        """The power state of the display."""
         return -1
 
     @power.setter
-    def power(self, value):
+    def power(self, value: bool) -> None:
+        """
+        Set the power state of the display.  Should be overridden by the subclass.
+
+        Args:
+            value (bool): True to power on, False to power off.
+        """
         return
 
     @property
-    def brightness(self):
+    def brightness(self) -> float:
+        """The brightness of the display."""
         return -1
 
     @brightness.setter
-    def brightness(self, value):
+    def brightness(self, value: float) -> None:
+        """
+        Set the brightness of the display.  Should be overridden by the subclass.
+
+        Args:
+            value (int, float): The brightness value from 0 to 1.
+        """
         return
 
-    def invert_colors(self, value):
+    def invert_colors(self, value: bool) -> None:
+        """
+        Invert the colors of the display.  Should be overridden by the subclass.
+
+        Args:
+            value (bool): True to invert the colors, False to restore the colors.
+        """
         return
 
-    def reset(self):
+    def reset(self) -> None:
+        """
+        Perform a reset of the display.  Should be overridden by the subclass.
+        """
         return
 
-    def hard_reset(self):
+    def hard_reset(self) -> None:
+        """
+        Perform a hardware reset of the display.  Should be overridden by the subclass.
+        """
         return
 
-    def soft_reset(self):
+    def soft_reset(self) -> None:
+        """
+        Perform a software reset of the display.  Should be overridden by the subclass.
+        """
         return
 
-    def sleep_mode(self, value):
+    def sleep_mode(self, value: bool) -> None:
+        """
+        Set the sleep mode of the display.  Should be overridden by the subclass.
+
+        Args:
+            value (bool): True to enter sleep mode, False to exit sleep mode.
+        """
         return
 
-    def deinit(self):
-        return
-    
-    def show(self, *args, **kwargs):
+    def deinit(self) -> None:
+        """
+        Deinitialize the display.
+        """
+        self.__del__()
         return
 
+    def show(self, *args, **kwargs) -> None:
+        """
+        Show the display.  Base class method does nothing.  May be overridden by subclasses.
+        """
+        return
