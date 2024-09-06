@@ -9,7 +9,7 @@ docs_dir: docs
 site_dir: site
 
 theme:
-  name: "mkdocs"
+  name: "material"
 
 plugins:
 - search
@@ -20,12 +20,24 @@ plugins:
 - literate-nav:
     nav_file: SUMMARY.md
 - section-index
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_source: false
+          show_bases: false
+          inherited_members: true
+          paths: [src/lib, src/lib/displays, src/lib/buses]
+          docstring_style: google
+          docstring_section_style: list
+          # heading_level: 1
+
 
 nav:
 # rest of the navigation...
 - Details:
   - Getting Started: GETTING-STARTED.md
+  - Screenshots: SCREENSHOTS.md
   - Another Level:
     - And Another:
       - Test Page: test-page.md
