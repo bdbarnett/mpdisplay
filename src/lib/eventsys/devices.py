@@ -57,12 +57,26 @@ class Devices:
 
     @staticmethod
     def create(type, *args, **kwargs):
+        """
+        Create a new instance of a device.
+
+        Args:
+            type (int): The type of device to create.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            _Device: The created device object.
+
+        Raises:
+            ValueError: If the device type is invalid.
+        """
         if cls := _mapping.get(type):
             return cls(*args, **kwargs)
         raise ValueError("Invalid device type")
 
     @staticmethod
-    def new_type(type_name: str, responses: list[int]):
+    def new_type(type_name, responses):
         """
         Create a new device type with a list of responses.
 
@@ -86,7 +100,6 @@ class Devices:
             from eventsys.events import Events
 
             KeypadDevice = Devices.new_type("KEYPAD", [Events.KEYDOWN, Events.KEYUP])
-            KeypadDevice._poll = lambda: return Events.Key(Events.KEYDOWN, "a", 97, 0, 0, 0)
             ```
         """
         if not isinstance(type_name, str):
@@ -210,6 +223,9 @@ class _Device:
 
     @property
     def broker(self):
+        """
+        The broker that manages this device.
+        """
         return self._broker
 
     @broker.setter
@@ -218,6 +234,9 @@ class _Device:
 
     @property
     def user_data(self):
+        """
+        User data that can be set and retrieved by applications.
+        """
         return self._user_data
 
     @user_data.setter
@@ -257,21 +276,15 @@ class _Device:
 
 class Broker(_Device):
     """
-    The Broker class represents a broker device that manages communication between devices.
+    The Broker class is a device that polls multiple devices for events and forwards them to
+    subscribers.
+
+    Args:
+        None
 
     Attributes:
-        type (int): The type of the broker device.
-        responses (function): The function used to filter events.
-
-    Methods:
-        __init__(): Initializes a new instance of the Broker class.
-        subscribe(callback, event_types=None, device_types=None): Subscribes a callback function to receive events.
-        unsubscribe(callback, event_types=None, device_types=None): Unsubscribes a callback function from receiving events.
-        create_device(type=Devices.QUEUE, **kwargs): Creates a new device object.
-        register_device(dev): Registers a device to be polled.
-        unregister_device(dev): Unregisters a device.
-        _poll(): Polls the registered devices for events.
-
+        type (Devices): The type of the device (set to `Devices.BROKER`).
+        responses (list): The list of event types that the device can respond to.
     """
 
     type = Devices.BROKER
