@@ -21,6 +21,7 @@ you need to use the returned Areas so your code will be transferable.
 """
 
 from gfx import shapes
+from gfx import binfont
 
 try:
     from ulab import numpy as np  # type: ignore
@@ -60,7 +61,7 @@ class BasicShapes:
     poly = shapes.poly
     rect = shapes.rect
     vline = shapes.vline
-    text = shapes.text
+    text = binfont.text
 
 
 class MVLSBFormat:
