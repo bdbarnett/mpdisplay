@@ -11,7 +11,6 @@ from json import load, dump  # For saving the high score
 from sys import exit  # For exiting the game
 from framebuf import FrameBuffer, RGB565  # type: ignore # For drawing text boxes
 from micropython import const  # For constant values
-import asyncio
 
 try:
     from time import ticks_ms, ticks_diff  # For timing
@@ -38,7 +37,7 @@ keypad = Keypad(
     broker.poll, display_drv.width, display_drv.height, keys=[START, UNUSED, PAUSE, CW, DROP, CCW, LEFT, DOWN, RIGHT]
 )
 
-async def main():
+def main():
 
     # Define the draw_block function
     def draw_block(x, y, index):
@@ -289,7 +288,7 @@ async def main():
             return 0
 
 
-    async def wait_for_key(key=None, exclude=[]):
+    def wait_for_key(key=None, exclude=[]):
         """
         Waits for the user to press a key.
 
@@ -301,7 +300,6 @@ async def main():
             str: The key that was pressed.
         """
         while True:  # Wait for the user to press a key
-            await asyncio.sleep(0.001)
             if (
                 pressed := keypad.read()
             ) and pressed not in exclude:  # If a key was pressed and it's not excluded
@@ -412,10 +410,9 @@ async def main():
             x=(display_width - 5 * block_size) // 2,
             y=(display_height - 2 * block_size),
         )
-        await wait_for_key()  # Wait for the user to press a key
+        wait_for_key()  # Wait for the user to press a key
 
     while True:  # Outer loop - play the game repeatedly
-        await asyncio.sleep(0.001)
         #     print("Outer loop")
         # Initialize game state
         # grid is a 2D list of block indices, 0 for empty, 1-7 indicates block color
@@ -438,12 +435,11 @@ async def main():
         draw_banner(f"High Score {high_score:,}\n\nPress START\nto play.")
         if str(type(keypad)).find("Touchpad"):  # If we're using the touchpad
             draw_touch_targets()  # Draw the touch targets
-        await wait_for_key(START)  # Wait for the user to press START
+        wait_for_key(START)  # Wait for the user to press START
 
         # Play the game
         show_score()  # Show the score
         while True:  # Main game loop
-            await asyncio.sleep(0.001)
             #         print("Main game loop")
             current_piece = next_piece  # Set the next piece to the current piece
             current_position = [
@@ -459,7 +455,6 @@ async def main():
             last_drop = ticks_ms()  # Time of last automatic drop
 
             while current_piece:  # Middle loop - while the piece is in play
-                await asyncio.sleep(0.001)
                 #             print("Redraw piece loop")
                 draw_piece(current_piece, current_position)  # Draw the current piece
                 old_piece = current_piece.copy()  # Save the previous piece
@@ -468,7 +463,6 @@ async def main():
                 while (
                     current_piece == old_piece and current_position == old_position
                 ):  # Inner loop - while the piece hasn't moved
-                    await asyncio.sleep(0.001)
                     # If it has been DELAY ms since the last keypad read, then read the keypad
                     if (ticks_diff(ticks_ms(), last_read) >= DELAY) and (
                         key := keypad.read()
@@ -507,7 +501,7 @@ async def main():
                             draw_banner(
                                 "Paused.\n\nPress START to reset.\nAny key to resume."
                             )
-                            key = await wait_for_key(
+                            key = wait_for_key(
                                 exclude=[PAUSE]
                             )  # Wait for the user to press a key, excluding PAUSE
                             if key == START:
@@ -599,12 +593,7 @@ async def main():
         else:
             message = "Game over!"
         show_score(message)  # Show the score
-        await wait_for_key(START)  # Wait for the user to press START
+        wait_for_key(START)  # Wait for the user to press START
 
-loop = asyncio.get_event_loop()
-task = loop.create_task(main())
-if hasattr(loop, "is_running") and loop.is_running():
-    pass
-else:
-    if hasattr(loop, "run_forever"):
-        loop.run_forever()
+
+main()
