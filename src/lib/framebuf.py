@@ -20,7 +20,7 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 
-from pyd_gl import shapes
+from gfx import shapes
 
 try:
     from ulab import numpy as np  # type: ignore

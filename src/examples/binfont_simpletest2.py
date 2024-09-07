@@ -6,9 +6,9 @@ Draws directly to the display without using a framebuffer.
 """
 
 from board_config import display_drv
-from pyd_gl.binfont import BinFont
+from gfx.binfont import BinFont
 import random
-from pyd_gl.palettes import get_palette
+from gfx.palettes import get_palette
 import os
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel
@@ -35,9 +35,9 @@ def main():
     if cwd[-1] != "/":
         cwd += "/"
 
-    font1 = BinFont(f"{cwd}lib/pyd_gl/binfont/binfont_8x8.bin")
-    font2 = BinFont(f"{cwd}lib/pyd_gl/binfont/binfont_8x14.bin")
-    font3 = BinFont(f"{cwd}lib/pyd_gl/binfont/binfont_8x16.bin")
+    font1 = BinFont(f"{cwd}lib/gfx/binfont/binfont_8x8.bin")
+    font2 = BinFont(f"{cwd}lib/gfx/binfont/binfont_8x14.bin")
+    font3 = BinFont(f"{cwd}lib/gfx/binfont/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.font_width for font in fonts])

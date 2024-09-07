@@ -1,6 +1,6 @@
 from board_config import display_drv
-from pyd_gl.palettes import get_palette
-from pyd_gl import shapes
+from gfx.palettes import get_palette
+from gfx import shapes
 
 def main():
     pal = get_palette("material_design")

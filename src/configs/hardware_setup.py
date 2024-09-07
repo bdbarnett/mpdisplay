@@ -6,9 +6,9 @@ Usage:
     from hardware_setup import display
     <your code here>
 '''
-from pyd_gl.displaybuf import DisplayBuffer as SSD
+from gfx.displaybuf import DisplayBuffer as SSD
 from board_config import display_drv, broker
-from pyd_eventsys.events import Events
+from eventsys.events import Events
 
 # format = SSD.GS4_HMSB  # 4-bit (16 item) lookup table of 16-bit RGB565 colors; w*h/2 buffer
 # format = SSD.GS8  # 256 8-bit RGB332 colors; w*h buffer

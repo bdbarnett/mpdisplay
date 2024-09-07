@@ -1,10 +1,10 @@
 """ DIY ESP32 psram with and ILI9341 2.8" display and XPT2046 touch controller"""
 
-from pyd_spibus import SPIBus
+from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, SPI
 from xpt2046 import Touch
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(

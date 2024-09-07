@@ -7,9 +7,9 @@ from displayio import release_displays
 import busio
 import board
 
-from pyd_fbdisplay import FBDisplay
+from fbdisplay import FBDisplay
 import adafruit_focaltouch
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 # This first part is particular to CircuitPython-based framebuffer-based displays

@@ -1,10 +1,10 @@
 """ T-Embed ST7789 display with encoder"""
 
-from pyd_spibus import SPIBus
+from spibus import SPIBus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(

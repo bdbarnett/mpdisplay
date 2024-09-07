@@ -26,7 +26,7 @@ WARNINGS:  PyDevices is currently alpha quality.  Every effort has been made to 
 
 PyDevices is a universal display, event and device driver framework for multiple flavors of Python, including MicroPython, CircuitPython and CPython (big Python).  It may be used as-is to create graphic frontends to your apps, or may be used as a foundation with GUI libraries such as [LVGL](https://github.com/lvgl/lv_micropython), [MicroPython-touch](https://github.com/peterhinch/micropython-touch) or maybe even a GUI framework you've been thinking of developing.  Its primary purpose is to provide display and touch drivers for MicroPython, but it is equally useful for developers who may never touch MicroPython.
 
-It is important to note that PyDevices is meant to be a foundation for GUI libraries and is not itself a GUI library.  It doesn't provide widgets, such as buttons, checkboxes or sliders, and it doesn't provide a timing mechanism.  You will need a GUI library to provide those if necessary, although many apps won't need them.  (There is a cross-platform repository [pyd_timer](https://github.com/bdbarnett/pyd_timer) you can use if you want to used scheduled interrupts.  It works with CPython and MicroPython, but doesn't work with CircuitPython.  You can also use asyncio for timing.)
+It is important to note that PyDevices is meant to be a foundation for GUI libraries and is not itself a GUI library.  It doesn't provide widgets, such as buttons, checkboxes or sliders, and it doesn't provide a timing mechanism.  You will need a GUI library to provide those if necessary, although many apps won't need them.  (There is a cross-platform repository [timer](https://github.com/bdbarnett/timer) you can use if you want to used scheduled interrupts.  It works with CPython and MicroPython, but doesn't work with CircuitPython.  You can also use asyncio for timing.)
 
 ## Key Features
 
@@ -87,7 +87,7 @@ Where possible, existing, proven APIs were used.
   - FBDisplay works with CircuitPython framebufferio.FramebufferDisplay objects, such as dotclockframebuffer (RGB displays), usb_video and rgbmatrix.  (usb_video may be the coolest thing you can do with PyDevices, although I'm not sure how practical or useful it is.  It allows your board to function as a webcam, even without a camera, and to render the display through USB to any application on your host PC that can open a webcam!  My Windows machine sees it as an unsupported device, so it will not work, but it does work on my ChromeBook.  Currently it is limited to RP2040 only and is hardcoded to a 128 x 96 resolution, but that likely will change.  See the [screen capture](examples/circuitpython_usb_video_chromebook.gif) and the [board_config.py](board_configs/circuitpython/usb_video/board_config.py) for more details.)
   - JNDisplay for Jupyter Notebooks.  No input devices are currently supported.
   - PSDisplay for PyScript.  Only touchscreens are currently supported.
-- Names of Events and Devices in [pyd_eventsys](src/lib/pyd_eventsys/) are taken from PyGame and/or SDL2 to keep the API consistent.
+- Names of Events and Devices in [eventsys](src/lib/eventsys/) are taken from PyGame and/or SDL2 to keep the API consistent.
 - All drawing targets, sometimes referred to as `canvas` in the code, may be written to using the API from MicroPython's framebuf.FrameBuffer API (except .blit())
   - CPython and CircuitPython don't have a `framebuf` module that is API compliant with MicroPython's `framebuf`, so [framebuf.py](lib/framebuf.py) has been modified from [Adafruit CircuitPython framebuf](https://github.com/adafruit/Adafruit_CircuitPython_framebuf) and is provided for those platforms.  It is not used in MicroPython.
   - A `framebuf_plus` module is provided that subclasses `FrameBuffer` (either built-in or from framebuf.py) and provides additional drawing tools, such as `round_rect`.  All methods in framebuf_plus return an Area object with x, y, w and h attributes describing a bounding box of what was changed.  This can be used by applications to only update the part of the display that needs it.  That functionality is implemented in DisplayBuffer and will likely be required by EPaperDisplay when it is implemented.
@@ -127,7 +127,7 @@ Where possible, existing, proven APIs were used.
 - [ ] Scrolling on microcontrollers has issues when trying to write spanning the cutoff line.  For instance, if drawing a 16 pixel high image at the 8th line from the cutoff line, the bottom 8 lines don't end up where you expect.  See the [bmp565_sprite](examples/bmp565_sprite.py) example.
 - [ ] Ensure multiple displays work at the same time
 - [ ] Implement color depths other than 16 bit
-- [ ] Add a Joystick class to pyd_eventsys
+- [ ] Add a Joystick class to eventsys
 - [ ] Test with CircuitPython Blinka on SBC's such as Raspberry Pi 4
 - [ ] Need C bus drivers from the community, especially for STM32H7 and MIMXRT
 

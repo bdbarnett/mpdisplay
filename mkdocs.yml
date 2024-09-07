@@ -1,4 +1,4 @@
-site_name: PyDevices Documentation
+site_name: PyDevices Graphics
 
 repo_url: https://github.com/bdbarnett/mpdisplay/
 
@@ -10,6 +10,11 @@ site_dir: site
 
 theme:
   name: "material"
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: amber
+
 
 plugins:
 - search
@@ -29,7 +34,9 @@ plugins:
           inherited_members: true
           paths: [src/lib, src/lib/displays, src/lib/buses]
           docstring_style: google
-          docstring_section_style: list
+          docstring_section_style: table
+          separate_signature: true
+          show_category_heading: true
           # heading_level: 1
 
 

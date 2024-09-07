@@ -2,11 +2,11 @@
 https://github.com/Xinyuan-LilyGO/T-Display-S3-Pro/blob/master/schematic/T-Display-Pro.pdf
 """
 
-from pyd_spibus import SPIBus
+from spibus import SPIBus
 from st7796 import ST7796
 from machine import Pin, I2C
 from cst8xx import CST8XX
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 display_bus = SPIBus(

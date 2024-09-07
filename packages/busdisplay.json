@@ -1,0 +1,15 @@
+{
+  "urls": [
+    [
+      "busdisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
+    ]
+  ],
+  "deps": [
+    [
+      "github:bdbarnett/mpdisplay/packages/basedisplay.json",
+      "main"
+    ]
+  ],
+  "version": "0.1"
+}

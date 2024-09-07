@@ -19,8 +19,8 @@ except ImportError:
         pass
 
 if _ps:
-    from pyd_psdisplay import PSDisplay, PSDevices
-    from pyd_eventsys.devices import Devices, Broker # type: ignore
+    from psdisplay import PSDisplay, PSDevices
+    from eventsys.devices import Devices, Broker # type: ignore
 
 
     display_drv = PSDisplay("display_canvas", width, height)
@@ -35,14 +35,14 @@ if _ps:
         data=display_drv,
     )
 elif _jn:
-    from pyd_jndisplay import JNDisplay
-    from pyd_timer import refresh_timer
+    from jndisplay import JNDisplay
+    from timer import refresh_timer
 
     display_drv = JNDisplay(width, height)
     tim = refresh_timer(display_drv.show)
 else:
-    from pyd_dtdisplay import DTDisplay, poll # type: ignore
-    from pyd_eventsys.devices import Devices, Broker # type: ignore
+    from dtdisplay import DTDisplay, poll # type: ignore
+    from eventsys.devices import Devices, Broker # type: ignore
     import sys
 
     display_drv = DTDisplay(

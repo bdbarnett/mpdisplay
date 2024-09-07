@@ -24,7 +24,7 @@ from usb_video import USBFramebuffer
 from framebufferio import FramebufferDisplay
 from displayio import release_displays
 
-from pyd_fbdisplay import FBDisplay
+from fbdisplay import FBDisplay
 
 
 release_displays()

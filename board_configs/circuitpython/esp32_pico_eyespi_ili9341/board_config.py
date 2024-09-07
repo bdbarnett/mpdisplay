@@ -7,7 +7,7 @@ from fourwire import FourWire
 from ili9341 import ILI9341
 import board
 from adafruit_focaltouch import Adafruit_FocalTouch
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 display_bus = FourWire(

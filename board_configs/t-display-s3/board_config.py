@@ -1,6 +1,6 @@
 """ T-Display-S3 170x320 ST7789 display  """
 
-from pyd_i80bus import I80Bus
+from i80bus import I80Bus
 from st7789 import ST7789
 from machine import Pin
 from time import sleep_ms

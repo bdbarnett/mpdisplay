@@ -3,7 +3,7 @@ A simple test of an encoder in PyDevices.
 """
 
 from board_config import display_drv, broker
-from pyd_eventsys.events import Events
+from eventsys.events import Events
 
 color_byte = 1
 bg_color = 0xFF00

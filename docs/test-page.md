@@ -1,1 +1,1 @@
-::: src.lib.displays.pyd_busdisplay
+::: src.lib.displays.busdisplay

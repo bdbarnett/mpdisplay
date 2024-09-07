@@ -1,0 +1,10 @@
+{
+  "urls": [
+    [
+      "spibus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/buses/spibus/__init__.py"
+    ]
+  ],
+  "deps": [],
+  "version": "0.1"
+}

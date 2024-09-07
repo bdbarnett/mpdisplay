@@ -1,6 +1,6 @@
 from color_setup import ssd
 from bmp565 import BMP565
-from pyd_gl.framebuf_plus import FrameBuffer, RGB565
+from gfx.framebuf_plus import FrameBuffer, RGB565
 from time import sleep
 
 ssd.fill(0x0)

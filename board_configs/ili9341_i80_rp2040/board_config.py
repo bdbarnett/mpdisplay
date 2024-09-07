@@ -1,10 +1,10 @@
 """ DIY Raspberry Pi Pico with ILI9341 2.8" display """
 
-from pyd_i80bus import I80Bus
+from i80bus import I80Bus
 from ili9341 import ILI9341
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 reset=Pin(12, Pin.OUT, value=1)

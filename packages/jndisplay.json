@@ -1,0 +1,15 @@
+{
+  "urls": [
+    [
+      "jndisplay/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/jndisplay/__init__.py"
+    ]
+  ],
+  "deps": [
+    [
+      "github:bdbarnett/mpdisplay/packages/basedisplay.json",
+      "main"
+    ]
+  ],
+  "version": "0.1"
+}

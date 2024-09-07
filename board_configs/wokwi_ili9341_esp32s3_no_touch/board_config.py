@@ -1,6 +1,6 @@
 """ Wokwi ESP32S3 and ILI9341 Display """
 
-from pyd_spibus import SPIBus
+from spibus import SPIBus
 from ili9341 import ILI9341
 
 

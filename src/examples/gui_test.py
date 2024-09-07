@@ -4,7 +4,7 @@ print("It is a work in progress and is not complete.")
 print("Please do not report errors or request changes.")
 
 ############## file:  __init__.py
-from pyd_gl.palettes import get_palette
+from gfx.palettes import get_palette
 
 colors = get_palette()
 
@@ -36,7 +36,7 @@ class parts:
 
 
 ############## file:  screen.py
-from pyd_gl import Area  # noqa: E402
+from gfx import Area  # noqa: E402
 
 
 class Screen:
@@ -199,7 +199,7 @@ STYLES[IconButton] = {
 # from color_setup import ssd as display  # noqa: E402
 from board_config import display_drv  as display  # noqa: E402
 from board_config import broker  # noqa: E402
-from pyd_eventsys.events import Events  # noqa: E402
+from eventsys.events import Events  # noqa: E402
 try:
     from time import ticks_ms, ticks_diff  # noqa: E402
 except ImportError:

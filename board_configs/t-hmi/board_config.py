@@ -1,10 +1,10 @@
 """ T-HMI 240x320 ST7789V display """
 
-from pyd_i80bus import I80Bus
+from i80bus import I80Bus
 from st7789 import ST7789
 from machine import SPI, Pin  # See the note about reset below
 from xpt2046 import Touch
-from pyd_eventsys.devices import Devices, Broker
+from eventsys.devices import Devices, Broker
 
 
 display_bus = I80Bus(
