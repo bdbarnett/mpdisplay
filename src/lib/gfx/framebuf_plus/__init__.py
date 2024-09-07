@@ -32,7 +32,7 @@ from framebuf import (
 )
 from .. import Area
 from .. import shapes
-
+from .. import binfont
 
 class ExtendedShapes:
     """
@@ -48,9 +48,9 @@ class ExtendedShapes:
     polygon = shapes.polygon
     round_rect = shapes.round_rect
     triangle = shapes.triangle
-    text8 = shapes.text8
-    text14 = shapes.text14
-    text16 = shapes.text16
+    text8 = binfont.text8
+    text14 = binfont.text14
+    text16 = binfont.text16
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
