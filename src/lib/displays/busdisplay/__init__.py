@@ -365,30 +365,21 @@ class BusDisplay(BaseDisplay):
         """
         The offset in pixels to the first column of the visible display.
         """
-        if self.rotation == 0:
+        rot = self.rotation % 360
+        if rot == 0 or rot == 180:
             return self._colstart
-        if self.rotation == 90:
-            return self._rowstart
-        if self.rotation == 180:
-            return 0  # Wrong, but not sure what it should be yet
-        # Must be 270
-        return 0  # Wrong, but not sure what it should be yet
-
+        return self._rowstart
 
     @property
     def rowstart(self):
         """
-        The offset in pixels to the first column of the visible display.
+        The offset in pixels to the first row of the visible display.
         """
-        if self.rotation == 0:
+        rot = self.rotation % 360
+        if rot == 0 or rot == 180:
             return self._rowstart
-        if self.rotation == 90:
-            return self._colstart
-        if self.rotation == 180:
-            return 0  # Wrong, but not sure what it should be yet
-        # Must be 270
-        return 0  # Wrong, but not sure what it should be yet
-
+        return self._colstart
+    
     @property
     def power(self) -> bool:
         """
