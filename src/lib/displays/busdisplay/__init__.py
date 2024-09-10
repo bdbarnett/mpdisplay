@@ -267,9 +267,9 @@ class BusDisplay(BaseDisplay):
         if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
 
-        x1 = x + self._colstart
+        x1 = x + self.colstart
         x2 = x1 + w - 1
-        y1 = y + self._rowstart
+        y1 = y + self.rowstart
         y2 = y1 + h - 1
 
         self._set_window(x1, y1, x2, y2)
@@ -298,11 +298,11 @@ class BusDisplay(BaseDisplay):
         c = c & 0xFFFF  # Ensure color is 16-bit for circuitpython
         if h > w:
             raw_data = struct.pack("<H", c) * h
-            for col in range(x, x + w):
+            for col in range(x + self.colstart, x + self.colstart + w):
                 self.blit_rect(memoryview(raw_data[:]), col, y, 1, h)
         else:
             raw_data = struct.pack("<H", c) * w
-            for row in range(y, y + h):
+            for row in range(y + self.rowstart, y + self.rowstart + h):
                 self.blit_rect(memoryview(raw_data[:]), x, row, w, 1)
         return Area(x, y, w, h)
 
@@ -361,12 +361,41 @@ class BusDisplay(BaseDisplay):
     ############### Optional API Methods ################
 
     @property
-    def power(self):
+    def colstart(self):
+        """
+        The offset in pixels to the first column of the visible display.
+        """
+        if self.rotation == 0:
+            return self._colstart
+        if self.rotation == 90:
+            return self._rowstart
+        if self.rotation == 180
+            return 0  # Wrong, but not sure what it should be yet
+        # Must be 270
+        return 0  # Wrong, but not sure what it should be yet
+
+
+    @property
+    def rowstart(self):
+        """
+        The offset in pixels to the first column of the visible display.
+        """
+        if self.rotation == 0:
+            return self._rowstart
+        if self.rotation == 90:
+            return self._colstart
+        if self.rotation == 180
+            return 0  # Wrong, but not sure what it should be yet
+        # Must be 270
+        return 0  # Wrong, but not sure what it should be yet
+
+    @property
+    def power(self) -> bool:
         """
         The power state of the display.
 
-        :return: The power state of the display.
-        :rtype: int
+        Returns:
+            bool: The power state of the display.
         """
         if self._power_pin is None:
             return -1
