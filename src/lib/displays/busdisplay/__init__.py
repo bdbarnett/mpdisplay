@@ -369,7 +369,7 @@ class BusDisplay(BaseDisplay):
             return self._colstart
         if self.rotation == 90:
             return self._rowstart
-        if self.rotation == 180
+        if self.rotation == 180:
             return 0  # Wrong, but not sure what it should be yet
         # Must be 270
         return 0  # Wrong, but not sure what it should be yet
@@ -384,7 +384,7 @@ class BusDisplay(BaseDisplay):
             return self._rowstart
         if self.rotation == 90:
             return self._colstart
-        if self.rotation == 180
+        if self.rotation == 180:
             return 0  # Wrong, but not sure what it should be yet
         # Must be 270
         return 0  # Wrong, but not sure what it should be yet
