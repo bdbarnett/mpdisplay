@@ -9,6 +9,7 @@ PyDevices basedisplay
 import gc
 from sys import implementation
 from ._area import Area
+from ._color import color_rgb, color565, color565_swapped, color332, color888  # noqa: F401
 
 try:
     from typing import Optional
@@ -43,20 +44,6 @@ if not viper:
 
 
 gc.collect()
-
-
-def color_rgb(color):
-    # color can be an integer or a tuple, list or bytearray of 2 or 3 integers
-    if isinstance(color, int):
-        # convert 16-bit int color to 2 bytes
-        color = (color & 0xFF, color >> 8)
-    if len(color) == 2:
-        r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
-        g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
-        b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
-    else:
-        r, g, b = color
-    return (r, g, b)
 
 
 class BaseDisplay:

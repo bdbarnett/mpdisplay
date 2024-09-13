@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices gfx.displaybuf
+PyDevices displaybuf
 
 FrameBuffer wrapper for using framebuf based GUIs with PyDevices.
 Works with MicroPython Nano-GUI, Micro-GUI and MicroPython-Touch from Peter Hinch,
@@ -25,8 +25,12 @@ Usage:
 
 import gc
 import sys
-from .. import framebuf_plus as framebuf
-from .. import Area, color565, color565_swapped, color332
+from basedisplay import Area, color565, color565_swapped, color332
+
+try:
+    from gfx import framebuf_plus as framebuf
+except ImportError:
+    import framebuf
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4

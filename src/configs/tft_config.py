@@ -19,7 +19,7 @@ if sys.implementation.name == "esp32":
 BUFFERED = False
 
 if BUFFERED:
-    from gfx.displaybuf import DisplayBuffer
+    from displaybuf import DisplayBuffer
     from timer import Timer
 
 

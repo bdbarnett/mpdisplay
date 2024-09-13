@@ -44,6 +44,7 @@
 
 "../src/lib/displays/basedisplay/__init__.py" = "/lib/displays/basedisplay/"
 "../src/lib/displays/basedisplay/_area.py" = "/lib/displays/basedisplay/"
+"../src/lib/displays/basedisplay/_color.py" = "/lib/displays/basedisplay/"
 "../src/lib/displays/basedisplay/_numpy.py" = "/lib/displays/basedisplay/"
 "../src/lib/displays/basedisplay/_viper.py" = "/lib/displays/basedisplay/"
 
@@ -63,6 +64,9 @@
 
 "../src/lib/displays/psdisplay/__init__.py" = "/lib/displays/psdisplay/"
 
+"../src/lib/displays/displaybuf/__init__.py" = "/lib/displays/displaybuf/"
+"../src/lib/displays/displaybuf/_viper.py" = "/lib/displays/displaybuf/"
+
 "../src/lib/eventsys/__init__.py" = "/lib/eventsys/"
 "../src/lib/eventsys/devices.py" = "/lib/eventsys/"
 "../src/lib/eventsys/events.py" = "/lib/eventsys/"
@@ -72,8 +76,6 @@
 "../src/lib/framebuf.py" = "/lib/"
 "../src/lib/gfx/__init__.py" = "/lib/gfx/"
 "../src/lib/gfx/shapes/__init__.py" = "/lib/gfx/shapes/"
-"../src/lib/gfx/displaybuf/__init__.py" = "/lib/gfx/displaybuf/"
-"../src/lib/gfx/displaybuf/_viper.py" = "/lib/gfx/displaybuf/"
 "../src/lib/gfx/framebuf_plus/__init__.py" = "/lib/gfx/framebuf_plus/"
 "../src/lib/gfx/binfont/__init__.py" = "/lib/gfx/binfont/"
 "../src/lib/gfx/binfont/binfont_8x14.bin" = "/lib/gfx/binfont/"

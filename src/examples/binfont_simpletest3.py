@@ -8,7 +8,7 @@ Draws to a DisplayBuffer and only updates the area that has changed.
 from board_config import display_drv
 from gfx.binfont import BinFont
 import random
-from gfx.displaybuf import DisplayBuffer
+from displaybuf import DisplayBuffer
 from palettes import get_palette
 import os
 

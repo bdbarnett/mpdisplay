@@ -31,6 +31,7 @@ packages = [
     ["lib/displays/fbdisplay", display_deps, []],
     ["lib/displays/jndisplay", display_deps, []],
     ["lib/displays/psdisplay", display_deps, []],
+    ["lib/displays/displaybuf", display_deps, []],
     ["lib/eventsys", [], []],
     ["lib/gfx", [], ["framebuf.py",]],
     ["lib/palettes", [], []],

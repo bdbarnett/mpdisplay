@@ -9,6 +9,10 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_area.py"
     ],
     [
+      "basedisplay/_color.py",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_color.py"
+    ],
+    [
       "basedisplay/_numpy.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_numpy.py"
     ],
