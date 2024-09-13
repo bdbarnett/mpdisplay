@@ -6,7 +6,7 @@ from board_config import display_drv
 from array import array  # for defining a polygon
 from gfx import shapes
 from gfx.binfont import text
-from gfx.palettes import get_palette
+from palettes import get_palette
 
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,

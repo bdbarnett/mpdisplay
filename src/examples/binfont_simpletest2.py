@@ -8,7 +8,7 @@ Draws directly to the display without using a framebuffer.
 from board_config import display_drv
 from gfx.binfont import BinFont
 import random
-from gfx.palettes import get_palette
+from palettes import get_palette
 import os
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel

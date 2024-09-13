@@ -245,48 +245,8 @@
       "github:bdbarnett/mpdisplay/src/lib/gfx/__init__.py"
     ],
     [
-      "lib/gfx/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
-    ],
-    [
       "lib/gfx/shapes/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
-    ],
-    [
-      "lib/gfx/palettes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/__init__.py"
-    ],
-    [
-      "lib/gfx/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube125.py"
-    ],
-    [
-      "lib/gfx/palettes/_cube27.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube27.py"
-    ],
-    [
-      "lib/gfx/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube64.py"
-    ],
-    [
-      "lib/gfx/palettes/_cube8.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube8.py"
-    ],
-    [
-      "lib/gfx/palettes/_material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_material_design.py"
-    ],
-    [
-      "lib/gfx/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/cube.py"
-    ],
-    [
-      "lib/gfx/palettes/material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/material_design.py"
-    ],
-    [
-      "lib/gfx/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/wheel.py"
     ],
     [
       "lib/gfx/displaybuf/__init__.py",
@@ -295,6 +255,10 @@
     [
       "lib/gfx/displaybuf/_viper.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/displaybuf/_viper.py"
+    ],
+    [
+      "lib/gfx/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
     ],
     [
       "lib/gfx/binfont/__init__.py",
@@ -311,6 +275,42 @@
     [
       "lib/gfx/binfont/binfont_8x8.bin",
       "github:bdbarnett/mpdisplay/src/lib/gfx/binfont/binfont_8x8.bin"
+    ],
+    [
+      "lib/palettes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/__init__.py"
+    ],
+    [
+      "lib/palettes/_cube125.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube125.py"
+    ],
+    [
+      "lib/palettes/_cube27.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube27.py"
+    ],
+    [
+      "lib/palettes/_cube64.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube64.py"
+    ],
+    [
+      "lib/palettes/_cube8.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_cube8.py"
+    ],
+    [
+      "lib/palettes/_material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/_material_design.py"
+    ],
+    [
+      "lib/palettes/cube.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/cube.py"
+    ],
+    [
+      "lib/palettes/material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
+    ],
+    [
+      "lib/palettes/wheel.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
     ],
     [
       "lib/timer/__init__.py",

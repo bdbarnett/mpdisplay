@@ -6,13 +6,13 @@ This module contains the Material Design color palette as a class object.
 
 
 Usage:
-    from gfx.palettes import get_palette
+    from palettes import get_palette
     palette = get_palette(name="material_design", color_depth=16, swapped=False)
     # OR
     palette = get_palette("material_design")
 
     # OR
-    from gfx.palettes.material_design import MDPalette
+    from palettes.material_design import MDPalette
     palette = MDPalette(size=5, color_depth=24)
 
     # to access the primary variant of a color family by name:

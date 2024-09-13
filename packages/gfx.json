@@ -9,48 +9,8 @@
       "github:bdbarnett/mpdisplay/src/lib/gfx/__init__.py"
     ],
     [
-      "gfx/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
-    ],
-    [
       "gfx/shapes/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
-    ],
-    [
-      "gfx/palettes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/__init__.py"
-    ],
-    [
-      "gfx/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube125.py"
-    ],
-    [
-      "gfx/palettes/_cube27.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube27.py"
-    ],
-    [
-      "gfx/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube64.py"
-    ],
-    [
-      "gfx/palettes/_cube8.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_cube8.py"
-    ],
-    [
-      "gfx/palettes/_material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/_material_design.py"
-    ],
-    [
-      "gfx/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/cube.py"
-    ],
-    [
-      "gfx/palettes/material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/material_design.py"
-    ],
-    [
-      "gfx/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/palettes/wheel.py"
     ],
     [
       "gfx/displaybuf/__init__.py",
@@ -59,6 +19,10 @@
     [
       "gfx/displaybuf/_viper.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/displaybuf/_viper.py"
+    ],
+    [
+      "gfx/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
     ],
     [
       "gfx/binfont/__init__.py",

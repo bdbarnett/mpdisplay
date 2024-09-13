@@ -3,13 +3,13 @@ This module contains the cool wheel color palette as a class object.
 
 
 Usage:
-    from gfx.palettes import get_palette
+    from palettes import get_palette
     palette = get_palette(name="wheel", color_depth=16, swapped=False, length=256)
     # OR
     palette = get_palette(name="wheel")
 
     # OR
-    from gfx.palettes.wheel import WheelPalette
+    from palettes.wheel import WheelPalette
     palette = WheelPalette(color_depth=16, swapped=False, length=256)
 
     print(f"Palette: {palette.name}, Length: {len(palette)}")

@@ -1,5 +1,5 @@
 from board_config import display_drv
-from gfx.palettes import get_palette
+from palettes import get_palette
 from gfx import shapes
 
 def main():

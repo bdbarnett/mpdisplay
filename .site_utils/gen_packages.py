@@ -33,6 +33,7 @@ packages = [
     ["lib/displays/psdisplay", display_deps, []],
     ["lib/eventsys", [], []],
     ["lib/gfx", [], ["framebuf.py",]],
+    ["lib/palettes", [], []],
     ["lib/timer", [], []],
     ]
 

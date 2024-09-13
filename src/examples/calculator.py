@@ -7,7 +7,7 @@ from eventsys.touch_keypad import Keypad
 from time import sleep
 from gfx.framebuf_plus import FrameBuffer, RGB565
 from eventsys.keys import Keys
-from gfx.palettes import get_palette
+from palettes import get_palette
 import asyncio
 
 

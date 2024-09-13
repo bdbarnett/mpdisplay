@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices gfx.palettes
+PyDevices palettes
 """
 
 # The 16 colors of the standard Windows 16-color palette
