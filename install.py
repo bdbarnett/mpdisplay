@@ -47,8 +47,10 @@ packages = [
     ("fbdisplay", "/lib/displays"),
     ("jndisplay", "/lib/displays"),
     ("psdisplay", "/lib/displays"),
+    ("displaybuf", "/lib/displays"),
     ("eventsys", "/lib"),
     ("gfx", "/lib"),
+    ("palettes", "/lib"),
     ("timer", "/lib"),
 ]
 
