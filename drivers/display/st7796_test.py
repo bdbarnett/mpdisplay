@@ -31,7 +31,7 @@ _INIT_SEQUENCE = [
     (_VCMPCTL, b'\x18', 120),       # VCOM control	 
     (_PGC, b'\xF0\x09\x0B\x06\x04\x15\x2F\x54\x42\x3C\x17\x14\x18\x1B', 0),     # Gamma positive	
     # Should first byte be 0xF0 or 0xE0?
-    (_NGC, b'\xF0\x09\x0B\x06\x04\x03\x2B\x43\x42\x3B\x16\x14\x17\x1B', 120),   # Gamma negative
+    (_NGC, b'\xE0\x09\x0B\x06\x04\x03\x2B\x43\x42\x3B\x16\x14\x17\x1B', 120),   # Gamma negative
     (_CSCON, b'\x3C', 0),           # Command Set control
     (_CSCON, b'\x69', 120),         # Command Set control
     (_DISPON, None, 120),           # Display on
