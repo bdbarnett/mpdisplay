@@ -17,8 +17,8 @@ _NGC = const(0xE1)
 _DISPON = const(0x29)
 
 _INIT_SEQUENCE = [
-	(_SWRESET, b'\x00', 120),       # Software reset
-	(_SLPOUT, b'\x00', 120),        # Sleep out
+	(_SWRESET, None, 120),          # Software reset
+	(_SLPOUT, None, 120),           # Sleep out
 	(_CSCON, b'\xC3', 0),           # Enable extension command 2 partI
 	(_CSCON, b'\x96', 0),           # Enable extension command 2 partII                             
 	(_MADCTL, b'\x48', 0),          # Memory data access control                                   
@@ -34,7 +34,7 @@ _INIT_SEQUENCE = [
     (_NGC, b'\xF0\x09\x0B\x06\x04\x03\x2B\x43\x42\x3B\x16\x14\x17\x1B', 120),   # Gamma negative
     (_CSCON, b'\x3C', 0),           # Command Set control
     (_CSCON, b'\x69', 120),         # Command Set control
-    (_DISPON, b'\x00', 120),        # Display on
+    (_DISPON, None, 120),           # Display on
 ]
 
 class ST7796(BusDisplay):
