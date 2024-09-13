@@ -1,4 +1,4 @@
-""" T-Display-S3 Pro 222x480 ST7796 display
+""" T-Display-S3 Pro 222x480 ST7796 display - contributed by @tdhoward
 https://github.com/Xinyuan-LilyGO/T-Display-S3-Pro/blob/master/schematic/T-Display-Pro.pdf
 """
 
@@ -16,26 +16,26 @@ display_bus = SPIBus(
     mosi=17,
     miso=8,
     dc=9,
-    cs=39,  # Marked MTLK on the schematic
+    cs=39,
 )
 
 display_drv = ST7796(
     display_bus,
-    width=222,  # Width & height may need to be swapped
+    width=222,
     height=480,
-    colstart=49,  # Adjust colstart & rowstart to center the image
-    rowstart=0,  # Guessing the value here = (320 - 222) // 2
-    rotation=0,  # Only change after all other settings are correct
+    colstart=49,
+    rowstart=0,  
+    rotation=0,
     mirrored=False,
     color_depth=16,
-    bgr=True,  # Change if the colors are wrong
-    reverse_bytes_in_word=True,  # Change if the colors are wrong
-    invert=True,  # Change if black and white are swapped
+    bgr=True,
+    reverse_bytes_in_word=True,
+    invert=True,
     brightness=1.0,
-    backlight_pin=48,  # Marked SPICLK_N on the schematic
-    backlight_on_high=True,  # Guessing the polarity
-    reset_pin=47,  # Marked SPILCK_P on the schematic; could be `None`
-    reset_high=False,  # Guessing the polarity
+    backlight_pin=48,
+    backlight_on_high=True,
+    reset_pin=47,
+    reset_high=False,
     power_pin=None,
     power_on_high=True,
 )
