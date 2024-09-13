@@ -11,7 +11,7 @@ from eventsys.devices import Devices, Broker
 
 display_bus = SPIBus(
     id=1,
-    baudrate=60_000_000,
+    baudrate=40_000_000,
     sck=18,
     mosi=17,
     miso=8,
