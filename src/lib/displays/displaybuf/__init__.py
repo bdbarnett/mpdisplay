@@ -146,7 +146,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             self.color(r, g, b, index)
 
     def _show16(self, area=None):
-        if isinstance(area, Area):
+        if area is not None:
             x, y, w, h = area
             for row in range(y, y + h):
                 buffer_begin = (row * self.width + x) * 2
