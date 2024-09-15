@@ -49,12 +49,14 @@ class Palette:
         self._swapped = swapped
         self._cache = dict() if cached else None
 
+        if not hasattr(self, "_names"):
+            self._names = WIN16
+        if not hasattr(self, "_length"):
+            self._length = len(self._names)
+
         self._define_named_colors()
 
     def _define_named_colors(self):
-        if not hasattr(self, "_names"):
-            self._names = WIN16
-            self._length = len(self._names)
         for color, name in self._names.items():
             if self._color_depth == 16:
                 color = self.color565(color)
