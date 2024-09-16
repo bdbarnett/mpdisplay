@@ -2,8 +2,8 @@
 Combination board configuration for desktop, pyscript and jupyter notebook platforms.
 """
 
-width = 480
-height = 320
+width = 320
+height = 480
 rotation = 0
 scale = 1.0
 
@@ -43,6 +43,7 @@ elif _jn:
 else:
     from dtdisplay import DTDisplay, poll # type: ignore
     from eventsys.devices import Devices, Broker # type: ignore
+    from timer import refresh_timer
     import sys
 
     display_drv = DTDisplay(
@@ -61,5 +62,6 @@ else:
         read=poll,
         # data=Events.filter,
     )
+    tim = refresh_timer(display_drv.show)
 
 display_drv.fill(0xACED)  # Something other than white or black to show display is working

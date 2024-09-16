@@ -126,7 +126,7 @@ class PGDisplay(BaseDisplay):
                     buffer[pixel_index : pixel_index + self._bytes_per_pixel]
                 )
                 self._buffer.set_at((x + j, y + i), color)
-        self.show(blitRect)
+        self.render(blitRect)
         return Area(x, y, w, h)
 
     def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
@@ -148,7 +148,7 @@ class PGDisplay(BaseDisplay):
         """
         fillRect = pg.Rect(x, y, w, h)
         self._buffer.fill(color_rgb(c), fillRect)
-        self.show(fillRect)
+        self.render(fillRect)
         return Area(x, y, w, h)
 
     def pixel(self, x: int, y: int, c: int) -> Area:
@@ -178,7 +178,7 @@ class PGDisplay(BaseDisplay):
             bfa (int): The bottom fixed area.
         """
         super().vscrdef(tfa, vsa, bfa)
-        self.show()
+        self.render()
 
     def vscsad(self, vssa: Optional[int] = None) -> int:
         """
@@ -192,7 +192,7 @@ class PGDisplay(BaseDisplay):
         """
         if vssa is not None:
             super().vscsad(vssa)
-            self.show()
+            self.render()
         return super().vscsad()
 
     def _rotation_helper(self, value):
@@ -205,9 +205,9 @@ class PGDisplay(BaseDisplay):
 
     ############### Class Specific Methods ##############
 
-    def show(self, renderRect: Optional[pg.Rect] = None) -> None:
+    def render(self, renderRect: Optional[pg.Rect] = None) -> None:
         """
-        Show the display.  Automatically called after blitting or filling the display.
+        Render the display.  Automatically called after blitting or filling the display.
 
         Args:
             renderRect (Optional[pg.Rect], optional): The rectangle to render. Defaults to None.
@@ -251,6 +251,10 @@ class PGDisplay(BaseDisplay):
                 bfaRect = pg.Rect(0, tfa + vsa, width, bfa)
                 self._window.blit(buffer, bfaRect, bfaRect)
 
+    def show(self) -> None:
+        """
+        Show the display.
+        """
         pg.display.flip()
 
     def deinit(self) -> None:

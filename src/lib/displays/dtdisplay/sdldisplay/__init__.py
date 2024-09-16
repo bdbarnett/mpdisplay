@@ -242,7 +242,7 @@ class SDLDisplay(BaseDisplay):
 
         super().vscrdef(
             0, self.height, 0
-        )  # Set the vertical scroll definition without calling _show
+        )  # Set the vertical scroll definition without calling .render()
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
     def blit_rect(self, buffer: memoryview, x: int, y: int, w: int, h: int) -> Area:
@@ -278,7 +278,7 @@ class SDLDisplay(BaseDisplay):
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer_ptr, pitch))
         else:
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer, pitch))
-        self.show(blitRect)
+        self.render(blitRect)
         return Area(x, y, w, h)
 
     def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
@@ -313,7 +313,7 @@ class SDLDisplay(BaseDisplay):
         retcheck(
             SDL_SetRenderTarget(self._renderer, None)
         )  # Reset the render target back to the window
-        self.show(fillRect)
+        self.render(fillRect)
         return Area(x, y, w, h)
 
     def pixel(self, x: int, y: int, c: int) -> Area:
@@ -343,7 +343,7 @@ class SDLDisplay(BaseDisplay):
             bfa (int): The bottom fixed area.
         """
         super().vscrdef(tfa, vsa, bfa)
-        self.show()
+        self.render()
 
     def vscsad(self, vssa: Optional[int] = None) -> int:
         """
@@ -354,7 +354,7 @@ class SDLDisplay(BaseDisplay):
         """
         if vssa is not None:
             super().vscsad(vssa)
-            self.show()
+            self.render()
         return super().vscsad()
 
     def _rotation_helper(self, value):
@@ -412,9 +412,9 @@ class SDLDisplay(BaseDisplay):
 
     ############### Class Specific Methods ##############
 
-    def show(self, renderRect: Optional[SDL_Rect] = None):
+    def render(self, renderRect: Optional[SDL_Rect] = None):
         """
-        Show the display.  Automatically called after blitting or filling the display.
+        Render the display.  Automatically called after blitting or filling the display.
 
         Args:
             renderRect (Optional[SDL_Rect], optional): The rectangle to render. Defaults to None.
@@ -456,7 +456,11 @@ class SDLDisplay(BaseDisplay):
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
                 retcheck(SDL_RenderCopy(self._renderer, self._buffer, bfaRect, bfaRect))
 
-        retcheck(SDL_RenderPresent(self._renderer))
+    def show(self) -> None:
+        """
+        Show the display.
+        """
+        SDL_RenderPresent(self._renderer)
 
     def deinit(self) -> None:
         """
