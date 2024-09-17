@@ -62,11 +62,11 @@ class Devices:
 
         Args:
             type (int): The type of device to create.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (Any): Variable length argument list.
+            **kwargs (Any): Arbitrary keyword arguments.
 
         Returns:
-            _Device: The created device object.
+            _Device (_Device): The created device object.
 
         Raises:
             ValueError: If the device type is invalid.
@@ -85,7 +85,7 @@ class Devices:
             responses (list[int]): A list of event types that the device can return.
 
         Returns:
-            type: The newly created device type.
+            type (_Device): The newly created device type.
 
         Raises:
             ValueError: If `type_name` is not a string, `responses` is not a list, or any response is not an integer.
@@ -155,7 +155,7 @@ class _Device:
         self._user_data = None  # Can be set and retrieved by apps such as lv_config
         self._read_cb = None  # Read callback - can be set by apps such as lv_config
 
-    def poll(self):
+    def poll(self) -> Events:
         """
         Poll the device for events.
 
@@ -213,9 +213,6 @@ class _Device:
         Args:
             callback (function): The callback function to unsubscribe.
             event_types (list): A list of event types to unsubscribe from.
-
-        Returns:
-            None
         """
         for event_type in event_types:
             if callback_set := self._event_callbacks.get(event_type):
@@ -278,9 +275,6 @@ class Broker(_Device):
     """
     The Broker class is a device that polls multiple devices for events and forwards them to
     subscribers.
-
-    Args:
-        None
 
     Attributes:
         type (Devices): The type of the device (set to `Devices.BROKER`).
@@ -352,7 +346,7 @@ class Broker(_Device):
         else:
             super().unsubscribe(callback, event_types)
 
-    def create_device(self, type=Devices.QUEUE, **kwargs):
+    def create_device(self, type=Devices.QUEUE, **kwargs) -> _Device:
         """
         Create a device object.
 
@@ -486,8 +480,8 @@ class TouchDevice(_Device):
         responses (tuple): The supported event types for the device.
 
     Args:
-        *args: Variable length argument list.
-        **kwargs: Arbitrary keyword arguments.
+        *args (Any): Variable length argument list.
+        **kwargs (Any): Arbitrary keyword arguments.
     """
 
     type = Devices.TOUCH
@@ -508,7 +502,7 @@ class TouchDevice(_Device):
         Get the rotation value of the touch device.
 
         Returns:
-            int: The rotation value in degrees.
+            rotation (int): The rotation value in degrees.
         """
         return self._rotation
 
@@ -587,8 +581,8 @@ class EncoderDevice(_Device):
         Initializes a new instance of the EncoderDevice class.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (Any): Variable length argument list.
+            **kwargs (Any): Arbitrary keyword arguments.
 
         Notes:
             - self._data is the mouse button number to report for the switch.

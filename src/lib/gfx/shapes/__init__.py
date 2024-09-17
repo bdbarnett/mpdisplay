@@ -235,7 +235,7 @@ def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
         r2 (int): y radius
         c (int): color
         f (bool): Fill the ellipse (default: False)
-        mask (int): Bitmask to determine which quadrants to draw (default: 0b1111)
+        m (int): Bitmask to determine which quadrants to draw (default: 0b1111)
         w (int): Width of the ellipse (default: None)
         h (int): Height of the ellipse (default: None)
     """

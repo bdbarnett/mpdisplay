@@ -41,13 +41,13 @@ class FBDisplay(BaseDisplay):
 
     ############### Required API Methods ################
 
-    def init(self):
+    def init(self) -> None:
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
         pass
 
-    def fill_rect(self, x, y, w, h, c):
+    def fill_rect(self, x, y, w, h, c) -> Area:
         """
         Fills a rectangle with the given color.
 
@@ -78,7 +78,7 @@ class FBDisplay(BaseDisplay):
             arr[begin:end] = color
         return Area(left, top, right - left, bottom - top)
 
-    def blit_rect(self, buf, x, y, w, h):
+    def blit_rect(self, buf, x, y, w, h) -> Area:
         """
         Blits a buffer to the display at the given coordinates.
 
@@ -109,7 +109,7 @@ class FBDisplay(BaseDisplay):
             arr[dest_begin:dest_end] = buf[source_begin:source_end]
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c):
+    def pixel(self, x, y, c) -> Area:
         """
         Sets the color of the pixel at the given coordinates.
 
@@ -125,7 +125,7 @@ class FBDisplay(BaseDisplay):
 
     ############### Optional API Methods ################
 
-    def show(self):
+    def show(self) -> None:
         """
         Refreshes the display.
         """

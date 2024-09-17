@@ -133,7 +133,7 @@ class BaseDisplay:
         Fill the display with a color.
 
         Args:
-            color: The color to fill the display with.
+            color (int): The color to fill the display with.
 
         Returns:
             Area: The area that was filled.

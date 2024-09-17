@@ -1,11 +1,7 @@
 site_name: PyDevices Graphics
-
 repo_url: https://github.com/bdbarnett/mpdisplay/
-
 copyright: "Copyright 2024, Brad Barnett"
-
 docs_dir: docs
-
 site_dir: site
 
 theme:
@@ -42,9 +38,8 @@ plugins:
 
 nav:
 # rest of the navigation...
+- Index: index.md
 - Details:
-  - Getting Started: GETTING-STARTED.md
-  - Screenshots: SCREENSHOTS.md
   - Another Level:
     - And Another:
       - Test Page: test-page.md

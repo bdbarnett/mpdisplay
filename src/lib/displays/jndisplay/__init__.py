@@ -48,7 +48,7 @@ class JNDisplay(BaseDisplay):
         """
         display(self._buffer, display_id=self._display_id)
 
-    def fill_rect(self, x, y, w, h, c):
+    def fill_rect(self, x, y, w, h, c) -> Area:
         """
         Fills a rectangle with the given color.
 
@@ -73,7 +73,7 @@ class JNDisplay(BaseDisplay):
         self._draw.rectangle([(left, top), (right, bottom)], fill=(r, g, b))
         return Area(left, top, right - left, bottom - top)
 
-    def blit_rect(self, buf, x, y, w, h):
+    def blit_rect(self, buf, x, y, w, h) -> Area:
         """
         Blits a buffer to the display at the given coordinates.
 
@@ -101,7 +101,7 @@ class JNDisplay(BaseDisplay):
 
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c):
+    def pixel(self, x, y, c) -> Area:
         """
         Sets a pixel to the given color.
 
@@ -119,7 +119,7 @@ class JNDisplay(BaseDisplay):
 
     ############### Optional API Methods ################
 
-    def show(self):
+    def show(self) -> None:
         """
         Updates the display with the current buffer.
         """

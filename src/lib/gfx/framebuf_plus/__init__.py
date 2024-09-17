@@ -210,8 +210,8 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         Args:
             x (int): Top left corner x coordinate
             y (int): Top left corner y coordinate
-            width (int): Width in pixels
-            height (int): Height in pixels
+            w (int): Width in pixels
+            h (int): Height in pixels
             c (int): 565 encoded color
             f (bool): Fill the rectangle (default: False)
         """
@@ -240,8 +240,6 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             x (int): x coordinate
             y (int): y coordinate
             c (int): 565 encoded color
-            scale (int): Scale factor (default: 1)
-            inverted (bool): Invert the text (default: False)
         """
         super().text(s, x, y, c)
         return Area(x, y, len(s) * 8, 8)

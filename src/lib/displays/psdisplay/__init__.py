@@ -42,7 +42,7 @@ class PSDevices:
         self.canvas.addEventListener("mouseenter", self.on_enter)
         self.canvas.addEventListener("mouseleave", self.on_leave)
 
-    def get_mouse_pos(self):
+    def get_mouse_pos(self) -> tuple | None:
         """
         Returns the current mouse position.
 
@@ -109,14 +109,14 @@ class PSDisplay(BaseDisplay):
 
     ############### Required API Methods ################
 
-    def init(self):
+    def init(self) -> None:
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
         self._canvas.width = self.width
         self._canvas.height = self.height
 
-    def fill_rect(self, x, y, w, h, c):
+    def fill_rect(self, x, y, w, h, c) -> Area:
         """
         Fills a rectangle with the given color.
 
@@ -135,7 +135,7 @@ class PSDisplay(BaseDisplay):
         self._ctx.fillRect(x, y, w, h)
         return Area(x, y, w, h)
 
-    def blit_rect(self, buf, x, y, w, h):
+    def blit_rect(self, buf, x, y, w, h) -> Area:
         """
         Blits a buffer to the display.
 
@@ -165,7 +165,7 @@ class PSDisplay(BaseDisplay):
         self._ctx.putImageData(img_data, x, y)
         return Area(x, y, w, h)
 
-    def pixel(self, x, y, c):
+    def pixel(self, x, y, c) -> Area:
         """
         Sets a pixel to the given color.
 
