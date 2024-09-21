@@ -193,7 +193,7 @@ class PGDisplay(BaseDisplay):
         if vssa is not None:
             super().vscsad(vssa)
             self.render()
-        return super().vscsad()
+        return self._vssa
 
     def _rotation_helper(self, value):
         """

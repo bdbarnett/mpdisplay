@@ -353,10 +353,8 @@ class BusDisplay(BaseDisplay):
         """
         if vssa is not None:
             super().vscsad(vssa)
-            if vssa is False:
-                vssa = 0
-            self.send(_VSCSAD, struct.pack(">H", vssa))
-        return super().vscsad()
+            self.send(_VSCSAD, struct.pack(">H", self._vssa))
+        return self._vssa
 
     ############### Optional API Methods ################
 

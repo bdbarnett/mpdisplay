@@ -277,8 +277,12 @@ class BaseDisplay:
             int: The vertical scroll start address.
         """
         if vssa is not None:
+            while vssa < 0:
+                vssa += self._height
+            if vssa >= self._height:
+                vssa %= self._height
             self._vssa = vssa
-        return self._vssa
+        return vssa
 
     def _rotation_helper(self, value):
         """
