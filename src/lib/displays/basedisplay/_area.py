@@ -16,15 +16,28 @@ class Area:
         Initializes a new instance of the Area class.
 
         Args:
-            x (int): The x-coordinate of the top-left corner of the area.
-            y (int): The y-coordinate of the top-left corner of the area.
-            w (int): The width of the area.
-            h (int): The height of the area.
+            x (int | float): The x-coordinate of the top-left corner of the area.
+            y (int | float): The y-coordinate of the top-left corner of the area.
+            w (int | float): The width of the area.
+            h (int | float): The height of the area.
         """
-        self._x = x
-        self._y = y
-        self._w = w
-        self._h = h
+        self._x = int(x)
+        self._y = int(y)
+        self._w = int(w)
+        self._h = int(h)
+
+    def offset_by(self, dx=0, dy=0):
+        """
+        Returns a new Area offset by the specified amount in the x and y directions.
+
+        Args:
+            dx (int | float): The amount to offset the area in the x direction.
+            dy (int | float): The amount to offset the area in the y direction.
+
+        Returns:
+            Area: A new Area object offset by the specified amount in the x and y directions.
+        """
+        return Area(self.x + dx, self.y + dy, self.w, self.h)
 
     def __repr__(self):
         """
