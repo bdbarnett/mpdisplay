@@ -16,35 +16,48 @@ from touch_keypad import Keypad
 from board_config import display_drv, broker
 
 keys = [1, 2, 3, "A", "B", "C", "play", "pause", "esc"]
-keypad = Keypad(broker.poll, display_drv.width, display_drv.height, cols=3, rows=3, keys=keys)
+keypad = Keypad(broker.poll, 0, 0, display_drv.width, display_drv.height, cols=3, rows=3, keys=keys)
 while True:
     if key := keypad.read():
         print(key)
 """
 
 from .events import Events
+try:
+    from basedisplay import Area
+except ImportError:
+    print("basedisplay module not found.  Keypad.areas attribut will not be available.")
+    Area = None
 
 
 class Keypad:
-    def __init__(self, poll, width, height, cols=3, rows=3, keys=None):
-        self._keys = keys if keys else [i + 1 for i in range(cols * rows)]
+    def __init__(self, poll, x, y, w, h, cols=3, rows=3, keys=None):
+        self._keys = keys if keys else [i for i in range(cols * rows)]
         self._poll = poll
-        self._width = width
-        self._height = height
-        self._cols = cols
-        self._rows = rows
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.cols = cols
+        self.rows = rows
+        self.key_width = kw = w / cols
+        self.key_height = kh = h / rows
+        if Area:
+            self.areas = [Area(x + kw * i, y + kh * j, kw, kh) for j in range(rows) for i in range(cols)]
+
 
     def read(self):
         event = self._poll()
         if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
-            col = x // (self._width // self._cols)
-            row = y // (self._height // self._rows)
+            if x < self.x or x > self.x + self.w or y < self.y or y > self.y + self.h:
+                return None
+            col = int((x - self.x) / self.key_width)
+            row = int((y - self.y) / self.key_height)
             # BUG:  Sometimes throws an IndexError in Wokwi if the touch is on the last line
-            # Instead of doing a bounds check like x = max(min(x, self._cols - 1), 0); y = max(min(y, self._rows - 1), 0)
-            # we will just catch the exception.
+            # Instead of doing a bounds check we just catch the exception.
             try:
-                key = self._keys[row * self._cols + col]
+                key = self._keys[row * self.cols + col]
                 return key
             except IndexError:
                 pass
