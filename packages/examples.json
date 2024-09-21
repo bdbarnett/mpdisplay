@@ -81,6 +81,10 @@
       "github:bdbarnett/mpdisplay/src/examples/feathers.py"
     ],
     [
+      "examples/first_test.py",
+      "github:bdbarnett/mpdisplay/src/examples/first_test.py"
+    ],
+    [
       "examples/fonts.py",
       "github:bdbarnett/mpdisplay/src/examples/fonts.py"
     ],
@@ -185,18 +189,6 @@
       "github:bdbarnett/mpdisplay/src/examples/tiny_hello.py"
     ],
     [
-      "examples/apollo_dsk/Apollo_DSKY_interface.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsk/Apollo_DSKY_interface.bmp"
-    ],
-    [
-      "examples/apollo_dsk/Apollo_DSKY_interface.svg",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsk/Apollo_DSKY_interface.svg"
-    ],
-    [
-      "examples/apollo_dsk/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsk/__init__.py"
-    ],
-    [
       "examples/noto_fonts/NotoSansMono_32.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/NotoSansMono_32.py"
     ],
@@ -215,6 +207,18 @@
     [
       "examples/noto_fonts/noto_fonts.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/noto_fonts.py"
+    ],
+    [
+      "examples/apollo_dsky/Apollo_DSKY_interface.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
+    ],
+    [
+      "examples/apollo_dsky/Apollo_DSKY_interface.svg",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
+    ],
+    [
+      "examples/apollo_dsky/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
     ],
     [
       "examples/assets/longstreet.bmp",
