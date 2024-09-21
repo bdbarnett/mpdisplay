@@ -1,29 +1,33 @@
 import gc
+try:
+    # For CircuitPython and MicroPython
+    from gc import mem_free
+except ImportError:
+    # For CPython
+    from psutil import virtual_memory
+    def mem_free():
+        return virtual_memory().free
 
 gc.collect()
-mem = gc.mem_free()
+mem = mem_free()
 print(f"Free memory at start: {mem:,}")
 
-import apollo_dsk as dsk
-from time import localtime
-import asyncio
-from sys import implementation
+import apollo_dsk as dsk  # noqa: E402
+import time  # noqa: E402
+import asyncio  # noqa: E402
 
-
-show_mem = True if implementation.name == "micropython" else False
 
 last_time = (0, 0, 0, 0, 0, 0)
 async def write_time():
     global last_time
-    y, mo, d, h, m, s, *_ = localtime()
+    y, mo, d, h, m, s, *_ = time.localtime()
     if s != last_time[5]:
         dsk.write_string(f"{h:02}:{m:02}:{s:02}", dsk.data2_pos)
         if (y, mo, d) != last_time[:3]:
             dsk.write_string(f"{y-2000:02}.{mo:02}.{d:02}", dsk.data1_pos)
         last_time = (y, mo, d, h, m, s)
         gc.collect()
-        if show_mem:
-            dsk.write_string(f"{mem-gc.mem_free():7}", dsk.data3_pos)
+        dsk.write_string(f"{mem-mem_free():7}", dsk.data3_pos)
 
 async def main():
     dsk.init_screen()
