@@ -26,6 +26,39 @@ class Area:
         self._w = int(w)
         self._h = int(h)
 
+    def contains(self, x, y=None):
+        """
+        Checks if the specified point is contained within the area.
+
+        Args:
+            x (int | tuple): The x-coordinate of the point to check
+                or a tuple containing the x and y coordinates of the point.
+            y (int): The y-coordinate of the point to check.
+
+        Returns:
+            bool: True if the point is contained within the area, False otherwise.
+        """
+        if isinstance(x, tuple):
+            x, y = x
+        return self.x <= x < self.x + self.w and self.y <= y < self.y + self.h
+
+    def contains_area(self, other):
+        """
+        Checks if the specified area is contained within the area.
+
+        Args:
+            other (Area): The other area to check.
+
+        Returns:
+            bool: True if the other area is contained within the area, False otherwise.
+        """
+        return (
+            self.x <= other.x
+            and self.y <= other.y
+            and self.x + self.w >= other.x + other.w
+            and self.y + self.h >= other.y + other.h
+        )
+
     def offset_by(self, dx=0, dy=0):
         """
         Returns a new Area offset by the specified amount in the x and y directions.
