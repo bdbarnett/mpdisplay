@@ -21,9 +21,9 @@ _source_dir = sep.join(_source_dir) + sep
 _bmp = BMP565(f"{_source_dir}Apollo_DSKY_interface.bmp", streamed=True)
 
 ########### Define the screen layout
-_page_width = _bmp.width // 2
+width = 320
+height = 372
 
-_page_area = Area(0, 0, _page_width, 372)
 _led_area = Area(184, 19, 106, 190)
 _acty_area = Area(186, 24, 34, 28)
 
@@ -69,8 +69,8 @@ light_status = [False] * len(_light_areas)
 
 ########### Define the screen functions
 def init_screen():
-    display_drv.blit_rect(_bmp(*_page_area), *_page_area)
-    display_drv.blit_rect(_bmp(*_led_area.offset_by(_page_width)), *_led_area)
+    display_drv.blit_rect(_bmp(0, 0, width, height), 0, 0, width, height)
+    display_drv.blit_rect(_bmp(*_led_area.offset_by(width)), *_led_area)
     set_acty(False)
 
 def write_char(char, pos):
@@ -84,7 +84,7 @@ def write_string(string, pos):
         x += _char_areas[char].w
 
 def set_area(area, status):
-    offset = _page_width if status else 0
+    offset = width if status else 0
     display_drv.blit_rect(_bmp(*area.offset_by(offset)), *area)
 
 def set_light(light, status=None):
