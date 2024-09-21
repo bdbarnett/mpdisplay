@@ -132,6 +132,7 @@ class _Device:
 
     type = Devices.UNDEFINED
     responses = Events.filter
+    Events = Events
     _broker = None
 
     def __init__(self, read=None, data=None, read2=None, data2=None):
