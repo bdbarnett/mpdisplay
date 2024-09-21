@@ -41,6 +41,9 @@ class BMP565:
         if self._buffer is not None:
             self._mv = memoryview(self._buffer)
 
+    def __call__(self, x, y, w, h):
+        return self[x:x+w, y:y+h]
+
     @property
     def buffer(self):
         return self._mv
