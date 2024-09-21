@@ -34,7 +34,7 @@ LEFT = Keys.K_LEFT  # LEFT
 DOWN = Keys.K_DOWN  # DOWN
 RIGHT = Keys.K_RIGHT  # RIGHT
 keypad = Keypad(
-    broker.poll, display_drv.width, display_drv.height, keys=[START, UNUSED, PAUSE, CW, DROP, CCW, LEFT, DOWN, RIGHT]
+    broker.poll, 0, 0, display_drv.width, display_drv.height, keys=[START, UNUSED, PAUSE, CW, DROP, CCW, LEFT, DOWN, RIGHT]
 )
 
 def main():

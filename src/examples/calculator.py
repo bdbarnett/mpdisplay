@@ -56,7 +56,7 @@ async def main():
     button_offset = [None] * COLS
 
     # Create the keypad
-    keypad = Keypad(broker.poll, display_drv.width, display_drv.height, COLS, ROWS, button_offset + button_codes)
+    keypad = Keypad(broker.poll, 0, 0, display_drv.width, display_drv.height, COLS, ROWS, button_offset + button_codes)
 
 
     # Function to draw a button
