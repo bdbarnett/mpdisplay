@@ -257,12 +257,12 @@
       "github:bdbarnett/mpdisplay/src/lib/gfx/__init__.py"
     ],
     [
-      "lib/gfx/shapes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
-    ],
-    [
       "lib/gfx/framebuf_plus/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
+    ],
+    [
+      "lib/gfx/shapes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
     ],
     [
       "lib/gfx/binfont/__init__.py",
@@ -311,6 +311,10 @@
     [
       "lib/palettes/material_design.py",
       "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
+    ],
+    [
+      "lib/palettes/shades.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/shades.py"
     ],
     [
       "lib/palettes/wheel.py",

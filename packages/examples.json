@@ -1,6 +1,10 @@
 {
   "urls": [
     [
+      "examples/apollo.py",
+      "github:bdbarnett/mpdisplay/src/examples/apollo.py"
+    ],
+    [
       "examples/binfont_list.py",
       "github:bdbarnett/mpdisplay/src/examples/binfont_list.py"
     ],
@@ -149,6 +153,10 @@
       "github:bdbarnett/mpdisplay/src/examples/pbm_simpletest.py"
     ],
     [
+      "examples/pngtest.py",
+      "github:bdbarnett/mpdisplay/src/examples/pngtest.py"
+    ],
+    [
       "examples/rotations.py",
       "github:bdbarnett/mpdisplay/src/examples/rotations.py"
     ],
@@ -175,6 +183,18 @@
     [
       "examples/tiny_hello.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_hello.py"
+    ],
+    [
+      "examples/apollo_dsk/Apollo_DSKY_interface.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsk/Apollo_DSKY_interface.bmp"
+    ],
+    [
+      "examples/apollo_dsk/Apollo_DSKY_interface.svg",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsk/Apollo_DSKY_interface.svg"
+    ],
+    [
+      "examples/apollo_dsk/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsk/__init__.py"
     ],
     [
       "examples/noto_fonts/NotoSansMono_32.py",
@@ -215,26 +235,6 @@
     [
       "examples/assets/warrior.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
-    ],
-    [
-      "examples/chango/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
-    ],
-    [
-      "examples/chango/chango.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
-    ],
-    [
-      "examples/chango/chango_16.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
-    ],
-    [
-      "examples/chango/chango_32.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
-    ],
-    [
-      "examples/chango/chango_64.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ],
     [
       "examples/proverbs/__init__.py",
@@ -295,6 +295,26 @@
     [
       "examples/tiny_toasters/tiny_toasters_bitmaps.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
+    ],
+    [
+      "examples/chango/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
+    ],
+    [
+      "examples/chango/chango.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
+    ],
+    [
+      "examples/chango/chango_16.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
+    ],
+    [
+      "examples/chango/chango_32.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
+    ],
+    [
+      "examples/chango/chango_64.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ]
   ],
   "deps": [],

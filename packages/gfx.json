@@ -9,12 +9,12 @@
       "github:bdbarnett/mpdisplay/src/lib/gfx/__init__.py"
     ],
     [
-      "gfx/shapes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
-    ],
-    [
       "gfx/framebuf_plus/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
+    ],
+    [
+      "gfx/shapes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
     ],
     [
       "gfx/binfont/__init__.py",

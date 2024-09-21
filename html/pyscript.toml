@@ -75,8 +75,8 @@
 
 "../src/lib/framebuf.py" = "/lib/"
 "../src/lib/gfx/__init__.py" = "/lib/gfx/"
-"../src/lib/gfx/shapes/__init__.py" = "/lib/gfx/shapes/"
 "../src/lib/gfx/framebuf_plus/__init__.py" = "/lib/gfx/framebuf_plus/"
+"../src/lib/gfx/shapes/__init__.py" = "/lib/gfx/shapes/"
 "../src/lib/gfx/binfont/__init__.py" = "/lib/gfx/binfont/"
 "../src/lib/gfx/binfont/binfont_8x14.bin" = "/lib/gfx/binfont/"
 "../src/lib/gfx/binfont/binfont_8x16.bin" = "/lib/gfx/binfont/"
@@ -90,6 +90,7 @@
 "../src/lib/palettes/_material_design.py" = "/lib/palettes/"
 "../src/lib/palettes/cube.py" = "/lib/palettes/"
 "../src/lib/palettes/material_design.py" = "/lib/palettes/"
+"../src/lib/palettes/shades.py" = "/lib/palettes/"
 "../src/lib/palettes/wheel.py" = "/lib/palettes/"
 
 "../src/lib/timer/__init__.py" = "/lib/timer/"

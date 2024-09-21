@@ -33,6 +33,10 @@
       "github:bdbarnett/mpdisplay/src/lib/palettes/material_design.py"
     ],
     [
+      "palettes/shades.py",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/shades.py"
+    ],
+    [
       "palettes/wheel.py",
       "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
     ]
