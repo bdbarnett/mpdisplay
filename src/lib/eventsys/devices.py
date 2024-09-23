@@ -436,10 +436,10 @@ class QueueDevice(_Device):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self._data is None:
-            self._data = Events.filter
-        if hasattr(self._broker, "touch_scale"):
-            self.scale = self._broker.touch_scale
+        if self._data2 is None:
+            self._data2 = Events.filter
+        if hasattr(self._data, "touch_scale"):
+            self.scale = self._data.touch_scale
         else:
             self.scale = 1
 
@@ -451,13 +451,13 @@ class QueueDevice(_Device):
             Event or None: The next event from the device, or None if no event is available.
         """
         if (event := self._read()) is not None:
-            if event.type in self._data:
-                if (scale := self.scale) != 1:
-                    if event.type in (
-                        Events.MOUSEMOTION,
-                        Events.MOUSEBUTTONDOWN,
-                        Events.MOUSEBUTTONUP,
-                    ):
+            if event.type in self._data2:
+                if event.type in (
+                    Events.MOUSEMOTION,
+                    Events.MOUSEBUTTONDOWN,
+                    Events.MOUSEBUTTONUP,
+                ):
+                    if (scale := self.scale) != 1:
                         event.pos = (
                             int(event.pos[0] // scale),
                             int(event.pos[1] // scale),
