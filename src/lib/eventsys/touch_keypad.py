@@ -31,7 +31,7 @@ except ImportError:
 
 
 class Keypad:
-    def __init__(self, poll, x, y, w, h, cols=3, rows=3, keys=None):
+    def __init__(self, poll, x, y, w, h, cols=3, rows=3, keys=None, translate=None):
         self._keys = keys if keys else [i for i in range(cols * rows)]
         self._poll = poll
         self.x = x
@@ -42,6 +42,7 @@ class Keypad:
         self.rows = rows
         self.key_width = kw = w / cols
         self.key_height = kh = h / rows
+        self._translate = translate or (lambda point: point)
         if Area:
             self.areas = [Area(x + kw * i, y + kh * j, kw, kh) for j in range(rows) for i in range(cols)]
 
@@ -49,7 +50,7 @@ class Keypad:
     def read(self):
         event = self._poll()
         if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
-            x, y = event.pos
+            x, y = self._translate(event.pos)
             if x < self.x or x > self.x + self.w or y < self.y or y > self.y + self.h:
                 return None
             col = int((x - self.x) / self.key_width)
