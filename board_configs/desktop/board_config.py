@@ -24,5 +24,6 @@ broker = Broker()
 events_dev = broker.create_device(
     type=Devices.QUEUE,
     read=poll,
-    # data=Events.filter,
+    data=display_drv,
+    # data2=Events.filter,
 )

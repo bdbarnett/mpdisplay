@@ -5,7 +5,7 @@ Combination board configuration for desktop, pyscript and jupyter notebook platf
 width = 320
 height = 480
 rotation = 0
-scale = 1.0
+scale = 2.0
 
 _ps = _jn = False
 try:
@@ -60,7 +60,8 @@ else:
     events_dev = broker.create_device(
         type=Devices.QUEUE,
         read=poll,
-        # data=Events.filter,
+        data=display_drv,
+        # data2=Events.filter,
     )
     tim = refresh_timer(display_drv.show)
 
