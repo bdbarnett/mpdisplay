@@ -245,6 +245,86 @@ class BaseDisplay:
                     colstart += BPP
         return Area(x, y, w, h)
 
+    @property
+    def vscroll(self) -> int:
+        """
+        The vertical scroll position relative to the top fixed area.
+
+        Returns:
+            int: The vertical scroll position.
+        """
+        return self.vscsad() - self._tfa
+
+    @vscroll.setter
+    def vscroll(self, y) -> None:
+        """
+        Set the vertical scroll position relative to the top fixed area.
+
+        Args:
+            y (int): The vertical scroll position.
+        """
+        self.vscsad((y % self._vsa) + self._tfa)
+
+    def set_vscroll(self, tfa=0, bfa=0) -> None:
+        """
+        Set the vertical scroll definition and move the vertical scroll to the top.
+
+        Args:
+            tfa (int): The top fixed area.
+            bfa (int): The bottom fixed area.
+        """
+        self.vscrdef(tfa, self.height - tfa - bfa, bfa)
+        self.vscroll = 0
+
+    @property
+    def tfa(self) -> int:
+        """
+        The top fixed area set by set_vscroll or vscrdef.
+
+        Returns:
+            int: The top fixed area.
+        """
+        return self._tfa
+    
+    @property
+    def vsa(self) -> int:
+        """
+        The vertical scroll area set by set_vscroll or vscrdef.
+
+        Returns:
+            int: The vertical scroll area.
+        """
+        return self._vsa
+    
+    @property
+    def bfa(self) -> int:
+        """
+        The bottom fixed area set by set_vscroll or vscrdef.
+
+        Returns:
+            int: The bottom fixed area.
+        """
+        return self._bfa
+
+    def translate_point(self, point) -> tuple:
+        """
+        Translate a point from real coordinates to scrolled coordinates.
+
+        Useful for touch events.
+
+        Args:
+            point (tuple): The x and y coordinates to translate.
+
+        Returns:
+            tuple: The translated x and y coordinates.
+        """
+        x, y = point
+        if self.vscsad() and self.tfa < y < self.height - self.bfa:
+            y = y + self.vscsad() - self.tfa
+            if y >= (self.vsa + self.tfa):
+                y %= self.vsa
+        return x, y
+
     ############### Common API Methods, sometimes overridden ################
 
     def vscrdef(self, tfa: int, vsa: int, bfa: int) -> None:
