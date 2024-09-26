@@ -160,3 +160,57 @@ class MappedPalette(Palette):
     def _get_rgb(self, index):
         r, g, b = self._color_map[index * 3 : index * 3 + 3]
         return r, g, b
+
+
+class Theme:
+    """
+    A class to represent a Material Design 2 color theme.
+    """
+    _names = [
+        "background",
+        "on_background",
+        "surface",
+        "on_surface",
+        "primary",
+        "on_primary",
+        "secondary",
+        "on_secondary",
+        "error",
+        "on_error",
+        "primary_variant",
+        "secondary_variant",
+        "tertiary",
+        "on_tertiary",
+        "tertiary_variant",
+        "transparent",
+    ]
+
+    def __init__(self, **args):
+        for arg in args:
+            if arg not in self._names:
+                raise ValueError(f"Invalid theme color: {arg}")
+        for name in self._names:
+            setattr(self, name, args.get(name, 0))
+
+    def __getitem__(self, index):
+        if type(index) is int:
+            return getattr(self, self._names[index])
+        return getattr(self, index)
+
+    def __setitem__(self, index, value):
+        if type(index) is int:
+            setattr(self, self._names[index], value)
+        setattr(self, index, value)
+
+    def __iter__(self):
+        for i in range(len(self._names)):
+            yield self[i]
+
+    def __len__(self):
+        return len(self._names)
+
+    def __repr__(self):
+        return f"Theme({', '.join([f'{name}={getattr(self, name)}' for name in self._names])})"
+    
+    def __str__(self):
+        return f"Theme({', '.join([f'{name}={getattr(self, name)}' for name in self._names])})"
