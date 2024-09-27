@@ -104,12 +104,11 @@ class Widget:
         """
         if not self._dirty_areas:
             return None
-
         merged_area = self._dirty_areas[0]
         for area in self._dirty_areas[1:]:
             merged_area += area
-
         return merged_area
+
 
     def _draw_dirty_widgets(self, dirty_area):
         """
@@ -158,7 +157,7 @@ class Widget:
     @visible.setter
     def visible(self, visible):
         """Set widget visibility."""
-        self.visible = visible
+        self._visible = visible
 
 
 class Screen(Widget):
