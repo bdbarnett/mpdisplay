@@ -1,4 +1,5 @@
 from gfx import Area, Draw
+from eventsys.events import Events
 DEBUG = True
 
 def log(*args, **kwargs):
@@ -38,6 +39,8 @@ class Widget:
         # Only call add_child if the parent is a Widget instance
         if isinstance(self.parent, Widget):
             self.parent.add_child(self)
+
+        self.mark_dirty(self.area)
 
     @property
     def x(self):
@@ -108,7 +111,6 @@ class Widget:
         for area in self._dirty_areas[1:]:
             merged_area += area
         return merged_area
-
 
     def _draw_dirty_widgets(self, dirty_area):
         """
@@ -182,17 +184,25 @@ class Screen(Widget):
             return  # Nothing to redraw
 
         # Clear the dirty areas only
-        print(f"Clearing dirty area {dirty_area}")
-        self.display.fill_rect(*dirty_area, self.bg)
+        # print(f"Clearing dirty area {dirty_area}")
+        # self.display.fill_rect(*dirty_area, self.bg)
 
         # Draw widgets that intersect with the dirty areas
         self._draw_dirty_widgets(dirty_area)
 
         # Update the display with the rendered content
-        self.display.show()
+        self.display.show(dirty_area)
 
         # Clear the dirty areas list after updating
         self._dirty_areas.clear()
+
+    def on_draw(self):
+        """
+        Draw the screen and its children.
+        """
+        log(f"{name(self)}.on_draw()")
+        if self.visible:
+            self.draw_obj.fill_rect(*self.area, self.bg)
 
     def handle_event(self, event):
         """
@@ -228,8 +238,6 @@ class Button(Widget):
         self.pressed_offset = 2
         self.filled = True
 
-        self.mark_dirty(self.area)
-
     def on_draw(self):
         """
         Draw the button background and any child widgets (like a label).
@@ -257,13 +265,13 @@ class Button(Widget):
         log(f"{name(self)}.handle_event({event})")
 
         # Check if the event is within the button's area
-        if event.type == "mousedown" and self.abs_area.contains(event.pos):
+        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
             self._pressed = True
             if self.on_press_callback:
                 self.on_press_callback(self)
             self.mark_dirty(self.area)
 
-        elif event.type == "mouseup" and self._pressed:
+        elif event.type == Events.MOUSEBUTTONUP and self._pressed:
             self._pressed = False
             if self.on_release_callback:
                 self.on_release_callback(self)
@@ -299,7 +307,6 @@ class Label(Widget):
         h = 8  # Fixed height for a single line of text
         super().__init__(parent, x, y, w, h, fg, parent.fg)
         self.text = text
-        self.mark_dirty(self.area)
 
     def on_draw(self):
         """
@@ -313,8 +320,9 @@ class Label(Widget):
 
 
 def main():
-    from board_config import display_drv, broker
-    from eventsys.events import Events
+    from board_config import broker # , display_drv
+    from color_setup import ssd as display_drv
+    # from eventsys.events import Events
     from palettes import get_palette
     # from widgets import Screen, Label, Button
 
@@ -328,9 +336,9 @@ def main():
 
     # Create the screen and button
     pal = get_palette()
-    screen = Screen(display_drv, pal.RED)
+    screen = Screen(display_drv, pal.BLACK)
     button = Button(screen, w=96, h=16, fg=pal.BLUE)
-    label = Label(button, text="Click Me", fg=pal.GREEN)  # noqa: F841
+    label = Label(button, text="Click Me", fg=pal.WHITE)  # noqa: F841
 
     # Set button callbacks
     button.set_on_press(on_button_press)
@@ -340,7 +348,8 @@ def main():
 
     while True:
         if e := broker.poll():
-            if e.type == Events.MOUSEBUTTONDOWN:
+            if e.type in [Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP]:
                 screen.handle_event(e)
+                screen.draw()
 
 main()
