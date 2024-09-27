@@ -298,11 +298,11 @@ class BusDisplay(BaseDisplay):
         c = c & 0xFFFF  # Ensure color is 16-bit for circuitpython
         if h > w:
             raw_data = struct.pack("<H", c) * h
-            for col in range(x + self.colstart, x + self.colstart + w):
+            for col in range(x, x + w):
                 self.blit_rect(memoryview(raw_data[:]), col, y, 1, h)
         else:
             raw_data = struct.pack("<H", c) * w
-            for row in range(y + self.rowstart, y + self.rowstart + h):
+            for row in range(y, y + h):
                 self.blit_rect(memoryview(raw_data[:]), x, row, w, 1)
         return Area(x, y, w, h)
 
