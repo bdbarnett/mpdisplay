@@ -160,42 +160,18 @@ def blit_transparent(canvas, buf, x, y, w, h, key):
     return Area(x, y, w, h)
 
 def circle(canvas, x0, y0, r, c, f=False):
-    """Circle drawing function.  Will draw a single pixel wide circle with
+    """Circle drawing function.  Will draw a circle with
     center at x0, y0 and the specified r."""
     if f:
-        return _fill_circle(canvas, x0, y0, r, c)
-    f = 1 - r
-    ddF_x = 1
-    ddF_y = -2 * r
-    x = 0
-    y = r
-    pixel(canvas, x0, y0 + r, c)  # bottom
-    pixel(canvas, x0, y0 - r, c)  # top
-    pixel(canvas, x0 + r, y0, c)  # right
-    pixel(canvas, x0 - r, y0, c)  # left
-    while x < y:
-        if f >= 0:
-            y -= 1
-            ddF_y += 2
-            f += ddF_y
-        x += 1
-        ddF_x += 2
-        f += ddF_x
-        # angle notations are based on the unit circle and in diection of being drawn
-        pixel(canvas, x0 + x, y0 + y, c)  # 270 to 315
-        pixel(canvas, x0 - x, y0 + y, c)  # 270 to 255
-        pixel(canvas, x0 + x, y0 - y, c)  # 90 to 45
-        pixel(canvas, x0 - x, y0 - y, c)  # 90 to 135
-        pixel(canvas, x0 + y, y0 + x, c)  # 0 to 315
-        pixel(canvas, x0 - y, y0 + x, c)  # 180 to 225
-        pixel(canvas, x0 + y, y0 - x, c)  # 0 to 45
-        pixel(canvas, x0 - y, y0 - x, c)  # 180 to 135
+        return _fill_circle_helper(canvas, x0, y0, r, c, 0, 0)
+
+    _circle_helper(canvas, x0, y0, r, c, 0, 0)
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
 
-def _fill_circle(canvas, x0, y0, r, c):
-    """Filled circle drawing function.  Will draw a filled circle with
-    center at x0, y0 and the specified r."""
-    vline(canvas, x0, y0 - r, 2 * r + 1, c)
+def _circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
+    """Circle helper function.  Will draw the 4 quadrants of a circle
+    centered at x0, y0 and the specified r separated by the specified
+    x_offset and y_offset."""
     f = 1 - r
     ddF_x = 1
     ddF_y = -2 * r
@@ -209,10 +185,45 @@ def _fill_circle(canvas, x0, y0, r, c):
         x += 1
         ddF_x += 2
         f += ddF_x
-        vline(canvas, x0 + x, y0 - y, 2 * y + 1, c)
-        vline(canvas, x0 + y, y0 - x, 2 * x + 1, c)
-        vline(canvas, x0 - x, y0 - y, 2 * y + 1, c)
-        vline(canvas, x0 - y, y0 - x, 2 * x + 1, c)
+        offset_x = x + x_offset
+        offset_y = y + y_offset
+        pixel(canvas, x0 + offset_x - 1, y0 - offset_y, c)  # 90 to 45
+        pixel(canvas, x0 - offset_x, y0 - offset_y, c)  # 90 to 135
+        pixel(canvas, x0 + offset_x - 1, y0 + offset_y - 1, c)  # 270 to 315
+        pixel(canvas, x0 - offset_x, y0 + offset_y - 1, c)  # 270 to 225
+        offset_x = y + x_offset
+        offset_y = x + y_offset
+        pixel(canvas, x0 + offset_x - 1, y0 + offset_y - 1, c)  # 0 to 315
+        pixel(canvas, x0 - offset_x, y0 + offset_y - 1, c)  # 180 to 225
+        pixel(canvas, x0 + offset_x - 1, y0 - offset_y, c)  # 0 to 45
+        pixel(canvas, x0 - offset_x, y0 - offset_y, c)  # 180 to 135
+
+def _fill_circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
+    """Filled circle drawing function.  Will draw the 4 quadrants of a filled circle with
+    center at x0, y0 and the specified r separated by the specified x_offset and y_offset."""
+    # vline(canvas, x0, y0 - r, 2 * r + 1, c)
+    f = 1 - r
+    ddF_x = 1
+    ddF_y = -2 * r
+    x = 0
+    y = r
+    while x < y:
+        if f >= 0:
+            y -= 1
+            ddF_y += 2
+            f += ddF_y
+        x += 1
+        ddF_x += 2
+        f += ddF_x
+        offset_x = x + x_offset
+        offset_y = y + y_offset
+        vline(canvas, x0 - offset_x, y0 - offset_y, 2 * offset_y, c)
+        vline(canvas, x0 + offset_x - 1, y0 - offset_y, 2 * offset_y, c)
+        offset_x = y + x_offset
+        offset_y = x + y_offset
+        vline(canvas, x0 - offset_x, y0 - offset_y, 2 * offset_y, c)
+        vline(canvas, x0 + offset_x - 1, y0 - offset_y, 2 * offset_y, c)
+
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
 
 def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
@@ -539,87 +550,33 @@ def round_rect(canvas, x0, y0, w, h, r, c, f=False):
     This works like a regular rect though! if r = 0
     Will draw the outline of a rectangle with rounded corners with (x0,y0) at the top left
     """
+    # If the radius is 0, just draw a rectangle
+    if r == 0:
+        return rect(canvas, x0, y0, w, h, c, f)
+
+    # If filled, draw the rounded rectangle using the _fill_round_rect function
     if f:
         return _fill_round_rect(canvas, x0, y0, w, h, r, c)
-    # shift to correct for start point location
-    x0 += r
-    y0 += r
 
     # ensure that the r will only ever half of the shortest side or less
     r = int(min(r, w / 2, h / 2))
 
-    if r:
-        f = 1 - r
-        ddF_x = 1
-        ddF_y = -2 * r
-        x = 0
-        y = r
-        vline(canvas, x0 - r, y0, h - 2 * r + 1, c)  # left
-        vline(canvas, x0 + w - r, y0, h - 2 * r + 1, c)  # right
-        hline(canvas, x0, y0 + h - r + 1, w - 2 * r + 1, c)  # bottom
-        hline(canvas, x0, y0 - r, w - 2 * r + 1, c)  # top
-        while x < y:
-            if f >= 0:
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            x += 1
-            ddF_x += 2
-            f += ddF_x
-            # angle notations are based on the unit circle and in diection of being drawn
-
-            # top left
-            pixel(canvas, x0 - y, y0 - x, c)  # 180 to 135
-            pixel(canvas, x0 - x, y0 - y, c)  # 90 to 135
-            # top right
-            pixel(canvas, x0 + x + w - 2 * r, y0 - y, c)  # 90 to 45
-            pixel(canvas, x0 + y + w - 2 * r, y0 - x, c)  # 0 to 45
-            # bottom right
-            pixel(canvas, x0 + y + w - 2 * r, y0 + x + h - 2 * r, c)  # 0 to 315
-            pixel(canvas, x0 + x + w - 2 * r, y0 + y + h - 2 * r, c)  # 270 to 315
-            # bottom left
-            pixel(canvas, x0 - x, y0 + y + h - 2 * r, c)  # 270 to 255
-            pixel(canvas, x0 - y, y0 + x + h - 2 * r, c)  # 180 to 225
-    return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
+    hline(canvas, x0 + r, y0, w - 2 * r, c)  # top
+    hline(canvas, x0 + r, y0 + h - 1, w - 2 * r, c)  # bottom
+    vline(canvas, x0, y0 + r, h - 2 * r, c)  # left
+    vline(canvas, x0 + w - 1, y0 + r, h - 2 * r, c)  # right
+    _circle_helper(canvas, x0 + w//2, y0 + h//2, r, c, w//2 - r, h//2 - r)
+    return Area(x0, y0, w, h)
 
 def _fill_round_rect(canvas, x0, y0, w, h, r, c):
     """Filled circle drawing function.  Will draw a filled circle with
     center at x0, y0 and the specified r."""
-    # shift to correct for start point location
-    x0 += r
-    y0 += r
 
-    # ensure that the r will only ever half of the shortest side or less
+    # ensure that the r will only ever be half of the shortest side or less
     r = int(min(r, w / 2, h / 2))
-
-    fill_rect(canvas, x0, y0 - r, w - 2 * r + 2, h + 2, c)
-
-    if r:
-        f = 1 - r
-        ddF_x = 1
-        ddF_y = -2 * r
-        x = 0
-        y = r
-        while x < y:
-            if f >= 0:
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            x += 1
-            ddF_x += 2
-            f += ddF_x
-            # part notation starts with 0 on left and 1 on right, and direction is noted
-            # top left
-            vline(canvas, x0 - y, y0 - x, 2 * x + 1 + h - 2 * r, c)  # 0 to .25
-            vline(canvas, x0 - x, y0 - y, 2 * y + 1 + h - 2 * r, c)  # .5 to .25
-            # top right
-            vline(
-                canvas, x0 + x + w - 2 * r, y0 - y, 2 * y + 1 + h - 2 * r, c
-            )  # .5 to .75
-            vline(
-                canvas, x0 + y + w - 2 * r, y0 - x, 2 * x + 1 + h - 2 * r, c
-            )  # 1 to .75
-    return Area(x0 - r, y0 - r, w - 2 * r, h - 2 * r)
+    fill_rect(canvas, x0 + r, y0, w - 2 * r, h, c)  # center
+    _fill_circle_helper(canvas, x0 + w//2, y0 + h//2, r, c, w//2 - r, h//2 - r)
+    return Area(x0, y0, w, h)
 
 def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     # pylint: disable=too-many-arguments
