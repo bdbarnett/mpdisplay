@@ -5,7 +5,7 @@ https://github.com/Xinyuan-LilyGO/T-Display-S3-Pro/blob/master/schematic/T-Displ
 from spibus import SPIBus
 from st7796 import ST7796
 from machine import Pin, I2C
-#from cst8xx import CST8XX
+from cst226 import CST226
 from eventsys.devices import Devices, Broker
 
 
@@ -40,9 +40,9 @@ display_drv = ST7796(
     power_on_high=True,
 )
 
-'''
-i2c = I2C(0, sda=Pin(5), scl=Pin(6), freq=100_000)
-touch_drv = CST8XX(i2c, irq_pin=21, rst_pin=13)
+
+i2c = I2C(0, sda=Pin(5), scl=Pin(6), freq=100000)
+touch_drv = CST226(i2c, irq_pin=21, rst_pin=13)
 touch_read_func = touch_drv.get_point
 # Set to (0,0,0,0), reset and run mpdisplay_touch_test.py if touch rotation is wrong
 touch_rotation_table = (0, 5, 6, 3)
@@ -55,4 +55,3 @@ touch_dev = broker.create_device(
     data=display_drv,
     data2=touch_rotation_table,
 )
-'''
