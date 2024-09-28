@@ -2,12 +2,14 @@ from gfx import Area, Draw
 from eventsys.events import Events
 DEBUG = True
 
+
 def log(*args, **kwargs):
     if DEBUG:
         print(*args, **kwargs)
 
 def name(obj):
     return obj.__class__.__name__
+
 
 class Widget:
     def __init__(self, parent, x, y, w=0, h=0, fg=-1, bg=0):
@@ -41,6 +43,26 @@ class Widget:
             self.parent.add_child(self)
 
         self.mark_dirty(self.area)
+
+    def draw(self):
+        """
+        Placeholder for the actual drawing logic of the widget.
+        Should be overridden in subclasses.
+        """
+        log(f"{name(self)} has not overridden draw method.")
+        pass
+
+    def handle_event(self, event):
+        """
+        Handle an event and propagate it to child widgets.  Subclasses that need to handle events
+        should override this method and call this method to propagate the event to children.
+        
+        :param event: An event from the event system (e.g., mouse or keyboard event).
+        """
+        log(f"{name(self)}.handle_event({event})")
+        # Propagate the event to the children of the screen
+        for child in self.children:
+            child.handle_event(event)
 
     @property
     def x(self):
@@ -77,6 +99,30 @@ class Widget:
 
         return self.area.offset_by(x_offset, y_offset)
 
+    @property
+    def dirty_area(self):
+        """
+        Merge dirty areas into a single area for efficient redrawing.
+        
+        :return: A merged Area object.
+        """
+        if not self._dirty_areas:
+            return None
+        merged_area = self._dirty_areas[0]
+        for area in self._dirty_areas[1:]:
+            merged_area += area
+        return merged_area
+
+    @property
+    def visible(self):
+        """Get widget visibility."""
+        return self._visible
+
+    @visible.setter
+    def visible(self, visible):
+        """Set widget visibility."""
+        self._visible = visible
+
     def add_child(self, widget):
         """Adds a child widget to the current widget."""
         log(f"{name(self)}.add_child({name(widget)})")
@@ -98,20 +144,6 @@ class Widget:
             rel_area = area.offset_by(self.x, self.y)  # Relative to the parent
             self.parent.mark_dirty(rel_area)  # Propagate up the hierarchy
 
-    @property
-    def dirty_area(self):
-        """
-        Merge dirty areas into a single area for efficient redrawing.
-        
-        :return: A merged Area object.
-        """
-        if not self._dirty_areas:
-            return None
-        merged_area = self._dirty_areas[0]
-        for area in self._dirty_areas[1:]:
-            merged_area += area
-        return merged_area
-
     def _draw_dirty_widgets(self, dirty_area):
         """
         Recursively draw widgets that intersect with dirty areas.
@@ -119,47 +151,23 @@ class Widget:
         :param dirty_area: The merged dirty areas (a list of Area objects).
         """
         if self.visible: #  and dirty_area.intersects(Area(self.x, self.y, self.width, self.height)):
-            self.on_draw()  # Draw this widget if it intersects with dirty area
+            self.draw()  # Draw this widget if it intersects with dirty area
 
             # Draw child widgets if they intersect with dirty areas
             for child in self.children:
                 child._draw_dirty_widgets(dirty_area)
 
-    def on_draw(self):
-        """
-        Placeholder for the actual drawing logic of the widget.
-        Should be overridden in subclasses.
-        """
-        log(f"{name(self)} has not overridden on_draw method.")
-        pass
+    def set_on_press(self, callback):
+        """Set the callback function for when the button is pressed."""
+        self.on_press_callback = callback
 
-    def handle_event(self, event):
-        """
-        Handle events such as mouse clicks or key presses.
+    def set_on_release(self, callback):
+        """Set the callback function for when the button is released."""
+        self.on_release_callback = callback
 
-        :param event: An event from the event system (e.g., mouse or keyboard event)
-        """
-        # Override in subclass for specific event handling logic
-        log(f"{name(self)} has not overridden handle_event method.")
-        pass
-
-    def draw(self):
-        """
-        Draw the widget and its children, typically overridden by subclasses.
-        Can be combined with dirty area optimization logic.
-        """
-        log(f"{name(self)} has not overridden draw method.")
-        pass
-
-    @property
-    def visible(self):
-        """Get widget visibility."""
-        return self._visible
-
-    @visible.setter
-    def visible(self, visible):
-        """Set widget visibility."""
-        self._visible = visible
+    def set_on_hold(self, callback):
+        """Set the callback function for when the button is held down."""
+        self.on_hold_callback = callback
 
 
 class Screen(Widget):
@@ -175,11 +183,19 @@ class Screen(Widget):
 
     def draw(self):
         """
-        Draws only the dirty areas of the screen and its children.
+        Draw the screen and its children.
+        """
+        log(f"{name(self)}.draw()")
+        if self.visible:
+            self.draw_obj.fill_rect(*self.area, self.bg)
+
+    def update(self):
+        """
+        Update only the dirty areas of the screen and its children.
 
         Uses self.draw_obj for drawing.
         """
-        log(f"{name(self)}.draw()")
+        log(f"{name(self)}.update()")
         if (dirty_area := self.dirty_area) is None:
             return  # Nothing to redraw
 
@@ -195,25 +211,6 @@ class Screen(Widget):
 
         # Clear the dirty areas list after updating
         self._dirty_areas.clear()
-
-    def on_draw(self):
-        """
-        Draw the screen and its children.
-        """
-        log(f"{name(self)}.on_draw()")
-        if self.visible:
-            self.draw_obj.fill_rect(*self.area, self.bg)
-
-    def handle_event(self, event):
-        """
-        Handle an event and propagate it to child widgets.
-        
-        :param event: An event from the event system (e.g., mouse or keyboard event).
-        """
-        log(f"{name(self)}.handle_event({event})")
-        # Propagate the event to the children of the screen
-        for child in self.children:
-            child.handle_event(event)
 
 
 class Button(Widget):
@@ -238,11 +235,11 @@ class Button(Widget):
         self.pressed_offset = 2
         self.filled = True
 
-    def on_draw(self):
+    def draw(self):
         """
         Draw the button background and any child widgets (like a label).
         """
-        log(f"{name(self)}.on_draw()")
+        log(f"{name(self)}.draw()")
         if self.visible:
             # Adjust size if the button is pressed
             area = self.abs_area
@@ -253,7 +250,7 @@ class Button(Widget):
                     area.w - self.pressed_offset * 2,
                     area.h - self.pressed_offset * 2,
                 )
-            log(f"{name(self)}.on_draw() - Drawing area: {area}")
+            log(f"{name(self)}.draw() - Drawing area: {area}")
             self.draw_obj.round_rect(*area, self.radius, self.fg, f=self.filled)
 
     def handle_event(self, event):
@@ -277,18 +274,8 @@ class Button(Widget):
                 self.on_release_callback(self)
             self.mark_dirty(self.area)
 
-    def set_on_press(self, callback):
-        """Set the callback function for when the button is pressed."""
-        self.on_press_callback = callback
-
-    def set_on_release(self, callback):
-        """Set the callback function for when the button is released."""
-        self.on_release_callback = callback
-
-    def set_on_hold(self, callback):
-        """Set the callback function for when the button is held down."""
-        self.on_hold_callback = callback
-
+        # Propagate the event to the children of the button
+        super().handle_event(event)
 
 class Label(Widget):
     def __init__(self, parent, text="", x=None, y=None, fg=-1):
@@ -308,14 +295,14 @@ class Label(Widget):
         super().__init__(parent, x, y, w, h, fg, parent.fg)
         self.text = text
 
-    def on_draw(self):
+    def draw(self):
         """
         Draw the label's text on the screen, using absolute coordinates.
         """
-        log(f"{name(self)}.on_draw()")
+        log(f"{name(self)}.draw()")
         if self.visible:
             abs_x, abs_y, _, _ = self.abs_area
-            log(f"{name(self)}.on_draw() - Drawing at: {abs_x}, {abs_y}")
+            log(f"{name(self)}.draw() - Drawing at: {abs_x}, {abs_y}")
             self.draw_obj.text(self.text, abs_x, abs_y, self.fg)
 
 
@@ -344,12 +331,12 @@ def main():
     button.set_on_press(on_button_press)
     button.set_on_release(on_button_release)
 
-    screen.draw()
+    screen.update()
 
     while True:
         if e := broker.poll():
             if e.type in [Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP]:
                 screen.handle_event(e)
-                screen.draw()
+                screen.update()
 
 main()
