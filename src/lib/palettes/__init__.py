@@ -210,7 +210,9 @@ class Theme:
         return len(self._names)
 
     def __repr__(self):
-        return f"Theme({', '.join([f'{name}={getattr(self, name)}' for name in self._names])})"
-    
+        theme = ', '.join([f'{name}={getattr(self, name)}' for name in self._names])
+        return f"Theme({theme})"
+
     def __str__(self):
-        return f"Theme({', '.join([f'{name}={getattr(self, name)}' for name in self._names])})"
+        theme = ', '.join([f'{name}={getattr(self, name)}' for name in self._names])
+        return f"Theme({theme})"
