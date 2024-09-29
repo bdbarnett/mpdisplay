@@ -17,6 +17,7 @@
 "../src/extras/png.py" = "/extras/"
 "../src/extras/tft_bitmap.py" = "/extras/"
 "../src/extras/tft_write.py" = "/extras/"
+"../src/extras/widgets.py" = "/extras/"
 "../src/extras/wifi.py" = "/extras/"
 "../src/extras/tft_text/__init__.py" = "/extras/tft_text/"
 "../src/extras/tft_text/_python.py" = "/extras/tft_text/"

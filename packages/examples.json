@@ -173,6 +173,10 @@
       "github:bdbarnett/mpdisplay/src/examples/scroll_touch_test.py"
     ],
     [
+      "examples/scroll_touch_test_displaybuffer.py",
+      "github:bdbarnett/mpdisplay/src/examples/scroll_touch_test_displaybuffer.py"
+    ],
+    [
       "examples/shapes_area_test.py",
       "github:bdbarnett/mpdisplay/src/examples/shapes_area_test.py"
     ],
