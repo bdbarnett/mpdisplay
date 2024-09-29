@@ -1,5 +1,11 @@
 from gfx import Area, Draw
 from eventsys.events import Events
+from micropython import const
+import png
+from palettes.shades import ShadesPalette
+from collections import namedtuple
+png_image = namedtuple("png_image", ["width", "height", "pixels", "metadata"])
+
 DEBUG = True
 
 
@@ -10,9 +16,9 @@ def log(*args, **kwargs):
 def name(obj):
     return obj.__class__.__name__
 
-_text_width = 8
+_default_text_height = const(16)
+_text_width = const(8)
 _text_heights = (8, 14, 16)
-_default_text_height = 16
 
 
 class Display:
@@ -433,6 +439,53 @@ class ProgressBar(Widget):
         self.mark_dirty(self.area)
 
 
+class Icon(Widget):
+    def __init__(self, parent: Widget, x=None, y=None, fg=-1, bg=0, value=None):
+        """
+        Initialize an Icon widget to display an icon.
+        
+        :param parent: The parent widget or screen that contains this icon.
+        :param x: The x-coordinate of the icon.
+        :param y: The y-coordinate of the icon.
+        :param width: The width of the icon.
+        :param height: The height of the icon.
+        :param fg: The color of the icon (in a suitable color format).
+        :param bg: The background color of the icon.
+        :param value: The icon to display.
+        """
+        if not value:
+            raise ValueError("Icon value must be set.")
+        p = png_image(*png.Reader(filename=value).read())
+        if not p.metadata["greyscale"] or p.metadata['bitdepth'] != 8:
+            raise ValueError(f"Only 8-bit greyscale PNGs are supported {self.value}")
+        self._image = p
+        super().__init__(parent, x, y, p.width, p.height, fg, bg, value)
+
+    def draw(self):
+        """
+        Draw the icon on the screen.
+        """
+        log(f"{name(self)}.draw()")
+        if self.visible:
+            p = self._image
+            bg = self.bg.to_bytes(2, 'little')
+            pal = ShadesPalette(color=self.fg)
+            x, y, w, h = self.abs_area
+            log(f"{name(self)}.draw() - Drawing at: {x}, {y}")
+            offset = 1 if p.metadata["alpha"] else 0
+            planes = p.metadata["planes"]
+            buf = memoryview(bytearray(p.width * p.height * 2))
+            for y, row in enumerate(p.pixels):
+                for x in range(0, p.width):
+                    if row[x*planes+offset] != 0:
+                        buf[(y*p.width + x)*2:(y*p.width + x)*2+2] = \
+                            pal[row[x*planes+offset]].to_bytes(2, 'little')
+                    else:
+                        buf[(y*p.width + x)*2:(y*p.width + x)*2+2] = bg
+            self.draw_obj.blit_rect(buf, *self.abs_area)
+
+
+
 def main():
     from board_config import broker # , display_drv
     from color_setup import ssd as display_drv
@@ -459,6 +512,8 @@ def main():
     pbtn2 = Button(screen, x=pbar.x+pbar.width, y=pbar.y, fg=pal.GREEN, label=">")
     pbtn1.set_on_press(lambda sender: setattr(pbar, 'value', pbar.value-0.1))
     pbtn2.set_on_press(lambda sender: setattr(pbar, 'value', pbar.value+0.1))
+
+    icon = Icon(screen, y=0, fg=pal.RED, value="icons/18dp/keyboard_arrow_down_18dp.png")
 
     display.update()
 
