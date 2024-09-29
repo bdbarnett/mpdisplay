@@ -13,9 +13,10 @@ from . import Palette as _Palette
 
 
 class ShadesPalette(_Palette):
-    def __init__(self, name="", color_depth=16, swapped=False, cached=True, length=256, rgb=(0, 0, 0)):
+    def __init__(self, name="", color_depth=16, swapped=False, cached=True, length=256, color=(0, 0, 0)):
         self._length = length
-        self._h, self._s, self._v = self._rgb_to_hsv(*rgb)
+        color = self.color_rgb(color)
+        self._h, self._s, self._v = self._rgb_to_hsv(*color)
         super().__init__(name + str(self._length), color_depth, swapped, cached)
 
     def _get_rgb(self, index):
