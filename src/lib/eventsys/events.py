@@ -43,6 +43,7 @@ class Events:
     Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
     Key = namedtuple("Key", "type name key mod scancode window")
     Quit = namedtuple("Quit", "type")
+    Any = namedtuple("Any", "type")
 
     @staticmethod
     def new(types: list[str | tuple[str, int]] = [], classes: dict[str, str] = {}):
