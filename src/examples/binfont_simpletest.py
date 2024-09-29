@@ -20,8 +20,8 @@ def write(font, string, x, y, fg_color, bg_color, scale):
     """
     Write text to the display.
     """
-    buffer_width = font.font_width * scale * len(string)
-    buffer_height = font.font_height * scale
+    buffer_width = font.width * scale * len(string)
+    buffer_height = font.height * scale
     buffer = bytearray(buffer_width * buffer_height * BPP)
     fb = FrameBuffer(buffer, buffer_width, buffer_height, RGB565)
     fb.fill(bg_color)
@@ -48,8 +48,8 @@ def main():
     font3 = BinFont(f"{cwd}lib/gfx/binfont/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
-    max_width = max([font.font_width for font in fonts])
-    max_height = max([font.font_height for font in fonts])
+    max_width = max([font.width for font in fonts])
+    max_height = max([font.height for font in fonts])
 
     while True:
         for rotation in range(4):

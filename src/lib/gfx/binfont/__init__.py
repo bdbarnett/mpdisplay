@@ -33,64 +33,63 @@ _FONTS = {
 _DEFAULT_FONT = _FONTS[8]
 
 
-def text(*args, font_height=8, **kwargs):
-    if font_height == 8:
+def text(*args, height=8, **kwargs):
+    if height == 8:
         return text8(*args, **kwargs)
-    if font_height == 14:
+    if height == 14:
         return text14(*args, **kwargs)
-    if font_height == 16:
+    if height == 16:
         return text16(*args, **kwargs)
-    raise ValueError("Unsupported font height: %d" % font_height)
+    raise ValueError("Unsupported font height: %d" % height)
 
 
-def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=8):
+def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """Place text on the canvas.  Breaks on \n to next line.
 
     Does not break on line going off canvas.
     """
+    height=8
     if (
         not hasattr(BinFont, "_text8font")
         or (font_file is not None and BinFont._text8font.font_file != font_file)
-        or (font_height is not None and BinFont._text8font.font_height != font_height)
+        or (height is not None and BinFont._text8font.height != height)
     ):
         # load the font!
-        BinFont._text8font = BinFont(font_file, font_height)
+        BinFont._text8font = BinFont(font_file, height)
 
     return BinFont._text8font.text(canvas, s, x, y, c, scale, inverted)
 
 
-def text14(
-    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=14
-):
+def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """Place text on the screen.  Breaks on \n to next line.
 
     Does not break on line going off screen.
     """
+    height=14
     if (
         not hasattr(BinFont, "_text14font")
         or (font_file is not None and BinFont._text14font.font_file != font_file)
-        or (font_height is not None and BinFont._text14font.font_height != font_height)
+        or (height is not None and BinFont._text14font.height != height)
     ):
         # load the font!
-        BinFont._text14font = BinFont(font_file, font_height)
+        BinFont._text14font = BinFont(font_file, height)
 
     return BinFont._text14font.text(canvas, s, x, y, c, scale, inverted)
 
 
-def text16(
-    canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None, font_height=16
-):
+def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """Place text on the screen.  Breaks on \n to next line.
 
     Does not break on line going off screen.
     """
+    height = 16
     if (
         not hasattr(BinFont, "_text16font")
         or (font_file is not None and BinFont._text16font.font_file != font_file)
-        or (font_height is not None and BinFont._text16font.font_height != font_height)
+        or (height is not None and BinFont._text16font.height != height)
     ):
         # load the font!
-        BinFont._text16font = BinFont(font_file, font_height)
+        BinFont._text16font = BinFont(font_file, height)
 
     return BinFont._text16font.text(canvas, s, x, y, c, scale, inverted)
 
@@ -100,7 +99,7 @@ class BinFont:
     file to display in a canvas or directly on screen. We use file access
     so we dont waste 1KB of RAM on a font!"""
 
-    def __init__(self, font_file=None, font_height=None):
+    def __init__(self, font_file=None, height=None):
         # Specify the drawing area width and height, and the pixel function to
         # call when drawing pixels (should take an x and y param at least).
         # Optionally specify font_file to override the font file to use (default
@@ -110,14 +109,10 @@ class BinFont:
         #            Each character should have a byte for each pixel row of
         #            data (i.e. a 8x8 font has 8 bytes per character).
         self.font_file = (
-            font_file if font_file else _FONTS.get(font_height, _DEFAULT_FONT)
+            font_file if font_file else _FONTS.get(height, _DEFAULT_FONT)
         )
         self.font_name = self.font_file.split(sep)[-1].split(".")[0]
-        self._font_height = (
-            font_height
-            if font_height is not None
-            else int(self.font_name.split("x")[-1])
-        )
+        self._font_height = height or int(self.font_name.split("x")[-1])
         # Note that only fonts up to 8 pixels wide are currently supported.
         self._font_width = 8
 
@@ -128,11 +123,11 @@ class BinFont:
             # simple font file validation check based on expected file size
             filesize = os.stat(font_path)[6]
             if (
-                filesize != 256 * self.font_height
-                and filesize != 128 * self.font_height
+                filesize != 256 * self.height
+                and filesize != 128 * self.height
             ):
                 raise RuntimeError(
-                    f"Invalid font file: {self.font_file} is {filesize} bytes, expected {256 * self.font_height}"
+                    f"Invalid font file: {self.font_file} is {filesize} bytes, expected {256 * self.height}"
                 )
         except OSError:
             print("Could not find font file", self.font_file)
@@ -143,12 +138,12 @@ class BinFont:
             pass
 
     @property
-    def font_width(self):
+    def width(self):
         """Return the width of the font in pixels."""
         return self._font_width
 
     @property
-    def font_height(self):
+    def height(self):
         """Return the height of the font in pixels."""
         return self._font_height
 
@@ -169,8 +164,8 @@ class BinFont:
         """Draw one character at position (x,y) to a canvas in a given color"""
         scale = max(scale, 1)
         # Don't draw the character if it will be clipped off the visible area.
-        # if x < -self.font_width or x >= canvas.width or \
-        #   y < -self.font_height or y >= canvas.height:
+        # if x < -self.width or x >= canvas.width or \
+        #   y < -self.height or y >= canvas.height:
         #    return
         # Go through each row of the character.
         for char_y in range(self._font_height):
@@ -181,9 +176,9 @@ class BinFont:
             except RuntimeError:
                 continue  # maybe character isnt there? go to next
             # Go through each column in the row byte.
-            for char_x in range(self.font_width):
+            for char_x in range(self.width):
                 # Draw a pixel for each bit that's flipped on.
-                if (line >> (self.font_width - char_x - 1)) & 0x1:
+                if (line >> (self.width - char_x - 1)) & 0x1:
                     canvas.fill_rect(
                         (
                             x + char_x * scale
@@ -211,11 +206,11 @@ class BinFont:
         for chunk in string.split("\n"):
             last_x = x  # the last x position reached on the current line
             for i, char in enumerate(chunk):
-                char_x = x + (i * self.font_width * scale)
+                char_x = x + (i * self.width * scale)
                 if char_x < canvas.width if hasattr(canvas, "width") else True:
                     if char_y < canvas.height if hasattr(canvas, "height") else True:
-                        if char_x + (self.font_width * scale) > 0:
-                            if char_y + (self.font_height * scale) > 0:
+                        if char_x + (self.width * scale) > 0:
+                            if char_y + (self.height * scale) > 0:
                                 self.draw_char(
                                     char,
                                     char_x,
@@ -225,9 +220,9 @@ class BinFont:
                                     scale=scale,
                                     inverted=inverted,
                                 )
-                                last_x = char_x + (self.font_width * scale)
+                                last_x = char_x + (self.width * scale)
             largest_x = max([largest_x, last_x])  # update the largest x position
-            char_y += self.font_height * scale
+            char_y += self.height * scale
         return Area(x, y, largest_x - x, char_y - y)
 
     def text_width(self, text, scale=1):

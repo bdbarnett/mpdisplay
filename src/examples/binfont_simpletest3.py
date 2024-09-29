@@ -45,8 +45,8 @@ def main():
     font3 = BinFont(f"{cwd}lib/gfx/binfont/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
-    max_width = max([font.font_width for font in fonts])
-    max_height = max([font.font_height for font in fonts])
+    max_width = max([font.width for font in fonts])
+    max_height = max([font.height for font in fonts])
 
     while True:
         for rotation in range(4):

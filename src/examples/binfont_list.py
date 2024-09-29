@@ -48,19 +48,19 @@ def main():
             print(e)
             continue
 
-        font_width = font.font_width
-        font_height = font.font_height
+        width = font.width
+        height = font.height
         font_name = font.font_name
 
-        buffer = bytearray(display_drv.width * font_height * 2)
-        fb = FrameBuffer(buffer, display_drv.width, font_height, RGB565)
+        buffer = bytearray(display_drv.width * height * 2)
+        fb = FrameBuffer(buffer, display_drv.width, height, RGB565)
         fb.fill(bg_color)
         string = "".join([chr(i) for i in range(65, 91)]) + ": " + font_name.split("/")[-1]
         font.text(fb, string, 0, 0, fg_color, scale)
         display_drv.blit_rect(
-            buffer, 0, y_pos % display_drv.height, display_drv.width, font_height
+            buffer, 0, y_pos % display_drv.height, display_drv.width, height
         )
-        y_pos += font_height
+        y_pos += height
         if y_pos > display_drv.height:
             display_drv.vscsad((y_pos - display_drv.height) % display_drv.height)
 
