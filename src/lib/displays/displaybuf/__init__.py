@@ -50,6 +50,8 @@ gc.collect()
 def alloc_buffer(size):
     return memoryview(bytearray(size))
 
+_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "translate_point"}
+_display_drv_set_attrs = {"vscroll"}
 
 class DisplayBuffer(framebuf.FrameBuffer):
     """
@@ -127,6 +129,17 @@ class DisplayBuffer(framebuf.FrameBuffer):
         self._mvb = memoryview(self._buffer)
         self.show()  # Clear the display
         gc.collect()
+
+    def __getattr__(self, name):
+        if name in _display_drv_get_attrs:
+            return getattr(self.display_drv, name)
+        raise AttributeError(f"{self.__class__.__name__} object has no attribute '{name}'")
+
+    def __setattr__(self, name, value):
+        if name in _display_drv_set_attrs:
+            return setattr(self.display_drv, name, value)
+        super().__setattr__(name, value)
+
 
     @property
     def buffer(self):

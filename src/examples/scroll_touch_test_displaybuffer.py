@@ -2,9 +2,10 @@ from board_config import display_drv, broker
 from gfx import Draw
 from palettes import get_palette
 from random import getrandbits
+from displaybuf import DisplayBuffer
 
 
-canvas = display_drv
+canvas = DisplayBuffer(display_drv)
 
 def main():
     line_height = 16
