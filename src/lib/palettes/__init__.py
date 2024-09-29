@@ -126,25 +126,40 @@ class Palette:
         color = (r & 0xE0) | (g & 0xE0) >> 3 | (b & 0xC0) >> 6
         return color
 
-    def color_name(self, index):
-        return self.rgb_name(self._get_rgb(self._normalize(index)))
+    def color_rgb(self, color):
+        """
+        color can be an 16-bit integer or a tuple, list or bytearray of length 2 or 3.
+        """
+        if isinstance(color, int):
+            # convert 16-bit int color to 2 bytes
+            color = (color & 0xFF, color >> 8)
+        if len(color) == 2:
+            r = color[1] & 0xF8 | (color[1] >> 5) & 0x7  # 5 bit to 8 bit red
+            g = color[1] << 5 & 0xE0 | (color[0] >> 3) & 0x1F  # 6 bit to 8 bit green
+            b = color[0] << 3 & 0xF8 | (color[0] >> 2) & 0x7  # 5 bit to 8 bit blue
+        else:
+            r, g, b = color
+        return (r, g, b)
 
-    def rgb_name(self, r, g=None, b=None):
-        if isinstance(r, (tuple, list)):
-            r, g, b = r
-        return self._names.get(r << 16 | g << 8 | b, f"#{r:02X}{g:02X}{b:02X}")
+        def color_name(self, index):
+            return self.rgb_name(self._get_rgb(self._normalize(index)))
 
-    def luminance(self, index):
-        r, g, b = self._get_rgb(index)
-        return 0.299 * r + 0.587 * g + 0.114 * b
+        def rgb_name(self, r, g=None, b=None):
+            if isinstance(r, (tuple, list)):
+                r, g, b = r
+            return self._names.get(r << 16 | g << 8 | b, f"#{r:02X}{g:02X}{b:02X}")
 
-    def brightness(self, index):
-        r, g, b = self._get_rgb(index)
-        return (r + g + b) / 3 / 255
+        def luminance(self, index):
+            r, g, b = self._get_rgb(index)
+            return 0.299 * r + 0.587 * g + 0.114 * b
 
-    def _get_rgb(self, index):
-        color = list(self._names.keys())[index]
-        return color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF
+        def brightness(self, index):
+            r, g, b = self._get_rgb(index)
+            return (r + g + b) / 3 / 255
+
+        def _get_rgb(self, index):
+            color = list(self._names.keys())[index]
+            return color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF
 
 
 class MappedPalette(Palette):
