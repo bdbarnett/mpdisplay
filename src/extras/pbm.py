@@ -42,7 +42,22 @@ else:
 
 
 class PBM(FrameBuffer):
-    def __init__(self, filename, fg=0xFFFF, bg=0x0000, format=RGB565):
+    def __init__(self, filename=None, fg=0xFFFF, bg=0x0000, format=RGB565, width=None, height=None):
+        self._palette = FrameBuffer(memoryview(bytearray(2 * 2)), 2, 1, format)
+        self.bg = bg
+        self.fg = fg
+        if filename and not (width or height):
+            self._read_file(filename)
+        elif width and height:
+            self._filename = None
+            self._buffer = memoryview(bytearray(width * height // 8))
+            self._width = width
+            self._height = height
+        else:
+            raise ValueError("PBM:  Invalid arguments - must provide filename or width and height")
+        super().__init__(self._buffer, self._width, self._height, MONO_HLSB)
+
+    def _read_file(self, filename):
         self._filename = filename
         with open(self._filename, "rb") as f:
             # Read the header
@@ -62,12 +77,7 @@ class PBM(FrameBuffer):
                 dimensions = next_line.split()
                 self._width = int(dimensions[0])
                 self._height = int(dimensions[1])
-                self._buffer = array("B", f.read())
-                self._mv = memoryview(self._buffer)
-        super().__init__(self._mv, self._width, self._height, MONO_HLSB)
-        self._palette = FrameBuffer(memoryview(bytearray(2 * 2)), 2, 1, RGB565)
-        self.bg = bg
-        self.fg = fg
+                self._buffer = memoryview(array("B", f.read()))
 
     def render(self, canvas, x, y, fg=0, bg=None):
         col = row = 0
