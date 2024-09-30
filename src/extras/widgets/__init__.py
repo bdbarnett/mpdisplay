@@ -518,6 +518,319 @@ class IconButton(Button):
         self.icon = Icon(self, fg=fg, bg=bg, value=icon)
 
 
+class CheckBox(IconButton):
+    def __init__(self, parent, x=None, y=None, w=20, h=20, fg=0x000000, bg=0xFFFFFF, value=False):
+        """
+        Initialize a CheckBox widget that toggles between checked and unchecked states.
+        
+        :param parent: The parent widget or screen that contains this checkbox.
+        :param x: The x-coordinate of the checkbox.
+        :param y: The y-coordinate of the checkbox.
+        :param w: The width of the checkbox (default is 20).
+        :param h: The height of the checkbox (default is 20).
+        :param fg: The foreground color of the checkbox (default is black).
+        :param bg: The background color of the checkbox (default is white).
+        :param value: The initial checked state of the checkbox (default is False).
+        """
+        self.checked_icon = "icons/18dp/check_box_18dp.png"
+        self.unchecked_icon = "icons/18dp/check_box_outline_blank_18dp.png"
+        
+        # Set initial icon based on the value (checked state)
+        icon = self.checked_icon if value else self.unchecked_icon
+        
+        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, icon=icon)
+        
+        # Store the checked state in the value attribute
+        self.value = value
+        self.on_change_callback = None  # Callback for when the state changes
+
+    def toggle(self):
+        """Toggle the checked state when the checkbox is pressed."""
+        self.value = not self.value  # Toggle the boolean value
+        self.update_value()  # Update the icon based on the new state
+        
+        # If an external callback is registered, call it
+        if self.on_change_callback:
+            self.on_change_callback(self)
+
+    def update_value(self):
+        """Update the icon based on the current checked state."""
+        self.icon.value = self.checked_icon if self.value else self.unchecked_icon
+        self.icon.update_value()  # Call the update_value in the Icon to reload the file
+
+    def handle_event(self, event):
+        """Override handle_event to toggle the CheckBox when clicked."""
+        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
+            self.toggle()
+            self.mark_dirty()  # Redraw the widget
+        super().handle_event(event)  # Propagate to children if necessary
+
+    def set_on_change(self, callback):
+        """Set the callback function for when the value of the checkbox changes."""
+        self.on_change_callback = callback
+
+
+class ToggleButton(IconButton):
+    def __init__(self, parent, x=None, y=None, w=20, h=20, fg=0x000000, bg=0xFFFFFF, value=False):
+        """
+        Initialize a ToggleButton widget.
+        
+        :param parent: The parent widget or screen that contains this toggle button.
+        :param x: The x-coordinate of the toggle button.
+        :param y: The y-coordinate of the toggle button.
+        :param w: The width of the toggle button (default is 20).
+        :param h: The height of the toggle button (default is 20).
+        :param fg: The foreground color of the toggle button (default is black).
+        :param bg: The background color of the toggle button (default is white).
+        :param value: The initial state of the toggle button (default is False, meaning off).
+        """
+        self.on_icon = "icons/18dp/toggle_on_18dp.png"
+        self.off_icon = "icons/18dp/toggle_off_18dp.png"
+
+        # Set initial icon based on the value (on/off state)
+        icon = self.on_icon if value else self.off_icon
+        
+        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, icon=icon)
+        
+        # Store the toggle state in the value attribute
+        self.value = value
+        self.on_change_callback = None  # Callback for when the state changes
+
+    def toggle(self):
+        """Toggle the on/off state of the button."""
+        self.value = not self.value  # Invert the current state
+
+        # Update the icon to reflect the new state
+        self.update_value()
+
+        # If an external callback is registered, call it
+        if self.on_change_callback:
+            self.on_change_callback(self)
+
+    def update_value(self):
+        """Update the icon based on the current on/off state."""
+        # Update the icon value based on the current toggle state
+        self.icon.value = self.on_icon if self.value else self.off_icon
+
+        # Force the icon to reload and mark itself as dirty
+        self.icon.draw()  # Force the redraw of the icon
+        self.mark_dirty()  # Mark the toggle button as dirty to trigger a full redraw
+
+    def handle_event(self, event):
+        """Override handle_event to toggle the button when clicked."""
+        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
+            self.toggle()  # Toggle the state when clicked
+        super().handle_event(event)  # Propagate to children if necessary
+
+    def set_on_change(self, callback):
+        """Set the callback function for when the value of the toggle button changes."""
+        self.on_change_callback = callback
+
+
+class RadioGroup:
+    def __init__(self):
+        """
+        Initialize a RadioGroup to manage a group of RadioButtons.
+        """
+        self.radio_buttons = []
+
+    def add(self, radio_button):
+        """
+        Add a RadioButton to the group.
+        
+        :param radio_button: The RadioButton to add to this group.
+        """
+        self.radio_buttons.append(radio_button)
+
+    def set_checked(self, selected_button):
+        """
+        Ensure only the selected button is checked in the group.
+        
+        :param selected_button: The RadioButton that should be checked.
+        """
+        for radio_button in self.radio_buttons:
+            radio_button.value = (radio_button == selected_button)
+            radio_button.update_value()
+
+
+class RadioButton(IconButton):
+    def __init__(self, parent, group, x=None, y=None, w=20, h=20, fg=0x000000, bg=0xFFFFFF, value=False):
+        """
+        Initialize a RadioButton widget that is part of a RadioGroup.
+        
+        :param parent: The parent widget or screen that contains this radio button.
+        :param group: The RadioGroup this button belongs to.
+        :param x: The x-coordinate of the radio button.
+        :param y: The y-coordinate of the radio button.
+        :param w: The width of the radio button (default is 20).
+        :param h: The height of the radio button (default is 20).
+        :param fg: The foreground color of the radio button (default is black).
+        :param bg: The background color of the radio button (default is white).
+        :param value: The initial checked state of the radio button (default is False).
+        """
+        self.checked_icon = "icons/18dp/radio_button_checked_18dp.png"
+        self.unchecked_icon = "icons/18dp/radio_button_unchecked_18dp.png"
+
+        # Set initial icon based on the value (checked state)
+        icon = self.checked_icon if value else self.unchecked_icon
+        
+        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, icon=icon)
+        
+        # Store the checked state in the value attribute
+        self.value = value
+        self.group = group
+        self.group.add(self)
+        self.on_change_callback = None  # Callback for when the state changes
+
+    def toggle(self):
+        """Toggle the checked state to true when clicked and uncheck other RadioButtons in the group."""
+        if not self.value:  # Only toggle if not already checked
+            self.value = True  # A radio button is always checked when clicked
+            self.group.set_checked(self)  # Uncheck all other buttons in the group
+
+            # Update the icon to reflect the new state
+            self.update_value()
+
+            # If an external callback is registered, call it
+            if self.on_change_callback:
+                self.on_change_callback(self)
+
+    def update_value(self):
+        """Update the icon based on the current checked state."""
+        # Update the icon value based on the current checked state
+        self.icon.value = self.checked_icon if self.value else self.unchecked_icon
+
+        # Force the icon to reload and mark itself as dirty
+        self.icon.draw()  # Force the redraw of the icon
+        self.mark_dirty()  # Mark the radio button as dirty to trigger a full redraw
+
+    def handle_event(self, event):
+        """Override handle_event to toggle the RadioButton when clicked."""
+        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
+            self.toggle()  # Toggle the state when clicked
+        super().handle_event(event)  # Propagate to children if necessary
+
+    def set_on_change(self, callback):
+        """Set the callback function for when the value of the radio button changes."""
+        self.on_change_callback = callback
+
+
+class Slider(ProgressBar):
+    def __init__(self, parent, x=None, y=None, w=100, h=20, fg=0x000000, bg=0xFFFFFF, knob_color=0x000000, value=0, vertical=False, step=0.1):
+        """
+        Initialize a Slider widget with a circular knob that can be dragged.
+        
+        :param parent: The parent widget or screen that contains this slider.
+        :param x: The x-coordinate of the slider.
+        :param y: The y-coordinate of the slider.
+        :param w: The width of the slider.
+        :param h: The height of the slider.
+        :param fg: The foreground color of the slider (progress bar).
+        :param bg: The background color of the slider.
+        :param knob_color: The color of the knob.
+        :param value: The initial value of the slider (0 to 1).
+        :param vertical: Whether the slider is vertical (True) or horizontal (False).
+        :param step: The step size for adjusting the slider value (default is 0.1).
+        """
+        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, value=value, vertical=vertical)
+        self.knob_radius = (h // 3 if vertical else w // 10) // 2  # Halve the radius to fix size
+        self._dragging = False  # Track whether the knob is being dragged
+        self.step = step  # Step size for value adjustments
+        self.knob_color = knob_color  # Color of the knob
+        self.on_change_callback = None  # Callback for when the value changes
+
+    def draw(self):
+        """Draw the slider, including the progress bar and the circular knob."""
+        super().draw()  # Draw the base progress bar
+
+        # Calculate the position of the knob
+        knob_center = self._get_knob_center()
+        log(f"Drawing circular slider knob at {knob_center}")
+
+        # Draw the knob as a filled circle with correct radius
+        self.draw_obj.circle(knob_center[0], knob_center[1], self.knob_radius, self.knob_color, f=True)
+
+    def _get_knob_center(self):
+        """Calculate the center coordinates for the knob based on the current value."""
+        x, y, w, h = self.abs_area
+        if self.vertical:
+            # Knob moves along the vertical axis, center the knob horizontally
+            knob_y = int(y + (1 - self.value) * h)
+            knob_center = (x + w // 2, knob_y)
+        else:
+            # Knob moves along the horizontal axis, center the knob vertically
+            knob_x = int(x + self.value * w)
+            knob_center = (knob_x, y + h // 2)
+        return knob_center
+
+    def update_value(self):
+        """Update the slider value and redraw the knob."""
+        super().update_value()
+        self.mark_dirty()  # Mark the slider as dirty to trigger a full redraw
+
+        # Call the external callback if registered
+        if self.on_change_callback:
+            self.on_change_callback(self)
+
+    def handle_event(self, event):
+        """Handle user input events like clicks, dragging, and mouse movements."""
+        if event.type == Events.MOUSEBUTTONDOWN and self._point_in_knob(event.pos):
+            self._dragging = True  # Start dragging the knob
+
+        elif event.type == Events.MOUSEBUTTONUP:
+            self._dragging = False  # Stop dragging when mouse is released
+
+        elif event.type == Events.MOUSEMOTION and self._dragging:
+            # Adjust the value based on mouse movement while dragging
+            if self.vertical:
+                relative_pos = (event.pos[1] - self.y) / self.height
+                self.value = 1 - max(0, min(1, relative_pos))
+            else:
+                relative_pos = (event.pos[0] - self.x) / self.width
+                self.value = max(0, min(1, relative_pos))
+            self.update_value()
+
+        elif event.type == Events.MOUSEBUTTONDOWN and not self._dragging:
+            # Clicking outside the knob moves the slider by one step
+            if self.vertical:
+                if event.pos[1] < self._get_knob_center()[1]:
+                    self._adjust_value_by_step('down')
+                elif event.pos[1] > self._get_knob_center()[1]:
+                    self._adjust_value_by_step('up')
+            else:
+                if event.pos[0] < self._get_knob_center()[0]:
+                    self._adjust_value_by_step('left')
+                elif event.pos[0] > self._get_knob_center()[0]:
+                    self._adjust_value_by_step('right')
+
+        super().handle_event(event)
+
+    def _point_in_knob(self, pos):
+        """Check if the given point is within the knob's circular area."""
+        knob_center = self._get_knob_center()
+        distance = ((pos[0] - knob_center[0]) ** 2 + (pos[1] - knob_center[1]) ** 2) ** 0.5
+        return distance <= self.knob_radius
+
+    def _adjust_value_by_step(self, direction):
+        """Adjust the slider value by one step in the specified direction."""
+        if self.vertical:
+            if direction == 'up':
+                self.value = min(1, self.value + self.step)
+            elif direction == 'down':
+                self.value = max(0, self.value - self.step)
+        else:
+            if direction == 'right':
+                self.value = min(1, self.value + self.step)
+            elif direction == 'left':
+                self.value = max(0, self.value - self.step)
+
+        self.update_value()
+
+    def set_on_change(self, callback):
+        """Set the callback function for when the slider value changes."""
+        self.on_change_callback = callback
+
+
 class LinearLayout(Widget):
     def __init__(self, parent, x=None, y=None, w=None, h=None, padding=0, spacing=0, direction="vertical", bg=0xFFFFFF):
         """
@@ -759,319 +1072,6 @@ class HorizontalScrollBar(Row):
         """Handle scrolling right."""
         self.progress_bar.value = min(1, self.progress_bar.value + 0.1)
         self.mark_dirty()
-
-
-class CheckBox(IconButton):
-    def __init__(self, parent, x=None, y=None, w=20, h=20, fg=0x000000, bg=0xFFFFFF, value=False):
-        """
-        Initialize a CheckBox widget that toggles between checked and unchecked states.
-        
-        :param parent: The parent widget or screen that contains this checkbox.
-        :param x: The x-coordinate of the checkbox.
-        :param y: The y-coordinate of the checkbox.
-        :param w: The width of the checkbox (default is 20).
-        :param h: The height of the checkbox (default is 20).
-        :param fg: The foreground color of the checkbox (default is black).
-        :param bg: The background color of the checkbox (default is white).
-        :param value: The initial checked state of the checkbox (default is False).
-        """
-        self.checked_icon = "icons/18dp/check_box_18dp.png"
-        self.unchecked_icon = "icons/18dp/check_box_outline_blank_18dp.png"
-        
-        # Set initial icon based on the value (checked state)
-        icon = self.checked_icon if value else self.unchecked_icon
-        
-        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, icon=icon)
-        
-        # Store the checked state in the value attribute
-        self.value = value
-        self.on_change_callback = None  # Callback for when the state changes
-
-    def toggle(self):
-        """Toggle the checked state when the checkbox is pressed."""
-        self.value = not self.value  # Toggle the boolean value
-        self.update_value()  # Update the icon based on the new state
-        
-        # If an external callback is registered, call it
-        if self.on_change_callback:
-            self.on_change_callback(self)
-
-    def update_value(self):
-        """Update the icon based on the current checked state."""
-        self.icon.value = self.checked_icon if self.value else self.unchecked_icon
-        self.icon.update_value()  # Call the update_value in the Icon to reload the file
-
-    def handle_event(self, event):
-        """Override handle_event to toggle the CheckBox when clicked."""
-        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
-            self.toggle()
-            self.mark_dirty()  # Redraw the widget
-        super().handle_event(event)  # Propagate to children if necessary
-
-    def set_on_change(self, callback):
-        """Set the callback function for when the value of the checkbox changes."""
-        self.on_change_callback = callback
-
-
-class RadioGroup:
-    def __init__(self):
-        """
-        Initialize a RadioGroup to manage a group of RadioButtons.
-        """
-        self.radio_buttons = []
-
-    def add(self, radio_button):
-        """
-        Add a RadioButton to the group.
-        
-        :param radio_button: The RadioButton to add to this group.
-        """
-        self.radio_buttons.append(radio_button)
-
-    def set_checked(self, selected_button):
-        """
-        Ensure only the selected button is checked in the group.
-        
-        :param selected_button: The RadioButton that should be checked.
-        """
-        for radio_button in self.radio_buttons:
-            radio_button.value = (radio_button == selected_button)
-            radio_button.update_value()
-
-
-class RadioButton(IconButton):
-    def __init__(self, parent, group, x=None, y=None, w=20, h=20, fg=0x000000, bg=0xFFFFFF, value=False):
-        """
-        Initialize a RadioButton widget that is part of a RadioGroup.
-        
-        :param parent: The parent widget or screen that contains this radio button.
-        :param group: The RadioGroup this button belongs to.
-        :param x: The x-coordinate of the radio button.
-        :param y: The y-coordinate of the radio button.
-        :param w: The width of the radio button (default is 20).
-        :param h: The height of the radio button (default is 20).
-        :param fg: The foreground color of the radio button (default is black).
-        :param bg: The background color of the radio button (default is white).
-        :param value: The initial checked state of the radio button (default is False).
-        """
-        self.checked_icon = "icons/18dp/radio_button_checked_18dp.png"
-        self.unchecked_icon = "icons/18dp/radio_button_unchecked_18dp.png"
-
-        # Set initial icon based on the value (checked state)
-        icon = self.checked_icon if value else self.unchecked_icon
-        
-        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, icon=icon)
-        
-        # Store the checked state in the value attribute
-        self.value = value
-        self.group = group
-        self.group.add(self)
-        self.on_change_callback = None  # Callback for when the state changes
-
-    def toggle(self):
-        """Toggle the checked state to true when clicked and uncheck other RadioButtons in the group."""
-        if not self.value:  # Only toggle if not already checked
-            self.value = True  # A radio button is always checked when clicked
-            self.group.set_checked(self)  # Uncheck all other buttons in the group
-
-            # Update the icon to reflect the new state
-            self.update_value()
-
-            # If an external callback is registered, call it
-            if self.on_change_callback:
-                self.on_change_callback(self)
-
-    def update_value(self):
-        """Update the icon based on the current checked state."""
-        # Update the icon value based on the current checked state
-        self.icon.value = self.checked_icon if self.value else self.unchecked_icon
-
-        # Force the icon to reload and mark itself as dirty
-        self.icon.draw()  # Force the redraw of the icon
-        self.mark_dirty()  # Mark the radio button as dirty to trigger a full redraw
-
-    def handle_event(self, event):
-        """Override handle_event to toggle the RadioButton when clicked."""
-        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
-            self.toggle()  # Toggle the state when clicked
-        super().handle_event(event)  # Propagate to children if necessary
-
-    def set_on_change(self, callback):
-        """Set the callback function for when the value of the radio button changes."""
-        self.on_change_callback = callback
-
-
-class ToggleButton(IconButton):
-    def __init__(self, parent, x=None, y=None, w=20, h=20, fg=0x000000, bg=0xFFFFFF, value=False):
-        """
-        Initialize a ToggleButton widget.
-        
-        :param parent: The parent widget or screen that contains this toggle button.
-        :param x: The x-coordinate of the toggle button.
-        :param y: The y-coordinate of the toggle button.
-        :param w: The width of the toggle button (default is 20).
-        :param h: The height of the toggle button (default is 20).
-        :param fg: The foreground color of the toggle button (default is black).
-        :param bg: The background color of the toggle button (default is white).
-        :param value: The initial state of the toggle button (default is False, meaning off).
-        """
-        self.on_icon = "icons/18dp/toggle_on_18dp.png"
-        self.off_icon = "icons/18dp/toggle_off_18dp.png"
-
-        # Set initial icon based on the value (on/off state)
-        icon = self.on_icon if value else self.off_icon
-        
-        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, icon=icon)
-        
-        # Store the toggle state in the value attribute
-        self.value = value
-        self.on_change_callback = None  # Callback for when the state changes
-
-    def toggle(self):
-        """Toggle the on/off state of the button."""
-        self.value = not self.value  # Invert the current state
-
-        # Update the icon to reflect the new state
-        self.update_value()
-
-        # If an external callback is registered, call it
-        if self.on_change_callback:
-            self.on_change_callback(self)
-
-    def update_value(self):
-        """Update the icon based on the current on/off state."""
-        # Update the icon value based on the current toggle state
-        self.icon.value = self.on_icon if self.value else self.off_icon
-
-        # Force the icon to reload and mark itself as dirty
-        self.icon.draw()  # Force the redraw of the icon
-        self.mark_dirty()  # Mark the toggle button as dirty to trigger a full redraw
-
-    def handle_event(self, event):
-        """Override handle_event to toggle the button when clicked."""
-        if event.type == Events.MOUSEBUTTONDOWN and self.abs_area.contains(event.pos):
-            self.toggle()  # Toggle the state when clicked
-        super().handle_event(event)  # Propagate to children if necessary
-
-    def set_on_change(self, callback):
-        """Set the callback function for when the value of the toggle button changes."""
-        self.on_change_callback = callback
-
-
-class Slider(ProgressBar):
-    def __init__(self, parent, x=None, y=None, w=100, h=20, fg=0x000000, bg=0xFFFFFF, knob_color=0x000000, value=0, vertical=False, step=0.1):
-        """
-        Initialize a Slider widget with a circular knob that can be dragged.
-        
-        :param parent: The parent widget or screen that contains this slider.
-        :param x: The x-coordinate of the slider.
-        :param y: The y-coordinate of the slider.
-        :param w: The width of the slider.
-        :param h: The height of the slider.
-        :param fg: The foreground color of the slider (progress bar).
-        :param bg: The background color of the slider.
-        :param knob_color: The color of the knob.
-        :param value: The initial value of the slider (0 to 1).
-        :param vertical: Whether the slider is vertical (True) or horizontal (False).
-        :param step: The step size for adjusting the slider value (default is 0.1).
-        """
-        super().__init__(parent, x=x, y=y, w=w, h=h, fg=fg, bg=bg, value=value, vertical=vertical)
-        self.knob_radius = (h // 3 if vertical else w // 10) // 2  # Halve the radius to fix size
-        self._dragging = False  # Track whether the knob is being dragged
-        self.step = step  # Step size for value adjustments
-        self.knob_color = knob_color  # Color of the knob
-        self.on_change_callback = None  # Callback for when the value changes
-
-    def draw(self):
-        """Draw the slider, including the progress bar and the circular knob."""
-        super().draw()  # Draw the base progress bar
-
-        # Calculate the position of the knob
-        knob_center = self._get_knob_center()
-        log(f"Drawing circular slider knob at {knob_center}")
-
-        # Draw the knob as a filled circle with correct radius
-        self.draw_obj.circle(knob_center[0], knob_center[1], self.knob_radius, self.knob_color, f=True)
-
-    def _get_knob_center(self):
-        """Calculate the center coordinates for the knob based on the current value."""
-        x, y, w, h = self.abs_area
-        if self.vertical:
-            # Knob moves along the vertical axis, center the knob horizontally
-            knob_y = int(y + (1 - self.value) * h)
-            knob_center = (x + w // 2, knob_y)
-        else:
-            # Knob moves along the horizontal axis, center the knob vertically
-            knob_x = int(x + self.value * w)
-            knob_center = (knob_x, y + h // 2)
-        return knob_center
-
-    def update_value(self):
-        """Update the slider value and redraw the knob."""
-        super().update_value()
-        self.mark_dirty()  # Mark the slider as dirty to trigger a full redraw
-
-        # Call the external callback if registered
-        if self.on_change_callback:
-            self.on_change_callback(self)
-
-    def handle_event(self, event):
-        """Handle user input events like clicks, dragging, and mouse movements."""
-        if event.type == Events.MOUSEBUTTONDOWN and self._point_in_knob(event.pos):
-            self._dragging = True  # Start dragging the knob
-
-        elif event.type == Events.MOUSEBUTTONUP:
-            self._dragging = False  # Stop dragging when mouse is released
-
-        elif event.type == Events.MOUSEMOTION and self._dragging:
-            # Adjust the value based on mouse movement while dragging
-            if self.vertical:
-                relative_pos = (event.pos[1] - self.y) / self.height
-                self.value = 1 - max(0, min(1, relative_pos))
-            else:
-                relative_pos = (event.pos[0] - self.x) / self.width
-                self.value = max(0, min(1, relative_pos))
-            self.update_value()
-
-        elif event.type == Events.MOUSEBUTTONDOWN and not self._dragging:
-            # Clicking outside the knob moves the slider by one step
-            if self.vertical:
-                if event.pos[1] < self._get_knob_center()[1]:
-                    self._adjust_value_by_step('down')
-                elif event.pos[1] > self._get_knob_center()[1]:
-                    self._adjust_value_by_step('up')
-            else:
-                if event.pos[0] < self._get_knob_center()[0]:
-                    self._adjust_value_by_step('left')
-                elif event.pos[0] > self._get_knob_center()[0]:
-                    self._adjust_value_by_step('right')
-
-        super().handle_event(event)
-
-    def _point_in_knob(self, pos):
-        """Check if the given point is within the knob's circular area."""
-        knob_center = self._get_knob_center()
-        distance = ((pos[0] - knob_center[0]) ** 2 + (pos[1] - knob_center[1]) ** 2) ** 0.5
-        return distance <= self.knob_radius
-
-    def _adjust_value_by_step(self, direction):
-        """Adjust the slider value by one step in the specified direction."""
-        if self.vertical:
-            if direction == 'up':
-                self.value = min(1, self.value + self.step)
-            elif direction == 'down':
-                self.value = max(0, self.value - self.step)
-        else:
-            if direction == 'right':
-                self.value = min(1, self.value + self.step)
-            elif direction == 'left':
-                self.value = max(0, self.value - self.step)
-
-        self.update_value()
-
-    def set_on_change(self, callback):
-        """Set the callback function for when the slider value changes."""
-        self.on_change_callback = callback
 
 
 class ListView(Column):
