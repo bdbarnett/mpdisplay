@@ -129,6 +129,29 @@ class MHLSBFormat:
         index = (x + y * framebuf._stride) >> 3
         offset = 7 - (x & 0x07)
         return (framebuf._buffer[index] >> offset) & 0x01
+    
+    @staticmethod
+    def fill_rect(framebuf, x, y, width, height, color):
+        """Draw a rectangle at the given location, size and color. The ``fill_rect`` method draws
+        both the outline and interior."""
+        # pylint: disable=too-many-arguments
+        for _x in range(x, x + width):
+            offset = 7 - _x & 0x07
+            for _y in range(y, y + height):
+                index = (_y * framebuf._stride + _x) >> 3
+                framebuf._buffer[index] = (
+                    framebuf._buffer[index] & ~(0x01 << offset)
+                ) | ((color != 0) << offset)
+
+    @staticmethod
+    def fill(framebuf, color):
+        """completely fill/clear the buffer with a color"""
+        if color:
+            fill = 0xFF
+        else:
+            fill = 0x00
+        for i in range(len(framebuf._buffer)):
+            framebuf._buffer[i] = fill
 
 
 class MHMSBFormat:
