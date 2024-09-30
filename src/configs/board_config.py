@@ -5,7 +5,7 @@ Combination board configuration for desktop, pyscript and jupyter notebook platf
 width = 320
 height = 480
 rotation = 0
-scale = 2.0
+scale = 1.5
 
 _ps = _jn = False
 try:
