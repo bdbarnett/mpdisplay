@@ -181,6 +181,16 @@ class Area:
             int: The x-coordinate of the top-left corner of the area.
         """
         return self._x
+    
+    @x.setter
+    def x(self, value):
+        """
+        Sets the x-coordinate of the top-left corner of the area.
+
+        Args:
+            value (int): The new x-coordinate of the top-left corner of the area.
+        """
+        self._x = value
 
     @property
     def y(self):
@@ -192,6 +202,16 @@ class Area:
         """
         return self._y
 
+    @y.setter
+    def y(self, value):
+        """
+        Sets the y-coordinate of the top-left corner of the area.
+
+        Args:
+            value (int): The new y-coordinate of the top-left corner of the area.
+        """
+        self._y = value
+
     @property
     def w(self):
         """
@@ -202,6 +222,16 @@ class Area:
         """
         return self._w
 
+    @w.setter
+    def w(self, value):
+        """
+        Sets the width of the area.
+
+        Args:
+            value (int): The new width of the area.
+        """
+        self._w = value
+
     @property
     def h(self):
         """
@@ -211,3 +241,13 @@ class Area:
             int: The height of the area.
         """
         return self._h
+
+    @h.setter
+    def h(self, value):
+        """
+        Sets the height of the area.
+
+        Args:
+            value (int): The new height of the area.
+        """
+        self._h = value
