@@ -325,6 +325,37 @@ class BaseDisplay:
                 y %= self.vsa
         return x, y
 
+    @property
+    def tfa_area(self) -> Area:
+        """
+        The top fixed area as an Area object.
+
+        Returns:
+            Area: The top fixed area.
+        """
+        return Area(0, 0, self.width, self.tfa)
+    
+    @property
+    def vsa_area(self) -> Area:
+        """
+        The vertical scroll area as an Area object.
+
+        Returns:
+            Area: The vertical scroll area.
+        """
+        return Area(0, self.tfa, self.width, self.vsa)
+    
+    @property
+    def bfa_area(self) -> Area:
+        """
+        The bottom fixed area as an Area object.
+
+        Returns:
+            Area: The bottom fixed area.
+        """
+        return Area(0, self.tfa + self.vsa, self.width, self.bfa)
+    
+
     ############### Common API Methods, sometimes overridden ################
 
     def vscrdef(self, tfa: int, vsa: int, bfa: int) -> None:
