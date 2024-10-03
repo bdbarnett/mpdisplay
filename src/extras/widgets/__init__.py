@@ -4,7 +4,7 @@ from micropython import const
 import png
 from palettes.shades import ShadesPalette
 from time import time, localtime
-from displaybuf import DisplayBuffer
+from gfx.framebuf_plus import FrameBuffer, RGB565
 from palettes import get_palette
 import sys
 # from tft_text import text
@@ -40,6 +40,9 @@ _default_text_height = const(16)
 _text_width = const(8)
 _text_heights = (8, 14, 16)
 
+
+_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll"}
+_display_drv_set_attrs = {"vscroll"}
 
 
 class Display:
@@ -101,32 +104,35 @@ class Display:
     #     setattr(cls, font_name, font_module)
     #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
 
-    def __init__(self, display_drv, broker, use_timer=None):
+    def __init__(self, display_drv, broker, use_timer=None, format=RGB565):
         self.display_drv = display_drv
+        display_drv.vscrdef(0, display_drv.height, 0)
         self.broker = broker
-        self.broker.quit_func = self.quit
-        self.draw_buf = DisplayBuffer(display_drv)
-        self.pal = get_palette(swapped=self.draw_buf.needs_swap, color_depth=self.display_drv.color_depth)
+        broker.quit_func = self.quit
+        self._buffer = memoryview(bytearray(display_drv.width * display_drv.height * display_drv.color_depth // 8))
+        self.framebuf = FrameBuffer(self._buffer, display_drv.width, display_drv.height, format)
+        if display_drv.requires_byte_swap:
+            self.needs_swap = display_drv.disable_auto_byte_swap(True)
+        else:
+            self.needs_swap = False
+        self.pal = get_palette(swapped=self.needs_swap, color_depth=display_drv.color_depth)
         self._active_screen: Screen = None
-        self._last_refresh = time()
         self._tasks = []
         if use_timer is not None:
             Display.use_timer = use_timer
         Display.displays.append(self)
         Display.start_timer()
+        self.add_task(self.display_drv.show, 0.033)
 
     def tick(self):
         t = time()
-        for task in self._tasks:
-            if t >= task.next_run:
-                task.run()
         if e := self.broker.poll():
             if e.type in Events.filter:
                 if self._active_screen is not None:
                     self._active_screen.handle_event(e)
-        if t - self._last_refresh > .033:
-            self._last_refresh = t
-            self.display_drv.show()
+        for task in self._tasks:
+            if t >= task.next_run:
+                task.run(t)
 
     def add_child(self, screen):
         self.active_screen = screen
@@ -139,6 +145,9 @@ class Display:
     def remove_task(self, task):
         self._tasks.remove(task)
 
+    def get_point(self, pos):
+        return self.display_drv.translate_point(pos)
+
     @property
     def active_screen(self):
         return self._active_screen
@@ -147,9 +156,17 @@ class Display:
     def active_screen(self, screen):
         self._active_screen = screen
 
-    @property
-    def show(self):
-        return self.draw_buf.show
+    def show(self, area):
+        if area is not None:
+            x, y, w, h = area
+            for row in range(y, y + h):
+                buffer_begin = (row * self.width + x) * 2
+                buffer_end = buffer_begin + w * 2
+                self.display_drv.blit_rect(
+                    self._buffer[buffer_begin:buffer_end], x, row, w, 1
+                )
+        else:
+            self.display_drv.blit_rect(self._mvb, 0, 0, self.width, self.height)
 
     @property
     def display(self):
@@ -179,6 +196,16 @@ class Display:
     def visible(self):
         return True
 
+    def __getattr__(self, name):
+        if name in _display_drv_get_attrs:
+            return getattr(self.display_drv, name)
+        raise AttributeError(f"{self.__class__.__name__} object has no attribute '{name}'")
+
+    def __setattr__(self, name, value):
+        if name in _display_drv_set_attrs:
+            return setattr(self.display_drv, name, value)
+        super().__setattr__(name, value)
+
 
 class Task:
     def __init__(self, callback, delay):
@@ -186,9 +213,9 @@ class Task:
         self.delay = delay
         self.next_run = time() + delay
 
-    def run(self):
+    def run(self, t):
         self.callback()
-        self.next_run = time() + self.delay
+        self.next_run = t + self.delay
 
 
 class Widget:
@@ -374,7 +401,7 @@ class Screen(Widget):
         """
         Draw the screen and its children.
         """
-        self.display.draw_buf.fill_rect(*self.area, self.bg)
+        self.display.framebuf.fill_rect(*self.area, self.bg)
 
 
 class Button(Widget):
@@ -415,14 +442,14 @@ class Button(Widget):
         # Adjust size if the button is pressed
         draw_area = self.abs_area
         if self._pressed:
-            self.display.draw_buf.fill_rect(*draw_area, self.bg)
+            self.display.framebuf.fill_rect(*draw_area, self.bg)
             draw_area = Area(
                 draw_area.x + self.pressed_offset,
                 draw_area.y + self.pressed_offset,
                 draw_area.w - self.pressed_offset * 2,
                 draw_area.h - self.pressed_offset * 2,
             )
-        self.display.draw_buf.round_rect(*draw_area, self.radius, self.fg, f=self.filled)
+        self.display.framebuf.round_rect(*draw_area, self.radius, self.fg, f=self.filled)
 
     def handle_event(self, event: Events.Any):
         """
@@ -432,7 +459,7 @@ class Button(Widget):
         """
         # log(f"{name(self)}.handle_event({event})")
 
-        if self.abs_area.contains(event.pos) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.abs_area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self._pressed = True
             self.render()
             if self.on_press_callback:
@@ -449,7 +476,7 @@ class Button(Widget):
 
 class Label(Widget):
     def __init__(self, parent: Widget, x=None, y=None, h=_default_text_height, fg=_white, bg=None,
-                 visible=True, value=""):  # , font=None):
+                 visible=True, value="", scale=1, inverted=False, font_file=None):  # , font=None):
         """
         Initialize a Label widget to display text.
         
@@ -463,7 +490,10 @@ class Label(Widget):
         """
         if h not in _text_heights:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
-        super().__init__(parent, x, y, len(value) * _text_width, h, fg, bg, visible, value)
+        self._scale = scale
+        self._inverted = inverted
+        self._font_file = font_file
+        super().__init__(parent, x, y, len(value) * _text_width*scale, h*scale, fg, bg, visible, value)
         # bg = bg or parent.fg
         # font = font or _default_font
         # if not hasattr(parent.display, font):
@@ -477,16 +507,17 @@ class Label(Widget):
         Optionally fills the background first if `bg` is set.
         """
         if self.bg is not None:
-            self.display.draw_buf.fill_rect(*self.abs_area, self.bg)  # Draw background if bg is specified
+            self.display.framebuf.fill_rect(*self.abs_area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.abs_area
-        self.display.draw_buf.text(self.value, x, y, self.fg, height=self.height)
-        # text(self.display.draw_buf, self.font, self.value, x, y, self.fg, self.bg)
+        self.display.framebuf.text(self.value, x, y, self.fg, height=self.height // self._scale,
+                                   scale=self._scale, inverted=self._inverted, font_file=self._font_file)
+        # text(self.display.framebuf, self.font, self.value, x, y, self.fg, self.bg)
 
 
 class TextBox(Widget):
     def __init__(self, parent: Widget, x=None, y=None, w=64, h=None, fg=_black, bg=_white,
                  visible=True, value="", margin=1,
-                 text_height=_default_text_height):
+                 text_height=_default_text_height, scale=1, inverted=False, font_file=None):
                 #  font=None):
         """
         Initialize a TextBox widget to display text.
@@ -500,6 +531,9 @@ class TextBox(Widget):
         :param fg: The color of the text (in a suitable color format).
         """
         self.margin = margin
+        self._scale = scale
+        self._inverted = inverted
+        self._font_file = font_file
         # font = font or _default_font
         # if not hasattr(parent.display, font):
         #     parent.display.load_font(font)
@@ -508,16 +542,17 @@ class TextBox(Widget):
         if text_height not in _text_heights:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
-        h = h or text_height + 2 * margin
+        h = h or text_height * scale + 2 * margin
         super().__init__(parent, x, y, w, h, fg, bg, visible, value)
 
     def draw(self):
         """
         Draw the label's text on the screen, using absolute coordinates.
         """
-        self.display.draw_buf.fill_rect(*self.abs_area, self.bg)
-        self.display.draw_buf.text(self.value, self.x+self.margin, self.y+self.margin, self.fg, height=self.text_height)
-        # text(self.display.draw_buf, self.font, self.value, self.x+self.margin, self.y+self.margin, self.fg, self.bg)
+        self.display.framebuf.fill_rect(*self.abs_area, self.bg)
+        self.display.framebuf.text(self.value, self.x+self.margin, self.y+self.margin, self.fg, height=self.text_height,
+                                   scale=self._scale, inverted=self._inverted, font_file=self._font_file)
+        # text(self.display.framebuf, self.font, self.value, self.x+self.margin, self.y+self.margin, self.fg, self.bg)
 
 
 class ProgressBar(Widget):
@@ -545,7 +580,7 @@ class ProgressBar(Widget):
         """
         Draw the progress bar on the screen.
         """
-        self.display.draw_buf.fill_rect(*self.abs_area, self.bg)
+        self.display.framebuf.fill_rect(*self.abs_area, self.bg)
 
         if self.value == 0:
             return  # Nothing more to draw if value is 0
@@ -555,19 +590,19 @@ class ProgressBar(Widget):
             progress_height = int(self.value * self.height)
             if self.reverse:
                 # Fill from top to bottom
-                self.display.draw_buf.fill_rect(self.x, self.y, self.width, progress_height, self.fg)
+                self.display.framebuf.fill_rect(self.x, self.y, self.width, progress_height, self.fg)
             else:
                 # Fill from bottom to top (default)
-                self.display.draw_buf.fill_rect(self.x, self.y + self.height - progress_height, self.width, progress_height, self.fg)
+                self.display.framebuf.fill_rect(self.x, self.y + self.height - progress_height, self.width, progress_height, self.fg)
         else:
             # Calculate the width of the filled part
             progress_width = int(self.value * self.width)
             if self.reverse:
                 # Fill from right to left
-                self.display.draw_buf.fill_rect(self.x + self.width - progress_width, self.y, progress_width, self.height, self.fg)
+                self.display.framebuf.fill_rect(self.x + self.width - progress_width, self.y, progress_width, self.height, self.fg)
             else:
                 # Fill from left to right (default)
-                self.display.draw_buf.fill_rect(self.x, self.y, progress_width, self.height, self.fg)
+                self.display.framebuf.fill_rect(self.x, self.y, progress_width, self.height, self.fg)
 
     def value_changed(self):
         # Ensure value is between 0 and 1
@@ -621,7 +656,7 @@ class Icon(Widget):
         for y in range(0, h):
             for x in range(0, w):
                 if (c := pixels[(y * w + x) * planes + alpha]) != 0:
-                    self.display.draw_buf.pixel(pos_x + x, pos_y + y, pal[c])
+                    self.display.framebuf.pixel(pos_x + x, pos_y + y, pal[c])
 
 
 class IconButton(Button):
@@ -677,7 +712,7 @@ class CheckBox(IconButton):
 
     def handle_event(self, event):
         """Override handle_event to toggle the CheckBox when clicked."""
-        if self.abs_area.contains(event.pos) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.abs_area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.toggle()
         Widget.handle_event(self, event)  # Propagate to children if necessary
 
@@ -717,7 +752,7 @@ class ToggleButton(IconButton):
 
     def handle_event(self, event):
         """Override handle_event to toggle the button when clicked."""
-        if self.abs_area.contains(event.pos) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.abs_area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.toggle()  # Toggle the state when clicked
         Widget.handle_event(self, event)  # Propagate to children if necessary
 
@@ -789,7 +824,7 @@ class RadioButton(IconButton):
 
     def handle_event(self, event):
         """Override handle_event to toggle the RadioButton when clicked."""
-        if self.abs_area.contains(event.pos) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.abs_area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.toggle()  # Toggle the state when clicked
         Widget.handle_event(self, event)  # Propagate to children if necessary
 
@@ -826,7 +861,7 @@ class Slider(ProgressBar):
         knob_center = self._get_knob_center()
 
         # Draw the knob as a filled circle with correct radius
-        self.display.draw_buf.circle(*knob_center, self.knob_radius, self.knob_color, f=True)
+        self.display.framebuf.circle(*knob_center, self.knob_radius, self.knob_color, f=True)
 
     def handle_event(self, event):
         """Handle user input events like clicks, dragging, and mouse movements."""
@@ -836,24 +871,24 @@ class Slider(ProgressBar):
             elif event.type == Events.MOUSEMOTION:
                 # Adjust the value based on mouse movement while dragging
                 if self.vertical:
-                    relative_pos = (event.pos[1] - self.y) / self.height
+                    relative_pos = (self.display.get_point(event.pos)[1] - self.y) / self.height
                     self.value = 1 - max(0, min(1, relative_pos))
                 else:
-                    relative_pos = (event.pos[0] - self.x) / self.width
+                    relative_pos = (self.display.get_point(event.pos)[0] - self.x) / self.width
                     self.value = max(0, min(1, relative_pos))
-        elif self._point_in_knob(event.pos) and event.type == Events.MOUSEBUTTONDOWN:
+        elif self._point_in_knob(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.dragging = True
-        elif self.abs_area.contains(event.pos) and event.type == Events.MOUSEBUTTONDOWN:
+        elif self.abs_area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             # Clicking outside the knob moves the slider by one step
             if self.vertical:
-                if event.pos[1] < self._get_knob_center()[1]:
+                if self.display.get_point(event.pos)[1] < self._get_knob_center()[1]:
                     self._adjust_value_by_step('down')
-                elif event.pos[1] > self._get_knob_center()[1]:
+                elif self.display.get_point(event.pos)[1] > self._get_knob_center()[1]:
                     self._adjust_value_by_step('up')
             else:
-                if event.pos[0] < self._get_knob_center()[0]:
+                if self.display.get_point(event.pos)[0] < self._get_knob_center()[0]:
                     self._adjust_value_by_step('left')
-                elif event.pos[0] > self._get_knob_center()[0]:
+                elif self.display.get_point(event.pos)[0] > self._get_knob_center()[0]:
                     self._adjust_value_by_step('right')
 
         super().handle_event(event)

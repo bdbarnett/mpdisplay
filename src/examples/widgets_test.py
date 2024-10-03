@@ -8,9 +8,9 @@ pal = display.pal
 screen = w.Screen(display, pal.SILVER, visible=False)
 
 icon = w.Icon(screen, x=0, y=0, fg=pal.RED, value="icons/36dp/keyboard_arrow_down_36dp.png")  # noqa: F841
-label1 = w.Label(screen, y=2, value="Testing", fg=pal.BLACK)  # noqa: F841
+label1 = w.Label(screen, y=2, value="Inverted", fg=pal.BLACK, scale=3, inverted=True)  # noqa: F841
 
-status = w.TextBox(screen, x=0, y=display.height-38, w=display.width-20)
+status = w.TextBox(screen, x=0, y=display.height-34, w=display.width, scale=2)
 
 button1 = w.Button(screen, w=96, fg=pal.BLUE, value="button1", label="Click Me", label_color=pal.WHITE)
 button1.set_on_press(lambda sender: status.set_value(f"{sender.value} pressed!"))
