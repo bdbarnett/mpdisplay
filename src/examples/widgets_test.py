@@ -61,5 +61,7 @@ screen.visible = True
 clock = w.DigitalClock(screen, x=display.width-100, y=2, fg=pal.BLACK, bg=pal.SILVER)
 
 if not display.use_timer:
-    while True:
+    print("Starting main loop")
+    running = True
+    while running:
         display.tick()

@@ -1,4 +1,4 @@
-from gfx import Area, Draw
+from gfx import Area
 from eventsys.events import Events
 from micropython import const
 import png
@@ -36,41 +36,58 @@ class Display:
     use_timer = False
 
     @classmethod
-    def _tick(cls, mode):
+    def _tick(cls, mode, reschedule):
         for display in cls.displays:
             display.tick()
+        if reschedule:
+            cls._schedule(mode, reschedule)
+
+    @classmethod
+    def _schedule(cls, mode, reschedule):
         if cls._timer:
-            cls._timer.init(mode=mode, period=10, callback=lambda t: cls._tick(mode))
+            cls._timer.init(mode=mode, period=10, callback=lambda t: cls._tick(mode, reschedule))
 
     @classmethod
     def start_timer(cls):
         if cls._timer:
             print("Display:  timer already enabled")
             return
-        
         if cls.use_timer:
             from timer import Timer
             cls._timer = Timer(-1 if sys.platform == "rp2" else 1)
-            cls._tick(Timer.ONE_SHOT)
+            if sys.implementation.name == "micropython":
+                cls._schedule(Timer.ONE_SHOT, True)
+            else:
+                cls._schedule(Timer.PERIODIC, False)
             print("Display:  timer enabled")
             return
-        
         print("Display:  timer not enabled")
 
     @classmethod
     def stop_timer(cls):
         if cls._timer:
+            cls._timer.deinit()
             cls._timer = None
             print("Display:  timer disabled")
         else:
             print("Display:  timer not enabled")
 
+    @classmethod
+    def quit(cls):
+        for display in cls.displays:
+            display.display_drv.deinit()
+        try:
+            cls.stop_timer()
+        except Exception:
+            pass
+        sys.exit()
+
     def __init__(self, display_drv, broker, use_timer=None):
         self.display_drv = display_drv
         self.broker = broker
-        self.display_buf = DisplayBuffer(display_drv)
-        self.draw_buf = Draw(self.display_buf)
-        self.pal = get_palette(swapped=self.display_buf.needs_swap, color_depth=self.display_buf.color_depth)
+        self.broker.quit_func = self.quit
+        self.draw_buf = DisplayBuffer(display_drv)
+        self.pal = get_palette(swapped=self.draw_buf.needs_swap, color_depth=self.display_drv.color_depth)
         self._active_screen: Screen = None
         self._last_refresh = time()
         self._tasks = []
@@ -113,7 +130,7 @@ class Display:
 
     @property
     def show(self):
-        return self.display_buf.show
+        return self.draw_buf.show
 
     @property
     def display(self):
@@ -133,11 +150,11 @@ class Display:
     
     @property
     def width(self):
-        return self.display_buf.width
+        return self.display_drv.width
     
     @property
     def height(self):
-        return self.display_buf.height
+        return self.display_drv.height
     
     @property
     def visible(self):
