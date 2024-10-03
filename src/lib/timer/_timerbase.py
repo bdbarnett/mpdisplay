@@ -29,6 +29,8 @@ class _TimerBase:
         :type id: int
         """
         self.id = id
+        self._busy = False
+        self._timer = None
         if kwargs:
             self.init(**kwargs)
 
@@ -50,8 +52,6 @@ class _TimerBase:
             raise ValueError("Invalid freq or period")
 
         self._callback = callback
-        self._timer = None
-        self._busy = False
         self._start()  # _start() is implemented in subclasses
 
     def deinit(self):
