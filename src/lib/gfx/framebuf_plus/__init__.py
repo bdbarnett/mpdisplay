@@ -231,7 +231,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
 
-    def text(self, s, x, y, c=1):
+    def text(self, s, x, y, c=1, height=8):
         """
         Draw text at the given location, using the given font and color.
 
@@ -240,6 +240,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             x (int): x coordinate
             y (int): y coordinate
             c (int): 565 encoded color
+            height (int): Font height in pixels (ignored, for compatibility with DisplayBuffer)
         """
         super().text(s, x, y, c)
         return Area(x, y, len(s) * 8, 8)
