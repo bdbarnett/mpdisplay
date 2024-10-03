@@ -231,7 +231,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
 
-    def text(self, s, x, y, c=1, height=8):
+    def text(self, s, x, y, c=1, scale=1, inverted=False, font_file=None, height=8):
         """
         Draw text at the given location, using the given font and color.
 
@@ -240,10 +240,12 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             x (int): x coordinate
             y (int): y coordinate
             c (int): 565 encoded color
-            height (int): Font height in pixels (ignored, for compatibility with DisplayBuffer)
+            scale (int): Font scale (default: 1)
+            inverted (bool): Invert the text (default: False)
+            font_file (str): Font file (default: None)
+            height (int): Font height in pixels (default: 8)
         """
-        super().text(s, x, y, c)
-        return Area(x, y, len(s) * 8, 8)
+        return binfont.text(self, s, x, y, c, scale, inverted, font_file, height=height)
 
     def blit(self, buf, x, y, key=-1, palette=None):
         """
