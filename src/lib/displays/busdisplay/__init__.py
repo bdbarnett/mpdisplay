@@ -20,6 +20,9 @@ except ImportError:
 if sys.implementation.name == "micropython":
     from machine import Pin  # type: ignore
     from time import sleep_ms
+    from micropython import alloc_emergency_exception_buf  # type: ignore
+
+    alloc_emergency_exception_buf(256)
 elif sys.implementation.name == "circuitpython":
     import digitalio  # type: ignore
     from time import sleep

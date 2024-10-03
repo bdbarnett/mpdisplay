@@ -27,8 +27,6 @@ except ImportError:
 
 viper = False
 if implementation.name == "micropython":
-    from micropython import alloc_emergency_exception_buf
-    alloc_emergency_exception_buf(1024)
     try:
         from ._viper import swap_bytes
 
