@@ -7,6 +7,17 @@ from time import time, localtime
 from displaybuf import DisplayBuffer
 from palettes import get_palette
 import sys
+# from tft_text import text
+
+# try:
+#     from os import sep  # PyScipt doesn't have os.sep
+# except ImportError:
+#     sep = "/"
+# font_dir = ".".join(text.__globals__["__file__"].split(sep)[:-1]) + ".fonts"
+# # font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"
+# print(f"font_dir: {font_dir}")
+# _default_font = "vga1_8x16"
+
 
 DEBUG = False
 
@@ -28,6 +39,7 @@ default_icon_size = const(36)
 _default_text_height = const(16)
 _text_width = const(8)
 _text_heights = (8, 14, 16)
+
 
 
 class Display:
@@ -81,6 +93,13 @@ class Display:
         except Exception:
             pass
         sys.exit()
+
+    # @classmethod
+    # def load_font(cls, font_name=_default_font):
+    #     print(f"Loading font: {font_name} from {font_dir}")
+    #     font_module = __import__(font_dir + "." + font_name, globals(), locals(), [font_name], 0)
+    #     setattr(cls, font_name, font_module)
+    #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
 
     def __init__(self, display_drv, broker, use_timer=None):
         self.display_drv = display_drv
@@ -361,7 +380,9 @@ class Screen(Widget):
 class Button(Widget):
     def __init__(self, parent: Widget, x=None, y=None, w=default_icon_size, h=default_icon_size, fg=_white, visible=True, value=None,
                  filled=True, radius=0, pressed_offset=1, pressed=False,
-                 label=None, label_color=None, label_height=_default_text_height):
+                 label=None, label_color=None, 
+                #  label_font=None):
+                 label_height=_default_text_height):
         """
         Initialize a Button widget.
 
@@ -381,7 +402,9 @@ class Button(Widget):
         if label:
             if label_height not in _text_heights:
                 raise ValueError("Text height must be 8, 14 or 16 pixels.")
-            self.label = Label(self, value=label, fg=label_color or self.bg, h=label_height)
+            self.label = Label(self, value=label, fg=label_color or self.bg,
+                            #    font=label_font)
+                               h=label_height)
         else:
             self.label = None
 
@@ -426,7 +449,7 @@ class Button(Widget):
 
 class Label(Widget):
     def __init__(self, parent: Widget, x=None, y=None, h=_default_text_height, fg=_white, bg=None,
-                 visible=True, value=""):
+                 visible=True, value=""):  # , font=None):
         """
         Initialize a Label widget to display text.
         
@@ -441,6 +464,12 @@ class Label(Widget):
         if h not in _text_heights:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         super().__init__(parent, x, y, len(value) * _text_width, h, fg, bg, visible, value)
+        # bg = bg or parent.fg
+        # font = font or _default_font
+        # if not hasattr(parent.display, font):
+        #     parent.display.load_font(font)
+        # self.font = getattr(parent.display, font)
+        # super().__init__(parent, x, y, self.font.WIDTH * len(value), self.font.HEIGHT, fg, bg, visible, value)
 
     def draw(self):
         """
@@ -451,11 +480,14 @@ class Label(Widget):
             self.display.draw_buf.fill_rect(*self.abs_area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.abs_area
         self.display.draw_buf.text(self.value, x, y, self.fg, height=self.height)
+        # text(self.display.draw_buf, self.font, self.value, x, y, self.fg, self.bg)
 
 
 class TextBox(Widget):
     def __init__(self, parent: Widget, x=None, y=None, w=64, h=None, fg=_black, bg=_white,
-                 visible=True, value="", text_height=_default_text_height, margin=1):
+                 visible=True, value="", margin=1,
+                 text_height=_default_text_height):
+                #  font=None):
         """
         Initialize a TextBox widget to display text.
         
@@ -467,10 +499,15 @@ class TextBox(Widget):
         :param height: The height of the label.
         :param fg: The color of the text (in a suitable color format).
         """
+        self.margin = margin
+        # font = font or _default_font
+        # if not hasattr(parent.display, font):
+        #     parent.display.load_font(font)
+        # self.font = getattr(parent.display, font)
+        # h = h or self.font.HEIGHT + 2 * margin
         if text_height not in _text_heights:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
-        self.margin = margin
         h = h or text_height + 2 * margin
         super().__init__(parent, x, y, w, h, fg, bg, visible, value)
 
@@ -480,6 +517,7 @@ class TextBox(Widget):
         """
         self.display.draw_buf.fill_rect(*self.abs_area, self.bg)
         self.display.draw_buf.text(self.value, self.x+self.margin, self.y+self.margin, self.fg, height=self.text_height)
+        # text(self.display.draw_buf, self.font, self.value, self.x+self.margin, self.y+self.margin, self.fg, self.bg)
 
 
 class ProgressBar(Widget):
