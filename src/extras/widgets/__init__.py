@@ -41,7 +41,7 @@ _text_width = const(8)
 _text_heights = (8, 14, 16)
 
 
-_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll"}
+_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area",}
 _display_drv_set_attrs = {"vscroll"}
 
 
