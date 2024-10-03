@@ -261,4 +261,5 @@ class PGDisplay(BaseDisplay):
         """
         Deinitializes the pygame instance.
         """
+        pg.display.quit()
         pg.quit()
