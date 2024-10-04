@@ -3,7 +3,7 @@ import board_config
 import widgets as w
 
 
-display = w.Display(board_config.display_drv, board_config.broker, use_timer=True)
+display = w.Display(board_config.display_drv, board_config.broker, start_timer=True)
 pal = display.pal
 screen = w.Screen(display, pal.SILVER, visible=False)
 
@@ -19,7 +19,7 @@ button1.set_on_release(lambda sender: status.set_value(f"{sender.value} released
 # Simulate a scroll bar. Shows how to add an Icon to a Button. Also shows how to use an IconButton.
 pbar = w.ProgressBar(screen, y=display.height-100, w=display.width//2, value=0.5)
 pbar.set_on_change(lambda sender: status.set_value(f"Progress: {sender.value:.0%}"))
-pbtn1 = w.Button(screen, x=pbar.x-w.default_icon_size, y=pbar.y, fg=pal.GREEN)
+pbtn1 = w.Button(screen, x=pbar.x-w.DEFAULT_ICON_SIZE, y=pbar.y, fg=pal.GREEN)
 pbtn1_icon = w.Icon(pbtn1, fg=pal.BLACK, value="icons/36dp/keyboard_arrow_left_36dp.png")  # noqa: F841
 pbtn2 = w.IconButton(screen, x=pbar.x+pbar.width, y=pbar.y, fg=pal.BLACK, bg=pal.GREEN, icon="icons/36dp/keyboard_arrow_right_36dp.png")
 pbtn1.set_on_press(lambda sender: pbar.set_value(pbar.value-0.1))
@@ -60,7 +60,7 @@ screen.visible = True
 
 clock = w.DigitalClock(screen, x=display.width-100, y=2, fg=pal.BLACK, bg=pal.SILVER)
 
-if not display.use_timer:
+if not display.timer:
     print("Starting main loop")
     running = True
     while running:

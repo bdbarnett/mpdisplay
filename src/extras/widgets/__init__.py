@@ -7,6 +7,7 @@ from time import time, localtime
 from gfx.framebuf_plus import FrameBuffer, RGB565
 from palettes import get_palette
 import sys
+from random import getrandbits
 # from tft_text import text
 
 # try:
@@ -32,67 +33,54 @@ def name(obj):
 def drawing(obj):
     return f"{name(obj)} drawing at {obj.abs_area}"
 
-_black = const(0)
-_white = const(-1)
+BLACK = const(0)
+WHITE = const(-1)
 
-default_icon_size = const(36)
-_default_text_height = const(16)
-_text_width = const(8)
-_text_heights = (8, 14, 16)
+DEFAULT_ICON_SIZE = const(36)
+DEFAULT_TEXT_HEIGHT = const(16)
+TEXT_WIDTH = const(8)
+TEXT_HEIGHTS = (8, 14, 16)
 
 
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area",}
 _display_drv_set_attrs = {"vscroll"}
 
+def _tick(_):
+    for display in Display.displays:
+        display.tick()
+
+_timer = None
+def get_timer():
+    global _timer
+    if _timer:
+        print("Widgets:  timer already started")
+    else:
+        from timer import Timer
+        _timer = Timer(-1 if sys.platform == "rp2" else 1)
+        _timer.init(mode=Timer.PERIODIC, period=20, callback=_tick)
+        print("Widgets:  timer started")
+    return _timer
+
+def stop_timer():
+    global _timer
+    if _timer:
+        _timer.deinit()
+        _timer = None
+        print("Widgets:  timer disabled")
+    else:
+        print("Widgets:  timer already disabled")
+
 
 class Display:
     displays = []
-    _timer = None
-    use_timer = False
-
-    @classmethod
-    def _tick(cls, mode, reschedule):
-        for display in cls.displays:
-            display.tick()
-        if reschedule:
-            cls._schedule(mode, reschedule)
-
-    @classmethod
-    def _schedule(cls, mode, reschedule):
-        if cls._timer:
-            cls._timer.init(mode=mode, period=10, callback=lambda t: cls._tick(mode, reschedule))
-
-    @classmethod
-    def start_timer(cls):
-        if cls._timer:
-            print("Display:  timer already enabled")
-            return
-        if cls.use_timer:
-            from timer import Timer
-            cls._timer = Timer(-1 if sys.platform == "rp2" else 1)
-            if sys.implementation.name == "micropython":
-                cls._schedule(Timer.ONE_SHOT, True)
-            else:
-                cls._schedule(Timer.PERIODIC, False)
-            print("Display:  timer enabled")
-            return
-        print("Display:  timer not enabled")
-
-    @classmethod
-    def stop_timer(cls):
-        if cls._timer:
-            cls._timer.deinit()
-            cls._timer = None
-            print("Display:  timer disabled")
-        else:
-            print("Display:  timer not enabled")
+    timer = None
 
     @classmethod
     def quit(cls):
         for display in cls.displays:
             display.display_drv.deinit()
         try:
-            cls.stop_timer()
+            stop_timer()
         except Exception:
             pass
         sys.exit()
@@ -104,7 +92,7 @@ class Display:
     #     setattr(cls, font_name, font_module)
     #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
 
-    def __init__(self, display_drv, broker, use_timer=None, format=RGB565):
+    def __init__(self, display_drv, broker, start_timer=False, format=RGB565):
         self.display_drv = display_drv
         display_drv.vscrdef(0, display_drv.height, 0)
         self.broker = broker
@@ -118,11 +106,10 @@ class Display:
         self.pal = get_palette(swapped=self.needs_swap, color_depth=display_drv.color_depth)
         self._active_screen: Screen = None
         self._tasks = []
-        if use_timer is not None:
-            Display.use_timer = use_timer
         Display.displays.append(self)
-        Display.start_timer()
         self.add_task(self.display_drv.show, 0.033)
+        if start_timer and Display.timer is None:
+            Display.timer = get_timer()
 
     def tick(self):
         t = time()
@@ -156,17 +143,20 @@ class Display:
     def active_screen(self, screen):
         self._active_screen = screen
 
-    def show(self, area):
-        if area is not None:
-            x, y, w, h = area
-            for row in range(y, y + h):
-                buffer_begin = (row * self.width + x) * 2
-                buffer_end = buffer_begin + w * 2
-                self.display_drv.blit_rect(
-                    self._buffer[buffer_begin:buffer_end], x, row, w, 1
-                )
-        else:
-            self.display_drv.blit_rect(self._mvb, 0, 0, self.width, self.height)
+    def update(self, area):
+        x, y, w, h = area
+        for row in range(y, y + h):
+            buffer_begin = (row * self.width + x) * 2
+            buffer_end = buffer_begin + w * 2
+            self.display_drv.blit_rect(
+                self._buffer[buffer_begin:buffer_end], x, row, w, 1
+            )
+        if DEBUG:
+            c = getrandbits(16)
+            self.display_drv.fill_rect(x, y, w, 2, c)
+            self.display_drv.fill_rect(x, y + h - 2, w, 2, c)
+            self.display_drv.fill_rect(x, y, 2, h, c)
+            self.display_drv.fill_rect(x + w - 2, y, 2, h, c)
 
     @property
     def display(self):
@@ -219,7 +209,7 @@ class Task:
 
 
 class Widget:
-    def __init__(self, parent, x, y, w=0, h=0, fg=_white, bg=_black, visible=True, value=None):
+    def __init__(self, parent, x, y, w=0, h=0, fg=WHITE, bg=BLACK, visible=True, value=None):
         """
         Initialize a Widget.
         
@@ -373,7 +363,7 @@ class Widget:
                 child.render(show=False)
             if show:
                 log(f"Showing {self.abs_area}\n")
-                self.display.show(self.abs_area)
+                self.display.update(self.abs_area)
 
     def set_on_press(self, callback):
         """Set the callback function for when the button is pressed."""
@@ -389,7 +379,7 @@ class Widget:
 
 
 class Screen(Widget):
-    def __init__(self, parent: Display | Widget, color=_black, visible=True):
+    def __init__(self, parent: Display | Widget, color=BLACK, visible=True):
         """
         Initialize a Screen widget, which acts as the top-level container for a Display.
         
@@ -405,11 +395,11 @@ class Screen(Widget):
 
 
 class Button(Widget):
-    def __init__(self, parent: Widget, x=None, y=None, w=default_icon_size, h=default_icon_size, fg=_white, visible=True, value=None,
+    def __init__(self, parent: Widget, x=None, y=None, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=WHITE, visible=True, value=None,
                  filled=True, radius=0, pressed_offset=1, pressed=False,
                  label=None, label_color=None, 
                 #  label_font=None):
-                 label_height=_default_text_height):
+                 label_height=DEFAULT_TEXT_HEIGHT):
         """
         Initialize a Button widget.
 
@@ -427,7 +417,7 @@ class Button(Widget):
         self._pressed = pressed
         super().__init__(parent, x, y, w, h, fg, parent.bg, visible, value)
         if label:
-            if label_height not in _text_heights:
+            if label_height not in TEXT_HEIGHTS:
                 raise ValueError("Text height must be 8, 14 or 16 pixels.")
             self.label = Label(self, value=label, fg=label_color or self.bg,
                             #    font=label_font)
@@ -475,7 +465,7 @@ class Button(Widget):
 
 
 class Label(Widget):
-    def __init__(self, parent: Widget, x=None, y=None, h=_default_text_height, fg=_white, bg=None,
+    def __init__(self, parent: Widget, x=None, y=None, h=DEFAULT_TEXT_HEIGHT, fg=WHITE, bg=None,
                  visible=True, value="", scale=1, inverted=False, font_file=None):  # , font=None):
         """
         Initialize a Label widget to display text.
@@ -488,12 +478,12 @@ class Label(Widget):
         :param bg: Optional background color of the label. Default is None (no background).
         :param value: The text content of the label.
         """
-        if h not in _text_heights:
+        if h not in TEXT_HEIGHTS:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self._scale = scale
         self._inverted = inverted
         self._font_file = font_file
-        super().__init__(parent, x, y, len(value) * _text_width*scale, h*scale, fg, bg, visible, value)
+        super().__init__(parent, x, y, len(value) * TEXT_WIDTH*scale, h*scale, fg, bg, visible, value)
         # bg = bg or parent.fg
         # font = font or _default_font
         # if not hasattr(parent.display, font):
@@ -515,9 +505,9 @@ class Label(Widget):
 
 
 class TextBox(Widget):
-    def __init__(self, parent: Widget, x=None, y=None, w=64, h=None, fg=_black, bg=_white,
+    def __init__(self, parent: Widget, x=None, y=None, w=64, h=None, fg=BLACK, bg=WHITE,
                  visible=True, value="", margin=1,
-                 text_height=_default_text_height, scale=1, inverted=False, font_file=None):
+                 text_height=DEFAULT_TEXT_HEIGHT, scale=1, inverted=False, font_file=None):
                 #  font=None):
         """
         Initialize a TextBox widget to display text.
@@ -539,7 +529,7 @@ class TextBox(Widget):
         #     parent.display.load_font(font)
         # self.font = getattr(parent.display, font)
         # h = h or self.font.HEIGHT + 2 * margin
-        if text_height not in _text_heights:
+        if text_height not in TEXT_HEIGHTS:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
         h = h or text_height * scale + 2 * margin
@@ -556,7 +546,7 @@ class TextBox(Widget):
 
 
 class ProgressBar(Widget):
-    def __init__(self, parent: Widget, x=None, y=None, w=64, h=default_icon_size, fg=_black, bg=_white,
+    def __init__(self, parent: Widget, x=None, y=None, w=64, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
                  visible=True, value=0.5, vertical=False, reverse=False):
         """
         Initialize a ProgressBar widget to display a progress bar.
@@ -614,7 +604,7 @@ class ProgressBar(Widget):
 
 
 class Icon(Widget):
-    def __init__(self, parent: Widget, x=None, y=None, fg=_white, bg=None, visible=True, value=None):
+    def __init__(self, parent: Widget, x=None, y=None, fg=WHITE, bg=None, visible=True, value=None):
         """
         Initialize an Icon widget to display an icon.
         
@@ -660,7 +650,7 @@ class Icon(Widget):
 
 
 class IconButton(Button):
-    def __init__(self, parent: Widget, x=None, y=None, w=default_icon_size, h=default_icon_size, fg=_black, bg=_white,
+    def __init__(self, parent: Widget, x=None, y=None, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
                  visible=True, value=None, icon=None):
         """
         Initialize an IconButton widget to display an icon on a button.
@@ -680,7 +670,7 @@ class IconButton(Button):
 
 
 class CheckBox(IconButton):
-    def __init__(self, parent, x=None, y=None, w=default_icon_size, h=default_icon_size, fg=_black, bg=_white,
+    def __init__(self, parent, x=None, y=None, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
                  visible=True, value=False):
         """
         Initialize a CheckBox widget that toggles between checked and unchecked states.
@@ -718,7 +708,7 @@ class CheckBox(IconButton):
 
 
 class ToggleButton(IconButton):
-    def __init__(self, parent, x=None, y=None, w=default_icon_size, h=default_icon_size, fg=_black, bg=_white,
+    def __init__(self, parent, x=None, y=None, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
                  visible=True, value=False):
         """
         Initialize a ToggleButton widget.
@@ -783,7 +773,7 @@ class RadioGroup:
 
 
 class RadioButton(IconButton):
-    def __init__(self, parent, group: RadioGroup, x=None, y=None, w=default_icon_size, h=default_icon_size, fg=_black, bg=_white,
+    def __init__(self, parent, group: RadioGroup, x=None, y=None, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
                  visible=True, value=False):
         """
         Initialize a RadioButton widget that is part of a RadioGroup.
@@ -830,8 +820,8 @@ class RadioButton(IconButton):
 
 
 class Slider(ProgressBar):
-    def __init__(self, parent, x=None, y=None, w=100, h=default_icon_size, fg=_black, bg=_white, visible=True,
-                 value=0.5, vertical=False, reverse=False, knob_color=_black, step=0.1):
+    def __init__(self, parent, x=None, y=None, w=100, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE, visible=True,
+                 value=0.5, vertical=False, reverse=False, knob_color=BLACK, step=0.1):
         """
         Initialize a Slider widget with a circular knob that can be dragged.
         
@@ -930,7 +920,7 @@ class Slider(ProgressBar):
 
 
 class DigitalClock(TextBox):
-    def __init__(self, parent, x=None, y=None, h=_default_text_height, fg=_white, bg=None, visible=True):
+    def __init__(self, parent, x=None, y=None, h=DEFAULT_TEXT_HEIGHT, fg=WHITE, bg=None, visible=True):
         """
         Initialize a DigitalClock widget to display the current time.
         
@@ -941,7 +931,7 @@ class DigitalClock(TextBox):
         :param fg: The color of the text (in a suitable color format).
         :param bg: The background color of the digital clock.
         """
-        super().__init__(parent, x, y, h=h, fg=fg, bg=bg, visible=visible)
+        super().__init__(parent, x, y, h=h, fg=fg, bg=bg, visible=visible, text_height=h)
         self.task = self.display.add_task(self.update, 1)
 
     def update(self):

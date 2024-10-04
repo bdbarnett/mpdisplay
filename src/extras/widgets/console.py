@@ -30,28 +30,33 @@ SOFTWARE.
 """
 
 import io
-from widgets import Widget, Task, _default_text_height, _text_width, _black, _white, _text_heights
+from . import Widget, Area, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, BLACK, WHITE, TEXT_HEIGHTS
+import random
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 
 
 class Console(Widget, io.IOBase):
 
-    def __init__(self, parent, fg=_white, bg=_black, visible=True, value=None,
-                 margin=1, text_height=_default_text_height, scale=1, font_file=None):
+    def __init__(self, parent, fg=WHITE, bg=BLACK, visible=True, value=None, by_char=False,
+                 margin=1, text_height=DEFAULT_TEXT_HEIGHT, scale=1, font_file=None):
         self.margin = margin
-        if text_height not in _text_heights:
+        if text_height not in TEXT_HEIGHTS:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
         self.scale = scale
         self.font_file = font_file
-        self._char_width = _text_width * scale
+        self._char_width = TEXT_WIDTH * scale
         self._char_height = text_height * scale
         self._read_obj = None
+        if parent.display.vsa % self._char_height:
+            raise ValueError("VSA must be a multiple of the character height.")
+        self.dirty = []
+        self.by_char = by_char
         super().__init__(parent, *parent.display.vsa_area, fg, bg, visible, value)
         self.columns = (self.width - 2 * margin) // self._char_width  # Number of characters per line
         self.rows = self.height // self._char_height  # Number of lines
         self._reset_cursor()
-        self.task = self.display.add_task(self.update, .055)
+        # self.task = self.display.add_task(self.draw, .033)
 
     def _reset_cursor(self):
         self.cursor_col = 0
@@ -60,7 +65,7 @@ class Console(Widget, io.IOBase):
         self.display.vscroll = 0
 
     def clear(self):
-        self.display.framebuf.fill_rect(*self.abs_area, self.bg)
+        self.dirty.append(self.display.framebuf.fill_rect(*self.abs_area, self.bg))
         self._reset_cursor()
 
     def readinto(self, buf, nbytes=0):  # overrides io.IOBase.readinto
@@ -93,19 +98,23 @@ class Console(Widget, io.IOBase):
                 self._put_char(c, fg, bg)
             i += 1
         self._draw_cursor(self.fg)  # Redraw cursor
+        self.draw()
         return len(buf)
 
     def _put_char(self, c, fg, bg):
         c = chr(c)
         if c == "\n":
             self._newline()
+            self.draw()
         elif c == "\x08":
             self._backspace()
         elif c >= " ":
             if bg is not None:
                 self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos, self._char_width, self._char_height, bg)
-            self.display.framebuf.text(c, self._x_pos, self._cursor_y_pos, fg, height=self.text_height,
-                                       scale=self.scale, font_file=self.font_file)
+            self.dirty.append(self.display.framebuf.text(c, self._x_pos, self._cursor_y_pos, fg, height=self.text_height,
+                                       scale=self.scale, font_file=self.font_file))
+            if self.by_char:
+                self.draw()
             self.cursor_col += 1
             if self.cursor_col >= self.columns:
                 self._newline()
@@ -122,10 +131,9 @@ class Console(Widget, io.IOBase):
     def _newline(self):
         self.cursor_col = 0
         self.cursor_row += 1
-        if self.cursor_row * self._char_height >= self.display.vsa:
-            vscroll = (self.cursor_row + 1) * self._char_height
-            self.display.vscroll = vscroll
-            self.display.framebuf.fill_rect(0, self._cursor_y_pos, self.width, self._char_height, 0)
+        if self._cursor_y_rel  > self.display.vsa - self._char_height:
+            self.display.vscroll = (self._cursor_y_rel + self._char_height) % self.display.vsa
+            self.dirty.append(self.display.framebuf.fill_rect(0, self._cursor_y_pos, self.width, self._char_height, 0))
         self.cursor_max_row = self.cursor_row
 
     def _backspace(self):
@@ -137,22 +145,20 @@ class Console(Widget, io.IOBase):
             self.cursor_col -= 1
 
     def _draw_cursor(self, color):
-        self.display.framebuf.fill_rect(
-            self._x_pos, self._cursor_y_pos + self._char_height - 2, self._char_width, 1, color
-        )
+        self.dirty.append(self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos + self._char_height - 2, self._char_width, 1, color))
 
     def _clear_cursor_eol(self):
-        self.display.framebuf.fill_rect(
-            self._x_pos,
-            self._cursor_y_pos,
-            self.width - self._x_pos,
-            self._char_height,
-            self.bg,
+        self.dirty.append(
+            self.display.framebuf.fill_rect(
+                self._x_pos,
+                self._cursor_y_pos,
+                self.width - self._x_pos,
+                self._char_height,
+                self.bg,
+            )
         )
         for line in range(self.cursor_row + 1, self.cursor_max_row + 1):
-            self.display.framebuf.fill_rect(
-                0, line * self._char_height, self.width, self._char_height, self.bg
-            )
+            self.dirty.append(self.display.framebuf.fill_rect(0, line * self._char_height, self.width, self._char_height, self.bg))
         self.cursor_max_row = self.cursor_row
 
     @property
@@ -160,8 +166,17 @@ class Console(Widget, io.IOBase):
         return self.cursor_col * self._char_width
 
     @property
+    def _cursor_y_rel(self):
+        return self.cursor_row * self._char_height
+    
+    @property
     def _cursor_y_pos(self):
-        return ((self.cursor_row * self._char_height) % self.display.vsa)  + self.display.tfa
+        return (self._cursor_y_rel % self.display.vsa) + self.display.tfa
 
-    def update(self):
-        self.value = (self.value == False)
+    def draw(self):
+        if self.dirty:
+            dirty = self.dirty[0]
+            for area in self.dirty[1:]:
+                dirty += area
+            self.dirty = []
+            self.display.update(dirty)
