@@ -15,7 +15,7 @@ display.framebuf.fill_rect(*display.tfa_area, pal.RED)
 i=1
 while i<60:
     console.write(f"{i}:  vscroll={display.vscroll}, y_rel={console._cursor_y_rel}, y_pos={console._cursor_y_pos}\n")
-    if not display.timer:
-        display.tick()
+    if not w.timer:
+        w.tick()
     console.by_char = not console.by_char
     i += 1
