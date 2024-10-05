@@ -46,7 +46,7 @@ _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_ar
 _display_drv_set_attrs = {"vscroll"}
 
 
-def tick(_):
+def tick(_=None):
     for display in Display.displays:
         display.tick()
 
