@@ -21,6 +21,7 @@ from random import getrandbits
 
 
 DEBUG = False
+MARK_UPDATES = True
 
 
 def log(*args, **kwargs):
@@ -184,7 +185,7 @@ class Display:
             self.display_drv.blit_rect(
                 self._buffer[buffer_begin:buffer_end], x, row, w, 1
             )
-        if DEBUG:
+        if MARK_UPDATES:
             c = getrandbits(16)
             self.display_drv.fill_rect(x, y, w, 2, c)
             self.display_drv.fill_rect(x, y + h - 2, w, 2, c)
@@ -270,20 +271,24 @@ class Widget:
         self.on_change_callback = None
         self.on_press_callback = None
         self.on_release_callback = None
-        self._align = align if align is not None else ALIGN.TOP_LEFT  # default to align.TOP_LEFT
-        self._align_to: Widget = align_to or parent
+        self.align = align if align is not None else ALIGN.TOP_LEFT  # default to align.TOP_LEFT
+        self.align_to: Widget = align_to or parent
 
         self.parent.add_child(self)
         self.render()
 
-    def draw(self):
+    def draw(self, area=None):
         """
         Draw the widget on the screen.  Subclasses should override this method to draw the widget unless the widget is
         a container widget (like a screen) that contains other widgets.  Subclasses may call this method to draw the
         background of the widget before drawing other elements.
         """
+        print(f"Drawing {area} with {self.fg=}, {self.bg=}")
         if self.bg is not None:
-            self.display.framebuf.fill_rect(*self.area, self.bg)
+            if area:
+                self.display.framebuf.fill_rect(*area, self.bg)
+            else:
+                self.display.framebuf.fill_rect(*self.area, self.bg)
 
     def handle_event(self, event):
         """
@@ -301,8 +306,8 @@ class Widget:
     def x(self):
         """Calculate the absolute x-coordinate of the widget based on align
         """
-        align = self._align
-        align_to = self._align_to
+        align = self.align
+        align_to = self.align_to
 
         x = align_to.x + self._x
 
@@ -322,8 +327,8 @@ class Widget:
     def y(self):
         """Calculate the absolute y-coordinate of the widget based on align
         """
-        align = self._align
-        align_to = self._align_to
+        align = self.align
+        align_to = self.align_to
 
         y = align_to.y + self._y
 
@@ -339,13 +344,29 @@ class Widget:
 
         return y
     
+    @x.setter
+    def x(self, x):
+        self._x = x
+
+    @y.setter
+    def y(self, y):
+        self._y = y
+
     @property
     def width(self):
         return self._w
-    
+
+    @width.setter
+    def width(self, w):
+        self._w = w
+
     @property
     def height(self):
         return self._h
+
+    @height.setter
+    def height(self, h):
+        self._h = h
 
     @property
     def area(self):
@@ -365,9 +386,9 @@ class Widget:
     def value(self, value):
         if value != self._value:
             self._value = value
-            self.value_changed()
+            self.changed()
 
-    def value_changed(self):
+    def changed(self):
         """Called when the value of the widget changes.  May be overridden in subclasses.
         If overridden, the subclass should call this method to trigger the on_change_callback.
         """
@@ -392,6 +413,11 @@ class Widget:
                 self.render()
             else:
                 self._visible = False
+                self.parent.draw(self.area)
+                self.display.update(self.area)
+
+    def hide(self, hide=True):
+        self.visible = not hide
 
     @property
     def display(self):
@@ -493,16 +519,17 @@ class Button(Widget):
         """
         # log(f"{name(self)}.handle_event({event})")
 
+        was_pressed = self._pressed
         if self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self._pressed = True
-            self.render()
             if self.on_press_callback:
                 self.on_press_callback(self)
         elif self._pressed and event.type == Events.MOUSEBUTTONUP:
             self._pressed = False
-            self.render()
             if self.on_release_callback:
                 self.on_release_callback(self)
+        if was_pressed != self._pressed:
+            self.render()
 
         # Propagate the event to the children of the button
         super().handle_event(event)
@@ -638,13 +665,13 @@ class ProgressBar(Widget):
                 # Fill from left to right (default)
                 self.display.framebuf.fill_rect(self.x, self.y, progress_width, self.height, self.fg)
 
-    def value_changed(self):
+    def changed(self):
         # Ensure value is between 0 and 1
         if self.value < 0:
             self.value = 0
         elif self.value > 1:
             self.value = 1
-        super().value_changed()
+        super().changed()
 
 
 class Icon(Widget):
@@ -674,10 +701,10 @@ class Icon(Widget):
         if not self._metadata["greyscale"] or self._metadata['bitdepth'] != 8:
             raise ValueError(f"Only 8-bit greyscale PNGs are supported {self.value}")
 
-    def value_changed(self):
+    def changed(self):
         """Update the icon when the value (file) changes."""
         self.load_icon(self.value)
-        super().value_changed()
+        super().changed()
 
     def draw(self):
         """
@@ -741,10 +768,10 @@ class CheckBox(IconButton):
         """Toggle the checked state when the checkbox is pressed."""
         self.value = not self.value  # Toggle the boolean value
 
-    def value_changed(self):
+    def changed(self):
         """Update the icon based on the current checked state."""
         self.icon.value = self.on_icon if self.value else self.off_icon
-        super().value_changed()  # Call the parent value_changed method
+        super().changed()  # Call the parent changed method
 
     def handle_event(self, event):
         """Override handle_event to toggle the CheckBox when clicked."""
@@ -780,11 +807,11 @@ class ToggleButton(IconButton):
         """Toggle the on/off state of the button."""
         self.value = not self.value  # Invert the current state
 
-    def value_changed(self):
+    def changed(self):
         """Update the icon based on the current on/off state."""
         # Update the icon value based on the current toggle state
         self.icon.value = self.on_icon if self.value else self.off_icon
-        super().value_changed()  # Call the parent value_changed method
+        super().changed()  # Call the parent changed method
 
     def handle_event(self, event):
         """Override handle_event to toggle the button when clicked."""
@@ -852,11 +879,11 @@ class RadioButton(IconButton):
             self.value = True  # A radio button is always checked when clicked
             self.group.set_checked(self)  # Uncheck all other buttons in the group
 
-    def value_changed(self):
+    def changed(self):
         """Update the icon based on the current checked state."""
         # Update the icon value based on the current checked state
         self.icon.value = self.on_icon if self.value else self.off_icon
-        super().value_changed()  # Call the parent value_changed method
+        super().changed()  # Call the parent changed method
 
     def handle_event(self, event):
         """Override handle_event to toggle the RadioButton when clicked."""
