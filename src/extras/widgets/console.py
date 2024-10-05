@@ -30,8 +30,7 @@ SOFTWARE.
 """
 
 import io
-from . import Widget, Area, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, BLACK, WHITE, TEXT_HEIGHTS
-import random
+from . import Widget, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, BLACK, WHITE, TEXT_HEIGHTS
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 
 
@@ -65,7 +64,7 @@ class Console(Widget, io.IOBase):
         self.display.vscroll = 0
 
     def clear(self):
-        self.dirty.append(self.display.framebuf.fill_rect(*self.abs_area, self.bg))
+        self.dirty.append(self.display.framebuf.fill_rect(*self.area, self.bg))
         self._reset_cursor()
 
     def readinto(self, buf, nbytes=0):  # overrides io.IOBase.readinto
