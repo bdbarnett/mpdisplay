@@ -21,10 +21,10 @@ class Area:
             w (int | float): The width of the area.
             h (int | float): The height of the area.
         """
-        self._x = int(x)
-        self._y = int(y)
-        self._w = int(w)
-        self._h = int(h)
+        self.x = int(x)
+        self.y = int(y)
+        self.w = int(w)
+        self.h = int(h)
 
     def contains(self, x, y=None):
         """
@@ -59,6 +59,24 @@ class Area:
             and self.y + self.h >= other.y + other.h
         )
 
+    def intersects(self, other):
+        """
+        Checks if the current Area object intersects with another Area object.
+
+        Args:
+            other (Area): The other Area object to check for overlap.
+
+        Returns:
+            bool: True if the two Area objects intersect, False otherwise.
+        """
+        # Check if one rectangle is to the left of the other
+        if self.x + self.w <= other.x or other.x + other.w <= self.x:
+            return False
+        # Check if one rectangle is above the other
+        if self.y + self.h <= other.y or other.y + other.h <= self.y:
+            return False
+        return True
+
     def offset_by(self, dx=0, dy=0):
         """
         Returns a new Area offset by the specified amount in the x and y directions.
@@ -72,23 +90,21 @@ class Area:
         """
         return Area(self.x + dx, self.y + dy, self.w, self.h)
 
-    def __repr__(self):
+    def clip(self, other):
         """
-        Returns a string representation of the Area object.
+        Clips the current Area object to the specified Area object.
+
+        Args:
+            other (Area): The other Area object to clip to.
 
         Returns:
-            str: A string representation of the Area object.
+            Area: A new Area object representing the clipped area.
         """
-        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
-
-    def __str__(self):
-        """
-        Returns a string representation of the Area object.
-
-        Returns:
-            str: A string representation of the Area object.
-        """
-        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
+        x = max(self.x, other.x)
+        y = max(self.y, other.y)
+        w = min(self.x + self.w, other.x + other.w) - x
+        h = min(self.y + self.h, other.y + other.h) - y
+        return Area(x, y, w, h)
 
     def __eq__(self, other):
         """
@@ -136,33 +152,6 @@ class Area:
             max(self.y + self.h, other.y + other.h) - min(self.y, other.y),
         )
 
-    def intersects(self, other):
-        """
-        Checks if the current Area object intersects with another Area object.
-
-        Args:
-            other (Area): The other Area object to check for overlap.
-
-        Returns:
-            bool: True if the two Area objects intersect, False otherwise.
-        """
-        # Check if one rectangle is to the left of the other
-        if self.x + self.w <= other.x or other.x + other.w <= self.x:
-            return False
-        # Check if one rectangle is above the other
-        if self.y + self.h <= other.y or other.y + other.h <= self.y:
-            return False
-        return True
-
-    def __len__(self):
-        """
-        Returns the number of elements in the Area object.
-
-        Returns:
-            int: The number of elements in the Area object.
-        """
-        return 4
-
     def __iter__(self):
         """
         Returns an iterator over the elements of the Area object.
@@ -172,82 +161,20 @@ class Area:
         """
         return iter((self.x, self.y, self.w, self.h))
 
-    @property
-    def x(self):
+    def __repr__(self):
         """
-        Gets the x-coordinate of the top-left corner of the area.
+        Returns a string representation of the Area object.
 
         Returns:
-            int: The x-coordinate of the top-left corner of the area.
+            str: A string representation of the Area object.
         """
-        return self._x
-    
-    @x.setter
-    def x(self, value):
-        """
-        Sets the x-coordinate of the top-left corner of the area.
+        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
 
-        Args:
-            value (int): The new x-coordinate of the top-left corner of the area.
+    def __str__(self):
         """
-        self._x = value
-
-    @property
-    def y(self):
-        """
-        Gets the y-coordinate of the top-left corner of the area.
+        Returns a string representation of the Area object.
 
         Returns:
-            int: The y-coordinate of the top-left corner of the area.
+            str: A string representation of the Area object.
         """
-        return self._y
-
-    @y.setter
-    def y(self, value):
-        """
-        Sets the y-coordinate of the top-left corner of the area.
-
-        Args:
-            value (int): The new y-coordinate of the top-left corner of the area.
-        """
-        self._y = value
-
-    @property
-    def w(self):
-        """
-        Gets the width of the area.
-
-        Returns:
-            int: The width of the area.
-        """
-        return self._w
-
-    @w.setter
-    def w(self, value):
-        """
-        Sets the width of the area.
-
-        Args:
-            value (int): The new width of the area.
-        """
-        self._w = value
-
-    @property
-    def h(self):
-        """
-        Gets the height of the area.
-
-        Returns:
-            int: The height of the area.
-        """
-        return self._h
-
-    @h.setter
-    def h(self, value):
-        """
-        Sets the height of the area.
-
-        Args:
-            value (int): The new height of the area.
-        """
-        self._h = value
+        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
