@@ -21,7 +21,7 @@ from random import getrandbits
 
 
 DEBUG = False
-MARK_UPDATES = True
+MARK_UPDATES = False
 
 
 def log(*args, **kwargs):
@@ -52,14 +52,14 @@ def tick(_=None):
         display.tick()
 
 timer = None
-def get_timer():
+def set_timer(period):
     global timer
     if timer:
         print("Widgets:  timer already started")
     else:
         from timer import Timer
         timer = Timer(-1 if sys.platform == "rp2" else 1)
-        timer.init(mode=Timer.PERIODIC, period=20, callback=tick)
+        timer.init(mode=Timer.PERIODIC, period=period, callback=tick)
         print("Widgets:  timer started")
     return timer
 
@@ -126,11 +126,12 @@ class Display:
     #     setattr(cls, font_name, font_module)
     #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
 
-    def __init__(self, display_drv, broker, start_timer=False, format=RGB565):
+    def __init__(self, display_drv, broker, timer_period=0, format=RGB565):
         self.display_drv = display_drv
         display_drv.vscrdef(0, display_drv.height, 0)
         self.broker = broker
         broker.quit_func = self.quit
+        self.area = Area(0, 0, display_drv.width, display_drv.height)
         self._buffer = memoryview(bytearray(display_drv.width * display_drv.height * display_drv.color_depth // 8))
         self.framebuf = FrameBuffer(self._buffer, display_drv.width, display_drv.height, format)
         if display_drv.requires_byte_swap:
@@ -140,12 +141,16 @@ class Display:
         self.pal = get_palette(swapped=self.needs_swap, color_depth=display_drv.color_depth)
         self._active_screen: Screen = None
         self._tasks = []
+        self._tick_busy = False
         Display.displays.append(self)
         self.add_task(self.display_drv.show, 0.033)
-        if start_timer and timer is None:
-            get_timer()
+        if timer_period and timer is None:
+            set_timer(timer_period)
 
     def tick(self):
+        if self._tick_busy:
+            return
+        self._tick_busy = True
         t = time()
         if e := self.broker.poll():
             if e.type in Events.filter:
@@ -154,6 +159,7 @@ class Display:
         for task in self._tasks:
             if t >= task.next_run:
                 task.run(t)
+        self._tick_busy = False
 
     def add_child(self, screen):
         self.active_screen = screen
@@ -169,6 +175,10 @@ class Display:
     def get_point(self, pos):
         return self.display_drv.translate_point(pos)
 
+    def draw(self, area=None):
+        area = area or Area(0, 0, self.width, self.height)
+        self.framebuf.fill_rect(*area, self.pal.BLACK)
+
     @property
     def active_screen(self):
         return self._active_screen
@@ -177,7 +187,8 @@ class Display:
     def active_screen(self, screen):
         self._active_screen = screen
 
-    def update(self, area):
+    def update(self, area: Area):
+        area = area.clip(self.area)
         x, y, w, h = area
         for row in range(y, y + h):
             buffer_begin = (row * self.width + x) * 2
@@ -210,11 +221,11 @@ class Display:
     
     @property
     def width(self):
-        return self.display_drv.width
+        return self.area.w
     
     @property
     def height(self):
-        return self.display_drv.height
+        return self.area.h
     
     @property
     def visible(self):
@@ -283,7 +294,6 @@ class Widget:
         a container widget (like a screen) that contains other widgets.  Subclasses may call this method to draw the
         background of the widget before drawing other elements.
         """
-        print(f"Drawing {area} with {self.fg=}, {self.bg=}")
         if self.bg is not None:
             if area:
                 self.display.framebuf.fill_rect(*area, self.bg)
@@ -300,7 +310,8 @@ class Widget:
         # log(f"{name(self)}.handle_event({event})")
         # Propagate the event to the children of the screen
         for child in self.children:
-            child.handle_event(event)
+            if child.visible:
+                child.handle_event(event)
 
     @property
     def x(self):
@@ -392,9 +403,10 @@ class Widget:
         """Called when the value of the widget changes.  May be overridden in subclasses.
         If overridden, the subclass should call this method to trigger the on_change_callback.
         """
-        if self.on_change_callback:
-            self.on_change_callback(self)
-        self.render()
+        if self.visible:
+            if self.on_change_callback:
+                self.on_change_callback(self)
+            self.render()
 
     def set_value(self, value):
         self.value = value
@@ -432,14 +444,15 @@ class Widget:
         """Removes a child widget from the current widget."""
         self.children.remove(widget)
 
-    def render(self, show=True):
+    def render(self, update=True):
         if self.visible:
-            log(f"{drawing(self)}, show={show}")
+            log(f"{drawing(self)}, show={update}")
             self.draw()
             for child in self.children:
-                child.render(show=False)
-            if show:
-                log(f"Showing {self.area}\n")
+                if child.visible:
+                    child.render(update=False)
+            if update:
+                log(f"Updating {self.area}\n")
                 self.display.update(self.area)
 
     def set_on_press(self, callback):
@@ -485,7 +498,6 @@ class Button(Widget):
         self.pressed_offset = pressed_offset
         self._pressed = pressed
         fg = fg if fg is not None else BLACK
-        bg = bg if bg is not None else WHITE
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
         if label:
             if label_height not in TEXT_HEIGHTS:
@@ -501,8 +513,7 @@ class Button(Widget):
         # Adjust size if the button is pressed
         draw_area = self.area
         if self._pressed:
-            if self.bg is not None:
-                self.display.framebuf.fill_rect(*draw_area, self.bg)
+            self.parent.draw(draw_area)
             draw_area = Area(
                 draw_area.x + self.pressed_offset,
                 draw_area.y + self.pressed_offset,
@@ -576,7 +587,7 @@ class Label(Widget):
 
 
 class TextBox(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=64, h=None, fg=BLACK, bg=WHITE,
+    def __init__(self, parent: Widget, x=0, y=0, w=64, h=None, fg=None, bg=None,
                  visible=True, align=None, align_to=None, value="", margin=1,
                  text_height=DEFAULT_TEXT_HEIGHT, scale=1, inverted=False, font_file=None):
                 #  font=None):
@@ -595,6 +606,8 @@ class TextBox(Widget):
         self._scale = scale
         self._inverted = inverted
         self._font_file = font_file
+        fg = fg if fg is not None else BLACK
+        bg = bg if bg is not None else WHITE
         # font = font or _default_font
         # if not hasattr(parent.display, font):
         #     parent.display.load_font(font)
@@ -641,29 +654,23 @@ class ProgressBar(Widget):
         """
         Draw the progress bar on the screen.
         """
-        self.display.framebuf.fill_rect(*self.area, self.bg)
+        self.display.framebuf.round_rect(*self.area, self.width//2 if self.vertical else self.height//2, self.bg, f=True)
 
         if self.value == 0:
             return  # Nothing more to draw if value is 0
 
         if self.vertical:
-            # Calculate the height of the filled part
-            progress_height = int(self.value * self.height)
+            progress_height = int(self.value * (self.height - self.width)) + self.width
             if self.reverse:
-                # Fill from top to bottom
-                self.display.framebuf.fill_rect(self.x, self.y, self.width, progress_height, self.fg)
+                self.display.framebuf.round_rect(self.x, self.y, self.width, progress_height, self.width//2, self.fg, f=True)
             else:
-                # Fill from bottom to top (default)
-                self.display.framebuf.fill_rect(self.x, self.y + self.height - progress_height, self.width, progress_height, self.fg)
+                self.display.framebuf.round_rect(self.x, self.y + self.height - progress_height, self.width, progress_height, self.width//2, self.fg, f=True)
         else:
-            # Calculate the width of the filled part
-            progress_width = int(self.value * self.width)
+            progress_width = int(self.value * (self.width - self.height)) + self.height
             if self.reverse:
-                # Fill from right to left
-                self.display.framebuf.fill_rect(self.x + self.width - progress_width, self.y, progress_width, self.height, self.fg)
+                self.display.framebuf.round_rect(self.x + self.width - progress_width, self.y, progress_width, self.height, self.height//2, self.fg, f=True)
             else:
-                # Fill from left to right (default)
-                self.display.framebuf.fill_rect(self.x, self.y, progress_width, self.height, self.fg)
+                self.display.framebuf.round_rect(self.x, self.y, progress_width, self.height, self.height//2, self.fg, f=True)
 
     def changed(self):
         # Ensure value is between 0 and 1
@@ -739,7 +746,7 @@ class IconButton(Button):
         """
         bg = bg if bg is not None else BLACK
         super().__init__(parent, x, y, w, h, bg, fg, visible, align, align_to, value)
-        self.icon = Icon(self, fg=fg, bg=bg, value=icon)
+        self.icon = Icon(self, fg=fg, bg=bg, value=icon, align=ALIGN.CENTER)
 
 
 class CheckBox(IconButton):
@@ -893,7 +900,7 @@ class RadioButton(IconButton):
 
 
 class Slider(ProgressBar):
-    def __init__(self, parent, x=0, y=0, w=100, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE, visible=True,
+    def __init__(self, parent, x=0, y=0, w=None, h=None, fg=BLACK, bg=WHITE, visible=True,
                  align=None, align_to=None, value=0.5, vertical=False, reverse=False, knob_color=BLACK, step=0.1):
         """
         Initialize a Slider widget with a circular knob that can be dragged.
@@ -911,6 +918,10 @@ class Slider(ProgressBar):
         :param step: The step size for adjusting the slider value (default is 0.1).
         """
         self.dragging = False  # Track whether the knob is being dragged
+        if vertical and w is None:
+            w = DEFAULT_ICON_SIZE
+        elif not vertical and h is None:
+            h = DEFAULT_ICON_SIZE
         self.knob_radius = (w if vertical else h) // 2  # Halve the radius to fix size
         self.knob_color = knob_color  # Color of the knob
         self.step = step  # Step size for value adjustments
@@ -934,39 +945,39 @@ class Slider(ProgressBar):
             elif event.type == Events.MOUSEMOTION:
                 # Adjust the value based on mouse movement while dragging
                 if self.vertical:
-                    relative_pos = (self.display.get_point(event.pos)[1] - self.y) / self.height
-                    self.value = 1 - max(0, min(1, relative_pos))
+                    relative_pos = (self._get_knob_center()[1]- self.display.get_point(event.pos)[1]) / self.height
                 else:
-                    relative_pos = (self.display.get_point(event.pos)[0] - self.x) / self.width
-                    self.value = max(0, min(1, relative_pos))
+                    relative_pos = (self.display.get_point(event.pos)[0] - self._get_knob_center()[0]) / self.width
+                self.adjust_value(relative_pos)
+
         elif self._point_in_knob(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.dragging = True
         elif self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             # Clicking outside the knob moves the slider by one step
+            positive = True
             if self.vertical:
-                if self.display.get_point(event.pos)[1] < self._get_knob_center()[1]:
-                    self._adjust_value_by_step('down')
-                elif self.display.get_point(event.pos)[1] > self._get_knob_center()[1]:
-                    self._adjust_value_by_step('up')
+                if self.display.get_point(event.pos)[1] > self._get_knob_center()[1]:
+                    positive = False
             else:
                 if self.display.get_point(event.pos)[0] < self._get_knob_center()[0]:
-                    self._adjust_value_by_step('left')
-                elif self.display.get_point(event.pos)[0] > self._get_knob_center()[0]:
-                    self._adjust_value_by_step('right')
+                    positive = False
+            self.adjust_value(self.step if positive else -self.step)
 
         super().handle_event(event)
 
     def _get_knob_center(self):
         """Calculate the center coordinates for the knob based on the current value."""
         x, y, w, h = self.area
-        if self.vertical:
-            # Knob moves along the vertical axis, center the knob horizontally
-            knob_y = int(y + (1 - self.value) * h)
-            knob_center = (x + w // 2, knob_y)
+        if self.reverse:
+            value = 1 - self.value
         else:
-            # Knob moves along the horizontal axis, center the knob vertically
-            knob_x = int(x + self.value * w)
-            knob_center = (knob_x, y + h // 2)
+            value = self.value
+        if self.vertical:
+            knob_y = int(y + value * (h-w)) + self.knob_radius
+            knob_center = (x + self.knob_radius, knob_y)
+        else:
+            knob_x = int(x + value * (w-h)) + self.knob_radius
+            knob_center = (knob_x, y + self.knob_radius)
         return knob_center
 
     def _point_in_knob(self, pos):
@@ -975,21 +986,11 @@ class Slider(ProgressBar):
         distance = ((pos[0] - knob_center[0]) ** 2 + (pos[1] - knob_center[1]) ** 2) ** 0.5
         return distance <= self.knob_radius
 
-    def _adjust_value_by_step(self, direction):
+    def adjust_value(self, value):
         """Adjust the slider value by one step in the specified direction."""
-        new_value = self.value
-        if self.vertical:
-            if direction == 'up':
-                new_value = min(1, self.value + self.step)
-            elif direction == 'down':
-                new_value = max(0, self.value - self.step)
-        else:
-            if direction == 'right':
-                new_value = min(1, self.value + self.step)
-            elif direction == 'left':
-                new_value = max(0, self.value - self.step)
-        if new_value != self.value:
-            self.value = new_value
+        if self.reverse:
+            value = -value
+        self.value = max(0, min(1, self.value + value))
 
 
 class DigitalClock(TextBox):
@@ -1005,8 +1006,57 @@ class DigitalClock(TextBox):
         :param bg: The background color of the digital clock.
         """
         super().__init__(parent, x, y, TEXT_WIDTH * 8, h, fg, bg, visible, align, align_to, text_height=h)
-        self.task = self.display.add_task(self.update, 1)
+        self.task = self.display.add_task(self.update_time, 1)
 
-    def update(self):
+    def update_time(self):
         y, m, d, h, min, sec, *_ = localtime()
         self.value = f"{h:02}:{min:02}:{sec:02}"
+
+
+class ScrollBar(Widget):
+    def __init__(self, parent, x=0, y=0, w=None, h=None, fg=None, bg=None, visible=True,
+                 align=None, align_to=None, vertical=False, value=0.5, step=0.1, knob_color=None, reverse=False):
+        """
+        Initialize a ScrollBar widget with two arrow IconButtons and a Slider.
+
+        :param parent: The parent widget or screen that contains this scrollbar.
+        :param x: The x-coordinate of the scrollbar.
+        :param y: The y-coordinate of the scrollbar.
+        :param w: The width of the scrollbar (only applies if horizontal).
+        :param h: The height of the scrollbar (only applies if vertical).
+        :param fg: The foreground color.
+        :param bg: The background color.
+        :param visible: Whether the scrollbar is visible.
+        :param align: The alignment of the scrollbar relative to the parent.
+        :param align_to: The widget to align to (default is the parent).
+        :param vertical: Whether the scrollbar is vertical (True) or horizontal (False).
+        :param value: The initial value of the scrollbar slider (0 to 1).
+        :param step: The step size for each arrow button press.
+        :param knob_color: The color of the slider knob.
+        :param reverse: Whether the scrollbar is reversed (default is False).
+        """
+        self.vertical = vertical
+        self.step = step
+
+        if self.vertical:
+            w = w or DEFAULT_ICON_SIZE  # For vertical, set width and auto-calculate height
+            h = h or 3 * DEFAULT_ICON_SIZE
+        else:
+            w = w or 3 * DEFAULT_ICON_SIZE
+            h = h or DEFAULT_ICON_SIZE
+        reverse = not reverse if vertical else reverse  # Reverse the direction for vertical sliders
+        super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to)
+
+        # Add IconButton on each end and Slider in the middle
+        if self.vertical:
+            self.pos_button = IconButton(self, icon="icons/18dp/keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, icon="icons/18dp/keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.slider = Slider(self, fg=fg, bg=bg, h=(h - self.neg_button.height - self.pos_button.height), vertical=True, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
+        else:
+            self.neg_button = IconButton(self, icon="icons/18dp/keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, icon="icons/18dp/keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.slider = Slider(self, fg=fg, bg=bg, w=(w - self.neg_button.width - self.pos_button.width), vertical=False, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
+
+        # Set button callbacks to adjust slider value
+        self.neg_button.set_on_press(lambda _: self.slider.adjust_value(-self.step))
+        self.pos_button.set_on_press(lambda _: self.slider.adjust_value(self.step))
