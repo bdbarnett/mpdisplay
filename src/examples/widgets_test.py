@@ -36,7 +36,10 @@ cb_label = w.Label(checkbox, x=2, fg=pal.BLACK, value="Check Me", align=w.ALIGN.
 button1 = w.Button(screen, w=96, align=w.ALIGN.CENTER, fg=pal.BLUE, value="button1", label="Mem_free", label_color=pal.WHITE)
 if mem_free:
     mem_free_label = w.Label(screen, y=6, align_to=button1, align=w.ALIGN.OUTER_BOTTOM, fg=pal.BLACK, bg=screen.bg, value=f"Free mem: {mem_free()}")
-    button1.set_on_press(lambda sender: mem_free_label.set_value(f"Free mem: {collect}{mem_free()}"))
+    def mem_free_action(sender):
+        collect()
+        mem_free_label.set_value(f"Free mem: {mem_free()}")
+    button1.set_on_press(mem_free_action)
 
 hide_button = w.Button(screen, x=-2, align=w.ALIGN.OUTER_LEFT, align_to=button1, fg=pal.BLACK, bg=screen.bg, value="Hide", label="Hide", label_color=pal.YELLOW)
 hide_button.set_on_release(lambda sender: hide_button.hide(True))
@@ -84,8 +87,7 @@ clock = w.DigitalClock(screen, x=-4, y=4, align=w.ALIGN.TOP_RIGHT, fg=pal.BLACK,
 screen.visible = True
 
 
-if not display.timer:
-    print("Starting main loop")
-    running = True
-    while running:
-        w.tick()
+polling = not display.timer
+print("Polling" if polling else "Timer running")
+while polling:
+    w.tick()

@@ -55,7 +55,6 @@ class Console(io.IOBase, Widget):
         self.columns = (self.width - 2 * margin) // self._char_width  # Number of characters per line
         self.rows = self.height // self._char_height  # Number of lines
         self._reset_cursor()
-        # self.task = self.display.add_task(self.draw, .033)
 
     def _reset_cursor(self):
         self.cursor_col = 0

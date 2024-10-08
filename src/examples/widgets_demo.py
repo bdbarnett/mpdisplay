@@ -1,7 +1,6 @@
 
 import board_config
 import widgets as w
-from palettes import get_palette
 
 
 w.DEBUG = False
@@ -17,7 +16,7 @@ display.set_vscroll(38, 38)
 button_bar = w.Widget(screen, w=display.width, h=display.tfa, align=w.ALIGN.TOP_LEFT)
 status_bar = w.Widget(screen, w=display.width, h=display.bfa, align=w.ALIGN.BOTTOM_LEFT, bg=pal.WHITE)
 main_area = w.Widget(screen, w=display.width, h=display.vsa, align=w.ALIGN.TOP_LEFT, y=display.tfa, visible=False)
-color_wheel = get_palette(name="wheel", swapped=display.needs_swap, length=display.vsa, saturation=1.0)
+color_wheel = w.get_palette(name="wheel", swapped=display.needs_swap, length=display.vsa, saturation=1.0)
 def main_area_draw(area=None):
     area = area or display.vsa_area
     # print(f"draw_bg: {area}")
@@ -55,7 +54,7 @@ auto_scroll_task = None
 def toggle_auto_scroll(sender):
     global auto_scroll_task
     if not auto_scroll_task:
-        auto_scroll_task = display.add_task(lambda: scroll_by(1), .001)
+        auto_scroll_task = display.add_task(lambda: scroll_by(1), 1)
     else:
         display.remove_task(auto_scroll_task)
         auto_scroll_task = None

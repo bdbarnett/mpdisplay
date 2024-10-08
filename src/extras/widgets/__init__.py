@@ -3,13 +3,15 @@ from eventsys.events import Events
 from micropython import const
 import png
 from palettes.shades import ShadesPalette
-from time import time, localtime
+from time import localtime
 from gfx.framebuf_plus import FrameBuffer, RGB565
 from palettes import get_palette
 import sys
 from random import getrandbits
-# from tft_text import text
-
+try:
+    from time import ticks_ms, ticks_diff, ticks_add
+except ImportError:
+    from adafruit_ticks import ticks_ms, ticks_diff, ticks_add
 try:
     from os import sep  # PyScipt doesn't have os.sep
 except ImportError:
@@ -17,9 +19,7 @@ except ImportError:
 
 # get the path this module is in
 ICONS = __file__.split(sep)[0:-1]
-print(f"{__file__=}, {ICONS=}")
 ICONS = sep.join(ICONS) + sep + "icons" + sep
-print(f"{ICONS=}")
 
 
 DEBUG = False
@@ -92,6 +92,7 @@ class event:
     RELEASE = const(2 << 1)
     ANY = PRESS | RELEASE
 
+
 class Display:
     displays = []
     timer = None
@@ -135,7 +136,7 @@ class Display:
         if self._tick_busy:
             return
         self._tick_busy = True
-        t = time()
+        t = ticks_ms()
         if e := self.broker.poll():
             if e.type in Events.filter:
                 if self._active_screen is not None:
@@ -230,11 +231,11 @@ class Task:
     def __init__(self, callback, delay):
         self.callback = callback
         self.delay = delay
-        self.next_run = time() + delay
+        self.next_run = ticks_add(ticks_ms(), delay)
 
     def run(self, t):
         self.callback()
-        self.next_run = t + self.delay
+        self.next_run = ticks_add(t, self.delay)
 
 
 class Widget:
@@ -636,28 +637,49 @@ class ProgressBar(Widget):
         self.vertical = vertical
         self.reverse = reverse
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
+        self._end_radius = self.width//2 if self.vertical else self.height//2
+        print("TODO:  move draw_ends to __init__")
+
+    def draw_ends(self):
+        """
+        Draw the circular ends of the progress bar.
+        """
+        if self.vertical:
+            self.display.framebuf.circle(self.x + self._end_radius, self.y + self._end_radius, self._end_radius, self.fg if self.reverse else self.bg, f=True)
+            self.display.framebuf.circle(self.x + self._end_radius, self.y + self.height - self._end_radius, self._end_radius, self.fg if not self.reverse else self.bg, f=True)
+        else:
+            self.display.framebuf.circle(self.x + self.width - self._end_radius, self.y + self._end_radius, self._end_radius, self.fg if self.reverse else self.bg, f=True)
+            self.display.framebuf.circle(self.x + self._end_radius, self.y + self._end_radius, self._end_radius, self.fg if not self.reverse else self.bg, f=True)
 
     def draw(self, _=None):
         """
         Draw the progress bar on the screen.
         """
-        self.display.framebuf.round_rect(*self.area, self.width//2 if self.vertical else self.height//2, self.bg, f=True)
+        self.draw_ends()
+        x, y, w, h = self.area
+        if self.vertical:
+            y += self._end_radius
+            h -= w
+        else:
+            x += self._end_radius
+            w -= h
+        self.display.framebuf.fill_rect(x, y, w, h, self.bg)
 
         if self.value == 0:
-            return  # Nothing more to draw if value is 0
+            return
 
         if self.vertical:
-            progress_height = int(self.value * (self.height - self.width)) + self.width
+            progress_height = int(self.value * h)
             if self.reverse:
-                self.display.framebuf.round_rect(self.x, self.y, self.width, progress_height, self.width//2, self.fg, f=True)
+                self.display.framebuf.fill_rect(x, y, w, progress_height, self.fg)
             else:
-                self.display.framebuf.round_rect(self.x, self.y + self.height - progress_height, self.width, progress_height, self.width//2, self.fg, f=True)
+                self.display.framebuf.fill_rect(x, y + h - progress_height, w, progress_height, self.fg)
         else:
-            progress_width = int(self.value * (self.width - self.height)) + self.height
+            progress_width = int(self.value * w)
             if self.reverse:
-                self.display.framebuf.round_rect(self.x + self.width - progress_width, self.y, progress_width, self.height, self.height//2, self.fg, f=True)
+                self.display.framebuf.fill_rect(x + w - progress_width, y, progress_width, h, self.fg)
             else:
-                self.display.framebuf.round_rect(self.x, self.y, progress_width, self.height, self.height//2, self.fg, f=True)
+                self.display.framebuf.fill_rect(x, y, progress_width, h, self.fg)
 
     def changed(self):
         # Ensure value is between 0 and 1
@@ -704,7 +726,8 @@ class Icon(Widget):
         """
         Draw the icon on the screen.
         """
-        pal = ShadesPalette(color=self.fg)
+        color = self.fg
+        # pal = ShadesPalette(color=color)
         alpha = 1 if self._metadata["alpha"] else 0
         planes = self._metadata["planes"]
         pixels = self._pixels
@@ -712,7 +735,8 @@ class Icon(Widget):
         for y in range(0, h):
             for x in range(0, w):
                 if (c := pixels[(y * w + x) * planes + alpha]) != 0:
-                    self.display.framebuf.pixel(pos_x + x, pos_y + y, pal[c])
+                    # self.display.framebuf.pixel(pos_x + x, pos_y + y, pal[c])
+                    self.display.framebuf.pixel(pos_x + x, pos_y + y, color)
 
 
 class IconButton(Button):
@@ -993,7 +1017,7 @@ class DigitalClock(TextBox):
         :param bg: The background color of the digital clock.
         """
         super().__init__(parent, x, y, TEXT_WIDTH * 8, h, fg, bg, visible, align, align_to, text_height=h)
-        self.task = self.display.add_task(self.update_time, 1)
+        self.task = self.display.add_task(self.update_time, 1000)
 
     def update_time(self):
         y, m, d, h, min, sec, *_ = localtime()
