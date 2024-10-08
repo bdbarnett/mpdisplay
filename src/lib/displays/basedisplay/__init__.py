@@ -325,6 +325,12 @@ class BaseDisplay:
                 y %= self.vsa
         return x, y
 
+    def scroll_by(self, value):
+        self.vscroll += value
+
+    def scroll_to(self, value):
+        self.vscroll = value
+
     @property
     def tfa_area(self) -> Area:
         """
