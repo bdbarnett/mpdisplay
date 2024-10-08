@@ -10,14 +10,16 @@ import sys
 from random import getrandbits
 # from tft_text import text
 
-# try:
-#     from os import sep  # PyScipt doesn't have os.sep
-# except ImportError:
-#     sep = "/"
-# font_dir = ".".join(text.__globals__["__file__"].split(sep)[:-1]) + ".fonts"
-# # font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"
-# print(f"font_dir: {font_dir}")
-# _default_font = "vga1_8x16"
+try:
+    from os import sep  # PyScipt doesn't have os.sep
+except ImportError:
+    sep = "/"
+
+# get the path this module is in
+ICONS = __file__.split(sep)[0:-1]
+print(f"{__file__=}, {ICONS=}")
+ICONS = sep.join(ICONS) + sep + "icons" + sep
+print(f"{ICONS=}")
 
 
 DEBUG = False
@@ -749,8 +751,8 @@ class CheckBox(IconButton):
         :param bg: The background color of the checkbox (default is white).
         :param value: The initial checked state of the checkbox (default is False).
         """
-        self.on_icon = "icons/check_box_36dp.png"
-        self.off_icon = "icons/check_box_outline_blank_36dp.png"
+        self.on_icon = ICONS + "check_box_36dp.png"
+        self.off_icon = ICONS + "check_box_outline_blank_36dp.png"
         
         # Set initial icon based on the value (checked state)
         icon = self.on_icon if value else self.off_icon
@@ -787,8 +789,8 @@ class ToggleButton(IconButton):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
-        self.on_icon = "icons/toggle_on_36dp.png"
-        self.off_icon = "icons/toggle_off_36dp.png"
+        self.on_icon = ICONS + "toggle_on_36dp.png"
+        self.off_icon = ICONS + "toggle_off_36dp.png"
 
         # Set initial icon based on the value (on/off state)
         icon = self.on_icon if value else self.off_icon
@@ -853,8 +855,8 @@ class RadioButton(IconButton):
         :param bg: The background color of the radio button (default is white).
         :param value: The initial checked state of the radio button (default is False).
         """
-        self.on_icon = "icons/radio_button_checked_36dp.png"
-        self.off_icon = "icons/radio_button_unchecked_36dp.png"
+        self.on_icon = ICONS + "radio_button_checked_36dp.png"
+        self.off_icon = ICONS + "radio_button_unchecked_36dp.png"
 
         # Set initial icon based on the value (checked state)
         icon = self.on_icon if value else self.off_icon
@@ -1034,12 +1036,12 @@ class ScrollBar(Widget):
 
         # Add IconButton on each end and Slider in the middle
         if self.vertical:
-            self.pos_button = IconButton(self, icon="icons/keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
-            self.neg_button = IconButton(self, icon="icons/keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.pos_button = IconButton(self, icon=ICONS + "keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, icon=ICONS + "keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
             self.slider = Slider(self, fg=fg, bg=bg, h=(h - self.neg_button.height - self.pos_button.height), vertical=True, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
         else:
-            self.neg_button = IconButton(self, icon="icons/keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
-            self.pos_button = IconButton(self, icon="icons/keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.neg_button = IconButton(self, icon=ICONS + "keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, icon=ICONS + "keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
             self.slider = Slider(self, fg=fg, bg=bg, w=(w - self.neg_button.width - self.pos_button.width), vertical=False, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
 
         # Set button callbacks to adjust slider value

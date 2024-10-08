@@ -20,7 +20,7 @@ screen = w.Screen(display, pal.SILVER, visible=False)
 
 status = w.TextBox(screen, w=screen.width, align=w.ALIGN.BOTTOM, scale=1)
 
-icon = w.Icon(screen, x=0, y=0, fg=pal.RED, value="icons/home_filled_36dp.png")  # noqa: F841
+icon = w.Icon(screen, x=0, y=0, fg=pal.RED, value=w.ICONS+"home_filled_36dp.png")  # noqa: F841
 
 label1 = w.Label(screen, y=2, align=w.ALIGN.TOP, value="Inverted", fg=pal.BLACK, bg=screen.bg, scale=2, inverted=True)  # noqa: F841
 toggle_button = w.ToggleButton(screen, x=2, fg=pal.BLACK, bg=pal.WHITE, align_to=icon, align=w.ALIGN.OUTER_RIGHT, value=False)
@@ -73,8 +73,8 @@ slider1.set_on_change(lambda sender: status.set_value(f"Slider value: {sender.va
 pbar = w.ProgressBar(screen, y=slider1.y-screen.height-2, w=display.width//2, align=w.ALIGN.BOTTOM, value=0.5, reverse=REVERSE)
 pbar.set_on_change(lambda sender: status.set_value(f"Progress: {sender.value:.0%}"))
 pbtn1 = w.Button(pbar, x=-1, align=w.ALIGN.OUTER_LEFT, fg=pal.GREEN)
-pbtn1_icon = w.Icon(pbtn1, align=w.ALIGN.CENTER, value="icons/keyboard_arrow_left_36dp.png")  # noqa: F841
-pbtn2 = w.IconButton(pbar, x=1, align=w.ALIGN.OUTER_RIGHT, bg=pal.GREEN, icon="icons/keyboard_arrow_right_36dp.png")
+pbtn1_icon = w.Icon(pbtn1, align=w.ALIGN.CENTER, value=w.ICONS+"keyboard_arrow_left_36dp.png")  # noqa: F841
+pbtn2 = w.IconButton(pbar, x=1, align=w.ALIGN.OUTER_RIGHT, bg=pal.GREEN, icon=w.ICONS+"keyboard_arrow_right_36dp.png")
 pbtn1.set_on_press(lambda sender: pbar.set_value(pbar.value-0.1))
 pbtn2.set_on_press(lambda sender: pbar.set_value(pbar.value+0.1))
 

@@ -17,7 +17,7 @@ button_bar = w.Widget(screen, w=display.width, h=display.tfa, align=w.ALIGN.TOP_
 status_bar = w.Widget(screen, w=display.width, h=display.bfa, align=w.ALIGN.BOTTOM_LEFT, bg=pal.WHITE)
 main_area = w.Widget(screen, w=display.width, h=display.vsa, align=w.ALIGN.TOP_LEFT, y=display.tfa, bg=pal.BLACK, visible=True)
 
-home = w.IconButton(button_bar, x=2, align=w.ALIGN.TOP_LEFT, icon="icons/home_filled_36dp.png")
+home = w.IconButton(button_bar, x=2, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
 clock = w.DigitalClock(status_bar, x=-3, align=w.ALIGN.RIGHT, fg=pal.BLACK, bg=button_bar.bg, visible=False)
 clock_toggle = w.ToggleButton(status_bar, x=-3, align_to=clock, align=w.ALIGN.OUTER_LEFT, fg=pal.BLACK, bg=pal.WHITE, value=False)
 status = w.TextBox(status_bar, w=clock_toggle.x-3, align=w.ALIGN.LEFT, scale=1, value="Status: loaded.")

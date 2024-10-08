@@ -61,10 +61,10 @@ def toggle_auto_scroll(sender):
         auto_scroll_task = None
 
 
-home = w.IconButton(button_bar, x=2, align=w.ALIGN.TOP_LEFT, icon="icons/home_filled_36dp.png")
+home = w.IconButton(button_bar, x=2, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
 toggle = w.ToggleButton(button_bar, x=2, align_to=home, align=w.ALIGN.OUTER_RIGHT, fg=pal.WHITE, bg=None, value=False)
-down = w.IconButton(button_bar, x=-2, align=w.ALIGN.TOP_RIGHT, icon="icons/keyboard_arrow_down_36dp.png")
-up = w.IconButton(button_bar, x=-2, align_to=down, align=w.ALIGN.OUTER_LEFT, icon="icons/keyboard_arrow_up_36dp.png")
+down = w.IconButton(button_bar, x=-2, align=w.ALIGN.TOP_RIGHT, icon=w.ICONS+"keyboard_arrow_down_36dp.png")
+up = w.IconButton(button_bar, x=-2, align_to=down, align=w.ALIGN.OUTER_LEFT, icon=w.ICONS+"keyboard_arrow_up_36dp.png")
 slider1 = w.Slider(button_bar, y=9, w=up.x-toggle.x-toggle.width-16, h=18, fg=pal.WHITE, bg=pal.GREY, align=w.ALIGN.TOP, knob_color=pal.RED, value=0, step=0.05)
 
 clock = w.DigitalClock(status_bar, x=-3, align=w.ALIGN.RIGHT, fg=pal.BLACK, bg=button_bar.bg, visible=False)
