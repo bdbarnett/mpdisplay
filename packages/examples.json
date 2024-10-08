@@ -153,6 +153,10 @@
       "github:bdbarnett/mpdisplay/src/examples/palette_wheel.py"
     ],
     [
+      "examples/pbm_create_new.py",
+      "github:bdbarnett/mpdisplay/src/examples/pbm_create_new.py"
+    ],
+    [
       "examples/pbm_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/pbm_simpletest.py"
     ],
@@ -195,6 +199,22 @@
     [
       "examples/tiny_hello.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_hello.py"
+    ],
+    [
+      "examples/widgets_console.py",
+      "github:bdbarnett/mpdisplay/src/examples/widgets_console.py"
+    ],
+    [
+      "examples/widgets_demo.py",
+      "github:bdbarnett/mpdisplay/src/examples/widgets_demo.py"
+    ],
+    [
+      "examples/widgets_stub.py",
+      "github:bdbarnett/mpdisplay/src/examples/widgets_stub.py"
+    ],
+    [
+      "examples/widgets_test.py",
+      "github:bdbarnett/mpdisplay/src/examples/widgets_test.py"
     ],
     [
       "examples/noto_fonts/NotoSansMono_32.py",
