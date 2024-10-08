@@ -34,7 +34,7 @@ from . import Widget, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, BLACK, WHITE, TEXT_HEIGHT
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 
 
-class Console(Widget, io.IOBase):
+class Console(io.IOBase, Widget):
 
     def __init__(self, parent, fg=WHITE, bg=BLACK, visible=True, value=None, by_char=False,
                  margin=1, text_height=DEFAULT_TEXT_HEIGHT, scale=1, font_file=None):
@@ -51,7 +51,7 @@ class Console(Widget, io.IOBase):
             raise ValueError("VSA must be a multiple of the character height.")
         self.dirty = []
         self.by_char = by_char
-        super().__init__(parent, *parent.display.vsa_area, fg, bg, visible, value)
+        Widget.__init__(self, parent, *parent.display.vsa_area, fg, bg, visible, value)
         self.columns = (self.width - 2 * margin) // self._char_width  # Number of characters per line
         self.rows = self.height // self._char_height  # Number of lines
         self._reset_cursor()

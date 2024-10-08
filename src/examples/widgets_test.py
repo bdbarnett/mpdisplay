@@ -1,18 +1,26 @@
 
 import board_config
 import widgets as w
-# from gc import collect, mem_free
+try:
+    from gc import collect, mem_free
+except ImportError:
+    mem_free = None
 
-REVERSE = False  # for troubhleshooting progressbar, sliders, scrollbars
-w.MARK_UPDATES = True
 
-display = w.Display(board_config.display_drv, board_config.broker, timer_period=0)
+w.DEBUG = False
+w.MARK_UPDATES = False
+w.init_timer(10)  # Remove this line to use polled mode in a while loop
+
+
+REVERSE = False  # for troubleshooting progressbar, sliders, scrollbars
+
+display = w.Display(board_config.display_drv, board_config.broker)
 pal = display.pal
 screen = w.Screen(display, pal.SILVER, visible=False)
 
 status = w.TextBox(screen, w=screen.width, align=w.ALIGN.BOTTOM, scale=1)
 
-icon = w.Icon(screen, x=0, y=0, fg=pal.RED, value="icons/36dp/home_filled_36dp.png")  # noqa: F841
+icon = w.Icon(screen, x=0, y=0, fg=pal.RED, value="icons/home_filled_36dp.png")  # noqa: F841
 
 label1 = w.Label(screen, y=2, align=w.ALIGN.TOP, value="Inverted", fg=pal.BLACK, bg=screen.bg, scale=2, inverted=True)  # noqa: F841
 toggle_button = w.ToggleButton(screen, x=2, fg=pal.BLACK, bg=pal.WHITE, align_to=icon, align=w.ALIGN.OUTER_RIGHT, value=False)
@@ -26,8 +34,9 @@ checkbox.set_on_change(lambda sender: status.set_value(f"{'checked' if sender.va
 cb_label = w.Label(checkbox, x=2, fg=pal.BLACK, value="Check Me", align=w.ALIGN.OUTER_RIGHT)
 
 button1 = w.Button(screen, w=96, align=w.ALIGN.CENTER, fg=pal.BLUE, value="button1", label="Mem_free", label_color=pal.WHITE)
-# mem_free_label = w.Label(screen, y=6, align_to=button1, align=w.ALIGN.OUTER_BOTTOM, fg=pal.BLACK, bg=screen.bg, value=f"Free mem: {mem_free()}")
-# button1.set_on_press(lambda sender: mem_free_label.set_value(f"Free mem: {mem_free()}"))
+if mem_free:
+    mem_free_label = w.Label(screen, y=6, align_to=button1, align=w.ALIGN.OUTER_BOTTOM, fg=pal.BLACK, bg=screen.bg, value=f"Free mem: {mem_free()}")
+    button1.set_on_press(lambda sender: mem_free_label.set_value(f"Free mem: {collect}{mem_free()}"))
 
 hide_button = w.Button(screen, x=-2, align=w.ALIGN.OUTER_LEFT, align_to=button1, fg=pal.BLACK, bg=screen.bg, value="Hide", label="Hide", label_color=pal.YELLOW)
 hide_button.set_on_release(lambda sender: hide_button.hide(True))
@@ -64,8 +73,8 @@ slider1.set_on_change(lambda sender: status.set_value(f"Slider value: {sender.va
 pbar = w.ProgressBar(screen, y=slider1.y-screen.height-2, w=display.width//2, align=w.ALIGN.BOTTOM, value=0.5, reverse=REVERSE)
 pbar.set_on_change(lambda sender: status.set_value(f"Progress: {sender.value:.0%}"))
 pbtn1 = w.Button(pbar, x=-1, align=w.ALIGN.OUTER_LEFT, fg=pal.GREEN)
-pbtn1_icon = w.Icon(pbtn1, align=w.ALIGN.CENTER, value="icons/36dp/keyboard_arrow_left_36dp.png")  # noqa: F841
-pbtn2 = w.IconButton(pbar, x=1, align=w.ALIGN.OUTER_RIGHT, bg=pal.GREEN, icon="icons/36dp/keyboard_arrow_right_36dp.png")
+pbtn1_icon = w.Icon(pbtn1, align=w.ALIGN.CENTER, value="icons/keyboard_arrow_left_36dp.png")  # noqa: F841
+pbtn2 = w.IconButton(pbar, x=1, align=w.ALIGN.OUTER_RIGHT, bg=pal.GREEN, icon="icons/keyboard_arrow_right_36dp.png")
 pbtn1.set_on_press(lambda sender: pbar.set_value(pbar.value-0.1))
 pbtn2.set_on_press(lambda sender: pbar.set_value(pbar.value+0.1))
 
@@ -75,7 +84,7 @@ clock = w.DigitalClock(screen, x=-4, y=4, align=w.ALIGN.TOP_RIGHT, fg=pal.BLACK,
 screen.visible = True
 
 
-if not w.timer:
+if not display.timer:
     print("Starting main loop")
     running = True
     while running:

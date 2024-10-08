@@ -34,6 +34,18 @@ def name(obj):
 def drawing(obj):
     return f"{name(obj)} drawing at {obj.area}"
 
+def tick(_=None):
+    for display in Display.displays:
+        display.tick()
+
+def init_timer(period=10):
+    if Display.timer is None:
+        from timer import get_timer
+        Display.timer = get_timer(tick, period)
+
+_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to"}
+_display_drv_set_attrs = {"vscroll"}
+
 BLACK = const(0)
 WHITE = const(-1)
 
@@ -42,41 +54,14 @@ DEFAULT_TEXT_HEIGHT = const(16)
 TEXT_WIDTH = const(8)
 TEXT_HEIGHTS = (8, 14, 16)
 
-
-_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area",}
-_display_drv_set_attrs = {"vscroll"}
-
-
-def tick(_=None):
-    for display in Display.displays:
-        display.tick()
-
-timer = None
-def set_timer(period):
-    global timer
-    if timer:
-        print("Widgets:  timer already started")
-    else:
-        from timer import Timer
-        timer = Timer(-1 if sys.platform == "rp2" else 1)
-        timer.init(mode=Timer.PERIODIC, period=period, callback=tick)
-        print("Widgets:  timer started")
-    return timer
-
-def stop_timer():
-    global timer
-    if timer:
-        timer.deinit()
-        timer = None
-        print("Widgets:  timer disabled")
-    else:
-        print("Widgets:  timer already disabled")
-
 _LEFT = const(1 << 0)
 _RIGHT = const(1 << 1)
 _TOP = const(1 << 2)
 _BOT = const(1 << 3)
 _OUTER = const(1 << 4)
+
+
+log(f"{__name__} module loaded.")
 
 
 class ALIGN:
@@ -105,19 +90,9 @@ class event:
     RELEASE = const(2 << 1)
     ANY = PRESS | RELEASE
 
-
 class Display:
     displays = []
-
-    @classmethod
-    def quit(cls):
-        for display in cls.displays:
-            display.display_drv.deinit()
-        try:
-            stop_timer()
-        except Exception:
-            pass
-        sys.exit()
+    timer = None
 
     # @classmethod
     # def load_font(cls, font_name=_default_font):
@@ -126,7 +101,7 @@ class Display:
     #     setattr(cls, font_name, font_module)
     #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
 
-    def __init__(self, display_drv, broker, timer_period=0, format=RGB565):
+    def __init__(self, display_drv, broker, format=RGB565):
         self.display_drv = display_drv
         display_drv.vscrdef(0, display_drv.height, 0)
         self.broker = broker
@@ -143,9 +118,16 @@ class Display:
         self._tasks = []
         self._tick_busy = False
         Display.displays.append(self)
-        self.add_task(self.display_drv.show, 0.033)
-        if timer_period and timer is None:
-            set_timer(timer_period)
+
+    def quit(self):
+        Display.displays.remove(self)
+        self.display_drv.deinit()
+        if Display.timer and not Display.displays:
+            try:
+                Display.timer.deinit()
+            except Exception:
+                pass
+        sys.exit()
 
     def tick(self):
         if self._tick_busy:
@@ -479,8 +461,8 @@ class Screen(Widget):
 
 
 class Button(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=None, bg=None, visible=True, align=None, align_to=None, value=None,
-                 filled=True, radius=0, pressed_offset=1, pressed=False,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=DEFAULT_ICON_SIZE, fg=None, bg=None, visible=True, align=None, align_to=None, value=None,
+                 filled=True, radius=0, pressed_offset=2, pressed=False,
                  label=None, label_color=None, label_height=DEFAULT_TEXT_HEIGHT):
         """
         Initialize a Button widget.
@@ -498,6 +480,9 @@ class Button(Widget):
         self.pressed_offset = pressed_offset
         self._pressed = pressed
         fg = fg if fg is not None else BLACK
+        if w is None and label:
+            w = len(label) * TEXT_WIDTH + 4
+        w = w or DEFAULT_ICON_SIZE
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
         if label:
             if label_height not in TEXT_HEIGHTS:
@@ -506,7 +491,7 @@ class Button(Widget):
         else:
             self.label = None
 
-    def draw(self):
+    def draw(self, _=None):
         """
         Draw the button background and any child widgets (like a label).
         """
@@ -573,7 +558,7 @@ class Label(Widget):
         # self.font = getattr(parent.display, font)
         # super().__init__(parent, x, y, self.font.WIDTH * len(value), self.font.HEIGHT, fg, bg, visible, value)
 
-    def draw(self):
+    def draw(self, _=None):
         """
         Draw the label's text on the screen, using absolute coordinates.
         Optionally fills the background first if `bg` is set.
@@ -619,7 +604,7 @@ class TextBox(Widget):
         h = h or text_height * scale + 2 * margin
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
 
-    def draw(self):
+    def draw(self, _=None):
         """
         Draw the label's text on the screen, using absolute coordinates.
         """
@@ -650,7 +635,7 @@ class ProgressBar(Widget):
         self.reverse = reverse
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
 
-    def draw(self):
+    def draw(self, _=None):
         """
         Draw the progress bar on the screen.
         """
@@ -713,7 +698,7 @@ class Icon(Widget):
         self.load_icon(self.value)
         super().changed()
 
-    def draw(self):
+    def draw(self, _=None):
         """
         Draw the icon on the screen.
         """
@@ -764,8 +749,8 @@ class CheckBox(IconButton):
         :param bg: The background color of the checkbox (default is white).
         :param value: The initial checked state of the checkbox (default is False).
         """
-        self.on_icon = "icons/36dp/check_box_36dp.png"
-        self.off_icon = "icons/36dp/check_box_outline_blank_36dp.png"
+        self.on_icon = "icons/check_box_36dp.png"
+        self.off_icon = "icons/check_box_outline_blank_36dp.png"
         
         # Set initial icon based on the value (checked state)
         icon = self.on_icon if value else self.off_icon
@@ -802,8 +787,8 @@ class ToggleButton(IconButton):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
-        self.on_icon = "icons/36dp/toggle_on_36dp.png"
-        self.off_icon = "icons/36dp/toggle_off_36dp.png"
+        self.on_icon = "icons/toggle_on_36dp.png"
+        self.off_icon = "icons/toggle_off_36dp.png"
 
         # Set initial icon based on the value (on/off state)
         icon = self.on_icon if value else self.off_icon
@@ -868,8 +853,8 @@ class RadioButton(IconButton):
         :param bg: The background color of the radio button (default is white).
         :param value: The initial checked state of the radio button (default is False).
         """
-        self.on_icon = "icons/36dp/radio_button_checked_36dp.png"
-        self.off_icon = "icons/36dp/radio_button_unchecked_36dp.png"
+        self.on_icon = "icons/radio_button_checked_36dp.png"
+        self.off_icon = "icons/radio_button_unchecked_36dp.png"
 
         # Set initial icon based on the value (checked state)
         icon = self.on_icon if value else self.off_icon
@@ -927,7 +912,7 @@ class Slider(ProgressBar):
         self.step = step  # Step size for value adjustments
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value, vertical, reverse)
 
-    def draw(self):
+    def draw(self, _=None):
         """Draw the slider, including the progress bar and the circular knob."""
         super().draw()  # Draw the base progress bar
 
@@ -1049,12 +1034,12 @@ class ScrollBar(Widget):
 
         # Add IconButton on each end and Slider in the middle
         if self.vertical:
-            self.pos_button = IconButton(self, icon="icons/18dp/keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
-            self.neg_button = IconButton(self, icon="icons/18dp/keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.pos_button = IconButton(self, icon="icons/keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, icon="icons/keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
             self.slider = Slider(self, fg=fg, bg=bg, h=(h - self.neg_button.height - self.pos_button.height), vertical=True, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
         else:
-            self.neg_button = IconButton(self, icon="icons/18dp/keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
-            self.pos_button = IconButton(self, icon="icons/18dp/keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.neg_button = IconButton(self, icon="icons/keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, icon="icons/keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
             self.slider = Slider(self, fg=fg, bg=bg, w=(w - self.neg_button.width - self.pos_button.width), vertical=False, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
 
         # Set button callbacks to adjust slider value
