@@ -36,14 +36,14 @@ if _ps:
     )
 elif _jn:
     from jndisplay import JNDisplay
-    from timer import refresh_timer
+    from timer import get_timer
 
     display_drv = JNDisplay(width, height)
-    tim = refresh_timer(display_drv.show)
+    tim = get_timer(display_drv.show)
 else:
     from dtdisplay import DTDisplay, poll # type: ignore
     from eventsys.devices import Devices, Broker # type: ignore
-    from timer import refresh_timer
+    from timer import get_timer
     import sys
 
     display_drv = DTDisplay(
@@ -63,6 +63,6 @@ else:
         data=display_drv,
         # data2=Events.filter,
     )
-    tim = refresh_timer(display_drv.show)
+    tim = get_timer(display_drv.show)
 
 display_drv.fill(0xACED)  # Something other than white or black to show display is working

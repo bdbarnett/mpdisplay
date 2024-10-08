@@ -22,11 +22,10 @@ Usage:
     ....
     tim.deinit()
 """
-
+import sys
 try:
     from machine import Timer  # type: ignore # MicroPython on microcontrollers
 except ImportError:
-    import sys
 
     if sys.implementation.name == "micropython":  # MicroPython on Unix
         from ._librt import Timer
@@ -35,12 +34,23 @@ except ImportError:
     else:
         Timer = None
 
-
-def refresh_timer(callback, period=33):
+_next_timer_id = 1
+def get_timer(callback, period=33):
     """
     Creates and returns a timer to periodically call the callback function
-    """
 
-    tim = Timer(-1 if sys.platform == "rp2" else 1)
-    tim.init(mode=Timer.PERIODIC, period=period, callback=lambda t: callback())
-    return tim
+    Args:
+        callback (function): The function to call periodically
+        period (int): The period in milliseconds, default is 33ms (30fps)
+    """
+    global _next_timer_id
+    if sys.platform == "rp2":
+        id = -1
+    else:
+        id = _next_timer_id
+        _next_timer_id += 1
+    t = Timer(id)
+    t.init(mode=Timer.PERIODIC, period=period, callback=lambda t: callback())
+    print(f"Timer:  timer started ({id=}, {period=})")
+    return t
+
