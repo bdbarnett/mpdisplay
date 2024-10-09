@@ -48,9 +48,6 @@ def init_timer(period=10):
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to"}
 _display_drv_set_attrs = {"vscroll"}
 
-BLACK = const(0)
-WHITE = const(-1)
-
 DEFAULT_ICON_SIZE = const(36)
 DEFAULT_TEXT_HEIGHT = const(16)
 TEXT_WIDTH = const(8)
@@ -86,11 +83,24 @@ class ALIGN:
     OUTER_BOTTOM_RIGHT = const(_BOT | _RIGHT | _OUTER)  # 26
 
 
-class event:
-    NONE = const(0)
-    PRESS = const(1 << 0)
-    RELEASE = const(2 << 1)
-    ANY = PRESS | RELEASE
+class Theme:
+    def __init__(self, pal):
+        self.background = pal.white[0]
+        self.on_background = pal.black[0]
+        self.surface = pal.white[0]
+        self.on_surface = pal.black[0]
+        self.primary = pal.blue[4]
+        self.on_primary = pal.white[0]
+        self.secondary = pal.amber[0]
+        self.on_secondary = pal.black[0]
+        self.error = pal.red[0]
+        self.on_error = pal.white[0]
+        self.primary_variant = pal.blue[3]
+        self.secondary_variant = pal.deep_purple[4]
+        self.tertiary = pal.amber[0]
+        self.on_tertiary = pal.black[0]
+        self.tertiary_variant = pal.amber[4]
+        self.transparent = False
 
 
 class Display:
@@ -104,11 +114,14 @@ class Display:
     #     setattr(cls, font_name, font_module)
     #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
 
-    def __init__(self, display_drv, broker, format=RGB565):
+    def __init__(self, display_drv, broker, tfa=0, bfa=0, format=RGB565):
         self.display_drv = display_drv
-        display_drv.vscrdef(0, display_drv.height, 0)
+        display_drv.set_vscroll(tfa, bfa)
+        display_drv.vscroll = 0
         self.broker = broker
         broker.quit_func = self.quit
+        self.bg = 0
+        self.fg = -1
         self.area = Area(0, 0, display_drv.width, display_drv.height)
         self._buffer = memoryview(bytearray(display_drv.width * display_drv.height * display_drv.color_depth // 8))
         self.framebuf = FrameBuffer(self._buffer, display_drv.width, display_drv.height, format)
@@ -116,7 +129,8 @@ class Display:
             self.needs_swap = display_drv.disable_auto_byte_swap(True)
         else:
             self.needs_swap = False
-        self.pal = get_palette(swapped=self.needs_swap, color_depth=display_drv.color_depth)
+        self.pal = get_palette("material_design", swapped=self.needs_swap, color_depth=display_drv.color_depth)
+        self.theme = Theme(self.pal)
         self._active_screen: Screen = None
         self._tasks = []
         self._tick_busy = False
@@ -162,7 +176,7 @@ class Display:
 
     def draw(self, area=None):
         area = area or Area(0, 0, self.width, self.height)
-        self.framebuf.fill_rect(*area, self.pal.BLACK)
+        self.framebuf.fill_rect(*area, self.bg)
 
     @property
     def active_screen(self):
@@ -259,15 +273,15 @@ class Widget:
         self._y = y
         self._w = w or parent.width
         self._h = h or parent.height
-        self.fg = fg  # Foreground color of the widget
-        self.bg = bg  # Background color of the widget
+        self.fg = fg if fg is not None else parent.fg
+        self.bg = bg if bg is not None else parent.bg
         self._value = value  # Value of the widget (e.g., text of a label)
         self._visible = visible
         self.children: list[Widget] = []
         self.on_change_callback = None
         self.on_press_callback = None
         self.on_release_callback = None
-        self.align = align if align is not None else ALIGN.TOP_LEFT  # default to align.TOP_LEFT
+        self.align = align if align is not None else ALIGN.TOP_LEFT
         self.align_to: Widget = align_to or parent
 
         self.parent.add_child(self)
@@ -419,7 +433,11 @@ class Widget:
     @property
     def display(self):
         return self.parent.display
-    
+
+    @property
+    def theme(self):
+        return self.display.theme
+
     def add_child(self, widget):
         """Adds a child widget to the current widget."""
         log(f"{name(self)}.add_child({name(widget)})")
@@ -454,18 +472,24 @@ class Widget:
 
 
 class Screen(Widget):
-    def __init__(self, parent: Display | Widget, color=BLACK, visible=True):
+    def __init__(self, parent: Display | Widget, fg=None, bg=None, visible=True):
         """
         Initialize a Screen widget, which acts as the top-level container for a Display.
         
         :param display: The Display object that this Screen is associated with.
         """
-        super().__init__(parent, 0, 0, parent.width, parent.height, color, color, visible)
+        super().__init__(parent, 0, 0, parent.width, parent.height, fg, bg, visible)
+        self.partitioned = self.display.tfa > 0 or self.display.bfa > 0
+
+        if self.partitioned:
+            self.top = Widget(self, *self.display.tfa_area, fg=parent.theme.on_primary, bg=parent.theme.primary)
+            self.main = Widget(self, *self.display.vsa_area)
+            self.bottom = Widget(self, *self.display.bfa_area, fg=parent.theme.on_primary, bg=parent.theme.primary)
 
 
 class Button(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=DEFAULT_ICON_SIZE, fg=None, bg=None, visible=True, align=None, align_to=None, value=None,
-                 filled=True, radius=0, pressed_offset=2, pressed=False,
+                 radius=0, pressed_offset=2, pressed=False,
                  label=None, label_color=None, label_height=DEFAULT_TEXT_HEIGHT):
         """
         Initialize a Button widget.
@@ -478,19 +502,21 @@ class Button(Widget):
         :param bg: The background color of the button (default is blue).
         :param label: A Label widget (optional) to display inside the button.
         """
-        self.filled = filled
         self.radius = radius
         self.pressed_offset = pressed_offset
         self._pressed = pressed
-        fg = fg if fg is not None else BLACK
         if w is None and label:
-            w = len(label) * TEXT_WIDTH + 4
+            w = len(label) * TEXT_WIDTH + 8
         w = w or DEFAULT_ICON_SIZE
+        bg = bg if bg is not None else parent.theme.primary_variant
+        fg = fg if fg is not None else parent.theme.on_primary
+        label_color = label_color if label_color is not None else fg
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
         if label:
             if label_height not in TEXT_HEIGHTS:
                 raise ValueError("Text height must be 8, 14 or 16 pixels.")
-            self.label = Label(self, value=label, fg=label_color or self.bg, h=label_height)
+            label_color = label_color if label_color is not None else parent.theme.on_primary
+            self.label = Label(self, value=label, fg=label_color, bg=self.bg, h=label_height)
         else:
             self.label = None
 
@@ -498,17 +524,7 @@ class Button(Widget):
         """
         Draw the button background and any child widgets (like a label).
         """
-        # Adjust size if the button is pressed
-        draw_area = self.area
-        if self._pressed:
-            self.parent.draw(draw_area)
-            draw_area = Area(
-                draw_area.x + self.pressed_offset,
-                draw_area.y + self.pressed_offset,
-                draw_area.w - self.pressed_offset * 2,
-                draw_area.h - self.pressed_offset * 2,
-            )
-        self.display.framebuf.round_rect(*draw_area, self.radius, self.fg, f=self.filled)
+        self.display.framebuf.round_rect(*self.area, self.radius, self.bg, f=True)
 
     def handle_event(self, event: Events.Any):
         """
@@ -516,26 +532,33 @@ class Button(Widget):
 
         :param event: An event from the event system (e.g., mouse click).
         """
-        # log(f"{name(self)}.handle_event({event})")
-
-        was_pressed = self._pressed
         if self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
-            self._pressed = True
-            if self.on_press_callback:
-                self.on_press_callback(self)
+            self.press()
         elif self._pressed and event.type == Events.MOUSEBUTTONUP:
-            self._pressed = False
-            if self.on_release_callback:
-                self.on_release_callback(self)
-        if was_pressed != self._pressed:
-            self.render()
+            self.release()
 
         # Propagate the event to the children of the button
         super().handle_event(event)
 
+    def press(self):
+        log(f"{name(self)}.press()")
+        self._pressed = True
+        self.display.framebuf.round_rect(*self.area, self.radius, self.fg, f=False)
+        if self.on_press_callback:
+            self.on_press_callback(self)
+        self.display.update(self.area)
+
+    def release(self):
+        log(f"{name(self)}.release()")
+        self._pressed = False
+        self.display.framebuf.round_rect(*self.area, self.radius, self.bg, f=False)
+        if self.on_release_callback:
+            self.on_release_callback(self)
+        self.display.update(self.area)
+
 
 class Label(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, h=DEFAULT_TEXT_HEIGHT, fg=WHITE, bg=None,
+    def __init__(self, parent: Widget, x=0, y=0, h=DEFAULT_TEXT_HEIGHT, fg=None, bg=None,
                  visible=True, align=ALIGN.CENTER, align_to=None, value="", scale=1, inverted=False, font_file=None):  # , font=None):
         """
         Initialize a Label widget to display text.
@@ -553,20 +576,15 @@ class Label(Widget):
         self._scale = scale
         self._inverted = inverted
         self._font_file = font_file
+        bg = bg if bg is not None else parent.theme.transparent
         super().__init__(parent, x, y, len(value) * TEXT_WIDTH*scale, h*scale, fg, bg, visible, align, align_to, value)
-        # bg = bg or parent.fg
-        # font = font or _default_font
-        # if not hasattr(parent.display, font):
-        #     parent.display.load_font(font)
-        # self.font = getattr(parent.display, font)
-        # super().__init__(parent, x, y, self.font.WIDTH * len(value), self.font.HEIGHT, fg, bg, visible, value)
 
     def draw(self, _=None):
         """
         Draw the label's text on the screen, using absolute coordinates.
         Optionally fills the background first if `bg` is set.
         """
-        if self.bg is not None:
+        if self.bg:
             self.display.framebuf.fill_rect(*self.area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.area
         self.display.framebuf.text(self.value, x, y, self.fg, height=self.height // self._scale,
@@ -578,7 +596,6 @@ class TextBox(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=64, h=None, fg=None, bg=None,
                  visible=True, align=None, align_to=None, value="", margin=1,
                  text_height=DEFAULT_TEXT_HEIGHT, scale=1, inverted=False, font_file=None):
-                #  font=None):
         """
         Initialize a TextBox widget to display text.
         
@@ -594,13 +611,7 @@ class TextBox(Widget):
         self._scale = scale
         self._inverted = inverted
         self._font_file = font_file
-        fg = fg if fg is not None else BLACK
-        bg = bg if bg is not None else WHITE
-        # font = font or _default_font
-        # if not hasattr(parent.display, font):
-        #     parent.display.load_font(font)
-        # self.font = getattr(parent.display, font)
-        # h = h or self.font.HEIGHT + 2 * margin
+
         if text_height not in TEXT_HEIGHTS:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
@@ -618,7 +629,7 @@ class TextBox(Widget):
 
 
 class ProgressBar(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=64, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
+    def __init__(self, parent: Widget, x=0, y=0, w=64, h=DEFAULT_ICON_SIZE, fg=None, bg=None,
                  visible=True, align=None, align_to=None, value=0.5, vertical=False, reverse=False):
         """
         Initialize a ProgressBar widget to display a progress bar.
@@ -636,6 +647,8 @@ class ProgressBar(Widget):
         """
         self.vertical = vertical
         self.reverse = reverse
+        fg = fg if fg is not None else parent.theme.on_primary
+        bg = bg if bg is not None else parent.theme.primary_variant
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
         self._end_radius = self.width//2 if self.vertical else self.height//2
         print("TODO:  move draw_ends to __init__")
@@ -691,7 +704,7 @@ class ProgressBar(Widget):
 
 
 class Icon(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, fg=WHITE, bg=None, visible=True, align=None, align_to=None, value=None):
+    def __init__(self, parent: Widget, x=0, y=0, fg=None, bg=None, visible=True, align=None, align_to=None, value=None):
         """
         Initialize an Icon widget to display an icon.
         
@@ -707,8 +720,6 @@ class Icon(Widget):
         if not value:
             raise ValueError("Icon value must be set.")
         self.load_icon(value)
-        fg = fg if fg is not None else WHITE
-        bg = bg if bg is not None else parent.fg
         super().__init__(parent, x, y, self.icon_width, self.icon_height, fg, bg, visible, align, align_to, value)
 
     def load_icon(self, value):
@@ -719,8 +730,9 @@ class Icon(Widget):
 
     def changed(self):
         """Update the icon when the value (file) changes."""
+        self.display.framebuf.fill_rect(*self.area, self.bg)
         self.load_icon(self.value)
-        super().changed()
+        # super().changed()
 
     def draw(self, _=None):
         """
@@ -755,8 +767,9 @@ class IconButton(Button):
         :param value: The value of the icon button.
         :param icon: The icon file to display on the button.
         """
-        bg = bg if bg is not None else BLACK
-        super().__init__(parent, x, y, w, h, bg, fg, visible, align, align_to, value)
+        fg = fg if fg is not None else parent.fg
+        bg = bg if bg is not None else parent.bg
+        super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value)
         self.icon = Icon(self, fg=fg, bg=bg, value=icon, align=ALIGN.CENTER)
 
 
@@ -799,7 +812,7 @@ class CheckBox(IconButton):
 
 
 class ToggleButton(IconButton):
-    def __init__(self, parent, x=0, y=0, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
+    def __init__(self, parent, x=0, y=0, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=None, bg=None,
                  visible=True, align=None, align_to=None, value=False):
         """
         Initialize a ToggleButton widget.
@@ -864,7 +877,7 @@ class RadioGroup:
 
 
 class RadioButton(IconButton):
-    def __init__(self, parent, group: RadioGroup, x=0, y=0, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=BLACK, bg=WHITE,
+    def __init__(self, parent, group: RadioGroup, x=0, y=0, w=DEFAULT_ICON_SIZE, h=DEFAULT_ICON_SIZE, fg=None, bg=None,
                  visible=True, align=None, align_to=None, value=False):
         """
         Initialize a RadioButton widget that is part of a RadioGroup.
@@ -894,7 +907,6 @@ class RadioButton(IconButton):
     def toggle(self):
         """Toggle the checked state to true when clicked and uncheck other RadioButtons in the group."""
         if not self.value:  # Only toggle if not already checked
-            self.value = True  # A radio button is always checked when clicked
             self.group.set_checked(self)  # Uncheck all other buttons in the group
 
     def changed(self):
@@ -911,8 +923,8 @@ class RadioButton(IconButton):
 
 
 class Slider(ProgressBar):
-    def __init__(self, parent, x=0, y=0, w=None, h=None, fg=BLACK, bg=WHITE, visible=True,
-                 align=None, align_to=None, value=0.5, vertical=False, reverse=False, knob_color=BLACK, step=0.1):
+    def __init__(self, parent, x=0, y=0, w=None, h=None, fg=None, bg=None, visible=True,
+                 align=None, align_to=None, value=0.5, vertical=False, reverse=False, knob_color=None, step=0.1):
         """
         Initialize a Slider widget with a circular knob that can be dragged.
         
@@ -934,7 +946,7 @@ class Slider(ProgressBar):
         elif not vertical and h is None:
             h = DEFAULT_ICON_SIZE
         self.knob_radius = (w if vertical else h) // 2  # Halve the radius to fix size
-        self.knob_color = knob_color  # Color of the knob
+        self.knob_color = knob_color if knob_color is not None else parent.theme.secondary
         self.step = step  # Step size for value adjustments
         super().__init__(parent, x, y, w, h, fg, bg, visible, align, align_to, value, vertical, reverse)
 
@@ -1005,7 +1017,7 @@ class Slider(ProgressBar):
 
 
 class DigitalClock(TextBox):
-    def __init__(self, parent, x=0, y=0, h=DEFAULT_TEXT_HEIGHT, fg=WHITE, bg=None, visible=True, align=None, align_to=None):
+    def __init__(self, parent, x=0, y=0, h=DEFAULT_TEXT_HEIGHT, fg=None, bg=None, visible=True, align=None, align_to=None):
         """
         Initialize a DigitalClock widget to display the current time.
         

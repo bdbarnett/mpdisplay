@@ -8,23 +8,24 @@ w.MARK_UPDATES = False
 w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
-display = w.Display(board_config.display_drv, board_config.broker)
+display = w.Display(board_config.display_drv, board_config.broker, 38, 38)
 pal = display.pal
 screen = w.Screen(display, None, visible=False)
-display.set_vscroll(38, 38)
 
-button_bar = w.Widget(screen, w=display.width, h=display.tfa, align=w.ALIGN.TOP_LEFT)
-status_bar = w.Widget(screen, w=display.width, h=display.bfa, align=w.ALIGN.BOTTOM_LEFT, bg=pal.WHITE)
-main_area = w.Widget(screen, w=display.width, h=display.vsa, align=w.ALIGN.TOP_LEFT, y=display.tfa, visible=False)
+if screen.partitioned:
+    top, bottom, main = screen.top, screen.bottom, screen.main
+else:
+    top = bottom = main = screen
+
 color_wheel = w.get_palette(name="wheel", swapped=display.needs_swap, length=display.vsa, saturation=1.0)
-def main_area_draw(area=None):
-    area = area or display.vsa_area
-    # print(f"draw_bg: {area}")
-    for i in range(area.y, area.y+area.h):
-        display.framebuf.fill_rect(area.x, i, area.w, 1, color_wheel[i-display.tfa])
-main_area.draw = main_area_draw
-main_area.visible = True
-
+if screen.partitioned:
+    def main_area_draw(area=None):
+        area = area or display.vsa_area
+        # print(f"draw_bg: {area}")
+        for i in range(area.y, area.y+area.h):
+            display.framebuf.fill_rect(area.x, i, area.w, 1, color_wheel[i-display.tfa])
+    main.draw = main_area_draw
+    main_area_draw()
 
 aligns = [w.ALIGN.TOP_LEFT, w.ALIGN.TOP, w.ALIGN.TOP_RIGHT,
           w.ALIGN.LEFT, w.ALIGN.CENTER, w.ALIGN.RIGHT,
@@ -42,7 +43,7 @@ align_names = ["TL", "TOP", "TR",
 
 def demo_alignments(parent, align_to=None):
     for name, align in zip(align_names, aligns):
-        w.Label(parent, align=align, align_to=align_to, fg=pal.BLACK, bg=None, value=name)
+        w.Label(parent, align=align, align_to=align_to, value=name)
 
 def scroll_by(value):
     display.vscroll += value
@@ -60,17 +61,17 @@ def toggle_auto_scroll(sender):
         auto_scroll_task = None
 
 
-home = w.IconButton(button_bar, x=2, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
-toggle = w.ToggleButton(button_bar, x=2, align_to=home, align=w.ALIGN.OUTER_RIGHT, fg=pal.WHITE, bg=None, value=False)
-down = w.IconButton(button_bar, x=-2, align=w.ALIGN.TOP_RIGHT, icon=w.ICONS+"keyboard_arrow_down_36dp.png")
-up = w.IconButton(button_bar, x=-2, align_to=down, align=w.ALIGN.OUTER_LEFT, icon=w.ICONS+"keyboard_arrow_up_36dp.png")
-slider1 = w.Slider(button_bar, y=9, w=up.x-toggle.x-toggle.width-16, h=18, fg=pal.WHITE, bg=pal.GREY, align=w.ALIGN.TOP, knob_color=pal.RED, value=0, step=0.05)
+home = w.IconButton(top, x=2, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
+toggle = w.ToggleButton(top, x=2, align_to=home, align=w.ALIGN.OUTER_RIGHT, value=False)
+down = w.IconButton(top, x=-2, align=w.ALIGN.TOP_RIGHT, icon=w.ICONS+"keyboard_arrow_down_36dp.png")
+up = w.IconButton(top, x=-2, align_to=down, align=w.ALIGN.OUTER_LEFT, icon=w.ICONS+"keyboard_arrow_up_36dp.png")
+slider1 = w.Slider(top, y=9, w=up.x-toggle.x-toggle.width-16, h=18, align=w.ALIGN.TOP, value=0, step=0.05)
 
-clock = w.DigitalClock(status_bar, x=-3, align=w.ALIGN.RIGHT, fg=pal.BLACK, bg=button_bar.bg, visible=False)
-clock_toggle = w.ToggleButton(status_bar, x=-3, align_to=clock, align=w.ALIGN.OUTER_LEFT, fg=pal.BLACK, bg=pal.WHITE, value=False)
-status = w.TextBox(status_bar, w=clock_toggle.x-3, align=w.ALIGN.LEFT, scale=1, value="Status: loaded.")
+clock = w.DigitalClock(bottom, x=-3, y=-9, align=w.ALIGN.BOTTOM_RIGHT, visible=False)
+clock_toggle = w.ToggleButton(bottom, x=-3, align_to=clock, align=w.ALIGN.OUTER_LEFT, value=False)
+status = w.TextBox(bottom, x=3, y=-9, w=clock_toggle.x-6, align=w.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
 
-button = w.Button(main_area, w=main_area.width//2, h=64, align=w.ALIGN.CENTER, fg=pal.BLUE, label="", label_color=pal.WHITE, radius=10, pressed_offset=5)
+button = w.Button(main, w=main.width//2, h=64, align=w.ALIGN.CENTER, label="test", radius=10, pressed_offset=5)
 demo_alignments(button)
 
 scroll_jump = 5
