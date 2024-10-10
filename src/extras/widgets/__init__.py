@@ -10,9 +10,9 @@ from random import getrandbits
 from . import pct  # noqa: F401
 # from palettes.shades import ShadesPalette
 try:
-    from time import ticks_ms, ticks_diff, ticks_add
+    from time import ticks_ms, ticks_add
 except ImportError:
-    from adafruit_ticks import ticks_ms, ticks_diff, ticks_add
+    from adafruit_ticks import ticks_ms, ticks_add
 try:
     from os import sep  # PyScipt doesn't have os.sep
 except ImportError:
@@ -46,7 +46,7 @@ def init_timer(period=10):
         from timer import get_timer
         Display.timer = get_timer(tick, period)
 
-_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to"}
+_display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to", "translate_point"}
 _display_drv_set_attrs = {"vscroll"}
 
 DEFAULT_ICON_SIZE = const(36)
@@ -104,145 +104,6 @@ class Theme:
         self.transparent = False
 
 
-class Display:
-    displays = []
-    timer = None
-
-    # @classmethod
-    # def load_font(cls, font_name=_default_font):
-    #     print(f"Loading font: {font_name} from {font_dir}")
-    #     font_module = __import__(font_dir + "." + font_name, globals(), locals(), [font_name], 0)
-    #     setattr(cls, font_name, font_module)
-    #     print(f"Loaded font: {font_module=}; {dir(font_module)=}")
-
-    def __init__(self, display_drv, broker, tfa=0, bfa=0, format=RGB565):
-        self.display_drv = display_drv
-        display_drv.set_vscroll(tfa, bfa)
-        display_drv.vscroll = 0
-        self.broker = broker
-        broker.quit_func = self.quit
-        self.bg = 0
-        self.fg = -1
-        self.area = Area(0, 0, display_drv.width, display_drv.height)
-        self._buffer = memoryview(bytearray(display_drv.width * display_drv.height * display_drv.color_depth // 8))
-        self.framebuf = FrameBuffer(self._buffer, display_drv.width, display_drv.height, format)
-        if display_drv.requires_byte_swap:
-            self.needs_swap = display_drv.disable_auto_byte_swap(True)
-        else:
-            self.needs_swap = False
-        self.pal = get_palette("material_design", swapped=self.needs_swap, color_depth=display_drv.color_depth)
-        self.theme = Theme(self.pal)
-        self._active_screen: Screen = None
-        self._tasks = []
-        self._tick_busy = False
-        Display.displays.append(self)
-
-    def quit(self):
-        Display.displays.remove(self)
-        self.display_drv.deinit()
-        if Display.timer and not Display.displays:
-            try:
-                Display.timer.deinit()
-            except Exception:
-                pass
-        sys.exit()
-
-    def tick(self):
-        if self._tick_busy:
-            return
-        self._tick_busy = True
-        t = ticks_ms()
-        if e := self.broker.poll():
-            if e.type in Events.filter:
-                if self._active_screen is not None:
-                    self._active_screen.handle_event(e)
-        for task in self._tasks:
-            if t >= task.next_run:
-                task.run(t)
-        self._tick_busy = False
-
-    def add_child(self, screen):
-        self.active_screen = screen
-
-    def add_task(self, callback, delay):
-        new_task = Task(callback, delay)
-        self._tasks.append(new_task)
-        return new_task
-
-    def remove_task(self, task):
-        self._tasks.remove(task)
-
-    def get_point(self, pos):
-        return self.display_drv.translate_point(pos)
-
-    def draw(self, area=None):
-        area = area or Area(0, 0, self.width, self.height)
-        self.framebuf.fill_rect(*area, self.bg)
-
-    @property
-    def active_screen(self):
-        return self._active_screen
-    
-    @active_screen.setter
-    def active_screen(self, screen):
-        self._active_screen = screen
-
-    def refresh(self, area: Area):
-        area = area.clip(self.area)
-        log(f"Refreshing {area}\n")
-        x, y, w, h = area
-        for row in range(y, y + h):
-            buffer_begin = (row * self.width + x) * 2
-            buffer_end = buffer_begin + w * 2
-            self.display_drv.blit_rect(
-                self._buffer[buffer_begin:buffer_end], x, row, w, 1
-            )
-        if MARK_UPDATES:
-            c = getrandbits(16)
-            self.display_drv.fill_rect(x, y, w, 2, c)
-            self.display_drv.fill_rect(x, y + h - 2, w, 2, c)
-            self.display_drv.fill_rect(x, y, 2, h, c)
-            self.display_drv.fill_rect(x + w - 2, y, 2, h, c)
-
-    @property
-    def display(self):
-        return self
-
-    @property
-    def parent(self):
-        return None
-
-    @property
-    def x(self):
-        return 0
-    
-    @property
-    def y(self):
-        return 0
-    
-    @property
-    def width(self):
-        return self.area.w
-    
-    @property
-    def height(self):
-        return self.area.h
-    
-    @property
-    def visible(self):
-        return True
-
-    def __getattr__(self, name):
-        if name in _display_drv_get_attrs:
-            return getattr(self.display_drv, name)
-        raise AttributeError(f"{self.__class__.__name__} object has no attribute '{name}'")
-
-    def __setattr__(self, name, value):
-        if name in _display_drv_set_attrs:
-            return setattr(self.display_drv, name, value)
-        super().__setattr__(name, value)
-
-
 class Task:
     def __init__(self, callback, delay):
         self.callback = callback
@@ -270,49 +131,34 @@ class Widget:
         :param value: The value of the widget (e.g., text of a label).
         :param align: The alignment of the widget relative to the parent (default is align.CENTER).
         """
-        self.parent: Widget | Display = parent
+        self.parent: Widget = parent
         self._x = x
         self._y = y
         self._w = w or parent.width
         self._h = h or parent.height
         self.fg = fg if fg is not None else parent.fg
         self.bg = bg if bg is not None else parent.bg
-        self._value = value  # Value of the widget (e.g., text of a label)
         self._visible = visible
+        self.align = align if align is not None else ALIGN.TOP_LEFT
+        self.align_to: Widget = align_to or parent
+        self._value = value  # Value of the widget (e.g., text of a label)
         self.children: list[Widget] = []
         self.on_change_callback = None
         self.on_press_callback = None
         self.on_release_callback = None
-        self.align = align if align is not None else ALIGN.TOP_LEFT
-        self.align_to: Widget = align_to or parent
+        if parent:
+            self.parent.add_child(self)
+            self.render()
 
-        self.parent.add_child(self)
-        self.render()
+    @property
+    def area(self):
+        """
+        Get the absolute area of the widget on the screen.
 
-    def draw(self, area=None):
+        :return: An Area object representing the absolute area.
         """
-        Draw the widget on the screen.  Subclasses should override this method to draw the widget unless the widget is
-        a container widget (like a screen) that contains other widgets.  Subclasses may call this method to draw the
-        background of the widget before drawing other elements.
-        """
-        if self.bg is not None:
-            if area:
-                self.display.framebuf.fill_rect(*area, self.bg)
-            else:
-                self.display.framebuf.fill_rect(*self.area, self.bg)
 
-    def handle_event(self, event):
-        """
-        Handle an event and propagate it to child widgets.  Subclasses that need to handle events
-        should override this method and call this method to propagate the event to children.
-        
-        :param event: An event from the event system (e.g., mouse or keyboard event).
-        """
-        # log(f"{name(self)}.handle_event({event})")
-        # Propagate the event to the children of the screen
-        for child in self.children:
-            if child.visible:
-                child.handle_event(event)
+        return Area(self.x, self.y, self.width, self.height)
 
     @property
     def x(self):
@@ -335,6 +181,12 @@ class Widget:
 
         return x
 
+    @x.setter
+    def x(self, x):
+        if x != self._x:
+            self._x = x
+            self.render()
+
     @property
     def y(self):
         """Calculate the absolute y-coordinate of the widget based on align
@@ -355,12 +207,6 @@ class Widget:
             y += (align_to.height - self.height) // 2
 
         return y
-    
-    @x.setter
-    def x(self, x):
-        if x != self._x:
-            self._x = x
-            self.render()
 
     @y.setter
     def y(self, y):
@@ -389,36 +235,12 @@ class Widget:
             self.render()
 
     @property
-    def area(self):
-        """
-        Get the absolute area of the widget on the screen.
-
-        :return: An Area object representing the absolute area.
-        """
-
-        return Area(self.x, self.y, self.width, self.height)
+    def display(self):
+        return self.parent.display
 
     @property
-    def value(self):
-        return self._value
-    
-    @value.setter
-    def value(self, value):
-        if value != self._value:
-            self._value = value
-            self.changed()
-
-    def changed(self):
-        """Called when the value of the widget changes.  May be overridden in subclasses.
-        If overridden, the subclass should call this method to trigger the on_change_callback.
-        """
-        if self.visible:
-            if self.on_change_callback:
-                self.on_change_callback(self)
-            self.render()
-
-    def set_value(self, value):
-        self.value = value
+    def theme(self):
+        return self.display.theme
 
     @property
     def visible(self):
@@ -437,25 +259,60 @@ class Widget:
                 self.parent.draw(self.area)
                 self.display.refresh(self.area)
 
-    def hide(self, hide=True):
-        self.visible = not hide
-
     @property
-    def display(self):
-        return self.parent.display
+    def value(self):
+        return self._value
 
-    @property
-    def theme(self):
-        return self.display.theme
+    @value.setter
+    def value(self, value):
+        if value != self._value:
+            self._value = value
+            self.changed()
 
     def add_child(self, widget):
         """Adds a child widget to the current widget."""
         log(f"{name(self)}.add_child({name(widget)})")
         self.children.append(widget)
 
+    def changed(self):
+        """Called when the value of the widget changes.  May be overridden in subclasses.
+        If overridden, the subclass should call this method to trigger the on_change_callback.
+        """
+        if self.visible:
+            if self.on_change_callback:
+                self.on_change_callback(self)
+            self.render()
+
+    def draw(self, area=None):
+        """
+        Draw the widget on the screen.  Subclasses should override this method to draw the widget unless the widget is
+        a container widget (like a screen) that contains other widgets.  Subclasses may call this method to draw the
+        background of the widget before drawing other elements.
+        """
+        if self.bg is not None:
+            area = area or self.area
+            self.display.framebuf.fill_rect(*area, self.bg)
+
+    def handle_event(self, event):
+        """
+        Handle an event and propagate it to child widgets.  Subclasses that need to handle events
+        should override this method and call this method to propagate the event to children.
+        
+        :param event: An event from the event system (e.g., mouse or keyboard event).
+        """
+        # log(f"{name(self)}.handle_event({event})")
+        # Propagate the event to the children of the screen
+        for child in self.children:
+            if child.visible:
+                child.handle_event(event)
+
+    def hide(self, hide=True):
+        self.visible = not hide
+
     def remove_child(self, widget):
         """Removes a child widget from the current widget."""
         self.children.remove(widget)
+        widget.parent = None
 
     def render(self, update=True):
         if self.visible:
@@ -478,6 +335,154 @@ class Widget:
     def set_on_change(self, callback):
         """Set the callback function for when the value of the widget changes."""
         self.on_change_callback = callback
+
+    def set_value(self, value):
+        self.value = value
+
+
+class Display(Widget):
+    displays = []
+    timer = None
+
+    def __init__(self, display_drv, broker, tfa=0, bfa=0, format=RGB565):
+        super().__init__(None, 0, 0, display_drv.width, display_drv.height, fg=-1, bg=0)
+        self.display_drv = display_drv
+        display_drv.set_vscroll(tfa, bfa)
+        display_drv.vscroll = 0
+        self.broker = broker
+        broker.quit_func = self.quit
+        self._buffer = memoryview(bytearray(display_drv.width * display_drv.height * display_drv.color_depth // 8))
+        self.framebuf = FrameBuffer(self._buffer, display_drv.width, display_drv.height, format)
+        self._tasks = []
+        self._tick_busy = False
+        if display_drv.requires_byte_swap:
+            self.needs_swap = display_drv.disable_auto_byte_swap(True)
+        else:
+            self.needs_swap = False
+        self.pal = get_palette("material_design", swapped=self.needs_swap, color_depth=display_drv.color_depth)
+        self._theme = Theme(self.pal)
+        Display.displays.append(self)
+
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, x):
+        raise ValueError("Cannot set x-coordinate of Display object.")
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, y):
+        raise ValueError("Cannot set y-coordinate of Display object.")
+
+    @property
+    def width(self):
+        return self._w
+
+    @width.setter
+    def width(self, w):
+        raise ValueError("Cannot set width of Display object.")
+
+    @property
+    def height(self):
+        return self._h
+
+    @height.setter
+    def height(self, h):
+        raise ValueError("Cannot set height of Display object.")
+
+    @property
+    def display(self):
+        return self
+
+    @property
+    def theme(self):
+        return self._theme
+    
+    @property
+    def visible(self):
+        return True
+
+    @visible.setter
+    def visible(self, visible):
+        raise ValueError("Cannot set visibility of Display object.")
+
+    @property
+    def active_screen(self):
+        if self.children:
+            return self.children[0]
+        return None
+    
+    @active_screen.setter
+    def active_screen(self, screen):
+        for child in self.children:
+            self.remove_child(child)
+        super().add_child(screen)
+
+    def add_child(self, screen):
+        self.active_screen = screen
+
+    def add_task(self, callback, delay):
+        new_task = Task(callback, delay)
+        self._tasks.append(new_task)
+        return new_task
+
+    def refresh(self, area: Area):
+        area = area.clip(self.area)
+        log(f"Refreshing {area}\n")
+        x, y, w, h = area
+        for row in range(y, y + h):
+            buffer_begin = (row * self.width + x) * 2
+            buffer_end = buffer_begin + w * 2
+            self.display_drv.blit_rect(
+                self._buffer[buffer_begin:buffer_end], x, row, w, 1
+            )
+        if MARK_UPDATES:
+            c = getrandbits(16)
+            self.display_drv.fill_rect(x, y, w, 2, c)
+            self.display_drv.fill_rect(x, y + h - 2, w, 2, c)
+            self.display_drv.fill_rect(x, y, 2, h, c)
+            self.display_drv.fill_rect(x + w - 2, y, 2, h, c)
+
+    def remove_task(self, task):
+        self._tasks.remove(task)
+
+    def quit(self):
+        Display.displays.remove(self)
+        self.display_drv.deinit()
+        if Display.timer and not Display.displays:
+            try:
+                Display.timer.deinit()
+            except Exception:
+                pass
+        sys.exit()
+
+    def tick(self):
+        if self._tick_busy:
+            return
+        self._tick_busy = True
+        t = ticks_ms()
+        if e := self.broker.poll():
+            if e.type in Events.filter:
+                self.handle_event(e)
+        for task in self._tasks:
+            if t >= task.next_run:
+                task.run(t)
+        self._tick_busy = False
+
+    def __getattr__(self, name):
+        if name in _display_drv_get_attrs:
+            return getattr(self.display_drv, name)
+        raise AttributeError(f"{self.__class__.__name__} object has no attribute '{name}'")
+
+    def __setattr__(self, name, value):
+        if name in _display_drv_set_attrs:
+            return setattr(self.display_drv, name, value)
+        super().__setattr__(name, value)
 
 
 class Screen(Widget):
@@ -541,7 +546,7 @@ class Button(Widget):
 
         :param event: An event from the event system (e.g., mouse click).
         """
-        if self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.press()
         elif self._pressed and event.type == Events.MOUSEBUTTONUP:
             self.release()
@@ -755,7 +760,7 @@ class Icon(Widget):
         pos_x, pos_y, w, h = self.area
         for y in range(0, h):
             for x in range(0, w):
-                if (c := pixels[(y * w + x) * planes + alpha]) != 0:
+                if (c := pixels[(y * w + x) * planes + alpha]) != 0:  # noqa: F841
                     # self.display.framebuf.pixel(pos_x + x, pos_y + y, pal[c])
                     self.display.framebuf.pixel(pos_x + x, pos_y + y, color)
 
@@ -815,7 +820,7 @@ class CheckBox(IconButton):
 
     def handle_event(self, event):
         """Override handle_event to toggle the CheckBox when clicked."""
-        if self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.toggle()
         Widget.handle_event(self, event)  # Propagate to children if necessary
 
@@ -855,7 +860,7 @@ class ToggleButton(IconButton):
 
     def handle_event(self, event):
         """Override handle_event to toggle the button when clicked."""
-        if self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.toggle()  # Toggle the state when clicked
         Widget.handle_event(self, event)  # Propagate to children if necessary
 
@@ -926,7 +931,7 @@ class RadioButton(IconButton):
 
     def handle_event(self, event):
         """Override handle_event to toggle the RadioButton when clicked."""
-        if self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
+        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.toggle()  # Toggle the state when clicked
         Widget.handle_event(self, event)  # Propagate to children if necessary
 
@@ -977,21 +982,21 @@ class Slider(ProgressBar):
             elif event.type == Events.MOUSEMOTION:
                 # Adjust the value based on mouse movement while dragging
                 if self.vertical:
-                    relative_pos = (self._get_knob_center()[1]- self.display.get_point(event.pos)[1]) / self.height
+                    relative_pos = (self._get_knob_center()[1]- self.display.translate_point(event.pos)[1]) / self.height
                 else:
-                    relative_pos = (self.display.get_point(event.pos)[0] - self._get_knob_center()[0]) / self.width
+                    relative_pos = (self.display.translate_point(event.pos)[0] - self._get_knob_center()[0]) / self.width
                 self.adjust_value(relative_pos)
 
-        elif self._point_in_knob(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
+        elif self._point_in_knob(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             self.dragging = True
-        elif self.area.contains(self.display.get_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
+        elif self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
             # Clicking outside the knob moves the slider by one step
             positive = True
             if self.vertical:
-                if self.display.get_point(event.pos)[1] > self._get_knob_center()[1]:
+                if self.display.translate_point(event.pos)[1] > self._get_knob_center()[1]:
                     positive = False
             else:
-                if self.display.get_point(event.pos)[0] < self._get_knob_center()[0]:
+                if self.display.translate_point(event.pos)[0] < self._get_knob_center()[0]:
                     positive = False
             self.adjust_value(self.step if positive else -self.step)
 
