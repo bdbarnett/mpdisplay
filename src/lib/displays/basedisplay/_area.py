@@ -21,10 +21,10 @@ class Area:
             w (int | float): The width of the area.
             h (int | float): The height of the area.
         """
-        self.x = int(x)
-        self.y = int(y)
-        self.w = int(w)
-        self.h = int(h)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
 
     def contains(self, x, y=None):
         """

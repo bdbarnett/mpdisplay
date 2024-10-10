@@ -2,12 +2,13 @@ from gfx import Area
 from eventsys.events import Events
 from micropython import const
 import png
-from palettes.shades import ShadesPalette
 from time import localtime
 from gfx.framebuf_plus import FrameBuffer, RGB565
 from palettes import get_palette
 import sys
 from random import getrandbits
+from . import pct  # noqa: F401
+# from palettes.shades import ShadesPalette
 try:
     from time import ticks_ms, ticks_diff, ticks_add
 except ImportError:
@@ -186,8 +187,9 @@ class Display:
     def active_screen(self, screen):
         self._active_screen = screen
 
-    def update(self, area: Area):
+    def refresh(self, area: Area):
         area = area.clip(self.area)
+        log(f"Refreshing {area}\n")
         x, y, w, h = area
         for row in range(y, y + h):
             buffer_begin = (row * self.width + x) * 2
@@ -319,7 +321,7 @@ class Widget:
         align = self.align
         align_to = self.align_to
 
-        x = align_to.x + self._x
+        x = align_to.x + int(self._x)
 
         if align & _LEFT:
             if align & _OUTER:
@@ -340,7 +342,7 @@ class Widget:
         align = self.align
         align_to = self.align_to
 
-        y = align_to.y + self._y
+        y = align_to.y + int(self._y)
 
         if align & _TOP:
             if align & _OUTER:
@@ -356,27 +358,35 @@ class Widget:
     
     @x.setter
     def x(self, x):
-        self._x = x
+        if x != self._x:
+            self._x = x
+            self.render()
 
     @y.setter
     def y(self, y):
-        self._y = y
+        if y != self._y:
+            self._y = y
+            self.render()
 
     @property
     def width(self):
-        return self._w
+        return int(self._w)
 
     @width.setter
     def width(self, w):
-        self._w = w
+        if w != self._w:
+            self._w = w
+            self.render()
 
     @property
     def height(self):
-        return self._h
+        return int(self._h)
 
     @height.setter
     def height(self, h):
-        self._h = h
+        if h != self._h:
+            self._h = h
+            self.render()
 
     @property
     def area(self):
@@ -425,7 +435,7 @@ class Widget:
             else:
                 self._visible = False
                 self.parent.draw(self.area)
-                self.display.update(self.area)
+                self.display.refresh(self.area)
 
     def hide(self, hide=True):
         self.visible = not hide
@@ -455,8 +465,7 @@ class Widget:
                 if child.visible:
                     child.render(update=False)
             if update:
-                log(f"Updating {self.area}\n")
-                self.display.update(self.area)
+                self.display.refresh(self.area)
 
     def set_on_press(self, callback):
         """Set the callback function for when the button is pressed."""
@@ -546,7 +555,7 @@ class Button(Widget):
         self.display.framebuf.round_rect(*self.area, self.radius, self.fg, f=False)
         if self.on_press_callback:
             self.on_press_callback(self)
-        self.display.update(self.area)
+        self.display.refresh(self.area)
 
     def release(self):
         log(f"{name(self)}.release()")
@@ -554,7 +563,7 @@ class Button(Widget):
         self.display.framebuf.round_rect(*self.area, self.radius, self.bg, f=False)
         if self.on_release_callback:
             self.on_release_callback(self)
-        self.display.update(self.area)
+        self.display.refresh(self.area)
 
 
 class Label(Widget):
