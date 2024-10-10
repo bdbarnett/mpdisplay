@@ -143,12 +143,14 @@ class Widget:
         self.align_to: Widget = align_to or parent
         self._value = value  # Value of the widget (e.g., text of a label)
         self.children: list[Widget] = []
+        self.dirty_widgets = set()
+        self.dirty_descendants = set()
+        self.invalidated = False
         self.on_change_callback = None
         self.on_press_callback = None
         self.on_release_callback = None
         if parent:
             self.parent.add_child(self)
-            self.render()
 
     @property
     def area(self):
@@ -185,7 +187,7 @@ class Widget:
     def x(self, x):
         if x != self._x:
             self._x = x
-            self.render()
+            self.invalidate()
 
     @property
     def y(self):
@@ -212,7 +214,7 @@ class Widget:
     def y(self, y):
         if y != self._y:
             self._y = y
-            self.render()
+            self.invalidate()
 
     @property
     def width(self):
@@ -222,7 +224,7 @@ class Widget:
     def width(self, w):
         if w != self._w:
             self._w = w
-            self.render()
+            self.invalidate()
 
     @property
     def height(self):
@@ -232,7 +234,7 @@ class Widget:
     def height(self, h):
         if h != self._h:
             self._h = h
-            self.render()
+            self.invalidate()
 
     @property
     def display(self):
@@ -253,7 +255,7 @@ class Widget:
         if visible != self._visible:
             if not self.visible:
                 self._visible = True
-                self.render()
+                self.invalidate()
             else:
                 self._visible = False
                 self.parent.draw(self.area)
@@ -269,10 +271,11 @@ class Widget:
             self._value = value
             self.changed()
 
-    def add_child(self, widget):
+    def add_child(self, child):
         """Adds a child widget to the current widget."""
-        log(f"{name(self)}.add_child({name(widget)})")
-        self.children.append(widget)
+        log(f"{name(self)}.add_child({name(child)})")
+        self.children.append(child)
+        child.invalidate()
 
     def changed(self):
         """Called when the value of the widget changes.  May be overridden in subclasses.
@@ -281,7 +284,7 @@ class Widget:
         if self.visible:
             if self.on_change_callback:
                 self.on_change_callback(self)
-            self.render()
+            self.invalidate()
 
     def draw(self, area=None):
         """
@@ -314,15 +317,39 @@ class Widget:
         self.children.remove(widget)
         widget.parent = None
 
-    def render(self, update=True):
-        if self.visible:
-            log(f"{drawing(self)}, show={update}")
+    def invalidate(self):
+        if not self.invalidated:
+            self.invalidated = True
+            if self.parent:
+                self.parent.add_dirty_widget(self)
+    
+    def add_dirty_widget(self, child):
+        self.dirty_widgets.add(child)
+        self.dirty_descendants.add(child)
+        if self.parent:
+            self.parent.add_dirty_descendant(self)
+    
+    def add_dirty_descendant(self, branch):
+        self.dirty_descendants.add(branch)
+        if self.parent:
+            self.parent.add_dirty_descendant(self)
+
+    def render(self):
+        if self.invalidated:
+            log(f"{drawing(self)}")
             self.draw()
-            for child in self.children:
-                if child.visible:
-                    child.render(update=False)
-            if update:
-                self.display.refresh(self.area)
+            self.invalidated = False
+            if self.parent:
+                self.parent.remove_dirty_widget(self)
+    
+    def remove_dirty_widget(self, child):
+        self.dirty_widgets.discard(child)
+        if not self.dirty_widgets and not self.dirty_descendants:
+            if self.parent:
+                self.parent.remove_dirty_descendant(self)
+
+    def remove_dirty_descendant(self, branch):
+        self.dirty_descendants.discard(branch)
 
     def set_on_press(self, callback):
         """Set the callback function for when the button is pressed."""
@@ -472,7 +499,26 @@ class Display(Widget):
         for task in self._tasks:
             if t >= task.next_run:
                 task.run(t)
+        self.render_dirty_widgets()
         self._tick_busy = False
+
+    def render_dirty_widgets(self):
+        # Non-recursive redraw traversal using an explicit stack
+        # Use a stack to avoid recursion / stack overflow
+        stack = list(self.dirty_descendants)
+        dirty_area = None
+        while stack:
+            widget = stack.pop()
+            if widget.invalidated:
+                widget.render()
+                if dirty_area is None:
+                    dirty_area = widget.area
+                else:
+                    dirty_area += widget.area
+            stack.extend(reversed(list(widget.dirty_widgets)))
+            stack.extend(reversed(list(widget.dirty_descendants)))
+        if dirty_area:
+            self.refresh(dirty_area)
 
     def __getattr__(self, name):
         if name in _display_drv_get_attrs:
