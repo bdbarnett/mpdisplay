@@ -70,7 +70,7 @@ light_status = [False] * len(_light_areas)
 ########### Define the screen functions
 def init_screen():
     display_drv.blit_rect(_bmp(0, 0, width, height), 0, 0, width, height)
-    display_drv.blit_rect(_bmp(*_led_area.offset_by(width)), *_led_area)
+    display_drv.blit_rect(_bmp(*_led_area.shift(width)), *_led_area)
     set_acty(False)
 
 def write_char(char, pos):
@@ -85,7 +85,7 @@ def write_string(string, pos):
 
 def set_area(area, status):
     offset = width if status else 0
-    display_drv.blit_rect(_bmp(*area.offset_by(offset)), *area)
+    display_drv.blit_rect(_bmp(*area.shift(offset)), *area)
 
 def set_light(light, status=None):
     light_status[light] = status if status is not None else not light_status[light]
