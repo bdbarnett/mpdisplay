@@ -76,17 +76,35 @@ class Area:
         if self.y + self.h <= other.y or other.y + other.h <= self.y:
             return False
         return True
-
-    def offset_by(self, dx=0, dy=0):
+    
+    def touches_or_intersects(self, other):
         """
-        Returns a new Area offset by the specified amount in the x and y directions.
+        Checks if the current Area object touches or intersects with another Area object.
 
         Args:
-            dx (int | float): The amount to offset the area in the x direction.
-            dy (int | float): The amount to offset the area in the y direction.
+            other (Area): The other Area object to check for overlap or touch.
 
         Returns:
-            Area: A new Area object offset by the specified amount in the x and y directions.
+            bool: True if the two Area objects touch or intersect, False otherwise.
+        """
+        # Check if one rectangle is to the left of the other
+        if self.x + self.w < other.x or other.x + other.w < self.x:
+            return False
+        # Check if one rectangle is above the other
+        if self.y + self.h < other.y or other.y + other.h < self.y:
+            return False
+        return True
+
+    def shift(self, dx=0, dy=0):
+        """
+        Returns a new Area shifted by the specified amount in the x and y directions.
+
+        Args:
+            dx (int | float): The amount to shift the area in the x direction.
+            dy (int | float): The amount to shift the area in the y direction.
+
+        Returns:
+            Area: A new Area object shift by the specified amount in the x and y directions.
         """
         return Area(self.x + dx, self.y + dy, self.w, self.h)
 
@@ -105,6 +123,60 @@ class Area:
         w = min(self.x + self.w, other.x + other.w) - x
         h = min(self.y + self.h, other.y + other.h) - y
         return Area(x, y, w, h)
+    
+    def offset(self, d1, d2=None, d3=None, d4=None):
+        """
+        Returns a new Area offset by the specified amount(s).
+
+        If only one argument is provided, it is used as the offset in all 4 directions.
+        If two arguments are provided, the first is used as the offset in the x direction and the second as the offset in the y direction.
+        If three arguments are provided, they are used as the offsets in the left, top/bottom, and right directions, respectively.
+        If four arguments are provided, they are used as the offsets in the left, top, right, and bottom directions, respectively.
+
+        Args:
+            d1 (int | float): The offset in the x direction or the offset in all 4 directions.
+            d2 (int | float): The offset in the y direction or the offset in the top/bottom direction.
+            d3 (int | float): The offset in the right direction.
+            d4 (int | float): The offset in the bottom direction.
+
+        Returns:
+            Area: A new Area object offset by the specified amount(s).
+        """
+        if d2 is None:
+            d2 = d3 = d4 = d1
+        elif d3 is None:
+            d3 = d1
+            d4 = d2
+        elif d4 is None:
+            d4 = d2
+        return Area(self.x - d1, self.y - d2, self.w + d1 + d3, self.h + d2 + d4)
+    
+    def inset(self, d1, d2=None, d3=None, d4=None):
+        """
+        Returns a new Area inset by the specified amount(s).
+
+        If only one argument is provided, it is used as the inset in all 4 directions.
+        If two arguments are provided, the first is used as the inset in the x direction and the second as the inset in the y direction.
+        If three arguments are provided, they are used as the insets in the left, top/bottom, and right directions, respectively.
+        If four arguments are provided, they are used as the insets in the left, top, right, and bottom directions, respectively.
+
+        Args:
+            d1 (int | float): The inset in the x direction or the inset in all 4 directions.
+            d2 (int | float): The inset in the y direction or the inset in the top/bottom direction.
+            d3 (int | float): The inset in the right direction.
+            d4 (int | float): The inset in the bottom direction.
+
+        Returns:
+            Area: A new Area object inset by the specified amount(s).
+        """
+        if d2 is None:
+            d2 = d3 = d4 = d1
+        elif d3 is None:
+            d3 = d1
+            d4 = d2
+        elif d4 is None:
+            d4 = d2
+        return Area(self.x + d1, self.y + d2, self.w - d1 - d3, self.h - d2 - d4)
 
     def __eq__(self, other):
         """
