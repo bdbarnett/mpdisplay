@@ -35,7 +35,6 @@ def name(obj):
     return f"ID {obj.id}\t{obj.__class__.__name__: <12}" if hasattr(obj, "id") else f"{obj.__class__.__name__: <12}"
 
 
-
 def tick(_=None):
     for display in Display.displays:
         display.tick()
@@ -51,6 +50,7 @@ _display_drv_set_attrs = {"vscroll"}
 _PAD = const(2)
 DEFAULT_PADDING = (_PAD, _PAD, _PAD, _PAD)
 DEFAULT_ICON_SIZE = const(36)
+SMALL_ICON_SIZE = const(18)
 DEFAULT_BUTTON_SIZE = DEFAULT_ICON_SIZE + 2 * _PAD
 DEFAULT_TEXT_HEIGHT = const(16)
 TEXT_WIDTH = const(8)
@@ -186,7 +186,7 @@ class Widget:
         """Calculate the absolute x-coordinate of the widget based on align
         """
         align = self.align
-        align_to = self.align_to
+        align_to = self.align_to or self.display
 
         x = align_to.x + int(self._x)
 
@@ -207,7 +207,7 @@ class Widget:
         """Calculate the absolute y-coordinate of the widget based on align
         """
         align = self.align
-        align_to = self.align_to
+        align_to = self.align_to or self.display
 
         y = align_to.y + int(self._y)
 
@@ -702,7 +702,7 @@ class Label(Widget):
         Draw the label's text on the screen, using absolute coordinates.
         Optionally fills the background first if `bg` is set.
         """
-        if self.bg != self.parent.theme.transparent:
+        if self.bg is not self.parent.theme.transparent:
             self.display.framebuf.fill_rect(*self.padded_area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.padded_area
         self.display.framebuf.text(self.value, x, y, self.fg, height=self.text_height, scale=self._scale, inverted=self._inverted, font_file=self._font_file)
@@ -813,8 +813,11 @@ class IconButton(Button):
         """
         fg = fg if fg is not None else parent.fg
         bg = bg if bg is not None else parent.bg
+        w = w or SMALL_ICON_SIZE + 2 * _PAD
+        h = h or SMALL_ICON_SIZE + 2 * _PAD
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
-        self.icon = Icon(self, align=ALIGN.CENTER, fg=fg, bg=bg, value=icon)
+        self.icon = Icon(self, align=ALIGN.CENTER, fg=fg, bg=bg, value=icon, padding=(0, 0, 0, 0))
+
 
 
 class CheckBox(IconButton):
@@ -831,9 +834,10 @@ class CheckBox(IconButton):
         :param bg: The background color of the checkbox (default is white).
         :param value: The initial checked state of the checkbox (default is False).
         """
+        w = w or DEFAULT_ICON_SIZE
+        h = h or DEFAULT_ICON_SIZE
         self.on_icon = ICONS + "check_box_36dp.png"
         self.off_icon = ICONS + "check_box_outline_blank_36dp.png"
-        
         # Set initial icon based on the value (checked state)
         icon = self.on_icon if value else self.off_icon
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon)
@@ -868,12 +872,12 @@ class ToggleButton(IconButton):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
+        w = w or DEFAULT_ICON_SIZE
+        h = h or DEFAULT_ICON_SIZE
         self.on_icon = ICONS + "toggle_on_36dp.png"
         self.off_icon = ICONS + "toggle_off_36dp.png"
-
         # Set initial icon based on the value (on/off state)
         icon = self.on_icon if value else self.off_icon
-        
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon)
 
     def handle_event(self, event):
@@ -936,13 +940,14 @@ class RadioButton(IconButton):
         """
         if group is None:
             raise ValueError("RadioButton must be part of a RadioGroup.")
-        self.on_icon = ICONS + "radio_button_checked_36dp.png"
-        self.off_icon = ICONS + "radio_button_unchecked_36dp.png"
-
-        # Set initial icon based on the value (checked state)
-        icon = self.on_icon if value else self.off_icon
         self.group = group
         self.group.add(self)
+        w = w or DEFAULT_ICON_SIZE
+        h = h or DEFAULT_ICON_SIZE
+        self.on_icon = ICONS + "radio_button_checked_36dp.png"
+        self.off_icon = ICONS + "radio_button_unchecked_36dp.png"
+        # Set initial icon based on the value (checked state)
+        icon = self.on_icon if value else self.off_icon
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon)
 
     def handle_event(self, event):
@@ -980,8 +985,8 @@ class ProgressBar(Widget):
         :param vertical: If True, the progress bar will fill vertically.
         :param reverse: If True, the progress bar will fill in the reverse direction (top-to-bottom for vertical, right-to-left for horizontal).
         """
-        w = w or DEFAULT_ICON_SIZE if vertical else DEFAULT_ICON_SIZE * 4
-        h = h or DEFAULT_ICON_SIZE if not vertical else DEFAULT_ICON_SIZE * 4
+        w = w or (SMALL_ICON_SIZE if vertical else SMALL_ICON_SIZE * 4)
+        h = h or (SMALL_ICON_SIZE if not vertical else SMALL_ICON_SIZE * 4)
         fg = fg if fg is not None else parent.theme.on_primary
         bg = bg if bg is not None else parent.theme.primary_variant
         self.vertical = vertical
@@ -1060,9 +1065,13 @@ class Slider(ProgressBar):
         :param step: The step size for adjusting the slider value (default is 0.1).
         """
         if vertical:
-            w = w or DEFAULT_ICON_SIZE
+            w = w or SMALL_ICON_SIZE
+            h = h or parent.height if parent else 6 * SMALL_ICON_SIZE
+            align = align if align is not None else ALIGN.RIGHT
         else:
-            h = h or DEFAULT_ICON_SIZE
+            w = w or parent.width if parent else 6 * SMALL_ICON_SIZE
+            h = h or SMALL_ICON_SIZE
+            align = align if align is not None else ALIGN.BOTTOM
         self.knob_color = knob_color if knob_color is not None else parent.theme.secondary
         self.step = step  # Step size for value adjustments
         self.dragging = False  # Track whether the knob is being dragged
@@ -1159,23 +1168,27 @@ class ScrollBar(Widget):
         """
 
         if vertical:
-            w = w or DEFAULT_ICON_SIZE  # For vertical, set width and auto-calculate height
-            h = h or 6 * DEFAULT_ICON_SIZE
+            w = w or SMALL_ICON_SIZE
+            h = h or parent.height if parent else 6 * SMALL_ICON_SIZE
+            align = align if align is not None else ALIGN.RIGHT
+            icon_size = w
         else:
-            w = w or 6 * DEFAULT_ICON_SIZE
-            h = h or DEFAULT_ICON_SIZE
+            w = w or parent.width if parent else 6 * SMALL_ICON_SIZE
+            h = h or SMALL_ICON_SIZE
+            align = align if align is not None else ALIGN.BOTTOM
+            icon_size = h
         reverse = not reverse if vertical else reverse  # Reverse the direction for vertical sliders
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
 
         # Add IconButton on each end and Slider in the middle
         if vertical:
-            self.pos_button = IconButton(self, icon=ICONS + "keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
-            self.neg_button = IconButton(self, icon=ICONS + "keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
-            self.slider = Slider(self, fg=fg, bg=bg, h=(h - self.neg_button.height - self.pos_button.height), vertical=True, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.slider = Slider(self, w=icon_size, h=h-2*icon_size, vertical=True, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
         else:
-            self.neg_button = IconButton(self, icon=ICONS + "keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
-            self.pos_button = IconButton(self, icon=ICONS + "keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
-            self.slider = Slider(self, fg=fg, bg=bg, w=(w - self.neg_button.width - self.pos_button.width), vertical=False, value=value, step=step, align=ALIGN.CENTER, knob_color=knob_color, reverse=reverse)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.slider = Slider(self, w=w-icon_size*2, h=icon_size, vertical=False, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
 
         # Set button callbacks to adjust slider value
         self.neg_button.set_on_press(lambda _: self.slider.adjust_value(-self.slider.step))

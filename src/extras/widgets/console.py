@@ -30,13 +30,13 @@ SOFTWARE.
 """
 
 import io
-from . import Widget, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, BLACK, WHITE, TEXT_HEIGHTS
+from . import Widget, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHTS
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 
 
 class Console(io.IOBase, Widget):
 
-    def __init__(self, parent, fg=WHITE, bg=BLACK, visible=True, value=None, by_char=False,
+    def __init__(self, parent, fg=None, bg=None, visible=True, value=None, by_char=False,
                  margin=1, text_height=DEFAULT_TEXT_HEIGHT, scale=1, font_file=None):
         self.margin = margin
         if text_height not in TEXT_HEIGHTS:
@@ -49,7 +49,7 @@ class Console(io.IOBase, Widget):
         self._read_obj = None
         if parent.display.vsa % self._char_height:
             raise ValueError("VSA must be a multiple of the character height.")
-        self.dirty = []
+        self.dirty_areas = []
         self.by_char = by_char
         Widget.__init__(self, parent, *parent.display.vsa_area, fg, bg, visible, value)
         self.columns = (self.width - 2 * margin) // self._char_width  # Number of characters per line
@@ -63,7 +63,7 @@ class Console(io.IOBase, Widget):
         self.display.vscroll = 0
 
     def clear(self):
-        self.dirty.append(self.display.framebuf.fill_rect(*self.area, self.bg))
+        self.dirty_areas.append(self.display.framebuf.fill_rect(*self.area, self.bg))
         self._reset_cursor()
 
     def readinto(self, buf, nbytes=0):  # overrides io.IOBase.readinto
@@ -73,8 +73,8 @@ class Console(io.IOBase, Widget):
             return None
 
     def write(self, buf, fg=None, bg=None):  # overrides io.IOBase.write
-        fg = fg if fg else self.fg
-        bg = bg if bg else self.bg
+        fg = fg if fg is not None else self.parent.fg
+        bg = bg if bg is not None else self.parent.bg
         if isinstance(buf, str):
             buf = buf.encode()
         self._draw_cursor(self.bg)  # Erase cursor
@@ -109,7 +109,7 @@ class Console(io.IOBase, Widget):
         elif c >= " ":
             if bg is not None:
                 self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos, self._char_width, self._char_height, bg)
-            self.dirty.append(self.display.framebuf.text(c, self._x_pos, self._cursor_y_pos, fg, height=self.text_height,
+            self.dirty_areas.append(self.display.framebuf.text(c, self._x_pos, self._cursor_y_pos, fg, height=self.text_height,
                                        scale=self.scale, font_file=self.font_file))
             if self.by_char:
                 self.draw()
@@ -131,7 +131,7 @@ class Console(io.IOBase, Widget):
         self.cursor_row += 1
         if self._cursor_y_rel  > self.display.vsa - self._char_height:
             self.display.vscroll = (self._cursor_y_rel + self._char_height) % self.display.vsa
-            self.dirty.append(self.display.framebuf.fill_rect(0, self._cursor_y_pos, self.width, self._char_height, 0))
+            self.dirty_areas.append(self.display.framebuf.fill_rect(0, self._cursor_y_pos, self.width, self._char_height, 0))
         self.cursor_max_row = self.cursor_row
 
     def _backspace(self):
@@ -143,10 +143,10 @@ class Console(io.IOBase, Widget):
             self.cursor_col -= 1
 
     def _draw_cursor(self, color):
-        self.dirty.append(self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos + self._char_height - 2, self._char_width, 1, color))
+        self.dirty_areas.append(self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos + self._char_height - 2, self._char_width, 1, color))
 
     def _clear_cursor_eol(self):
-        self.dirty.append(
+        self.dirty_areas.append(
             self.display.framebuf.fill_rect(
                 self._x_pos,
                 self._cursor_y_pos,
@@ -156,7 +156,7 @@ class Console(io.IOBase, Widget):
             )
         )
         for line in range(self.cursor_row + 1, self.cursor_max_row + 1):
-            self.dirty.append(self.display.framebuf.fill_rect(0, line * self._char_height, self.width, self._char_height, self.bg))
+            self.dirty_areas.append(self.display.framebuf.fill_rect(0, line * self._char_height, self.width, self._char_height, self.bg))
         self.cursor_max_row = self.cursor_row
 
     @property
@@ -172,9 +172,9 @@ class Console(io.IOBase, Widget):
         return (self._cursor_y_rel % self.display.vsa) + self.display.tfa
 
     def draw(self):
-        if self.dirty:
-            dirty = self.dirty[0]
-            for area in self.dirty[1:]:
+        if self.dirty_areas:
+            dirty = self.dirty_areas[0]
+            for area in self.dirty_areas[1:]:
                 dirty += area
-            self.dirty = []
-            self.display.update(dirty)
+            self.dirty_areas = []
+            self.display.refresh(dirty)
