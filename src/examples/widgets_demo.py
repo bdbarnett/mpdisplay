@@ -3,12 +3,12 @@ import board_config
 import widgets as w
 
 
-w.DEBUG = True
-w.MARK_UPDATES = True
+w.DEBUG = False
+w.MARK_UPDATES = False
 w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
-display = w.Display(board_config.display_drv, board_config.broker, 38, 38)
+display = w.Display(board_config.display_drv, board_config.broker, 40, 40)
 pal = display.pal
 screen = w.Screen(display, None, visible=True)
 
@@ -61,15 +61,15 @@ def toggle_auto_scroll(sender):
         auto_scroll_task = None
 
 
-home = w.IconButton(top, x=2, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
-toggle = w.ToggleButton(top, x=2, align_to=home, align=w.ALIGN.OUTER_RIGHT, value=False)
-down = w.IconButton(top, x=-2, align=w.ALIGN.TOP_RIGHT, icon=w.ICONS+"keyboard_arrow_down_36dp.png")
-up = w.IconButton(top, x=-2, align_to=down, align=w.ALIGN.OUTER_LEFT, icon=w.ICONS+"keyboard_arrow_up_36dp.png")
+home = w.IconButton(top, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
+toggle = w.ToggleButton(top, align_to=home, align=w.ALIGN.OUTER_RIGHT, value=False)
+down = w.IconButton(top, align=w.ALIGN.TOP_RIGHT, icon=w.ICONS+"keyboard_arrow_down_36dp.png")
+up = w.IconButton(top, align_to=down, align=w.ALIGN.OUTER_LEFT, icon=w.ICONS+"keyboard_arrow_up_36dp.png")
 slider1 = w.Slider(top, y=9, w=up.x-toggle.x-toggle.width-16, h=18, align=w.ALIGN.TOP, value=0, step=0.05)
 
-clock = w.DigitalClock(bottom, x=-3, y=-9, align=w.ALIGN.BOTTOM_RIGHT, visible=False)
-clock_toggle = w.ToggleButton(bottom, x=-3, align_to=clock, align=w.ALIGN.OUTER_LEFT, value=False)
-status = w.TextBox(bottom, x=3, y=-9, w=clock_toggle.x-6, align=w.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
+clock = w.DigitalClock(bottom, y=-8, align=w.ALIGN.BOTTOM_RIGHT, visible=False)
+clock_toggle = w.ToggleButton(bottom, align_to=clock, align=w.ALIGN.OUTER_LEFT, value=False)
+status = w.TextBox(bottom, y=-8, w=clock_toggle.x, align=w.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
 
 button = w.Button(main, w=main.width//2, h=64, align=w.ALIGN.CENTER, label="test", radius=10, pressed_offset=5)
 # demo_alignments(button)

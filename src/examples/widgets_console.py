@@ -9,14 +9,16 @@ w.MARK_UPDATES = False
 w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
-display = w.Display(board_config.display_drv, board_config.broker)
-pal = display.pal
-screen = w.Screen(display, pal.SILVER, visible=True)
-display.set_vscroll(40, 40)
-# clock = w.DigitalClock(screen, h=8, y=2, fg=pal.BLACK, bg=pal.SILVER)
+display = w.Display(board_config.display_drv, board_config.broker, 40, 40)
+screen = w.Screen(display, visible=True)
+
+if screen.partitioned:
+    top, bottom, main = screen.top, screen.bottom, screen.main
+else:
+    top = bottom = main = screen
+
 console = Console(screen)
 console.clear()
-display.framebuf.fill_rect(*display.tfa_area, pal.RED)
 
 i=1
 while i<60:

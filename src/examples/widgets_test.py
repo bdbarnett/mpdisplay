@@ -22,6 +22,7 @@ status = w.TextBox(screen, w=screen.width, align=w.ALIGN.BOTTOM, scale=1)
 icon = w.Icon(screen, value=w.ICONS+"home_filled_36dp.png")  # noqa: F841
 
 label1 = w.Label(screen, align=w.ALIGN.TOP, value="Inverted", bg=screen.bg, scale=2, inverted=True)  # noqa: F841
+print(f"{label1.bg=}")
 toggle_button = w.ToggleButton(screen, align_to=icon, align=w.ALIGN.OUTER_RIGHT, value=False)
 def flip_label(sender):
     label1._inverted = not label1._inverted
@@ -59,18 +60,18 @@ r2_label = w.Label(radio2, value="Radio 2", align=w.ALIGN.OUTER_RIGHT, scale=2)
 radio1.set_on_change(lambda sender: status.set_value(f"RadioButton 1 is now {'checked' if sender.value else 'unchecked'}"))
 radio2.set_on_change(lambda sender: status.set_value(f"RadioButton 2 is now {'checked' if sender.value else 'unchecked'}"))
 
-scrollbar2 = w.ScrollBar(screen, w=screen.width, align_to=status, align=w.ALIGN.OUTER_TOP, vertical=False, value=0.5, reverse=REVERSE)
+scrollbar2 = w.ScrollBar(screen, align_to=status, align=w.ALIGN.OUTER_TOP, vertical=False, value=0.5, reverse=REVERSE)
 scrollbar2.slider.set_on_change(lambda sender: status.set_value(f"ScrollBar value: {sender.value:.2f}"))
 
-slider1 = w.Slider(screen, w=screen.width, align_to=scrollbar2, align=w.ALIGN.OUTER_TOP, value=0.5, step=0.05, reverse=REVERSE)
+slider1 = w.Slider(screen, align_to=scrollbar2, align=w.ALIGN.OUTER_TOP, value=0.5, step=0.05, reverse=REVERSE)
 slider1.set_on_change(lambda sender: status.set_value(f"Slider value: {sender.value:.2f}"))
 
 # # Simulate a scroll bar. Shows how to add an Icon to a Button. Also shows how to use an IconButton.
 pbar = w.ProgressBar(screen, y=slider1.y-screen.height, w=display.width//2, align=w.ALIGN.BOTTOM, value=0.5, reverse=REVERSE)
 pbar.set_on_change(lambda sender: status.set_value(f"Progress: {sender.value:.0%}"))
-pbtn1 = w.Button(pbar, align=w.ALIGN.OUTER_LEFT)
-pbtn1_icon = w.Icon(pbtn1, align=w.ALIGN.CENTER, value=w.ICONS+"keyboard_arrow_left_36dp.png")  # noqa: F841
-pbtn2 = w.IconButton(pbar, align=w.ALIGN.OUTER_RIGHT, icon=w.ICONS+"keyboard_arrow_right_36dp.png")
+pbtn1 = w.Button(pbar, w=22, h=22, align=w.ALIGN.OUTER_LEFT)
+pbtn1_icon = w.Icon(pbtn1, align=w.ALIGN.CENTER, value=w.ICONS+"keyboard_arrow_left_18dp.png")  # noqa: F841
+pbtn2 = w.IconButton(pbar, align=w.ALIGN.OUTER_RIGHT, icon=w.ICONS+"keyboard_arrow_right_18dp.png")
 pbtn1.set_on_press(lambda sender: pbar.set_value(pbar.value-0.1))
 pbtn2.set_on_press(lambda sender: pbar.set_value(pbar.value+0.1))
 
