@@ -3,14 +3,14 @@ import board_config
 import widgets as w
 
 
-w.DEBUG = False
-w.MARK_UPDATES = False
+w.DEBUG = True
+w.MARK_UPDATES = True
 w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
 display = w.Display(board_config.display_drv, board_config.broker, 38, 38)
 pal = display.pal
-screen = w.Screen(display, None, visible=False)
+screen = w.Screen(display, None, visible=True)
 
 if screen.partitioned:
     top, bottom, main = screen.top, screen.bottom, screen.main
@@ -72,7 +72,7 @@ clock_toggle = w.ToggleButton(bottom, x=-3, align_to=clock, align=w.ALIGN.OUTER_
 status = w.TextBox(bottom, x=3, y=-9, w=clock_toggle.x-6, align=w.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
 
 button = w.Button(main, w=main.width//2, h=64, align=w.ALIGN.CENTER, label="test", radius=10, pressed_offset=5)
-demo_alignments(button)
+# demo_alignments(button)
 
 scroll_jump = 5
 home.set_on_press(lambda sender: scroll_to(0))
