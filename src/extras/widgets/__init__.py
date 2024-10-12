@@ -154,6 +154,9 @@ class Widget:
                           align if align is not None else ALIGN.TOP_LEFT, align_to or parent)
         self.parent: Widget = parent
 
+    def __str__(self):
+        return f"{name(self)}\t{self.area}"
+
     @property
     def parent(self):
         return self._parent
@@ -725,7 +728,7 @@ class TextBox(Widget):
         if text_height not in TEXT_HEIGHTS:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         padding = padding if padding is not None else DEFAULT_PADDING
-        w = w or self.parent.width
+        w = w or parent.width if parent else 60
         h = h or text_height*scale + padding[1] + padding[3] + _PAD * 2
         value = value if value is not None else ""
         self.text_height = text_height
