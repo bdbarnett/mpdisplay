@@ -8,6 +8,7 @@ from palettes import get_palette
 import sys
 from random import getrandbits
 from . import pct  # noqa: F401
+from .__constants__ import ICON_SIZE, ALIGN, POSITION, TEXT_SIZE
 # from palettes.shades import ShadesPalette
 try:
     from time import ticks_ms, ticks_add
@@ -31,9 +32,6 @@ def log(*args, **kwargs):
     if DEBUG:
         print(*args, **kwargs)
 
-def name(obj):
-    return f"ID {obj.id}\t{obj.__class__.__name__: <12}" if hasattr(obj, "id") else f"{obj.__class__.__name__: <12}"
-
 
 def tick(_=None):
     for display in Display.displays:
@@ -49,38 +47,8 @@ _display_drv_set_attrs = {"vscroll"}
 
 _PAD = const(2)
 DEFAULT_PADDING = (_PAD, _PAD, _PAD, _PAD)
-DEFAULT_ICON_SIZE = const(36)
-SMALL_ICON_SIZE = const(18)
-DEFAULT_BUTTON_SIZE = DEFAULT_ICON_SIZE + 2 * _PAD
-DEFAULT_TEXT_HEIGHT = const(16)
+DEFAULT_BUTTON_SIZE = ICON_SIZE.LARGE + 2 * _PAD
 TEXT_WIDTH = const(8)
-TEXT_HEIGHTS = (8, 14, 16)
-
-_LEFT = const(1 << 0)
-_RIGHT = const(1 << 1)
-_TOP = const(1 << 2)
-_BOT = const(1 << 3)
-_OUTER = const(1 << 4)
-
-
-class ALIGN:
-    CENTER = const(0)  # 0
-    TOP_LEFT = const(_TOP | _LEFT)  # 5
-    TOP = const(_TOP)  # 4
-    TOP_RIGHT = const(_TOP | _RIGHT)  # 6
-    LEFT = const(_LEFT)  # 1
-    RIGHT = const(_RIGHT)  # 2
-    BOTTOM_LEFT = const(_BOT | _LEFT)  # 9
-    BOTTOM = const(_BOT)  # 8
-    BOTTOM_RIGHT = const(_BOT | _RIGHT)  # 10
-    OUTER_TOP_LEFT = const(_TOP | _LEFT | _OUTER)  # 21
-    OUTER_TOP = const(_TOP | _OUTER)  # 20
-    OUTER_TOP_RIGHT = const(_TOP | _RIGHT | _OUTER)  # 22
-    OUTER_LEFT = const(_LEFT | _OUTER)  # 17
-    OUTER_RIGHT = const(_RIGHT | _OUTER)  # 18
-    OUTER_BOTTOM_LEFT = const(_BOT | _LEFT | _OUTER)  # 25
-    OUTER_BOTTOM = const(_BOT | _OUTER)  # 24
-    OUTER_BOTTOM_RIGHT = const(_BOT | _RIGHT | _OUTER)  # 26
 
 
 class Theme:
@@ -155,7 +123,10 @@ class Widget:
         self.parent: Widget = parent
 
     def __str__(self):
-        return f"{name(self)}\t{self.area}"
+        return f"ID {self.id} {self.__class__.__name__}"
+    
+    def __format__(self, format_spec):
+        return f"ID {self.id} {self.__class__.__name__:{format_spec}}"
 
     @property
     def parent(self):
@@ -169,6 +140,8 @@ class Widget:
             self._parent = parent
             if self._parent:
                 self._parent.add_child(self)
+                if self.align_to is None:
+                    self.set_position(align_to=parent)
             self.invalidate()
 
     @property
@@ -193,12 +166,12 @@ class Widget:
 
         x = align_to.x + int(self._x)
 
-        if align & _LEFT:
-            if align & _OUTER:
+        if align & POSITION.LEFT:
+            if align & POSITION.OUTER:
                 x -= self.width
-        elif align & _RIGHT:
+        elif align & POSITION.RIGHT:
             x += align_to.width
-            if not align & _OUTER:
+            if not align & POSITION.OUTER:
                 x -= self.width
         else:
             x += (align_to.width - self.width) // 2
@@ -214,12 +187,12 @@ class Widget:
 
         y = align_to.y + int(self._y)
 
-        if align & _TOP:
-            if align & _OUTER:
+        if align & POSITION.TOP:
+            if align & POSITION.OUTER:
                 y -= self.height
-        elif align & _BOT:
+        elif align & POSITION.BOTTOM:
             y += align_to.height
-            if not align & _OUTER:
+            if not align & POSITION.OUTER:
                 y -= self.height
         else:
             y += (align_to.height - self.height) // 2
@@ -278,7 +251,7 @@ class Widget:
 
     def add_child(self, child):
         """Adds a child widget to the current widget."""
-        log(f"Adding\t{name(child)}\tto\t{name(self)}")
+        log(f"Adding\t{child: <12}\tto\t{self: <12}")
         self.children.append(child)
         child.invalidate()
 
@@ -308,14 +281,14 @@ class Widget:
         
         :param event: An event from the event system (e.g., mouse or keyboard event).
         """
-        # log(f"Event on\t{name(self)}\tis\t{event})")
+        # log(f"Event on\t{self: <12}\tis\t{event: <12})")
         # Propagate the event to the children of the widget
         for child in self.children:
             if child.visible:
                 try:
                     child.handle_event(event)
                 except Exception as e:
-                    log(f"Error handling event on {name(child)}: {e}")
+                    log(f"Error handling event on {child}: {e}")
 
     def hide(self, hide=True):
         self.visible = not hide
@@ -369,7 +342,7 @@ class Widget:
 
     def render(self):
         if self.invalidated:
-            log(f"Drawing\t{name(self)}\ton\t{name(self.parent)}\tat\t{self.area}")
+            log(f"Drawing\t{self: <12}\ton\t{self.parent: <12}\tat\t{self.area}")
             self.draw()
             self.invalidated = False
             if self.parent:
@@ -603,7 +576,7 @@ class Screen(Widget):
 
 class Button(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 radius=0, pressed_offset=2, pressed=False, label=None, label_color=None, label_height=DEFAULT_TEXT_HEIGHT):
+                 radius=0, pressed_offset=2, pressed=False, label=None, label_color=None, label_height=TEXT_SIZE.LARGE):
         """
         Initialize a Button widget.
 
@@ -627,7 +600,7 @@ class Button(Widget):
         label_color = label_color if label_color is not None else fg
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
         if label:
-            if label_height not in TEXT_HEIGHTS:
+            if label_height not in TEXT_SIZE:
                 raise ValueError("Text height must be 8, 14 or 16 pixels.")
             label_color = label_color if label_color is not None else parent.theme.on_primary
             self.label = Label(self, value=label, fg=label_color, bg=self.bg, text_height=label_height)
@@ -656,7 +629,7 @@ class Button(Widget):
         super().handle_event(event)
 
     def press(self):
-        log(f"Press\t{name(self)}")
+        log(f"Press\t{self}")
         self._pressed = True
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.fg, f=False)
         if self.on_press_callback:
@@ -664,7 +637,7 @@ class Button(Widget):
         self.display.refresh(self.area)
 
     def release(self):
-        log(f"Release\n{name(self)}")
+        log(f"Release\n{self}")
         self._pressed = False
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.bg, f=False)
         if self.on_release_callback:
@@ -674,7 +647,7 @@ class Button(Widget):
 
 class Label(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 text_height=DEFAULT_TEXT_HEIGHT, scale=1, inverted=False, font_file=None):
+                 text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
         """
         Initialize a Label widget to display text.
         
@@ -686,7 +659,7 @@ class Label(Widget):
         :param bg: Optional background color of the label. Default is None (no background).
         :param value: The text content of the label.
         """
-        if text_height not in TEXT_HEIGHTS:
+        if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         padding = padding if padding is not None else (0, 0, 0, 0)
         w = w or len(value) * TEXT_WIDTH * scale + padding[0] + padding[2]
@@ -694,7 +667,7 @@ class Label(Widget):
         align = align if align is not None else ALIGN.CENTER
         value = value if value is not None else ""
         self.text_height = text_height
-        self._scale = scale
+        self.scale = scale
         self._inverted = inverted
         self._font_file = font_file
         bg = bg if bg is not None else parent.theme.transparent
@@ -708,12 +681,20 @@ class Label(Widget):
         if self.bg is not self.parent.theme.transparent:
             self.display.framebuf.fill_rect(*self.padded_area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.padded_area
-        self.display.framebuf.text(self.value, x, y, self.fg, height=self.text_height, scale=self._scale, inverted=self._inverted, font_file=self._font_file)
+        self.display.framebuf.text(self.value, x, y, self.fg, height=self.text_height, scale=self.scale, inverted=self._inverted, font_file=self._font_file)
+
+    @property
+    def char_width(self):
+        return TEXT_WIDTH * self.scale
+    
+    @property
+    def char_height(self):
+        return self.text_height * self.scale
 
 
 class TextBox(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 text_height=DEFAULT_TEXT_HEIGHT, scale=1, inverted=False, font_file=None):
+                 format="", text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
         """
         Initialize a TextBox widget to display text.
         
@@ -725,14 +706,15 @@ class TextBox(Widget):
         :param height: The height of the label.
         :param fg: The color of the text (in a suitable color format).
         """
-        if text_height not in TEXT_HEIGHTS:
+        if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         padding = padding if padding is not None else DEFAULT_PADDING
         w = w or parent.width if parent else 60
-        h = h or text_height*scale + padding[1] + padding[3] + _PAD * 2
+        h = h or text_height*scale + padding[1] + padding[3]
         value = value if value is not None else ""
+        self.format = format
         self.text_height = text_height
-        self._scale = scale
+        self.scale = scale
         self._inverted = inverted
         self._font_file = font_file
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
@@ -743,8 +725,17 @@ class TextBox(Widget):
         """
         pa = self.padded_area
         self.display.framebuf.fill_rect(*pa, self.bg)
-        self.display.framebuf.text(self.value, pa.x + _PAD, pa.y + _PAD, self.fg, height=self.text_height,
-                                   scale=self._scale, inverted=self._inverted, font_file=self._font_file)
+        y = pa.y + (pa.h - self.text_height * self.scale) // 2
+        self.display.framebuf.text(f"{self.value:{self.format}}", pa.x + _PAD, y, self.fg, height=self.text_height,
+                                   scale=self.scale, inverted=self._inverted, font_file=self._font_file)
+
+    @property
+    def char_width(self):
+        return TEXT_WIDTH * self.scale
+    
+    @property
+    def char_height(self):
+        return self.text_height * self.scale
 
 
 class Icon(Widget):
@@ -816,11 +807,11 @@ class IconButton(Button):
         """
         fg = fg if fg is not None else parent.fg
         bg = bg if bg is not None else parent.bg
-        w = w or SMALL_ICON_SIZE + 2 * _PAD
-        h = h or SMALL_ICON_SIZE + 2 * _PAD
+        self.icon = Icon(None, align=ALIGN.CENTER, fg=fg, bg=bg, value=icon)
+        w = w or self.icon.width
+        h = h or self.icon.height
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
-        self.icon = Icon(self, align=ALIGN.CENTER, fg=fg, bg=bg, value=icon, padding=(0, 0, 0, 0))
-
+        self.icon.parent = self
 
 
 class CheckBox(IconButton):
@@ -837,8 +828,8 @@ class CheckBox(IconButton):
         :param bg: The background color of the checkbox (default is white).
         :param value: The initial checked state of the checkbox (default is False).
         """
-        w = w or DEFAULT_ICON_SIZE
-        h = h or DEFAULT_ICON_SIZE
+        w = w or ICON_SIZE.LARGE
+        h = h or ICON_SIZE.LARGE
         self.on_icon = ICONS + "check_box_36dp.png"
         self.off_icon = ICONS + "check_box_outline_blank_36dp.png"
         # Set initial icon based on the value (checked state)
@@ -862,7 +853,8 @@ class CheckBox(IconButton):
 
 
 class ToggleButton(IconButton):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
+                 size=ICON_SIZE.LARGE):
         """
         Initialize a ToggleButton widget.
         
@@ -875,13 +867,15 @@ class ToggleButton(IconButton):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
-        w = w or DEFAULT_ICON_SIZE
-        h = h or DEFAULT_ICON_SIZE
-        self.on_icon = ICONS + "toggle_on_36dp.png"
-        self.off_icon = ICONS + "toggle_off_36dp.png"
+        if size not in ICON_SIZE:
+            raise ValueError("Size must be one of the predefined sizes in ICON_SIZE.")
+        w = w or size
+        h = h or size
+        self.on_icon = ICONS + "toggle_on_" + str(size) + "dp.png"
+        self.off_icon = ICONS + "toggle_off_" + str(size) + "dp.png"
         # Set initial icon based on the value (on/off state)
-        icon = self.on_icon if value else self.off_icon
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon)
+        icon_file = self.on_icon if value else self.off_icon
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon_file)
 
     def handle_event(self, event):
         """Override handle_event to toggle the button when clicked."""
@@ -945,8 +939,8 @@ class RadioButton(IconButton):
             raise ValueError("RadioButton must be part of a RadioGroup.")
         self.group = group
         self.group.add(self)
-        w = w or DEFAULT_ICON_SIZE
-        h = h or DEFAULT_ICON_SIZE
+        w = w or ICON_SIZE.LARGE
+        h = h or ICON_SIZE.LARGE
         self.on_icon = ICONS + "radio_button_checked_36dp.png"
         self.off_icon = ICONS + "radio_button_unchecked_36dp.png"
         # Set initial icon based on the value (checked state)
@@ -988,8 +982,8 @@ class ProgressBar(Widget):
         :param vertical: If True, the progress bar will fill vertically.
         :param reverse: If True, the progress bar will fill in the reverse direction (top-to-bottom for vertical, right-to-left for horizontal).
         """
-        w = w or (SMALL_ICON_SIZE if vertical else SMALL_ICON_SIZE * 4)
-        h = h or (SMALL_ICON_SIZE if not vertical else SMALL_ICON_SIZE * 4)
+        w = w or (ICON_SIZE.SMALL if vertical else ICON_SIZE.SMALL * 4)
+        h = h or (ICON_SIZE.SMALL if not vertical else ICON_SIZE.SMALL * 4)
         fg = fg if fg is not None else parent.theme.on_primary
         bg = bg if bg is not None else parent.theme.primary_variant
         self.vertical = vertical
@@ -1068,12 +1062,12 @@ class Slider(ProgressBar):
         :param step: The step size for adjusting the slider value (default is 0.1).
         """
         if vertical:
-            w = w or SMALL_ICON_SIZE
-            h = h or parent.height if parent else 6 * SMALL_ICON_SIZE
+            w = w or ICON_SIZE.SMALL
+            h = h or parent.height if parent else 6 * ICON_SIZE.SMALL
             align = align if align is not None else ALIGN.RIGHT
         else:
-            w = w or parent.width if parent else 6 * SMALL_ICON_SIZE
-            h = h or SMALL_ICON_SIZE
+            w = w or parent.width if parent else 6 * ICON_SIZE.SMALL
+            h = h or ICON_SIZE.SMALL
             align = align if align is not None else ALIGN.BOTTOM
         self.knob_color = knob_color if knob_color is not None else parent.theme.secondary
         self.step = step  # Step size for value adjustments
@@ -1171,13 +1165,13 @@ class ScrollBar(Widget):
         """
 
         if vertical:
-            w = w or SMALL_ICON_SIZE
-            h = h or parent.height if parent else 6 * SMALL_ICON_SIZE
+            w = w or ICON_SIZE.SMALL
+            h = h or parent.height if parent else 6 * ICON_SIZE.SMALL
             align = align if align is not None else ALIGN.RIGHT
             icon_size = w
         else:
-            w = w or parent.width if parent else 6 * SMALL_ICON_SIZE
-            h = h or SMALL_ICON_SIZE
+            w = w or parent.width if parent else 6 * ICON_SIZE.SMALL
+            h = h or ICON_SIZE.SMALL
             align = align if align is not None else ALIGN.BOTTOM
             icon_size = h
         reverse = not reverse if vertical else reverse  # Reverse the direction for vertical sliders
@@ -1198,9 +1192,9 @@ class ScrollBar(Widget):
         self.pos_button.set_on_press(lambda _: self.slider.adjust_value(self.slider.step))
 
 
-class DigitalClock(TextBox):
+class DigitalClock(Label):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 text_height=DEFAULT_TEXT_HEIGHT):
+                 text_height=TEXT_SIZE.LARGE, scale=1):
         """
         Initialize a DigitalClock widget to display the current time.
         
@@ -1211,12 +1205,13 @@ class DigitalClock(TextBox):
         :param fg: The color of the text (in a suitable color format).
         :param bg: The background color of the digital clock.
         """
-        if text_height not in TEXT_HEIGHTS:
+        if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
-        w = w or (TEXT_WIDTH +1) * 8
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, text_height)
+        w = w or (TEXT_WIDTH) * 8 * scale
+        super().__init__(parent, x, y, w, h, align, align_to, parent.fg, parent.bg, visible, value, padding, text_height, scale)
         self.task = self.display.add_task(self.update_time, 1000)
 
     def update_time(self):
-        y, m, d, h, min, sec, *_ = localtime()
-        self.value = f"{h:02}:{min:02}:{sec:02}"
+        if self.visible:
+            y, m, d, h, min, sec, *_ = localtime()
+            self.value = f"{h:02}:{min:02}:{sec:02}"
