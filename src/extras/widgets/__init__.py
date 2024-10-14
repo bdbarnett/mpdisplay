@@ -113,20 +113,59 @@ class Widget:
         self.dirty_widgets = set()
         self.dirty_descendants = set()
         self.invalidated = False
-        self.on_change_callback = None
-        self.on_press_callback = None
-        self.on_release_callback = None
+        self._event_callbacks = {}
 
         self._x = self._y = self._w = self._h = self._align = self._align_to = None
         self.set_position(x, y, w or parent.width, h or parent.height,
                           align if align is not None else ALIGN.TOP_LEFT, align_to or parent)
         self.parent: Widget = parent
+        self._register_callbacks()
 
     def __str__(self):
         return f"ID {self.id} {self.__class__.__name__}"
     
     def __format__(self, format_spec):
         return f"ID {self.id} {self.__class__.__name__:{format_spec}}"
+
+    def _register_callbacks(self):
+        """
+        Register event callbacks for the widget.  Subclasses should override this method to register event callbacks.
+        """
+        pass
+
+    def add_event_cb(self, event_type: int, callback: callable, data=None):
+        # Look in self._event_callbacks for the event_type.  The value is a dictionary.
+        # Each item's key is the callback and value is the optional data.  If the event_type is not found,
+        # add it to the dictionary with the callback and data.
+        data = data or self
+        if event_type not in self._event_callbacks:
+            self._event_callbacks[event_type] = {}
+        self._event_callbacks[event_type][callback] = data
+
+    def remove_event_cb(self, event_type: int, callback: callable):
+        # Look in self._event_callbacks for the event_type.  If found, remove the callback from the dictionary.
+        if event_type in self._event_callbacks:
+            self._event_callbacks[event_type].pop(callback, None)
+
+    def handle_event(self, event, condition=None):
+        """
+        Handle an event and propagate it to child widgets.  Subclasses that need to handle events
+        should override this method and call this method to propagate the event to children.
+        
+        :param event: An event from the event system (e.g., mouse or keyboard event).
+        """
+        # log(f"Event on\t{self: <12}\tis\t{event: <12})")
+        if condition is None:
+            if event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP, Events.MOUSEMOTION):
+                condition = lambda child, e: child.padded_area.contains(self.display.translate_point(e.pos))  # noqa: E731
+            else:
+                condition = lambda child, e: True  # noqa: E731
+        for child in self.children:
+            if child.visible:
+                if condition(child, event):
+                    for callback, data in child._event_callbacks.get(event.type, {}).items():
+                        callback(data, event)
+                child.handle_event(event, condition)
 
     @property
     def parent(self):
@@ -220,7 +259,7 @@ class Widget:
         return self.parent.display
 
     @property
-    def theme(self):
+    def theme(self) -> Theme:
         return self.display.theme
 
     @property
@@ -260,8 +299,6 @@ class Widget:
         If overridden, the subclass should call this method to trigger the on_change_callback and invalidate.
         """
         if self.visible:
-            if self.on_change_callback:
-                self.on_change_callback(self)
             self.invalidate()
 
     def draw(self, area=None):
@@ -273,22 +310,6 @@ class Widget:
         if self.bg is not None:
             area = area or self.area
             self.display.framebuf.fill_rect(*area, self.bg)
-
-    def handle_event(self, event):
-        """
-        Handle an event and propagate it to child widgets.  Subclasses that need to handle events
-        should override this method and call this method to propagate the event to children.
-        
-        :param event: An event from the event system (e.g., mouse or keyboard event).
-        """
-        # log(f"Event on\t{self: <12}\tis\t{event: <12})")
-        # Propagate the event to the children of the widget
-        for child in self.children:
-            if child.visible:
-                try:
-                    child.handle_event(event)
-                except Exception as e:
-                    log(f"Error handling event on {child}: {e}")
 
     def hide(self, hide=True):
         self.visible = not hide
@@ -356,18 +377,6 @@ class Widget:
 
     def remove_dirty_descendant(self, branch):
         self.dirty_descendants.discard(branch)
-
-    def set_on_press(self, callback):
-        """Set the callback function for when the button is pressed."""
-        self.on_press_callback = callback
-
-    def set_on_release(self, callback):
-        """Set the callback function for when the button is released."""
-        self.on_release_callback = callback
-
-    def set_on_change(self, callback):
-        """Set the callback function for when the value of the widget changes."""
-        self.on_change_callback = callback
 
     def set_value(self, value):
         self.value = value
@@ -607,6 +616,10 @@ class Button(Widget):
         else:
             self.label = None
 
+    def _register_callbacks(self):
+        self.add_event_cb(Events.MOUSEBUTTONDOWN, self.press)
+        self.add_event_cb(Events.MOUSEBUTTONUP, self.release)
+
     def draw(self, _=None):
         """
         Draw the button background and shape only.
@@ -614,34 +627,16 @@ class Button(Widget):
         self.parent.draw(self.area)
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.bg, f=True)
 
-    def handle_event(self, event: Events.Any):
-        """
-        Handle user input events like clicks.
-
-        :param event: An event from the event system (e.g., mouse click).
-        """
-        if self.padded_area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
-            self.press()
-        elif self._pressed and event.type == Events.MOUSEBUTTONUP:
-            self.release()
-
-        # Propagate the event to the children of the button
-        super().handle_event(event)
-
-    def press(self):
+    def press(self, data=None, event=None):
         log(f"Press\t{self}")
         self._pressed = True
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.fg, f=False)
-        if self.on_press_callback:
-            self.on_press_callback(self)
         self.display.refresh(self.area)
 
-    def release(self):
+    def release(self, data=None, event=None):
         log(f"Release\n{self}")
         self._pressed = False
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.bg, f=False)
-        if self.on_release_callback:
-            self.on_release_callback(self)
         self.display.refresh(self.area)
 
 
@@ -791,7 +786,7 @@ class Icon(Widget):
 
 class IconButton(Button):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 icon=None):
+                 icon_file=None):
         """
         Initialize an IconButton widget to display an icon on a button.
         
@@ -803,56 +798,63 @@ class IconButton(Button):
         :param fg: The color of the icon button (in a suitable color format).
         :param bg: The background color of the icon button.
         :param value: The value of the icon button.
-        :param icon: The icon file to display on the button.
+        :param icon_file: The icon file to display on the button.
         """
         fg = fg if fg is not None else parent.fg
         bg = bg if bg is not None else parent.bg
-        self.icon = Icon(None, align=ALIGN.CENTER, fg=fg, bg=bg, value=icon)
+        self.icon = Icon(None, align=ALIGN.CENTER, fg=fg, bg=bg, value=icon_file)
         w = w or self.icon.width
         h = h or self.icon.height
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
         self.icon.parent = self
 
 
-class CheckBox(IconButton):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None):
+class Toggle(IconButton):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
+                 on_file=None, off_file=None):
         """
-        Initialize a CheckBox widget that toggles between checked and unchecked states.
+        An IconButton that toggles between two states (on and off).  Serves as a base widget for 
+        ToggleButton, CheckBox, and RadioButton widgets but may be used on its own.  Requires an
+        on_file and optionally an off_file.  If only a single file is provided, the widget will 
+        change colors when toggled.
         
-        :param parent: The parent widget or screen that contains this checkbox.
-        :param x: The x-coordinate of the checkbox.
-        :param y: The y-coordinate of the checkbox.
-        :param w: The width of the checkbox (default is 20).
-        :param h: The height of the checkbox (default is 20).
-        :param fg: The foreground color of the checkbox (default is black).
-        :param bg: The background color of the checkbox (default is white).
-        :param value: The initial checked state of the checkbox (default is False).
+        :param parent: The parent widget or screen that contains this toggle button.
+        :param x: The x-coordinate of the toggle button.
+        :param y: The y-coordinate of the toggle button.
+        :param w: The width of the toggle button (default is 20).
+        :param h: The height of the toggle button (default is 20).
+        :param fg: The foreground color of the toggle button (default is black).
+        :param bg: The background color of the toggle button (default is white).
+        :param value: The initial state of the toggle button (default is False, meaning off).
+        :param on_file: The icon file to display when the button is toggled on.  Required.
+        :param off_file: The icon file to display when the button is toggled off.  Optional.
         """
-        w = w or ICON_SIZE.LARGE
-        h = h or ICON_SIZE.LARGE
-        self.on_icon = ICONS + "check_box_36dp.png"
-        self.off_icon = ICONS + "check_box_outline_blank_36dp.png"
-        # Set initial icon based on the value (checked state)
-        icon = self.on_icon if value else self.off_icon
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon)
+        if not on_file:
+            raise ValueError("An on_file file must be provided.")
+        self.on_file = on_file
+        self.off_file = off_file
+        icon_file = self.off_file if self.off_file and not value else self.on_file
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon_file)
+        self.changed()
 
-    def handle_event(self, event):
-        """Override handle_event to toggle the CheckBox when clicked."""
-        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
-            self.toggle()
-        Widget.handle_event(self, event)  # Propagate to children if necessary
+    def _register_callbacks(self):
+        self.add_event_cb(Events.MOUSEBUTTONDOWN, self.toggle)
 
-    def toggle(self):
-        """Toggle the checked state when the checkbox is pressed."""
-        self.value = not self.value  # Toggle the boolean value
+    def toggle(self, data=None, event=None):
+        """Toggle the on/off state of the button."""
+        self.value = not self.value  # Invert the current state
 
     def changed(self):
-        """Update the icon based on the current checked state."""
-        self.icon.value = self.on_icon if self.value else self.off_icon
+        """Update the icon based on the current on/off state."""
+        # Update the icon value based on the current toggle state
+        if self.off_file:
+            self.icon.value = self.on_file if self.value else self.off_file
+        else:
+            self.icon.fg = self.fg if self.value else self.theme.tertiary
         super().changed()  # Call the parent changed method
 
 
-class ToggleButton(IconButton):
+class ToggleButton(Toggle):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
                  size=ICON_SIZE.LARGE):
         """
@@ -867,31 +869,29 @@ class ToggleButton(IconButton):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
-        if size not in ICON_SIZE:
-            raise ValueError("Size must be one of the predefined sizes in ICON_SIZE.")
-        w = w or size
-        h = h or size
-        self.on_icon = ICONS + "toggle_on_" + str(size) + "dp.png"
-        self.off_icon = ICONS + "toggle_off_" + str(size) + "dp.png"
-        # Set initial icon based on the value (on/off state)
-        icon_file = self.on_icon if value else self.off_icon
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon_file)
+        on_file = ICONS + "toggle_on_" + str(size) + "dp.png"
+        off_file = ICONS + "toggle_off_" + str(size) + "dp.png"
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
-    def handle_event(self, event):
-        """Override handle_event to toggle the button when clicked."""
-        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
-            self.toggle()  # Toggle the state when clicked
-        Widget.handle_event(self, event)  # Propagate to children if necessary
 
-    def toggle(self):
-        """Toggle the on/off state of the button."""
-        self.value = not self.value  # Invert the current state
-
-    def changed(self):
-        """Update the icon based on the current on/off state."""
-        # Update the icon value based on the current toggle state
-        self.icon.value = self.on_icon if self.value else self.off_icon
-        super().changed()  # Call the parent changed method
+class CheckBox(Toggle):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
+                 size=ICON_SIZE.LARGE):
+        """
+        Initialize a CheckBox widget.
+        
+        :param parent: The parent widget or screen that contains this toggle button.
+        :param x: The x-coordinate of the toggle button.
+        :param y: The y-coordinate of the toggle button.
+        :param w: The width of the toggle button (default is 20).
+        :param h: The height of the toggle button (default is 20).
+        :param fg: The foreground color of the toggle button (default is black).
+        :param bg: The background color of the toggle button (default is white).
+        :param value: The initial state of the toggle button (default is False, meaning off).
+        """
+        on_file = ICONS + "check_box_" + str(size) + "dp.png"
+        off_file = ICONS + "check_box_outline_blank_" + str(size) + "dp.png"
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
 
 class RadioGroup:
@@ -919,50 +919,33 @@ class RadioGroup:
             radio_button.value = (radio_button == selected_button)
 
 
-class RadioButton(IconButton):
+class RadioButton(Toggle):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
-        group: RadioGroup=None):
+                 size=ICON_SIZE.LARGE, group: RadioGroup=None):
         """
-        Initialize a RadioButton widget that is part of a RadioGroup.
+        Initialize a RadioButton widget.
         
-        :param parent: The parent widget or screen that contains this radio button.
-        :param group: The RadioGroup this button belongs to.
-        :param x: The x-coordinate of the radio button.
-        :param y: The y-coordinate of the radio button.
-        :param w: The width of the radio button (default is 20).
-        :param h: The height of the radio button (default is 20).
-        :param fg: The foreground color of the radio button (default is black).
-        :param bg: The background color of the radio button (default is white).
-        :param value: The initial checked state of the radio button (default is False).
+        :param parent: The parent widget or screen that contains this toggle button.
+        :param x: The x-coordinate of the toggle button.
+        :param y: The y-coordinate of the toggle button.
+        :param w: The width of the toggle button (default is 20).
+        :param h: The height of the toggle button (default is 20).
+        :param fg: The foreground color of the toggle button (default is black).
+        :param bg: The background color of the toggle button (default is white).
+        :param value: The initial state of the toggle button (default is False, meaning off).
         """
         if group is None:
             raise ValueError("RadioButton must be part of a RadioGroup.")
         self.group = group
         self.group.add(self)
-        w = w or ICON_SIZE.LARGE
-        h = h or ICON_SIZE.LARGE
-        self.on_icon = ICONS + "radio_button_checked_36dp.png"
-        self.off_icon = ICONS + "radio_button_unchecked_36dp.png"
-        # Set initial icon based on the value (checked state)
-        icon = self.on_icon if value else self.off_icon
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, icon)
+        on_file = ICONS + "radio_button_checked_" + str(size) + "dp.png"
+        off_file = ICONS + "radio_button_unchecked_" + str(size) + "dp.png"
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
-    def handle_event(self, event):
-        """Override handle_event to toggle the RadioButton when clicked."""
-        if self.area.contains(self.display.translate_point(event.pos)) and event.type == Events.MOUSEBUTTONDOWN:
-            self.toggle()  # Toggle the state when clicked
-        Widget.handle_event(self, event)  # Propagate to children if necessary
-
-    def toggle(self):
+    def toggle(self, data=None, event=None):
         """Toggle the checked state to true when clicked and uncheck other RadioButtons in the group."""
         if not self.value:  # Only toggle if not already checked
             self.group.set_checked(self)  # Uncheck all other buttons in the group
-
-    def changed(self):
-        """Update the icon based on the current checked state."""
-        # Update the icon value based on the current checked state
-        self.icon.value = self.on_icon if self.value else self.off_icon
-        super().changed()  # Call the parent changed method
 
 
 class ProgressBar(Widget):
@@ -990,7 +973,6 @@ class ProgressBar(Widget):
         self.reverse = reverse
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
         self.end_radius = self.padded_area.w//2 if self.vertical else self.padded_area.h//2
-        log("TODO:  ProgressBar - move draw_ends to __init__")
 
     def draw_ends(self):
         """
@@ -1075,6 +1057,11 @@ class Slider(ProgressBar):
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, vertical, reverse)
         self.knob_radius = self.end_radius
 
+    def _register_callbacks(self):
+        self.add_event_cb(Events.MOUSEBUTTONDOWN, self.event_callback)
+        self.add_event_cb(Events.MOUSEBUTTONUP, self.event_callback)
+        self.add_event_cb(Events.MOUSEMOTION, self.event_callback)
+
     def draw(self, _=None):
         """Draw the slider, including the progress bar and the circular knob."""
         super().draw()  # Draw the base progress bar
@@ -1085,7 +1072,7 @@ class Slider(ProgressBar):
         # Draw the knob as a filled circle with correct radius
         self.display.framebuf.circle(*knob_center, self.knob_radius, self.knob_color, f=True)
 
-    def handle_event(self, event):
+    def event_callback(self, data, event):
         """Handle user input events like clicks, dragging, and mouse movements."""
         if self.dragging:
             if event.type == Events.MOUSEBUTTONUP:
@@ -1183,13 +1170,13 @@ class ScrollBar(Widget):
             self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
             self.slider = Slider(self, w=icon_size, h=h-2*icon_size, vertical=True, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
         else:
-            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
-            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
             self.slider = Slider(self, w=w-icon_size*2, h=icon_size, vertical=False, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
 
         # Set button callbacks to adjust slider value
-        self.neg_button.set_on_press(lambda _: self.slider.adjust_value(-self.slider.step))
-        self.pos_button.set_on_press(lambda _: self.slider.adjust_value(self.slider.step))
+        self.neg_button.add_event_cb(Events.MOUSEBUTTONDOWN, lambda _, e: self.slider.adjust_value(-self.slider.step))
+        self.pos_button.add_event_cb(Events.MOUSEBUTTONDOWN, lambda _, e: self.slider.adjust_value(self.slider.step))
 
 
 class DigitalClock(Label):

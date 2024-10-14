@@ -31,15 +31,15 @@ class _ICON_SIZE(_CONSTANTS):
     MEDIUM = const(24)
     LARGE = const(36)
     XLARGE = const(48)
-
 ICON_SIZE = _ICON_SIZE()
+
 
 class _TEXT_SIZE(_CONSTANTS):
     SMALL = const(8)
     MEDIUM = const(14)
     LARGE = const(16)
-
 TEXT_SIZE = _TEXT_SIZE()
+
 
 class _POSITION(_CONSTANTS):
     LEFT = const(1 << 0)
@@ -47,7 +47,6 @@ class _POSITION(_CONSTANTS):
     TOP = const(1 << 2)
     BOTTOM = const(1 << 3)
     OUTER = const(1 << 4)
-
 POSITION = _POSITION()
 
 
@@ -69,44 +68,4 @@ class _ALIGN(_CONSTANTS):
     OUTER_BOTTOM_LEFT = const(POSITION.BOTTOM | POSITION.LEFT | POSITION.OUTER)  # 25
     OUTER_BOTTOM = const(POSITION.BOTTOM | POSITION.OUTER)  # 24
     OUTER_BOTTOM_RIGHT = const(POSITION.BOTTOM | POSITION.RIGHT | POSITION.OUTER)  # 26
-
 ALIGN = _ALIGN()
-
-
-
-class STATE:
-    DEFAULT = const(0)
-    CHECKED = const(0b1)
-    FOCUSED = const(0b10)
-    FOCUS_KEY = const(0b100)
-    EDITED = const(0b1000)
-    HOVERED = const(0b10000)
-    PRESSED = const(0b100000)
-    SCROLLED = const(0b1000000)
-    DISABLED = const(0b10000000)
-
-class EVENT:
-    ALL = const(0)
-    PRESSED = const(0b1)
-    PRESSING = const(0b10)
-    PRESS_LOST = const(0b100)
-    SHORT_CLICKED = const(0b1000)
-    LONG_PRESSED = const(0b10000)
-    LONG_PRESSED_REPEAT = const(0b100000)
-    CLICKED = const(0b1000000)
-    RELEASED = const(0b10000000)
-    DELETE = const(0b100000000)
-    SIZE_CHANGED = const(0b1000000000)
-    REFRESH = const(0b10000000000)
-
-
-
-class FLAG:
-    HIDDEN = const(0b1)
-    CLICKABLE = const(0b10)
-    CLICK_FOCUSABLE = const(0b100)
-    CHECKABLE = const(0b1000)
-    SCROLLABLE = const(0b10000)
-    SCROLL_ELASTIC = const(0b100000)
-    SCROLL_MOMENTUM = const(0b1000000)
-    SCROLL_ONE = const(0b10000000)

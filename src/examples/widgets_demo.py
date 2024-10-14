@@ -52,7 +52,7 @@ def scroll_to(value):
     display.vscroll = value
 
 auto_scroll_task = None
-def toggle_auto_scroll(sender):
+def toggle_auto_scroll(sender, event=None):
     global auto_scroll_task
     if not auto_scroll_task:
         auto_scroll_task = display.add_task(lambda: scroll_by(1), 1)
@@ -61,10 +61,10 @@ def toggle_auto_scroll(sender):
         auto_scroll_task = None
 
 
-home = w.IconButton(top, align=w.ALIGN.TOP_LEFT, icon=w.ICONS+"home_filled_36dp.png")
+home = w.IconButton(top, align=w.ALIGN.TOP_LEFT, icon_file=w.ICONS+"home_filled_36dp.png")
 toggle = w.ToggleButton(top, align_to=home, align=w.ALIGN.OUTER_RIGHT, value=False)
-down = w.IconButton(top, align=w.ALIGN.TOP_RIGHT, icon=w.ICONS+"keyboard_arrow_down_36dp.png")
-up = w.IconButton(top, align_to=down, align=w.ALIGN.OUTER_LEFT, icon=w.ICONS+"keyboard_arrow_up_36dp.png")
+down = w.IconButton(top, align=w.ALIGN.TOP_RIGHT, icon_file=w.ICONS+"keyboard_arrow_down_36dp.png")
+up = w.IconButton(top, align_to=down, align=w.ALIGN.OUTER_LEFT, icon_file=w.ICONS+"keyboard_arrow_up_36dp.png")
 slider1 = w.Slider(top, y=9, w=up.x-toggle.x-toggle.width-16, h=18, align=w.ALIGN.TOP, value=0, step=0.05)
 
 clock = w.DigitalClock(bottom, y=-8, align=w.ALIGN.BOTTOM_RIGHT, visible=False)
@@ -75,14 +75,14 @@ button = w.Button(main, w=main.width//2, h=64, align=w.ALIGN.CENTER, label="test
 # demo_alignments(button)
 
 scroll_jump = 5
-home.set_on_press(lambda sender: scroll_to(0))
-toggle.set_on_change(toggle_auto_scroll)
-down.set_on_press(lambda sender: scroll_by(-scroll_jump))
-up.set_on_press(lambda sender: scroll_by(scroll_jump))
-slider1.set_on_change(lambda sender: scroll_to(int(sender.value * display.vsa)))
-button.set_on_press(lambda sender: status.set_value("Button pressed"))
-button.set_on_release(lambda sender: status.set_value("Button released"))
-clock_toggle.set_on_change(lambda sender: clock.hide(not sender.value))
+home.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_to(0))
+toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, toggle_auto_scroll)
+down.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(-scroll_jump))
+up.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(scroll_jump))
+# slider1.set_on_change(lambda sender, e: scroll_to(int(sender.value * display.vsa)))
+button.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button pressed"))
+button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released"))
+clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
 
 screen.visible = True
 

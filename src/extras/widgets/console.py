@@ -30,16 +30,16 @@ SOFTWARE.
 """
 
 import io
-from . import Widget, DEFAULT_TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHTS
+from . import Widget, TEXT_SIZE, TEXT_WIDTH
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 
 
 class Console(io.IOBase, Widget):
 
     def __init__(self, parent, fg=None, bg=None, visible=True, value=None, by_char=False,
-                 margin=1, text_height=DEFAULT_TEXT_HEIGHT, scale=1, font_file=None):
+                 margin=1, text_height=TEXT_SIZE.LARGE, scale=1, font_file=None):
         self.margin = margin
-        if text_height not in TEXT_HEIGHTS:
+        if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
         self.scale = scale

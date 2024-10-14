@@ -35,7 +35,7 @@ def clock_toggle_callback(sender):
     clock.hide(not sender.value)
     history.hide(sender.value)
     entry.hide(sender.value)
-clock_toggle.set_on_change(clock_toggle_callback)
+clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
 
 button_box = w.Widget(screen, h=display.height-top_box.height, align=w.ALIGN.BOTTOM)
 cols, rows = len(button_labels[0]), len(button_labels)
@@ -126,7 +126,7 @@ clear_everything()
 
 for row in buttons:
     for button in row:
-        button.set_on_press(lambda sender: handle_key_input(sender.value))
+        button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value))
 
 screen.visible = True
 
