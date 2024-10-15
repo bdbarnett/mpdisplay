@@ -1258,7 +1258,7 @@ class ChunkError(FormatError):
 #            def close(): file.close()
 #
 #        try:
-#            w.write(file, self.rows)
+#            pw.write(file, self.rows)
 #        finally:
 #            close()
 

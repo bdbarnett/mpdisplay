@@ -18,10 +18,10 @@ class Height:
         int: The calculated percentage of the height of the widget
 
     Usage:
-        import widgets as w
+        import pywidgets as pw
         ...
-        widget = w.Widget(parent, h=100)
-        my_height = w.pct.Height(50, widget)
+        widget = pw.Widget(parent, h=100)
+        my_height = pw.pct.Height(50, widget)
         print(my_height)  # 50
         widget.height = 200
         print(my_height)  # 100
@@ -86,10 +86,10 @@ class Width:
         int: The calculated percentage of the width of the widget
 
     Usage:
-        import widgets as w
+        import pywidgets as pw
         ...
-        widget = w.Widget(parent, w=100)
-        my_width = w.pct.Width(50, widget)
+        widget = pw.Widget(parent, w=100)
+        my_width = pw.pct.Width(50, widget)
         print(my_width)  # 50
         widget.width = 200
         print(my_width)  # 100
