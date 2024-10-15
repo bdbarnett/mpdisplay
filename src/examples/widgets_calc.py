@@ -2,7 +2,7 @@
 import board_config
 import widgets as w
 
-w.DEBUG = True
+w.DEBUG = False
 
 
 digits = "0123456789."
@@ -13,7 +13,7 @@ button_labels = [["CE", "C", "BS", "/"],
                  ["1", "2", "3", "+"],
                  ["+/-", "0", ".", "="]]
 
-w.init_timer(10)  # Remove this line to use polled mode in a while loop
+# w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 display = w.Display(board_config.display_drv, board_config.broker)
 theme = display.theme
@@ -31,7 +31,7 @@ entry = w.TextBox(readout, align=w.ALIGN.BOTTOM, scale=2)
 max_entry_chars = (entry.width // entry.char_width) - 1
 entry.format = f">{max_entry_chars+1}"
 
-def clock_toggle_callback(sender):
+def clock_toggle_callback(sender, event):
     clock.hide(not sender.value)
     history.hide(sender.value)
     entry.hide(sender.value)
@@ -39,10 +39,10 @@ clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
 
 button_box = w.Widget(screen, h=display.height-top_box.height, align=w.ALIGN.BOTTOM)
 cols, rows = len(button_labels[0]), len(button_labels)
+column_width = button_box.width // cols
+row_height = button_box.height // rows
 buttons = [[w.Button(button_box, label=button_labels[j][i], value=button_labels[j][i], radius=4,
-    x=w.pct.Width(i*100/cols, button_box), y=w.pct.Height(j*100/rows, button_box),
-    w=w.pct.Width(100/cols, button_box), h=w.pct.Height(100/rows, button_box),
-    ) for i in range(cols)] for j in range(rows)]
+    x=column_width*i, y=row_height*j, w=column_width, h=row_height) for i in range(cols)] for j in range(rows)]
 
 
 def clear_everything():
@@ -60,7 +60,7 @@ def format(value):
 
 def calculate(calculation_str) -> str:
     try:
-        return format(eval(calculation_str))
+        return format(eval(calculation_str.replace(" ", "")))
     except Exception as e:
         print(f"Error: {e} in {calculation_str}")
         return "Error"
@@ -69,7 +69,7 @@ def handle_key_input(key):
     global showing_result, result, last_op, last_entry, calculation_str
     if result == "Error" and key != "CE":
         return
-    if key == "=":
+    if key == "=" or key == "\r":  # Enter
         if showing_result: # Repeat the last operation
             calculation_str = f"{result} {last_op} {last_entry}"
         else:  # Perform the operation with the entry, reusing the last entry if entry value is empty
@@ -94,21 +94,22 @@ def handle_key_input(key):
         history.value = calculation_str
         entry.value = ""
         showing_result = False
-    elif key == "+/-":
-        if entry.value[0] == "-":
-            entry.value = entry.value[1:]
-        else:
-            entry.value = "-" + entry.value
-        if showing_result:
-            result = entry.value
-    elif key == "C":
+    elif key == "+/-" or key == " ":
+        if entry.value:
+            if entry.value[0] == "-":
+                entry.value = entry.value[1:]
+            else:
+                entry.value = "-" + entry.value
+            if showing_result:
+                result = entry.value
+    elif key == "C" or key == "c":
         if showing_result:
             clear_everything()
         else:
             entry.value = ""
-    elif key == "CE":
+    elif key == "CE" or key == "\x1b":  # ESC
         clear_everything()
-    elif key == "BS":
+    elif key == "BS" or key == "\x08":  # Backspace
         if not showing_result:
             entry.value = entry.value[:-1]
     elif key in digits:
@@ -127,6 +128,8 @@ clear_everything()
 for row in buttons:
     for button in row:
         button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value))
+
+screen.add_event_cb(w.Events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
 
 screen.visible = True
 

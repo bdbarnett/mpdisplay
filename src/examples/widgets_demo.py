@@ -10,7 +10,7 @@ w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 display = w.Display(board_config.display_drv, board_config.broker, 40, 40)
 pal = display.pal
-screen = w.Screen(display, None, visible=True)
+screen = w.Screen(display, None, visible=False)
 
 if screen.partitioned:
     top, bottom, main = screen.top, screen.bottom, screen.main
@@ -79,10 +79,11 @@ home.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_to(0))
 toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, toggle_auto_scroll)
 down.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(-scroll_jump))
 up.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(scroll_jump))
-# slider1.set_on_change(lambda sender, e: scroll_to(int(sender.value * display.vsa)))
+slider1.set_change_cb(lambda sender: scroll_to(int(sender.value * display.vsa)))
 button.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button pressed"))
 button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released"))
 clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
+screen.add_event_cb(w.Events.MOUSEWHEEL, lambda sender, e: scroll_by(-e.y))
 
 screen.visible = True
 

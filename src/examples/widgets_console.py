@@ -10,7 +10,7 @@ w.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
 display = w.Display(board_config.display_drv, board_config.broker, 40, 40)
-screen = w.Screen(display, visible=True)
+screen = w.Screen(display, visible=False)
 
 if screen.partitioned:
     top, bottom, main = screen.top, screen.bottom, screen.main
@@ -19,6 +19,7 @@ else:
 
 console = Console(screen)
 console.clear()
+screen.visible = True
 
 i=1
 while i<60:

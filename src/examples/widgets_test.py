@@ -15,7 +15,7 @@ w.init_timer(10)  # Remove this line to use polled mode in a while loop
 REVERSE = False  # for troubleshooting progressbar, sliders, scrollbars
 
 display = w.Display(board_config.display_drv, board_config.broker)
-screen = w.Screen(display, visible=True)
+screen = w.Screen(display, visible=False)
 
 status = w.TextBox(screen, w=screen.width, align=w.ALIGN.BOTTOM, scale=1)
 

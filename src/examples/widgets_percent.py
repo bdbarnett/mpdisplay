@@ -22,8 +22,6 @@ clock_toggle = w.ToggleButton(bottom, align_to=clock, align=w.ALIGN.OUTER_LEFT, 
 status = w.TextBox(bottom, y=-8, w=clock_toggle.x, align=w.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
 clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
 
-screen.visible = True
-
 
 box = w.Widget(main, align=w.ALIGN.CENTER, w=100, h=100, bg=display.theme.primary)
 button = w.Button(box, align=w.ALIGN.CENTER, w=w.pct.Width(50, box), h=w.pct.Height(50, box), bg=display.theme.secondary)
@@ -31,6 +29,7 @@ def inflate_box():
     box.set_position(w=box.width+10, h=box.height+10)
 button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: inflate_box())
 
+screen.visible = True
 
 if not display.timer:
     print("Starting main loop")

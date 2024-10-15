@@ -114,6 +114,7 @@ class Widget:
         self.dirty_descendants = set()
         self.invalidated = False
         self._event_callbacks = {}
+        self._change_callback = None
 
         self._x = self._y = self._w = self._h = self._align = self._align_to = None
         self.set_position(x, y, w or parent.width, h or parent.height,
@@ -154,7 +155,6 @@ class Widget:
         
         :param event: An event from the event system (e.g., mouse or keyboard event).
         """
-        # log(f"Event on\t{self: <12}\tis\t{event: <12})")
         if condition is None:
             if event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP, Events.MOUSEMOTION):
                 condition = lambda child, e: child.padded_area.contains(self.display.translate_point(e.pos))  # noqa: E731
@@ -290,7 +290,7 @@ class Widget:
 
     def add_child(self, child):
         """Adds a child widget to the current widget."""
-        log(f"Adding\t{child: <12}\tto\t{self: <12}")
+        log("Adding", child, "to", self)
         self.children.append(child)
         child.invalidate()
 
@@ -299,6 +299,8 @@ class Widget:
         If overridden, the subclass should call this method to trigger the on_change_callback and invalidate.
         """
         if self.visible:
+            if self._change_callback:
+                self._change_callback(self)
             self.invalidate()
 
     def draw(self, area=None):
@@ -326,6 +328,9 @@ class Widget:
         """Removes a child widget from the current widget."""
         self.children.remove(widget)
         widget.parent = None
+
+    def set_change_cb(self, callback):
+        self._change_callback = callback
 
     def set_position(self, x=None, y=None, w=None, h=None, align=None, align_to=None):
         changed = False
@@ -363,7 +368,7 @@ class Widget:
 
     def render(self):
         if self.invalidated:
-            log(f"Drawing\t{self: <12}\ton\t{self.parent: <12}\tat\t{self.area}")
+            log("Drawing", self, "on", self.parent, "at", self.area)
             self.draw()
             self.invalidated = False
             if self.parent:
@@ -477,7 +482,7 @@ class Display(Widget):
 
     def refresh(self, area: Area):
         area = area.clip(self.area)
-        log(f"Refreshing\t{area}\n")
+        log("Refreshing", area)
         x, y, w, h = area
         for row in range(y, y + h):
             buffer_begin = (row * self.width + x) * 2
@@ -628,13 +633,11 @@ class Button(Widget):
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.bg, f=True)
 
     def press(self, data=None, event=None):
-        log(f"Press\t{self}")
         self._pressed = True
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.fg, f=False)
         self.display.refresh(self.area)
 
     def release(self, data=None, event=None):
-        log(f"Release\n{self}")
         self._pressed = False
         self.display.framebuf.round_rect(*self.padded_area, self.radius, self.bg, f=False)
         self.display.refresh(self.area)
@@ -971,6 +974,7 @@ class ProgressBar(Widget):
         bg = bg if bg is not None else parent.theme.primary_variant
         self.vertical = vertical
         self.reverse = reverse
+        self.end_radius = w//2 if self.vertical else h//2
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
         self.end_radius = self.padded_area.w//2 if self.vertical else self.padded_area.h//2
 
