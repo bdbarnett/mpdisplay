@@ -77,12 +77,20 @@
       "github:bdbarnett/mpdisplay/src/extras/wifi.py"
     ],
     [
+      "extras/widgets/__constants__.py",
+      "github:bdbarnett/mpdisplay/src/extras/widgets/__constants__.py"
+    ],
+    [
       "extras/widgets/__init__.py",
       "github:bdbarnett/mpdisplay/src/extras/widgets/__init__.py"
     ],
     [
       "extras/widgets/console.py",
       "github:bdbarnett/mpdisplay/src/extras/widgets/console.py"
+    ],
+    [
+      "extras/widgets/pct.py",
+      "github:bdbarnett/mpdisplay/src/extras/widgets/pct.py"
     ],
     [
       "extras/widgets/icons/LICENSE",
@@ -145,8 +153,24 @@
       "github:bdbarnett/mpdisplay/src/extras/widgets/icons/radio_button_unchecked_36dp.png"
     ],
     [
+      "extras/widgets/icons/toggle_off_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_off_18dp.png"
+    ],
+    [
+      "extras/widgets/icons/toggle_off_18dp.png:Zone.Identifier",
+      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_off_18dp.png:Zone.Identifier"
+    ],
+    [
       "extras/widgets/icons/toggle_off_36dp.png",
       "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_off_36dp.png"
+    ],
+    [
+      "extras/widgets/icons/toggle_on_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_on_18dp.png"
+    ],
+    [
+      "extras/widgets/icons/toggle_on_18dp.png:Zone.Identifier",
+      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_on_18dp.png:Zone.Identifier"
     ],
     [
       "extras/widgets/icons/toggle_on_36dp.png",

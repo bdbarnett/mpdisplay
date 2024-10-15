@@ -201,12 +201,20 @@
       "github:bdbarnett/mpdisplay/src/examples/tiny_hello.py"
     ],
     [
+      "examples/widgets_calc.py",
+      "github:bdbarnett/mpdisplay/src/examples/widgets_calc.py"
+    ],
+    [
       "examples/widgets_console.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_console.py"
     ],
     [
       "examples/widgets_demo.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_demo.py"
+    ],
+    [
+      "examples/widgets_percent.py",
+      "github:bdbarnett/mpdisplay/src/examples/widgets_percent.py"
     ],
     [
       "examples/widgets_stub.py",
