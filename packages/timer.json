@@ -15,6 +15,18 @@
     [
       "timer/_timerbase.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/_timerbase.py"
+    ],
+    [
+      "timer/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "timer/__pycache__/_sdl2.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_sdl2.cpython-312.pyc"
+    ],
+    [
+      "timer/__pycache__/_timerbase.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_timerbase.cpython-312.pyc"
     ]
   ],
   "deps": [],

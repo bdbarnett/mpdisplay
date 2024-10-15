@@ -1,23 +1,23 @@
 
 import board_config
-import widgets as w
+import pywidgets as pw
 
 
-w.DEBUG = False
-w.MARK_UPDATES = False
-w.init_timer(10)  # Remove this line to use polled mode in a while loop
+pw.DEBUG = False
+pw.MARK_UPDATES = False
+pw.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
-display = w.Display(board_config.display_drv, board_config.broker, 40, 40)
+display = pw.Display(board_config.display_drv, board_config.broker, 40, 40)
 pal = display.pal
-screen = w.Screen(display, None, visible=False)
+screen = pw.Screen(display, None, visible=False)
 
 if screen.partitioned:
     top, bottom, main = screen.top, screen.bottom, screen.main
 else:
     top = bottom = main = screen
 
-color_wheel = w.get_palette(name="wheel", swapped=display.needs_swap, length=display.vsa, saturation=1.0)
+color_wheel = pw.get_palette(name="wheel", swapped=display.needs_swap, length=display.vsa, saturation=1.0)
 if screen.partitioned:
     def main_area_draw(area=None):
         area = area or display.vsa_area
@@ -27,12 +27,12 @@ if screen.partitioned:
     main.draw = main_area_draw
     main_area_draw()
 
-aligns = [w.ALIGN.TOP_LEFT, w.ALIGN.TOP, w.ALIGN.TOP_RIGHT,
-          w.ALIGN.LEFT, w.ALIGN.CENTER, w.ALIGN.RIGHT,
-          w.ALIGN.BOTTOM_LEFT, w.ALIGN.BOTTOM, w.ALIGN.BOTTOM_RIGHT,
-          w.ALIGN.OUTER_TOP_LEFT, w.ALIGN.OUTER_TOP, w.ALIGN.OUTER_TOP_RIGHT,
-          w.ALIGN.OUTER_LEFT, w.ALIGN.OUTER_RIGHT,
-          w.ALIGN.OUTER_BOTTOM_LEFT, w.ALIGN.OUTER_BOTTOM, w.ALIGN.OUTER_BOTTOM_RIGHT]
+aligns = [pw.ALIGN.TOP_LEFT, pw.ALIGN.TOP, pw.ALIGN.TOP_RIGHT,
+          pw.ALIGN.LEFT, pw.ALIGN.CENTER, pw.ALIGN.RIGHT,
+          pw.ALIGN.BOTTOM_LEFT, pw.ALIGN.BOTTOM, pw.ALIGN.BOTTOM_RIGHT,
+          pw.ALIGN.OUTER_TOP_LEFT, pw.ALIGN.OUTER_TOP, pw.ALIGN.OUTER_TOP_RIGHT,
+          pw.ALIGN.OUTER_LEFT, pw.ALIGN.OUTER_RIGHT,
+          pw.ALIGN.OUTER_BOTTOM_LEFT, pw.ALIGN.OUTER_BOTTOM, pw.ALIGN.OUTER_BOTTOM_RIGHT]
 
 align_names = ["TL", "TOP", "TR",
                 "LEFT", "CTR", "RIGHT",
@@ -43,7 +43,7 @@ align_names = ["TL", "TOP", "TR",
 
 def demo_alignments(parent, align_to=None):
     for name, align in zip(align_names, aligns):
-        w.Label(parent, align=align, align_to=align_to, value=name)
+        pw.Label(parent, align=align, align_to=align_to, value=name)
 
 def scroll_by(value):
     display.vscroll += value
@@ -61,29 +61,29 @@ def toggle_auto_scroll(sender, event=None):
         auto_scroll_task = None
 
 
-home = w.IconButton(top, align=w.ALIGN.TOP_LEFT, icon_file=w.ICONS+"home_filled_36dp.png")
-toggle = w.ToggleButton(top, align_to=home, align=w.ALIGN.OUTER_RIGHT, value=False)
-down = w.IconButton(top, align=w.ALIGN.TOP_RIGHT, icon_file=w.ICONS+"keyboard_arrow_down_36dp.png")
-up = w.IconButton(top, align_to=down, align=w.ALIGN.OUTER_LEFT, icon_file=w.ICONS+"keyboard_arrow_up_36dp.png")
-slider1 = w.Slider(top, y=9, w=up.x-toggle.x-toggle.width-16, h=18, align=w.ALIGN.TOP, value=0, step=0.05)
+home = pw.IconButton(top, align=pw.ALIGN.TOP_LEFT, icon_file=pw.ICONS+"home_filled_36dp.png")
+toggle = pw.ToggleButton(top, align_to=home, align=pw.ALIGN.OUTER_RIGHT, value=False)
+down = pw.IconButton(top, align=pw.ALIGN.TOP_RIGHT, icon_file=pw.ICONS+"keyboard_arrow_down_36dp.png")
+up = pw.IconButton(top, align_to=down, align=pw.ALIGN.OUTER_LEFT, icon_file=pw.ICONS+"keyboard_arrow_up_36dp.png")
+slider1 = pw.Slider(top, y=9, w=up.x-toggle.x-toggle.width-16, h=18, align=pw.ALIGN.TOP, value=0, step=0.05)
 
-clock = w.DigitalClock(bottom, y=-8, align=w.ALIGN.BOTTOM_RIGHT, visible=False)
-clock_toggle = w.ToggleButton(bottom, align_to=clock, align=w.ALIGN.OUTER_LEFT, value=False)
-status = w.TextBox(bottom, y=-8, w=clock_toggle.x, align=w.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
+clock = pw.DigitalClock(bottom, y=-8, align=pw.ALIGN.BOTTOM_RIGHT, visible=False)
+clock_toggle = pw.ToggleButton(bottom, align_to=clock, align=pw.ALIGN.OUTER_LEFT, value=False)
+status = pw.TextBox(bottom, y=-8, w=clock_toggle.x, align=pw.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
 
-button = w.Button(main, w=main.width//2, h=64, align=w.ALIGN.CENTER, label="test", radius=10, pressed_offset=5)
+button = pw.Button(main, w=main.width//2, h=64, align=pw.ALIGN.CENTER, label="test", radius=10, pressed_offset=5)
 # demo_alignments(button)
 
 scroll_jump = 5
-home.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_to(0))
-toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, toggle_auto_scroll)
-down.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(-scroll_jump))
-up.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(scroll_jump))
+home.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_to(0))
+toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, toggle_auto_scroll)
+down.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(-scroll_jump))
+up.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(scroll_jump))
 slider1.set_change_cb(lambda sender: scroll_to(int(sender.value * display.vsa)))
-button.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button pressed"))
-button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released"))
-clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
-screen.add_event_cb(w.Events.MOUSEWHEEL, lambda sender, e: scroll_by(-e.y))
+button.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button pressed"))
+button.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released"))
+clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
+screen.add_event_cb(pw.Events.MOUSEWHEEL, lambda sender, e: scroll_by(-e.y))
 
 screen.visible = True
 
@@ -92,4 +92,4 @@ if not display.timer:
     print("Starting main loop")
     running = True
     while running:
-        w.tick()
+        pw.tick()

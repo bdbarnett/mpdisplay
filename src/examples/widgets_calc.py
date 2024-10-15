@@ -1,8 +1,8 @@
 
 import board_config
-import widgets as w
+import pywidgets as pw
 
-w.DEBUG = False
+pw.DEBUG = False
 
 
 digits = "0123456789."
@@ -13,21 +13,21 @@ button_labels = [["CE", "C", "BS", "/"],
                  ["1", "2", "3", "+"],
                  ["+/-", "0", ".", "="]]
 
-# w.init_timer(10)  # Remove this line to use polled mode in a while loop
+# pw.init_timer(10)  # Remove this line to use polled mode in a while loop
 
-display = w.Display(board_config.display_drv, board_config.broker)
+display = pw.Display(board_config.display_drv, board_config.broker)
 theme = display.theme
-screen = w.Screen(display, visible=False)
-top_box = w.Widget(screen, h=60, bg=theme.secondary)
-readout = w.Widget(top_box, fg=theme.on_background, bg=theme.background, w=top_box.width-6, h=top_box.height-6, align=w.ALIGN.CENTER)
-clock = w.DigitalClock(readout, align=w.ALIGN.CENTER, scale=3, visible=False)
-clock_toggle = w.ToggleButton(readout, size=18, value=False)
-history = w.TextBox(readout, w=readout.width-clock_toggle.width, h=clock_toggle.height, align=w.ALIGN.OUTER_TOP_RIGHT, align_to=clock_toggle, scale=1, visible=False)
+screen = pw.Screen(display, visible=False)
+top_box = pw.Widget(screen, h=60, bg=theme.secondary)
+readout = pw.Widget(top_box, fg=theme.on_background, bg=theme.background, w=top_box.width-6, h=top_box.height-6, align=pw.ALIGN.CENTER)
+clock = pw.DigitalClock(readout, align=pw.ALIGN.CENTER, scale=3, visible=False)
+clock_toggle = pw.ToggleButton(readout, size=18, value=False)
+history = pw.TextBox(readout, w=readout.width-clock_toggle.width, h=clock_toggle.height, align=pw.ALIGN.OUTER_TOP_RIGHT, align_to=clock_toggle, scale=1, visible=False)
 history.set_position(y=history.height)
 history.visible = True
 max_history_chars = (history.width // history.char_width) - 1
 history.format = f">{max_history_chars}"
-entry = w.TextBox(readout, align=w.ALIGN.BOTTOM, scale=2)
+entry = pw.TextBox(readout, align=pw.ALIGN.BOTTOM, scale=2)
 max_entry_chars = (entry.width // entry.char_width) - 1
 entry.format = f">{max_entry_chars+1}"
 
@@ -35,13 +35,13 @@ def clock_toggle_callback(sender, event):
     clock.hide(not sender.value)
     history.hide(sender.value)
     entry.hide(sender.value)
-clock_toggle.add_event_cb(w.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
+clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
 
-button_box = w.Widget(screen, h=display.height-top_box.height, align=w.ALIGN.BOTTOM)
+button_box = pw.Widget(screen, h=display.height-top_box.height, align=pw.ALIGN.BOTTOM)
 cols, rows = len(button_labels[0]), len(button_labels)
 column_width = button_box.width // cols
 row_height = button_box.height // rows
-buttons = [[w.Button(button_box, label=button_labels[j][i], value=button_labels[j][i], radius=4,
+buttons = [[pw.Button(button_box, label=button_labels[j][i], value=button_labels[j][i], radius=4,
     x=column_width*i, y=row_height*j, w=column_width, h=row_height) for i in range(cols)] for j in range(rows)]
 
 
@@ -127,9 +127,9 @@ clear_everything()
 
 for row in buttons:
     for button in row:
-        button.add_event_cb(w.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value))
+        button.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value))
 
-screen.add_event_cb(w.Events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
+screen.add_event_cb(pw.Events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
 
 screen.visible = True
 
@@ -137,4 +137,4 @@ if not display.timer:
     print("Starting main loop")
     running = True
     while running:
-        w.tick()
+        pw.tick()

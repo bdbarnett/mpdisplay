@@ -29,6 +29,10 @@
       "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
     ],
     [
+      "configs/__pycache__/board_config.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/configs/__pycache__/board_config.cpython-312.pyc"
+    ],
+    [
       "extras/adafruit_ticks.py",
       "github:bdbarnett/mpdisplay/src/extras/adafruit_ticks.py"
     ],
@@ -77,104 +81,120 @@
       "github:bdbarnett/mpdisplay/src/extras/wifi.py"
     ],
     [
-      "extras/widgets/__constants__.py",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/__constants__.py"
+      "extras/pywidgets/__constants__.py",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/__constants__.py"
     ],
     [
-      "extras/widgets/__init__.py",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/__init__.py"
+      "extras/pywidgets/__init__.py",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/__init__.py"
     ],
     [
-      "extras/widgets/console.py",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/console.py"
+      "extras/pywidgets/console.py",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/console.py"
     ],
     [
-      "extras/widgets/pct.py",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/pct.py"
+      "extras/pywidgets/pct.py",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/pct.py"
     ],
     [
-      "extras/widgets/icons/LICENSE",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/LICENSE"
+      "extras/pywidgets/__pycache__/__constants__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/__pycache__/__constants__.cpython-312.pyc"
     ],
     [
-      "extras/widgets/icons/README.md",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/README.md"
+      "extras/pywidgets/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/__pycache__/__init__.cpython-312.pyc"
     ],
     [
-      "extras/widgets/icons/check_box_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/check_box_36dp.png"
+      "extras/pywidgets/__pycache__/pct.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/__pycache__/pct.cpython-312.pyc"
     ],
     [
-      "extras/widgets/icons/check_box_outline_blank_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/check_box_outline_blank_36dp.png"
+      "extras/pywidgets/icons/LICENSE",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/LICENSE"
     ],
     [
-      "extras/widgets/icons/home_filled_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/home_filled_36dp.png"
+      "extras/pywidgets/icons/README.md",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/README.md"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_down_18dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_down_18dp.png"
+      "extras/pywidgets/icons/check_box_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/check_box_36dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_down_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_down_36dp.png"
+      "extras/pywidgets/icons/check_box_outline_blank_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/check_box_outline_blank_36dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_left_18dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_left_18dp.png"
+      "extras/pywidgets/icons/home_filled_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/home_filled_36dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_left_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_left_36dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_down_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_down_18dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_right_18dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_right_18dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_down_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_down_36dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_right_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_right_36dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_left_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_left_18dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_up_18dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_up_18dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_left_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_left_36dp.png"
     ],
     [
-      "extras/widgets/icons/keyboard_arrow_up_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/keyboard_arrow_up_36dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_right_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_right_18dp.png"
     ],
     [
-      "extras/widgets/icons/radio_button_checked_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/radio_button_checked_36dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_right_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_right_36dp.png"
     ],
     [
-      "extras/widgets/icons/radio_button_unchecked_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/radio_button_unchecked_36dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_up_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_up_18dp.png"
     ],
     [
-      "extras/widgets/icons/toggle_off_18dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_off_18dp.png"
+      "extras/pywidgets/icons/keyboard_arrow_up_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_up_36dp.png"
     ],
     [
-      "extras/widgets/icons/toggle_off_18dp.png:Zone.Identifier",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_off_18dp.png:Zone.Identifier"
+      "extras/pywidgets/icons/radio_button_checked_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/radio_button_checked_36dp.png"
     ],
     [
-      "extras/widgets/icons/toggle_off_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_off_36dp.png"
+      "extras/pywidgets/icons/radio_button_unchecked_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/radio_button_unchecked_36dp.png"
     ],
     [
-      "extras/widgets/icons/toggle_on_18dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_on_18dp.png"
+      "extras/pywidgets/icons/toggle_off_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_off_18dp.png"
     ],
     [
-      "extras/widgets/icons/toggle_on_18dp.png:Zone.Identifier",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_on_18dp.png:Zone.Identifier"
+      "extras/pywidgets/icons/toggle_off_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_off_36dp.png"
     ],
     [
-      "extras/widgets/icons/toggle_on_36dp.png",
-      "github:bdbarnett/mpdisplay/src/extras/widgets/icons/toggle_on_36dp.png"
+      "extras/pywidgets/icons/toggle_on_18dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_on_18dp.png"
+    ],
+    [
+      "extras/pywidgets/icons/toggle_on_36dp.png",
+      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_on_36dp.png"
+    ],
+    [
+      "extras/__pycache__/adafruit_ticks.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/extras/__pycache__/adafruit_ticks.cpython-312.pyc"
+    ],
+    [
+      "extras/__pycache__/micropython.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/extras/__pycache__/micropython.cpython-312.pyc"
+    ],
+    [
+      "extras/__pycache__/png.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/extras/__pycache__/png.cpython-312.pyc"
     ],
     [
       "extras/tft_text/__init__.py",
@@ -281,6 +301,22 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_viper.py"
     ],
     [
+      "lib/displays/basedisplay/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "lib/displays/basedisplay/__pycache__/_area.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/_area.cpython-312.pyc"
+    ],
+    [
+      "lib/displays/basedisplay/__pycache__/_color.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/_color.cpython-312.pyc"
+    ],
+    [
+      "lib/displays/basedisplay/__pycache__/_numpy.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/_numpy.cpython-312.pyc"
+    ],
+    [
       "lib/displays/busdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/busdisplay/__init__.py"
     ],
@@ -289,8 +325,16 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
     ],
     [
+      "lib/displays/dtdisplay/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
       "lib/displays/dtdisplay/pgdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/pgdisplay/__init__.py"
+    ],
+    [
+      "lib/displays/dtdisplay/pgdisplay/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/pgdisplay/__pycache__/__init__.cpython-312.pyc"
     ],
     [
       "lib/displays/dtdisplay/sdldisplay/__init__.py",
@@ -353,6 +397,18 @@
       "github:bdbarnett/mpdisplay/src/lib/eventsys/touch_keypad.py"
     ],
     [
+      "lib/eventsys/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "lib/eventsys/__pycache__/devices.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/devices.cpython-312.pyc"
+    ],
+    [
+      "lib/eventsys/__pycache__/events.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/eventsys/__pycache__/events.cpython-312.pyc"
+    ],
+    [
       "lib/framebuf.py",
       "github:bdbarnett/mpdisplay/src/lib/framebuf.py"
     ],
@@ -361,12 +417,24 @@
       "github:bdbarnett/mpdisplay/src/lib/gfx/__init__.py"
     ],
     [
-      "lib/gfx/framebuf_plus/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
+      "lib/gfx/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/__pycache__/__init__.cpython-312.pyc"
     ],
     [
       "lib/gfx/shapes/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__init__.py"
+    ],
+    [
+      "lib/gfx/shapes/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/shapes/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "lib/gfx/framebuf_plus/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__init__.py"
+    ],
+    [
+      "lib/gfx/framebuf_plus/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/framebuf_plus/__pycache__/__init__.cpython-312.pyc"
     ],
     [
       "lib/gfx/binfont/__init__.py",
@@ -383,6 +451,10 @@
     [
       "lib/gfx/binfont/binfont_8x8.bin",
       "github:bdbarnett/mpdisplay/src/lib/gfx/binfont/binfont_8x8.bin"
+    ],
+    [
+      "lib/gfx/binfont/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/gfx/binfont/__pycache__/__init__.cpython-312.pyc"
     ],
     [
       "lib/palettes/__init__.py",
@@ -425,6 +497,18 @@
       "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
     ],
     [
+      "lib/palettes/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "lib/palettes/__pycache__/_material_design.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/_material_design.cpython-312.pyc"
+    ],
+    [
+      "lib/palettes/__pycache__/material_design.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/palettes/__pycache__/material_design.cpython-312.pyc"
+    ],
+    [
       "lib/timer/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/__init__.py"
     ],
@@ -439,6 +523,18 @@
     [
       "lib/timer/_timerbase.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/_timerbase.py"
+    ],
+    [
+      "lib/timer/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "lib/timer/__pycache__/_sdl2.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_sdl2.cpython-312.pyc"
+    ],
+    [
+      "lib/timer/__pycache__/_timerbase.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/timer/__pycache__/_timerbase.cpython-312.pyc"
     ]
   ],
   "version": "0.1"

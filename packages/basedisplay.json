@@ -19,6 +19,22 @@
     [
       "basedisplay/_viper.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/_viper.py"
+    ],
+    [
+      "basedisplay/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "basedisplay/__pycache__/_area.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/_area.cpython-312.pyc"
+    ],
+    [
+      "basedisplay/__pycache__/_color.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/_color.cpython-312.pyc"
+    ],
+    [
+      "basedisplay/__pycache__/_numpy.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/basedisplay/__pycache__/_numpy.cpython-312.pyc"
     ]
   ],
   "deps": [],

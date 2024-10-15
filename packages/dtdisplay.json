@@ -5,8 +5,16 @@
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__init__.py"
     ],
     [
+      "dtdisplay/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
       "dtdisplay/pgdisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/pgdisplay/__init__.py"
+    ],
+    [
+      "dtdisplay/pgdisplay/__pycache__/__init__.cpython-312.pyc",
+      "github:bdbarnett/mpdisplay/src/lib/displays/dtdisplay/pgdisplay/__pycache__/__init__.cpython-312.pyc"
     ],
     [
       "dtdisplay/sdldisplay/__init__.py",
