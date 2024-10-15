@@ -5,7 +5,7 @@ import pywidgets as pw
 
 pw.DEBUG = False
 pw.MARK_UPDATES = False
-pw.init_timer(10)  # Remove this line to use polled mode in a while loop
+# pw.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 
 display = pw.Display(board_config.display_drv, board_config.broker, 40, 40)
