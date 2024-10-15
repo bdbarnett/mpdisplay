@@ -36,8 +36,11 @@ if _ps:
     )
 elif _jn:
     from jndisplay import JNDisplay
+    from eventsys.devices import Devices, Broker # type: ignore
     from timer import get_timer
 
+    broker = Broker()
+    
     display_drv = JNDisplay(width, height)
     tim = get_timer(display_drv.show)
 else:
