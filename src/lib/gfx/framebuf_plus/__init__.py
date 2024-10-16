@@ -33,6 +33,7 @@ from framebuf import (
 from .. import Area
 from .. import shapes
 from .. import binfont
+import struct
 
 class ExtendedShapes:
     """
@@ -58,7 +59,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         super().__init__(buffer, width, height, format, *args, **kwargs)
         self._width = width
         self._height = height
-
+        self._fb_format = format
         if format == MONO_VLSB:
             self._color_depth = 1
         elif format == MONO_HLSB:
@@ -91,6 +92,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
     @property
     def buffer(self):
         return self._buffer
+    
+    @property
+    def format(self):
+        return self._fb_format
 
     def fill_rect(self, x, y, w, h, c):
         """
@@ -260,3 +265,152 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         """
         super().blit(buf, x, y, key, palette)
         return
+
+    def save(self, filename=None):
+        """
+        Save the framebuffer to a file.  The file extension must match the format.
+
+        Args:
+            filename (str): Filename to save to
+        """
+        if filename is None:
+            filename = "screenshot"
+        file_ext = filename.split(".")[-1]
+        if self.format == MONO_HLSB:
+            if file_ext != "pbm":
+                filename += ".pbm"
+            with open(filename, "wb") as f:
+                f.write(b"P4\n")
+                f.write(f"{self.width} {self.height}\n".encode())
+                f.write(self.buffer)
+        elif self.format == GS2_HMSB:
+            if file_ext != "pgm":
+                filename += ".pgm"
+            with open(filename, "wb") as f:
+                f.write(b"P5\n")
+                f.write(f"{self.width} {self.height}\n".encode())
+                f.write(b"3\n")
+                f.write(self.buffer)
+        elif self.format == GS4_HMSB:
+            if file_ext != "pgm":
+                filename += ".pgm"
+            with open(filename, "wb") as f:
+                f.write(b"P5\n")
+                f.write(f"{self.width} {self.height}\n".encode())
+                f.write(b"15\n")
+                f.write(self.buffer)
+        elif self.format == GS8:
+            if file_ext != "pgm":
+                filename += ".pgm"
+            with open(filename, "wb") as f:
+                f.write(b"P5\n")
+                f.write(f"{self.width} {self.height}\n".encode())
+                f.write(b"255\n")
+                f.write(self.buffer)
+        elif self.format == RGB565:
+            if file_ext != "bmp":
+                filename += ".bmp"
+            with open(filename, "wb") as f:
+                f.write(b"BM")  # Offset 0: Signature
+                f.write((54 + len(self.buffer)).to_bytes(4, "little"))  # Offset 2: File size
+                f.write(b"\x00\x00\x00\x00")  # Offset 6: Unused
+                f.write(b"\x36\x00\x00\x00")  # Offset 10: Offset to image data
+                f.write(b"\x28\x00\x00\x00")  # Offset 14: DIB header size
+                f.write(self.width.to_bytes(4, "little"))  # Offset 18: Width
+                f.write(self.height.to_bytes(4, "little"))  # Offset 22: Height
+                f.write(b"\x01\x00")  # Offset 26: Planes
+                f.write(b"\x10\x00")  # Offset 28: Bits per pixel
+                f.write(b"\x00\x00\x00\x00")  # Offset 30: Compression
+                f.write(len(self.buffer).to_bytes(4, "little"))  # Offset 34: Image size
+                f.write(b"\x00\x00\x00\x00\x00\x00\x00\x00")  # Offset 38: Horizontal and vertical resolution
+                f.write(b"\x00\x00\x00\x00")  # Offset 46: Colors in palette
+                f.write(b"\x00\x00\x00\x00")  # Offset 50: Important colors
+                # The order of the lines is reversed.  We need to reverse them back.
+                for i in range(self.height):
+                    f.write(self.buffer[(self.height - i - 1) * self.width * 2 : (self.height - i) * self.width * 2])
+        else:
+            raise ValueError(f"Save method not implemented for format {self.format}")
+
+    @staticmethod
+    def from_file(filename):
+        """
+        Load a framebuffer from a file.
+
+        Args:
+            filename (str): Filename to load from
+        """
+        # Read the first two bytes to determine the file type
+        with open(filename, "rb") as f:
+            header = f.read(2)
+            f.seek(0)
+        if header == b"P4":
+            return pbm_to_framebuffer(filename)
+        elif header == b"P5":
+            return pgm_to_framebuffer(filename)
+        elif header == b"BM":
+            return bmp_to_framebuffer(filename)
+        else:
+            raise ValueError(f"Unsupported file type {header}")
+
+def pbm_to_framebuffer(filename):
+    """
+    Convert a PBM file to a MONO_HLSB FrameBuffer
+    """
+    with open(filename, "rb") as f:
+        lines = f.readlines()
+    if lines[0] != b"P4\n":
+        raise ValueError(f"Invalid PBM file {filename}")
+    width, height = map(int, lines[1].split())
+    buffer = memoryview(bytearray((width + 7) // 8 * height))
+    buffer[:] = b"".join(lines[2:])
+    return FrameBuffer(buffer, width, height, MONO_HLSB)
+
+def pgm_to_framebuffer(filename):
+    """
+    Convert a PGM file to a GS2_HMSB, GS4_HMSB or GS8 FrameBuffer
+    """
+    with open(filename, "rb") as f:
+        lines = f.readlines()
+    if lines[0] != b"P5\n":
+        raise ValueError(f"Invalid PGM file {filename}")
+    width, height = map(int, lines[1].split())
+    max_value = int(lines[2])
+    if max_value == 3:
+        format = GS2_HMSB
+        array_size = (width + 3) // 4 * height
+    elif max_value == 15:
+        format = GS4_HMSB
+        array_size = (width + 1) // 2 * height
+    elif max_value == 255:
+        format = GS8
+        array_size = width * height
+    else:
+        raise ValueError(f"Unsupported max value {max_value}")
+    buffer = memoryview(bytearray(array_size))
+    buffer[:] = b"".join(lines[3:])
+    return FrameBuffer(buffer, width, height, format)
+
+def bmp_to_framebuffer(filename):
+    """
+    Convert a BMP file to a RGB565 FrameBuffer
+    First ensures planes is 1, bits per pixel is 16, and compression is 0.
+    """
+    with open(filename, "rb") as f:
+        if f.read(2) != b"BM":
+            raise ValueError("Not a BMP file")
+        f.seek(10)
+        data_offset = struct.unpack("<I", f.read(4))[0]
+        f.seek(14)
+        width, height = struct.unpack("<II", f.read(8))
+        planes = struct.unpack("<H", f.read(2))[0]
+        if planes != 1:
+            raise ValueError("Invalid BMP file")
+        bpp = struct.unpack("<H", f.read(2))[0]
+        if bpp != 16:
+            raise ValueError("Invalid color depth")
+        f.seek(data_offset)
+        buffer = memoryview(bytearray(width * height * 2))
+        f.seek(54)
+        for i in range(height):
+            buffer[(height - i - 1) * width * 2 : (height - i) * width * 2] = f.read(width * 2)
+    return FrameBuffer(buffer, width, height, RGB565)
