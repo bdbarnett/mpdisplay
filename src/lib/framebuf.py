@@ -35,7 +35,7 @@ except ImportError:
 # Framebuf format constants:
 MVLSB = 0  # Single bit displays (like SSD1306 OLED)
 MONO_VLSB = 0  # Single bit displays (like SSD1306 OLED)
-MONO_HLSB = 3  # Unimplemented!
+MONO_HLSB = 3  # Single bit files like PBM (Portable BitMap)
 MONO_HMSB = 4  # Single bit displays where the bits in a byte are horizontally mapped. Each byte occupies 8 horizontal pixels with bit 0 being the leftmost.
 RGB565 = 1  # 16-bit color displays
 GS2_HMSB = 5  # 2-bit color displays like the HT16K33 8x8 Matrix
@@ -117,11 +117,9 @@ class MHLSBFormat:
     @staticmethod
     def set_pixel(framebuf, x, y, color):
         """Set a given pixel to a color."""
-        index = (y >> 3) * framebuf._stride + x
+        index = (y * framebuf._stride + x) >> 3 
         offset = 7 - (x & 0x07)
-        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
-            (color != 0) << offset
-        )
+        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | ((color != 0) << offset)
 
     @staticmethod
     def get_pixel(framebuf, x, y):
@@ -162,8 +160,8 @@ class MHMSBFormat:
     @staticmethod
     def set_pixel(framebuf, x, y, color):
         """Set a given pixel to a color."""
-        index = (y * framebuf._stride + x) // 8
-        offset = 7 - x & 0x07
+        index = (y * framebuf._stride + x) >> 3
+        offset = x & 0x07
         framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
             (color != 0) << offset
         )
@@ -335,16 +333,20 @@ class FrameBuffer(BasicShapes):
         self._stride = stride if stride is not None else width
         self._font = None
         if format == MONO_VLSB:
+            self._stride = (self._stride + 7) & ~7
             self._format = MVLSBFormat()
         elif format == MONO_HLSB:
+            self._stride = (self._stride + 7) & ~7
             self._format = MHLSBFormat()
         elif format == MONO_HMSB:
             self._format = MHMSBFormat()
         elif format == RGB565:
             self._format = RGB565Format()
         elif format == GS2_HMSB:
+            self._stride = (self._stride + 3) & ~3
             self._format = GS2HMSBFormat()
         elif format == GS4_HMSB:
+            self._stride = (self._stride + 1) & ~1
             self._format = GS4HMSBFormat()
         elif format == GS8:
             self._format = GS8Format()
