@@ -1,7 +1,6 @@
 from gfx import Area
 from eventsys.events import Events
 from micropython import const
-import png
 from time import localtime
 from gfx.framebuf_plus import FrameBuffer, RGB565
 from palettes import get_palette
@@ -737,6 +736,7 @@ class TextBox(Widget):
 
 
 class Icon(Widget):
+    cache = {}
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None):
         """
         Initialize an Icon widget to display an icon.
@@ -751,7 +751,7 @@ class Icon(Widget):
         :param value: The icon file to display.
         """
         if not value:
-            raise ValueError("Icon value must be set the filename with path.")
+            raise ValueError("Icon value must be set to the filename with path.")
         self.load_icon(value)
         padding = padding if padding is not None else DEFAULT_PADDING
         w = w or self._icon_width + padding[0] + padding[2]
@@ -760,9 +760,12 @@ class Icon(Widget):
 
     def load_icon(self, value):
         """Load icon file and store pixel data."""
-        self._icon_width, self._icon_height, self._pixels, self._metadata = png.Reader(filename=value).read_flat()
-        if not self._metadata["greyscale"] or self._metadata['bitdepth'] != 8:
-            raise ValueError(f"Only 8-bit greyscale PNGs are supported {self.value}")
+        if value in Icon.cache:
+            self._fbuf = Icon.cache[value]
+        else:
+            self._fbuf = FrameBuffer.from_file(value)
+            Icon.cache[value] = self._fbuf
+        self._icon_width, self._icon_height = self._fbuf.width, self._fbuf.height
 
     def changed(self):
         """Update the icon when the value (file) changes."""
@@ -774,17 +777,15 @@ class Icon(Widget):
         """
         Draw the icon on the screen.
         """
-        color = self.fg
-        # pal = ShadesPalette(color=color)
-        alpha = 1 if self._metadata["alpha"] else 0
-        planes = self._metadata["planes"]
-        pixels = self._pixels
-        pos_x, pos_y, w, h = self.padded_area
-        for y in range(0, h):
-            for x in range(0, w):
-                if (c := pixels[(y * w + x) * planes + alpha]) != 0:  # noqa: F841
-                    # self.display.framebuf.pixel(pos_x + x, pos_y + y, pal[c])
-                    self.display.framebuf.pixel(pos_x + x, pos_y + y, color)
+        pal = FrameBuffer(memoryview(bytearray(4)), 2, 1, RGB565)
+        if self.bg is self.parent.theme.transparent:
+            key = ~self.fg
+            pal.pixel(0, 0, key)
+        else:
+            key = -1
+            pal.pixel(0, 0, self.bg)
+        pal.pixel(1, 0, self.fg)
+        self.display.framebuf.blit(self._fbuf, self.padded_area.x, self.padded_area.y, key, pal)
 
 
 class IconButton(Button):
@@ -872,8 +873,8 @@ class ToggleButton(Toggle):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
-        on_file = ICONS + "toggle_on_" + str(size) + "dp.png"
-        off_file = ICONS + "toggle_off_" + str(size) + "dp.png"
+        on_file = ICONS + "toggle_on_" + str(size) + "dp.pbm"
+        off_file = ICONS + "toggle_off_" + str(size) + "dp.pbm"
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
 
@@ -892,8 +893,8 @@ class CheckBox(Toggle):
         :param bg: The background color of the toggle button (default is white).
         :param value: The initial state of the toggle button (default is False, meaning off).
         """
-        on_file = ICONS + "check_box_" + str(size) + "dp.png"
-        off_file = ICONS + "check_box_outline_blank_" + str(size) + "dp.png"
+        on_file = ICONS + "check_box_" + str(size) + "dp.pbm"
+        off_file = ICONS + "check_box_outline_blank_" + str(size) + "dp.pbm"
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
 
@@ -941,8 +942,8 @@ class RadioButton(Toggle):
             raise ValueError("RadioButton must be part of a RadioGroup.")
         self.group = group
         self.group.add(self)
-        on_file = ICONS + "radio_button_checked_" + str(size) + "dp.png"
-        off_file = ICONS + "radio_button_unchecked_" + str(size) + "dp.png"
+        on_file = ICONS + "radio_button_checked_" + str(size) + "dp.pbm"
+        off_file = ICONS + "radio_button_unchecked_" + str(size) + "dp.pbm"
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
     def toggle(self, data=None, event=None):
@@ -1170,12 +1171,12 @@ class ScrollBar(Widget):
 
         # Add IconButton on each end and Slider in the middle
         if vertical:
-            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_up_18dp.png", fg=fg, bg=bg, align=ALIGN.TOP)
-            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_down_18dp.png", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_up_18dp.pbm", fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_down_18dp.pbm", fg=fg, bg=bg, align=ALIGN.BOTTOM)
             self.slider = Slider(self, w=icon_size, h=h-2*icon_size, vertical=True, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
         else:
-            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_left_18dp.png", fg=fg, bg=bg, align=ALIGN.LEFT)
-            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_right_18dp.png", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_left_18dp.pbm", fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_right_18dp.pbm", fg=fg, bg=bg, align=ALIGN.RIGHT)
             self.slider = Slider(self, w=w-icon_size*2, h=icon_size, vertical=False, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
 
         # Set button callbacks to adjust slider value

@@ -3,14 +3,13 @@ Convert material design icons from png to pbm format
 """
 from board_config import display_drv
 from displays.displaybuf import DisplayBuffer, Area
-from framebuf import FrameBuffer, MONO_HLSB, RGB565
+from gfx.framebuf_plus import FrameBuffer, MONO_HLSB, RGB565
 import png
 import os
 
-image_size = "48dp"
-src_path = f"../icons/src/{image_size}/"
-dst_path = f"../icons/{image_size}/"
 
+src_path = "extras/pywidgets/icons/"
+dst_path = src_path
 
 def list_files(directory, ext):
     """
@@ -20,7 +19,7 @@ def list_files(directory, ext):
         if file.endswith(ext):
             yield directory, file
 
-def png_to_framebuffer(filename, threshold=127):
+def png_to_framebuffer(filename, threshold=160):
     """
     Read an 8-bit greyscale PNG file into a mono FrameBuffer
     """
@@ -46,32 +45,9 @@ def png_to_framebuffer(filename, threshold=127):
             else:
                 c = 0
             fbuf.pixel(x, y, c)
-    return fbuf, buffer, width, height
+    return fbuf
 
-def buffer_to_pbm(buffer, width, height, filename):
-    """
-    Save a MONO_HLSB buffer to a PBM file
-    """
-    with open(filename, "wb") as f:
-        f.write(b"P4\n")
-        f.write(f"{width} {height}\n".encode())
-        f.write(buffer)
-
-def pbm_to_framebuffer(filename):
-    """
-    Convert a PBM file to a MONO_HLSB FrameBuffer
-    """
-    with open(filename, "rb") as f:
-        lines = f.readlines()
-        if lines[0] != b"P4\n":
-            raise ValueError(f"Invalid PBM file {filename}")
-        width, height = map(int, lines[1].split())
-        buffer = memoryview(bytearray((width + 7) // 8 * height))
-        fbuf = FrameBuffer(buffer, width, height, MONO_HLSB)
-        buffer[:] = b"".join(lines[2:])
-    return fbuf, buffer, width, height
-
-def main(test_writes=False):
+def main(verify=False):
     canvas = DisplayBuffer(display_drv)
     canvas.fill(0x001F)
     canvas.show()
@@ -88,26 +64,23 @@ def main(test_writes=False):
     x = 0
     y = 0
     for path, png_file in list_files(src_path, ".png"):
-        data = png_to_framebuffer(path + png_file)
-        if data is None:
-            continue
-        fbuf, buffer, width, height = data
+        fbuf = png_to_framebuffer(path + png_file)
         pbm_file = png_file.replace(".png", ".pbm")
         print(f"{pbm_file}")
-        buffer_to_pbm(buffer, width, height, dst_path + pbm_file)
+        fbuf.save(dst_path + pbm_file)
 
-        if test_writes:
-            fbuf, buffer, width, height = pbm_to_framebuffer(dst_path + pbm_file)
+        if verify:
+            fbuf = FrameBuffer.from_file(dst_path + pbm_file)
 
         # Display the icon
         canvas.blit(fbuf, x, y, key, palette)
-        canvas.show(Area(x, y, width, height))
+        canvas.show(Area(x, y, fbuf.width, fbuf.height))
 
-        x += width
-        if x + width >= canvas.width:
+        x += fbuf.width
+        if x + fbuf.width >= canvas.width:
             x = 0
-            y += height
-            if y + height >= canvas.height:
+            y += fbuf.height
+            if y + fbuf.height >= canvas.height:
                 y = 0
             canvas.fill_rect(0, 0, canvas.width, canvas.height, 0x001F)
         

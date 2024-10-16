@@ -13,7 +13,7 @@ button_labels = [["CE", "C", "BS", "/"],
                  ["1", "2", "3", "+"],
                  ["+/-", "0", ".", "="]]
 
-# pw.init_timer(10)  # Remove this line to use polled mode in a while loop
+pw.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 display = pw.Display(board_config.display_drv, board_config.broker)
 theme = display.theme
