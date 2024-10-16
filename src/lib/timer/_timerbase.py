@@ -78,7 +78,10 @@ class _TimerBase:
             return
 
         self._busy = True
-        schedule(self._callback, 0)
+        try:
+            schedule(self._callback, 0)
+        except RuntimeError:  # MicroPython raises RuntimeError if the schedule queue is full
+            pass
         self._busy = False
 
         if self._mode == self.ONE_SHOT:
