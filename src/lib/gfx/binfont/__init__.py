@@ -99,7 +99,7 @@ class BinFont:
     file to display in a canvas or directly on screen. We use file access
     so we dont waste 1KB of RAM on a font!"""
 
-    def __init__(self, font_file=None, height=None):
+    def __init__(self, font_file=None, height=None, cached=True):
         # Specify the drawing area width and height, and the pixel function to
         # call when drawing pixels (should take an x and y param at least).
         # Optionally specify font_file to override the font file to use (default
@@ -137,6 +137,12 @@ class BinFont:
             # just hope the font file is valid and press on
             pass
 
+        if cached:
+            self._cache = self._font.read()
+            self._font.close()
+        else:
+            self._cache = None
+
     @property
     def width(self):
         """Return the width of the font in pixels."""
@@ -149,7 +155,8 @@ class BinFont:
 
     def deinit(self):
         """Close the font file as cleanup."""
-        self._font.close()
+        if not self._cache:
+            self._font.close()
 
     def __enter__(self):
         """Initialize/open the font file"""
@@ -170,10 +177,7 @@ class BinFont:
         # Go through each row of the character.
         for char_y in range(self._font_height):
             # Grab the byte for the current row of font data.
-            self._font.seek((ord(char) * self._font_height) + char_y)
-            try:
-                line = struct.unpack("B", self._font.read(1))[0]
-            except RuntimeError:
+            if not (line := self._read_line(char, char_y)):
                 continue  # maybe character isnt there? go to next
             # Go through each column in the row byte.
             for char_x in range(self.width):
@@ -228,3 +232,13 @@ class BinFont:
     def text_width(self, text, scale=1):
         """Return the pixel width of the specified text message."""
         return len(text) * self._font_width * scale
+
+    def _read_line(self, char, line):
+        """Read a line of font data for a character."""
+        if self._cache:
+            return self._cache[(ord(char) * self.height) + line]
+        self._font.seek((ord(char) * self.height) + line)
+        try:
+            return struct.unpack("B", self._font.read(1))[0]
+        except RuntimeError:  # maybe character isnt there? go to next
+            return None
