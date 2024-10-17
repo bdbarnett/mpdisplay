@@ -36,7 +36,7 @@ cb_label = pw.Label(checkbox, value="Check Me", align=pw.ALIGN.OUTER_RIGHT)
 button1 = pw.Button(screen, w=96, align=pw.ALIGN.CENTER, value="button1", label="Mem_free")
 if mem_free:
     mem_free_label = pw.Label(screen, y=6, align_to=button1, align=pw.ALIGN.OUTER_BOTTOM, value=f"Free mem: {mem_free()}")
-    def mem_free_action(sender):
+    def mem_free_action(sender, event):
         collect()
         mem_free_label.set_value(f"Free mem: {mem_free()}")
     button1.add_event_cb(pw.Events.MOUSEBUTTONDOWN, mem_free_action)
