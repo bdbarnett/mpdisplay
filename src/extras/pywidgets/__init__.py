@@ -180,7 +180,6 @@ class Widget:
                 self._parent.add_child(self)
                 if self.align_to is None:
                     self.set_position(align_to=parent)
-            self.invalidate()
 
     @property
     def area(self):
@@ -1171,8 +1170,8 @@ class ScrollBar(Widget):
 
         # Add IconButton on each end and Slider in the middle
         if vertical:
-            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_up_18dp.pbm", fg=fg, bg=bg, align=ALIGN.TOP)
-            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon=ICONS + "keyboard_arrow_down_18dp.pbm", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_up_18dp.pbm", fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_down_18dp.pbm", fg=fg, bg=bg, align=ALIGN.BOTTOM)
             self.slider = Slider(self, w=icon_size, h=h-2*icon_size, vertical=True, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
         else:
             self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_left_18dp.pbm", fg=fg, bg=bg, align=ALIGN.LEFT)
@@ -1207,3 +1206,67 @@ class DigitalClock(Label):
         if self.visible:
             y, m, d, h, min, sec, *_ = localtime()
             self.value = f"{h:02}:{min:02}:{sec:02}"
+
+
+class ListItem(TextBox):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
+                 format="", text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
+        """
+        Initialize a ListItem widget to display a single item in a list.
+        
+        :param parent: The parent widget or screen that contains this list item.
+        :param x: The x-coordinate of the list item.
+        :param y: The y-coordinate of the list item.
+        :param h: The height of the list item.
+        :param fg: The color of the text (in a suitable color format).
+        :param bg: The background color of the list item.
+        """
+        if text_height not in TEXT_SIZE:
+            raise ValueError("Text height must be 8, 14 or 16 pixels.")
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding,
+                            format, text_height, scale, inverted, font_file)
+
+class ListView(Widget):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None):
+        """
+        Initialize a ListView widget to display a list of items.
+        
+        :param parent: The parent widget or screen that contains this list view.
+        :param x: The x-coordinate of the list view.
+        :param y: The y-coordinate of the list view.
+        :param h: The height of the list view.
+        :param fg: The color of the text (in a suitable color format).
+        :param bg: The background color of the list view.
+        """
+        fg = fg if fg is not None else parent.theme.on_secondary
+        bg = bg if bg is not None else parent.theme.secondary
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
+        # self.scrollbar = ScrollBar(self, vertical=True, fg=fg, bg=bg, visible=False)
+        # self.scrollbar.add_event_cb(Events.MOUSEMOTION, self.scroll)
+
+    def add_child(self, child: Widget):
+        """Adds a child widget to the current widget."""
+        log("Adding", child, "to", self)
+        print(f"Adding child #{len(self.children)} {child} to {self}")
+        if len(self.children) == 0:
+            child.set_position(0, 0, self.width, None, align=ALIGN.TOP_LEFT, align_to=self)
+        else:
+            child.set_position(0, child.height, self.width, None, align=ALIGN.BOTTOM_LEFT, align_to=self.children[-1])
+        self.children.append(child)
+        child.invalidate()
+
+
+    def scroll(self, data, event):
+        """Scroll the list view based on the mouse wheel movement."""
+        if event.rel[1] > 0:
+            self.scroll_up()
+        else:
+            self.scroll_down()
+
+    def scroll_up(self):
+        """Scroll the list view up by one item."""
+        pass
+
+    def scroll_down(self):
+        """Scroll the list view down by one item."""
+        pass

@@ -358,7 +358,6 @@ def pbm_to_framebuffer(filename):
     """
     Convert a PBM file to a MONO_HLSB FrameBuffer
     """
-    print(f"{filename=}")
     with open(filename, "rb") as f:
         lines = f.readlines()
     if lines[0] != b"P4\n":
