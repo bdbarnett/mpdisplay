@@ -60,6 +60,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         self._width = width
         self._height = height
         self._fb_format = format
+        self._buffer = buffer
         if format == MONO_VLSB:
             self._color_depth = 1
         elif format == MONO_HLSB:
@@ -340,9 +341,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             filename (str): Filename to load from
         """
         # Read the first two bytes to determine the file type
-        with open(filename, "rb") as f:
-            header = f.read(2)
-            f.seek(0)
+        f = open(filename, "rb")
+        header = f.read(2)
+        f.close()
+
         if header == b"P4":
             return pbm_to_framebuffer(filename)
         elif header == b"P5":
@@ -356,6 +358,7 @@ def pbm_to_framebuffer(filename):
     """
     Convert a PBM file to a MONO_HLSB FrameBuffer
     """
+    print(f"{filename=}")
     with open(filename, "rb") as f:
         lines = f.readlines()
     if lines[0] != b"P4\n":
