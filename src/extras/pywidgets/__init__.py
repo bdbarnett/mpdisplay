@@ -215,6 +215,10 @@ class Widget:
 
         return x
 
+    @x.setter
+    def x(self, x):
+        self.set_position(x=x)
+
     @property
     def y(self):
         """Calculate the absolute y-coordinate of the widget based on align
@@ -236,21 +240,41 @@ class Widget:
 
         return y
 
+    @y.setter
+    def y(self, y):
+        self.set_position(y=y)
+
     @property
     def width(self):
         return int(self._w)
+
+    @width.setter
+    def width(self, w):
+        self.set_position(w=w)
 
     @property
     def height(self):
         return int(self._h)
 
+    @height.setter
+    def height(self, h):
+        self.set_position(h=h)
+
     @property
     def align(self):
         return self._align
-    
+
+    @align.setter
+    def align(self, align):
+        self.set_position(align=align)
+
     @property
     def align_to(self):
         return self._align_to
+
+    @align_to.setter
+    def align_to(self, align_to):
+        self.set_position(align_to=align_to)
 
     @property
     def display(self):
@@ -325,7 +349,7 @@ class Widget:
     def remove_child(self, widget):
         """Removes a child widget from the current widget."""
         self.children.remove(widget)
-        widget.parent = None
+        self.invalidate()
 
     def set_change_cb(self, callback):
         self._change_callback = callback
@@ -588,7 +612,7 @@ class Screen(Widget):
 
 class Button(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 radius=0, pressed_offset=2, pressed=False, label=None, label_color=None, label_height=TEXT_SIZE.LARGE):
+                 radius=0, pressed_offset=2, pressed=False, label=None, text_color=None, text_height=TEXT_SIZE.LARGE, icon_file=None, icon_color=None):
         """
         Initialize a Button widget.
 
@@ -609,13 +633,18 @@ class Button(Widget):
         h = h or DEFAULT_BUTTON_SIZE
         bg = bg if bg is not None else parent.theme.primary_variant
         fg = fg if fg is not None else parent.theme.on_primary
-        label_color = label_color if label_color is not None else fg
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
+        if icon_file:
+            icon_align = ALIGN.CENTER if not label else ALIGN.LEFT
+            icon_color = icon_color if icon_color is not None else parent.theme.on_primary
+            self.icon = Icon(self, align=icon_align, fg=icon_color, bg=self.bg, value=icon_file)
         if label:
-            if label_height not in TEXT_SIZE:
+            if text_height not in TEXT_SIZE:
                 raise ValueError("Text height must be 8, 14 or 16 pixels.")
-            label_color = label_color if label_color is not None else parent.theme.on_primary
-            self.label = Label(self, value=label, fg=label_color, bg=self.bg, text_height=label_height)
+            label_align = ALIGN.CENTER if not icon_file else ALIGN.OUTER_RIGHT
+            label_align_to = self.icon if icon_file else self
+            text_color = text_color if text_color is not None else parent.theme.on_primary
+            self.label = Label(self, value=label, align=label_align, align_to=label_align_to, fg=text_color, bg=self.bg, text_height=text_height)
         else:
             self.label = None
 
@@ -1113,15 +1142,14 @@ class Slider(ProgressBar):
     def _get_knob_center(self):
         """Calculate the center coordinates for the knob based on the current value."""
         x, y, w, h = self.padded_area
-        if self.reverse:
-            value = 1 - self.value
-        else:
-            value = self.value
+        value = self.value if self.reverse == self.vertical else 1 - self.value
         if self.vertical:
-            knob_y = int(y + value * (h-w)) + self.knob_radius
+            span = h - w
+            knob_y = int(y + value * span) + self.knob_radius
             knob_center = (x + self.knob_radius, knob_y)
         else:
-            knob_x = int(x + value * (w-h)) + self.knob_radius
+            span = w - h
+            knob_x = int(x + value * span) + self.knob_radius
             knob_center = (knob_x, y + self.knob_radius)
         return knob_center
 
@@ -1208,26 +1236,8 @@ class DigitalClock(Label):
             self.value = f"{h:02}:{min:02}:{sec:02}"
 
 
-class ListItem(TextBox):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 format="", text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
-        """
-        Initialize a ListItem widget to display a single item in a list.
-        
-        :param parent: The parent widget or screen that contains this list item.
-        :param x: The x-coordinate of the list item.
-        :param y: The y-coordinate of the list item.
-        :param h: The height of the list item.
-        :param fg: The color of the text (in a suitable color format).
-        :param bg: The background color of the list item.
-        """
-        if text_height not in TEXT_SIZE:
-            raise ValueError("Text height must be 8, 14 or 16 pixels.")
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding,
-                            format, text_height, scale, inverted, font_file)
-
 class ListView(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, padding=None):
         """
         Initialize a ListView widget to display a list of items.
         
@@ -1238,35 +1248,70 @@ class ListView(Widget):
         :param fg: The color of the text (in a suitable color format).
         :param bg: The background color of the list view.
         """
-        fg = fg if fg is not None else parent.theme.on_secondary
-        bg = bg if bg is not None else parent.theme.secondary
-        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
-        # self.scrollbar = ScrollBar(self, vertical=True, fg=fg, bg=bg, visible=False)
-        # self.scrollbar.add_event_cb(Events.MOUSEMOTION, self.scroll)
+        fg = fg if fg is not None else parent.theme.on_primary
+        bg = bg if bg is not None else parent.theme.primary
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value=0, padding=padding)
+        self.scrollbar = ScrollBar(parent, vertical=True, h=h, fg=fg, bg=bg, visible=False, align_to=self, align=ALIGN.OUTER_RIGHT)
+        self.scrollbar.slider.set_change_cb(self.scroll)
 
     def add_child(self, child: Widget):
         """Adds a child widget to the current widget."""
-        log("Adding", child, "to", self)
-        print(f"Adding child #{len(self.children)} {child} to {self}")
-        if len(self.children) == 0:
-            child.set_position(0, 0, self.width, None, align=ALIGN.TOP_LEFT, align_to=self)
-        else:
-            child.set_position(0, child.height, self.width, None, align=ALIGN.BOTTOM_LEFT, align_to=self.children[-1])
         self.children.append(child)
-        child.invalidate()
+        self.reassign_positions()
 
+    def remove_child(self, child: Widget):
+        """Removes a child widget from the current widget."""
+        self.children.remove(child)
+        self.reassign_positions()
 
-    def scroll(self, data, event):
-        """Scroll the list view based on the mouse wheel movement."""
-        if event.rel[1] > 0:
-            self.scroll_up()
-        else:
-            self.scroll_down()
+    def reassign_positions(self):
+        """Reassign the positions of all children after one is removed."""
+        self._value = min(self._value, len(self.children) - 1)
+        for i, child in enumerate(self.children):
+            child.visible = False
+            if i == 0:
+                child.set_position(0, 0, self.width, None, align=ALIGN.TOP_LEFT, align_to=self)
+            else:
+                child.set_position(0, child.height, self.width, None, align=ALIGN.BOTTOM_LEFT, align_to=self.children[i-1])
+        self.config_scrollbar()
+
+    def config_scrollbar(self):
+        """Configure the scrollbar based on the number of children."""
+        if len(self.children) > 1:
+            self.scrollbar.slider.step = 1 / (len(self.children) - 1)
+        self.changed()
+
+    def scroll(self, sender):
+        """Read the value of the scrollbar and scroll the list view accordingly."""
+        self.value = int(self.scrollbar.slider.value * (len(self.children)-1))
 
     def scroll_up(self):
         """Scroll the list view up by one item."""
-        pass
+        self.value -= 1
 
     def scroll_down(self):
         """Scroll the list view down by one item."""
-        pass
+        self.value += 1
+
+    def changed(self):
+        """Update the list view when the value changes."""
+        if self.value < 0:
+            self._value = 0
+        elif self.value >= len(self.children):
+            self._value = len(self.children) - 1
+
+        for child in self.children:
+            child.visible = False
+
+        sb_visible = False
+        if len(self.children):
+            self.children[0].y = -sum([child.height for child in self.children[:self.value]])
+            for child in self.children:
+                if self.area.contains_area(child.area):
+                    child.visible = True
+                else:
+                    sb_visible = True
+        self.scrollbar.visible = sb_visible
+        if sb_visible:
+            self.scrollbar.slider.value = self.value / (len(self.children) - 1)
+        super().changed()

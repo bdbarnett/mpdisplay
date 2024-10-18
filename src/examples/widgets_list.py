@@ -18,29 +18,39 @@ if screen.partitioned:
 else:
     top = bottom = main = screen
 
-home = pw.IconButton(top, align=pw.ALIGN.TOP_LEFT, icon_file=pw.ICONS+"home_filled_36dp.pbm")
 clock = pw.DigitalClock(bottom, y=-8, align=pw.ALIGN.BOTTOM_RIGHT, visible=False)
 clock_toggle = pw.ToggleButton(bottom, align_to=clock, align=pw.ALIGN.OUTER_LEFT, value=False)
 status = pw.TextBox(bottom, y=-8, w=clock_toggle.x, align=pw.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
 clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
 
+item_no = 1
+def add_item(to_list: pw.ListView):
+    global item_no
+    item = pw.Button(to_list, label=f"Item {item_no}", icon_file=pw.ICONS+"home_filled_36dp.pbm")
+    item.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value(f"{sender.label.value} clicked."))
+    item_no += 1
 
-def add_item(to_list):
-    item = pw.ListItem(to_list, value="Item")
-    return item
-
-def remove_item(from_list):
-    from_list.remove(from_list.children[-1])
+def remove_item(from_list: pw.ListView):
+    if from_list.children:
+        from_list.children[0].parent = None
+    else:
+        status.value = "ListView is empty."
 
 list_view = pw.ListView(main, w=main.width//2, h=main.height//2, align=pw.ALIGN.CENTER)
 
-remove = pw.Button(top, label="Remove Item", align=pw.ALIGN.TOP_RIGHT)
-add = pw.Button(top, label="Add Item", align_to=remove, align=pw.ALIGN.OUTER_LEFT)
+add = pw.Button(top, label="+ Item")
+remove = pw.Button(top, label="- Item", align_to=add, align=pw.ALIGN.OUTER_RIGHT)
+down = pw.IconButton(top, align=pw.ALIGN.TOP_RIGHT, icon_file=pw.ICONS+"keyboard_arrow_down_36dp.pbm")
+up = pw.IconButton(top, align_to=down, align=pw.ALIGN.OUTER_LEFT, icon_file=pw.ICONS+"keyboard_arrow_up_36dp.pbm")
+
 add.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: add_item(list_view))
 remove.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: remove_item(list_view))
+down.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: list_view.scroll_down())
+up.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: list_view.scroll_up())
+list_view.set_change_cb(lambda sender: status.set_value(f"Item {sender.value+1} of {len(sender.children)}"))
+
 
 screen.visible = True
-
 
 if not display.timer:
     print("Starting main loop")
