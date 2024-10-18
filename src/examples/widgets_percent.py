@@ -1,6 +1,7 @@
 
 import board_config
 import pywidgets as pw
+import pywidgets.pct as pct
 
 
 pw.DEBUG = False
@@ -16,7 +17,7 @@ if screen.partitioned:
 else:
     top = bottom = main = screen
 
-home = pw.IconButton(top, align=pw.ALIGN.TOP_LEFT, icon_file=pw.ICONS+"home_filled_36dp.pbm")
+home = pw.IconButton(top, align=pw.ALIGN.TOP_LEFT, icon_file=pw.icon_theme.home(pw.ICON_SIZE.LARGE))
 clock = pw.DigitalClock(bottom, y=-8, align=pw.ALIGN.BOTTOM_RIGHT, visible=False)
 clock_toggle = pw.ToggleButton(bottom, align_to=clock, align=pw.ALIGN.OUTER_LEFT, value=False)
 status = pw.TextBox(bottom, y=-8, w=clock_toggle.x, align=pw.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded.")
@@ -24,7 +25,7 @@ clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hid
 
 
 box = pw.Widget(main, align=pw.ALIGN.CENTER, w=100, h=100, bg=display.theme.primary)
-button = pw.Button(box, align=pw.ALIGN.CENTER, w=pw.pct.Width(50, box), h=pw.pct.Height(50, box), bg=display.theme.secondary)
+button = pw.Button(box, align=pw.ALIGN.CENTER, w=pct.Width(50, box), h=pct.Height(50, box), bg=display.theme.secondary)
 def inflate_box():
     box.set_position(w=box.width+10, h=box.height+10)
 button.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: inflate_box())

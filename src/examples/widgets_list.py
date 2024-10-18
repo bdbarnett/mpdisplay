@@ -26,7 +26,7 @@ clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hid
 item_no = 1
 def add_item(to_list: pw.ListView):
     global item_no
-    item = pw.Button(to_list, label=f"Item {item_no}", icon_file=pw.ICONS+"home_filled_36dp.pbm")
+    item = pw.Button(to_list, label=f"Item {item_no}", icon_file=pw.icon_theme.home(pw.ICON_SIZE.LARGE))
     item.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value(f"{sender.label.value} clicked."))
     item_no += 1
 
@@ -40,8 +40,8 @@ list_view = pw.ListView(main, w=main.width//2, h=main.height//2, align=pw.ALIGN.
 
 add = pw.Button(top, label="+ Item")
 remove = pw.Button(top, label="- Item", align_to=add, align=pw.ALIGN.OUTER_RIGHT)
-down = pw.IconButton(top, align=pw.ALIGN.TOP_RIGHT, icon_file=pw.ICONS+"keyboard_arrow_down_36dp.pbm")
-up = pw.IconButton(top, align_to=down, align=pw.ALIGN.OUTER_LEFT, icon_file=pw.ICONS+"keyboard_arrow_up_36dp.pbm")
+down = pw.IconButton(top, align=pw.ALIGN.TOP_RIGHT, icon_file=pw.icon_theme.down_arrow(pw.ICON_SIZE.LARGE))
+up = pw.IconButton(top, align_to=down, align=pw.ALIGN.OUTER_LEFT, icon_file=pw.icon_theme.up_arrow(pw.ICON_SIZE.LARGE))
 
 add.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: add_item(list_view))
 remove.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: remove_item(list_view))

@@ -1,26 +1,17 @@
-from gfx import Area
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
+from gfx.framebuf_plus import FrameBuffer, RGB565, Area
 from eventsys.events import Events
-from micropython import const
-from time import localtime
-from gfx.framebuf_plus import FrameBuffer, RGB565
-from palettes import get_palette
-import sys
-from random import getrandbits
-from . import pct  # noqa: F401
-from .__constants__ import ICON_SIZE, ALIGN, POSITION, TEXT_SIZE
-# from palettes.shades import ShadesPalette
+from sys import exit
+from time import localtime  # for DigitalClock
+from random import getrandbits  # for MARK_UPDATES
+from ._constants import ICON_SIZE, ALIGN, POSITION, TEXT_SIZE, PAD, DEFAULT_PADDING, TEXT_WIDTH
+from ._themes import ColorTheme, icon_theme, get_palette
 try:
     from time import ticks_ms, ticks_add
 except ImportError:
     from adafruit_ticks import ticks_ms, ticks_add
-try:
-    from os import sep  # PyScipt doesn't have os.sep
-except ImportError:
-    sep = "/"
-
-# get the path this module is in
-ICONS = __file__.split(sep)[0:-1]
-ICONS = sep.join(ICONS) + sep + "icons" + sep
 
 
 DEBUG = False
@@ -30,7 +21,6 @@ MARK_UPDATES = False
 def log(*args, **kwargs):
     if DEBUG:
         print(*args, **kwargs)
-
 
 def tick(_=None):
     for display in Display.displays:
@@ -44,33 +34,24 @@ def init_timer(period=10):
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to", "translate_point"}
 _display_drv_set_attrs = {"vscroll"}
 
-_PAD = const(2)
-DEFAULT_PADDING = (_PAD, _PAD, _PAD, _PAD)
-DEFAULT_BUTTON_SIZE = ICON_SIZE.LARGE + 2 * _PAD
-TEXT_WIDTH = const(8)
-
-
-class Theme:
-    def __init__(self, pal):
-        self.background = pal.white[0]
-        self.on_background = pal.black[0]
-        self.surface = pal.white[0]
-        self.on_surface = pal.black[0]
-        self.primary = pal.blue[4]
-        self.on_primary = pal.white[0]
-        self.secondary = pal.amber[0]
-        self.on_secondary = pal.black[0]
-        self.error = pal.red[0]
-        self.on_error = pal.white[0]
-        self.primary_variant = pal.blue[3]
-        self.secondary_variant = pal.deep_purple[4]
-        self.tertiary = pal.amber[0]
-        self.on_tertiary = pal.black[0]
-        self.tertiary_variant = pal.amber[4]
-        self.transparent = False
-
 
 class Task:
+    """
+    A task that runs a callback function after a specified delay.  Used
+    by the Display object to run tasks at regular intervals, such as
+    refreshing the display or updating the clock.
+
+    Args:
+        callback (callable): The function to run.
+        delay (int): The delay in milliseconds before running the callback.
+
+    Usage:
+        def my_callback():
+            print("Hello, world!")
+
+        task = Task(my_callback, 1000)  # Run my_callback every second
+        display.add_task(task)
+    """
     def __init__(self, callback, delay):
         self.callback = callback
         self.delay = delay
@@ -83,20 +64,26 @@ class Task:
 
 class Widget:
     next_instance_id = 0
-    def __init__(self, parent, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None):
+    def __init__(self, parent, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None):
         """
-        Initialize a Widget.
-        
-        :param parent: The parent widget (either another Widget or None if no parent).
-        :param x: The x-coordinate of the widget, relative to the parent.
-        :param y: The y-coordinate of the widget, relative to the parent.
-        :param w: The width of the widget.
-        :param h: The height of the widget.
-        :param fg: The foreground color of the widget.
-        :param bg: The background color of the widget.
-        :param visible: Whether the widget is visible (default is True).
-        :param value: The value of the widget (e.g., text of a label).
-        :param align: The alignment of the widget relative to the parent (default is align.CENTER).
+        The base Widget class for creating widgets.  May be used as a base class for custom widgets or
+        as a container for other widgets.
+
+        Args:
+            parent (Widget): The parent widget that contains this widget.  All widgets except the Display
+                widget must have a parent.
+            x (int): The x-coordinate of the widget.
+            y (int): The y-coordinate of the widget.
+            w (int): The width of the widget.
+            h (int): The height of the widget.
+            align (int): The alignment of the widget (default is ALIGN.TOP_LEFT).
+            align_to (Widget): The widget to align to (default is the parent widget).
+            fg (int): The foreground color of the widget (default is the parent's foreground color).
+            bg (int): The background color of the widget (default is the parent's background color).
+            visible (bool): The visibility of the widget (default is True).
+            value (str): The value of the widget (e.g., text of a label, value of a slider).
+            padding (tuple): The padding on each side of the widget (default is (2, 2, 2, 2)).
         """
         self.id = Widget.next_instance_id  # Currently only used in debugging
         Widget.next_instance_id += 1
@@ -281,8 +268,8 @@ class Widget:
         return self.parent.display
 
     @property
-    def theme(self) -> Theme:
-        return self.display.theme
+    def color_theme(self) -> ColorTheme:
+        return self.display.color_theme
 
     @property
     def visible(self):
@@ -414,6 +401,20 @@ class Display(Widget):
     timer = None
 
     def __init__(self, display_drv, broker, tfa=0, bfa=0, format=RGB565):
+        """
+        Initialize a Display object to manage the display and child widgets.
+
+        Args:
+            display_drv (DisplayDriver): The display driver object that manages the display hardware.
+            broker (Broker): The event broker object that manages the event system.
+            tfa (int): The top fixed area of the display.
+            bfa (int): The bottom fixed area of the display.
+            format (int): The color format of the display (default is RGB565).
+
+        Usage:
+            from board_config import display_drv, broker
+            display = Display(display_drv, broker)
+        """
         self.display_drv = display_drv
         super().__init__(None, 0, 0, display_drv.width, display_drv.height, fg=-1, bg=0, padding=(0, 0, 0, 0))
         display_drv.set_vscroll(tfa, bfa)
@@ -430,7 +431,7 @@ class Display(Widget):
         else:
             self.needs_swap = False
         self.pal = get_palette("material_design", swapped=self.needs_swap, color_depth=display_drv.color_depth)
-        self._theme = Theme(self.pal)
+        self._color_theme = ColorTheme(self.pal)
         Display.displays.append(self)
 
     @property
@@ -463,8 +464,8 @@ class Display(Widget):
         return self
 
     @property
-    def theme(self):
-        return self._theme
+    def color_theme(self):
+        return self._color_theme
     
     @property
     def visible(self):
@@ -530,7 +531,7 @@ class Display(Widget):
                 Display.timer.deinit()
             except Exception:
                 pass
-        sys.exit()
+        exit()
 
     def tick(self):
         if self._tick_busy:
@@ -597,53 +598,76 @@ class Display(Widget):
 class Screen(Widget):
     def __init__(self, parent: Display | Widget, fg=None, bg=None, visible=True):
         """
-        Initialize a Screen widget, which acts as the top-level container for a Display.
-        
-        :param display: The Display object that this Screen is associated with.
+        Initialize a Screen object to contain widgets.
+
+        Args:
+            parent (Display): The display object that contains the screen.
+            fg (int): The foreground color of the screen.
+            bg (int): The background color of the screen.
+            visible (bool): The visibility of the screen.
+
+        Usage:
+            screen = Screen(display)
         """
         super().__init__(parent, 0, 0, parent.width, parent.height, fg=fg, bg=bg, visible=visible, padding=(0, 0, 0, 0))
         self.partitioned = self.display.tfa > 0 or self.display.bfa > 0
 
         if self.partitioned:
-            self.top = Widget(self, *self.display.tfa_area, fg=parent.theme.on_primary, bg=parent.theme.primary)
+            self.top = Widget(self, *self.display.tfa_area, fg=parent.color_theme.on_primary, bg=parent.color_theme.primary)
             self.main = Widget(self, *self.display.vsa_area)
-            self.bottom = Widget(self, *self.display.bfa_area, fg=parent.theme.on_primary, bg=parent.theme.primary)
+            self.bottom = Widget(self, *self.display.bfa_area, fg=parent.color_theme.on_primary, bg=parent.color_theme.primary)
 
 
 class Button(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
-                 radius=0, pressed_offset=2, pressed=False, label=None, text_color=None, text_height=TEXT_SIZE.LARGE, icon_file=None, icon_color=None):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None,
+                 radius=0, pressed_offset=2, pressed=False, label=None, text_color=None,
+                 text_height=TEXT_SIZE.LARGE, icon_file=None, icon_color=None):
         """
-        Initialize a Button widget.
+        Initialize a Button widget to display an icon and/or text.
 
-        :param parent: The parent widget or screen that contains this button.
-        :param x: The x-coordinate of the button.
-        :param y: The y-coordinate of the button.
-        :param width: The width of the button.
-        :param height: The height of the button.
-        :param bg: The background color of the button (default is blue).
-        :param label: A Label widget (optional) to display inside the button.
+        Args:
+            parent (Widget): The parent widget or screen that contains this widget.
+            x (int): The x-coordinate of the widget.
+            y (int): The y-coordinate of the widget.
+            w (int): The width of the widget.
+            h (int): The height of the widget.
+            align (int): The alignment of the widget.
+            align_to (Widget): The widget to align to.
+            fg (int): The foreground color of the widget.
+            bg (int): The background color of the widget.
+            visible (bool): The visibility of the widget (default is True).
+            value (Any): User-assigned value of the widget.
+            padding (tuple): The padding on each side of the widget.
+            radius (int): The corner radius of the widget (default is 0).
+            pressed_offset (int): The offset of the widget when pressed (default is 2).
+            pressed (bool): The state of the widget (default is False).
+            label (str): The text label of the widget.
+            text_color (int): The color of the text label.
+            text_height (int): The height of the text label (default is TEXT_SIZE.LARGE).
+            icon_file (str): The icon file to display on the widget.
+            icon_color (int): The color of the icon.
         """
         self.radius = radius
         self.pressed_offset = pressed_offset
         self._pressed = pressed
         if w is None and label:
-            w = (len(label) +1) * TEXT_WIDTH + 2 * _PAD
-        w = w or DEFAULT_BUTTON_SIZE
-        h = h or DEFAULT_BUTTON_SIZE
-        bg = bg if bg is not None else parent.theme.primary_variant
-        fg = fg if fg is not None else parent.theme.on_primary
+            w = (len(label) +1) * TEXT_WIDTH + 2 * PAD
+        w = w or ICON_SIZE.LARGE + 2 * PAD
+        h = h or ICON_SIZE.LARGE + 2 * PAD
+        bg = bg if bg is not None else parent.color_theme.primary_variant
+        fg = fg if fg is not None else parent.color_theme.on_primary
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
         if icon_file:
             icon_align = ALIGN.CENTER if not label else ALIGN.LEFT
-            icon_color = icon_color if icon_color is not None else parent.theme.on_primary
+            icon_color = icon_color if icon_color is not None else parent.color_theme.on_primary
             self.icon = Icon(self, align=icon_align, fg=icon_color, bg=self.bg, value=icon_file)
         if label:
             if text_height not in TEXT_SIZE:
                 raise ValueError("Text height must be 8, 14 or 16 pixels.")
             label_align = ALIGN.CENTER if not icon_file else ALIGN.OUTER_RIGHT
             label_align_to = self.icon if icon_file else self
-            text_color = text_color if text_color is not None else parent.theme.on_primary
+            text_color = text_color if text_color is not None else parent.color_theme.on_primary
             self.label = Label(self, value=label, align=label_align, align_to=label_align_to, fg=text_color, bg=self.bg, text_height=text_height)
         else:
             self.label = None
@@ -671,18 +695,29 @@ class Button(Widget):
 
 
 class Label(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None,
                  text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
         """
         Initialize a Label widget to display text.
-        
-        :param parent: The parent widget or screen that contains this label.
-        :param x: The x-coordinate of the label.
-        :param y: The y-coordinate of the label.
-        :param h: The height of the label.
-        :param fg: The color of the text (in a suitable color format).
-        :param bg: Optional background color of the label. Default is None (no background).
-        :param value: The text content of the label.
+
+        Args:
+            parent (Widget): The parent widget or screen that contains this label.
+            x (int): The x-coordinate of the label.
+            y (int): The y-coordinate of the label.
+            w (int): The width of the label.
+            h (int): The height of the label.
+            align (int): The alignment of the label.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the text.
+            bg (int): The background color of the label.
+            visible (bool): The visibility of the label.
+            value (str): The text content of the label.
+            padding (tuple): The padding on each side of the label.
+            text_height (int): The height of the text (default is TEXT_SIZE.LARGE).
+            scale (int): The scale of the text (default is 1).
+            inverted (bool): The inversion of the text (default is False).
+            font_file (str): The font file to use for the text.
         """
         if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
@@ -695,7 +730,7 @@ class Label(Widget):
         self.scale = scale
         self._inverted = inverted
         self._font_file = font_file
-        bg = bg if bg is not None else parent.theme.transparent
+        bg = bg if bg is not None else parent.color_theme.transparent
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
 
     def draw(self, _=None):
@@ -703,7 +738,7 @@ class Label(Widget):
         Draw the label's text on the screen, using absolute coordinates.
         Optionally fills the background first if `bg` is set.
         """
-        if self.bg is not self.parent.theme.transparent:
+        if self.bg is not self.parent.color_theme.transparent:
             self.display.framebuf.fill_rect(*self.padded_area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.padded_area
         self.display.framebuf.text(self.value, x, y, self.fg, height=self.text_height, scale=self.scale, inverted=self._inverted, font_file=self._font_file)
@@ -718,18 +753,33 @@ class Label(Widget):
 
 
 class TextBox(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None,
                  format="", text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
         """
-        Initialize a TextBox widget to display text.
-        
-        :param parent: The parent widget or screen that contains this label.
-        :param text: The text content of the label.
-        :param x: The x-coordinate of the label.
-        :param y: The y-coordinate of the label.
-        :param width: The width of the label.
-        :param height: The height of the label.
-        :param fg: The color of the text (in a suitable color format).
+        Initialize a TextBox widget to display formatted text.
+
+        Args:
+            parent (Widget): The parent widget or screen that contains this text box.
+            x (int): The x-coordinate of the text box.
+            y (int): The y-coordinate of the text box.
+            w (int): The width of the text box.
+            h (int): The height of the text box.
+            align (int): The alignment of the text box.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the text.
+            bg (int): The background color of the text box.
+            visible (bool): The visibility of the text box.
+            value (str): The text content of the text box.
+            padding (tuple): The padding on each side of the text box.
+            format (str): The format string for the text.
+            text_height (int): The height of the text (default is TEXT_SIZE.LARGE).
+            scale (int): The scale of the text (default is 1).
+            inverted (bool): The inversion of the text (default is False).
+            font_file (str): The font file to use for the text.
+
+        Usage:
+            text_box = TextBox(screen, value="Hello, world!", format="{:>20}", text_height=TEXT_SIZE.LARGE)
         """
         if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
@@ -751,7 +801,7 @@ class TextBox(Widget):
         pa = self.padded_area
         self.display.framebuf.fill_rect(*pa, self.bg)
         y = pa.y + (pa.h - self.text_height * self.scale) // 2
-        self.display.framebuf.text(f"{self.value:{self.format}}", pa.x + _PAD, y, self.fg, height=self.text_height,
+        self.display.framebuf.text(f"{self.value:{self.format}}", pa.x + PAD, y, self.fg, height=self.text_height,
                                    scale=self.scale, inverted=self._inverted, font_file=self._font_file)
 
     @property
@@ -765,18 +815,28 @@ class TextBox(Widget):
 
 class Icon(Widget):
     cache = {}
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None):
         """
-        Initialize an Icon widget to display an icon.
-        
-        :param parent: The parent widget or screen that contains this icon.
-        :param x: The x-coordinate of the icon.
-        :param y: The y-coordinate of the icon.
-        :param width: The width of the icon.
-        :param height: The height of the icon.
-        :param fg: The color of the icon (in a suitable color format).
-        :param bg: The background color of the icon.
-        :param value: The icon file to display.
+        Initialize an Icon widget to display an icon.  Currently only supports PBM files.
+        PBM files are monochrome (1 bit per pixel) bitmaps.
+
+        Args:
+            parent (Widget): The parent widget or screen that contains this icon.
+            x (int): The x-coordinate of the icon.
+            y (int): The y-coordinate of the icon.
+            w (int): The width of the icon.
+            h (int): The height of the icon.
+            align (int): The alignment of the icon.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the icon.
+            bg (int): The background color of the icon.
+            visible (bool): The visibility of the icon.
+            value (str): The icon file to display.
+            padding (tuple): The padding on each side of the icon.
+
+        Usage:
+            icon = Icon(screen, value="icon.pbm")
         """
         if not value:
             raise ValueError("Icon value must be set to the filename with path.")
@@ -806,7 +866,7 @@ class Icon(Widget):
         Draw the icon on the screen.
         """
         pal = FrameBuffer(memoryview(bytearray(4)), 2, 1, RGB565)
-        if self.bg is self.parent.theme.transparent:
+        if self.bg is self.parent.color_theme.transparent:
             key = ~self.fg
             pal.pixel(0, 0, key)
         else:
@@ -817,20 +877,29 @@ class Icon(Widget):
 
 
 class IconButton(Button):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None,
                  icon_file=None):
         """
         Initialize an IconButton widget to display an icon on a button.
-        
-        :param parent: The parent widget or screen that contains this icon button.
-        :param x: The x-coordinate of the icon button.
-        :param y: The y-coordinate of the icon button.
-        :param width: The width of the icon button.
-        :param height: The height of the icon button.
-        :param fg: The color of the icon button (in a suitable color format).
-        :param bg: The background color of the icon button.
-        :param value: The value of the icon button.
-        :param icon_file: The icon file to display on the button.
+
+        Args:
+            parent (Widget): The parent widget or screen that contains this icon button.
+            x (int): The x-coordinate of the icon button.
+            y (int): The y-coordinate of the icon button.
+            w (int): The width of the icon button.
+            h (int): The height of the icon button.
+            align (int): The alignment of the icon button.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the icon button.
+            bg (int): The background color of the icon button.
+            visible (bool): The visibility of the icon button.
+            value (str): The user-assigned value of the icon button.
+            padding (tuple): The padding on each side of the icon button.
+            icon_file (str): The icon file to display.
+
+        Usage:
+            icon_button = IconButton(screen, icon_file="icon.pbm")
         """
         fg = fg if fg is not None else parent.fg
         bg = bg if bg is not None else parent.bg
@@ -842,24 +911,33 @@ class IconButton(Button):
 
 
 class Toggle(IconButton):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=False, padding=None,
                  on_file=None, off_file=None):
         """
         An IconButton that toggles between two states (on and off).  Serves as a base widget for 
         ToggleButton, CheckBox, and RadioButton widgets but may be used on its own.  Requires an
         on_file and optionally an off_file.  If only a single file is provided, the widget will 
-        change colors when toggled.
-        
-        :param parent: The parent widget or screen that contains this toggle button.
-        :param x: The x-coordinate of the toggle button.
-        :param y: The y-coordinate of the toggle button.
-        :param w: The width of the toggle button (default is 20).
-        :param h: The height of the toggle button (default is 20).
-        :param fg: The foreground color of the toggle button (default is black).
-        :param bg: The background color of the toggle button (default is white).
-        :param value: The initial state of the toggle button (default is False, meaning off).
-        :param on_file: The icon file to display when the button is toggled on.  Required.
-        :param off_file: The icon file to display when the button is toggled off.  Optional.
+        change colors when toggled, otherwise the icon will change.
+
+        Args:
+            parent (Widget): The parent widget or screen that contains this toggle button.
+            x (int): The x-coordinate of the toggle button.
+            y (int): The y-coordinate of the toggle button.
+            w (int): The width of the toggle button.
+            h (int): The height of the toggle button.
+            align (int): The alignment of the toggle button.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the toggle button.
+            bg (int): The background color of the toggle button.
+            visible (bool): The visibility of the toggle button.
+            value (bool): The initial state of the toggle button.
+            padding (tuple): The padding on each side of the toggle button.
+            on_file (str): The icon file to display when the button is on.
+            off_file (str): The icon file to display when the button is off.
+
+        Usage:
+            toggle = Toggle(screen, on_file="on.pbm", off_file="off.pbm")
         """
         if not on_file:
             raise ValueError("An on_file file must be provided.")
@@ -882,47 +960,67 @@ class Toggle(IconButton):
         if self.off_file:
             self.icon.value = self.on_file if self.value else self.off_file
         else:
-            self.icon.fg = self.fg if self.value else self.theme.tertiary
+            self.icon.fg = self.fg if self.value else self.color_theme.tertiary
         super().changed()  # Call the parent changed method
 
 
 class ToggleButton(Toggle):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=False, padding=None,
                  size=ICON_SIZE.LARGE):
         """
         Initialize a ToggleButton widget.
         
-        :param parent: The parent widget or screen that contains this toggle button.
-        :param x: The x-coordinate of the toggle button.
-        :param y: The y-coordinate of the toggle button.
-        :param w: The width of the toggle button (default is 20).
-        :param h: The height of the toggle button (default is 20).
-        :param fg: The foreground color of the toggle button (default is black).
-        :param bg: The background color of the toggle button (default is white).
-        :param value: The initial state of the toggle button (default is False, meaning off).
+        Args:
+            parent (Widget): The parent widget or screen that contains this toggle button.
+            x (int): The x-coordinate of the toggle button.
+            y (int): The y-coordinate of the toggle button.
+            w (int): The width of the toggle button.
+            h (int): The height of the toggle button.
+            align (int): The alignment of the toggle button.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the toggle button.
+            bg (int): The background color of the toggle button.
+            visible (bool): The visibility of the toggle button.
+            value (bool): The initial state of the toggle button.
+            padding (tuple): The padding on each side of the toggle button.
+            size (int): The size of the toggle button (default is ICON_SIZE.LARGE).
+
+        Usage:
+            toggle_button = ToggleButton(screen, size=ICON_SIZE.LARGE)
         """
-        on_file = ICONS + "toggle_on_" + str(size) + "dp.pbm"
-        off_file = ICONS + "toggle_off_" + str(size) + "dp.pbm"
+        on_file = icon_theme.toggle_on(size)
+        off_file = icon_theme.toggle_off(size)
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
 
 class CheckBox(Toggle):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=False, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=False, padding=None,
                  size=ICON_SIZE.LARGE):
         """
         Initialize a CheckBox widget.
         
-        :param parent: The parent widget or screen that contains this toggle button.
-        :param x: The x-coordinate of the toggle button.
-        :param y: The y-coordinate of the toggle button.
-        :param w: The width of the toggle button (default is 20).
-        :param h: The height of the toggle button (default is 20).
-        :param fg: The foreground color of the toggle button (default is black).
-        :param bg: The background color of the toggle button (default is white).
-        :param value: The initial state of the toggle button (default is False, meaning off).
+        Args:
+            parent (Widget): The parent widget or screen that contains this check box.
+            x (int): The x-coordinate of the check box.
+            y (int): The y-coordinate of the check box.
+            w (int): The width of the check box.
+            h (int): The height of the check box.
+            align (int): The alignment of the check box.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the check box.
+            bg (int): The background color of the check box.
+            visible (bool): The visibility of the check box.
+            value (bool): The initial state of the check box.
+            padding (tuple): The padding on each side of the check box.
+            size (int): The size of the check box (default is ICON_SIZE.LARGE).
+
+        Usage:
+            check_box = CheckBox(screen, size=ICON_SIZE.LARGE)
         """
-        on_file = ICONS + "check_box_" + str(size) + "dp.pbm"
-        off_file = ICONS + "check_box_outline_blank_" + str(size) + "dp.pbm"
+        on_file = icon_theme.check_box_checked(size)
+        off_file = icon_theme.check_box_unchecked(size)
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
 
@@ -930,6 +1028,9 @@ class RadioGroup:
     def __init__(self):
         """
         Initialize a RadioGroup to manage a group of RadioButtons.
+
+        See Also:
+            RadioButton
         """
         self.radio_buttons = []
 
@@ -957,21 +1058,32 @@ class RadioButton(Toggle):
         """
         Initialize a RadioButton widget.
         
-        :param parent: The parent widget or screen that contains this toggle button.
-        :param x: The x-coordinate of the toggle button.
-        :param y: The y-coordinate of the toggle button.
-        :param w: The width of the toggle button (default is 20).
-        :param h: The height of the toggle button (default is 20).
-        :param fg: The foreground color of the toggle button (default is black).
-        :param bg: The background color of the toggle button (default is white).
-        :param value: The initial state of the toggle button (default is False, meaning off).
+        Args:
+            parent (Widget): The parent widget or screen that contains this radio button.
+            x (int): The x-coordinate of the radio button.
+            y (int): The y-coordinate of the radio button.
+            w (int): The width of the radio button.
+            h (int): The height of the radio button.
+            align (int): The alignment of the radio button.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the radio button.
+            bg (int): The background color of the radio button.
+            visible (bool): The visibility of the radio button.
+            value (bool): The initial state of the radio button.
+            padding (tuple): The padding on each side of the radio button.
+            size (int): The size of the radio button (default is ICON_SIZE.LARGE).
+            group (RadioGroup): The RadioGroup to which this radio button belongs.
+
+        Usage:
+            radio_group = RadioGroup()
+            radio_button = RadioButton(screen, group=radio_group)
         """
         if group is None:
             raise ValueError("RadioButton must be part of a RadioGroup.")
         self.group = group
         self.group.add(self)
-        on_file = ICONS + "radio_button_checked_" + str(size) + "dp.pbm"
-        off_file = ICONS + "radio_button_unchecked_" + str(size) + "dp.pbm"
+        on_file = icon_theme.radio_button_checked(size)
+        off_file = icon_theme.radio_button_unchecked(size)
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, on_file, off_file)
 
     def toggle(self, data=None, event=None):
@@ -981,26 +1093,35 @@ class RadioButton(Toggle):
 
 
 class ProgressBar(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=0.0, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=0.0, padding=None,
                  vertical=False, reverse=False):
         """
         Initialize a ProgressBar widget to display a progress bar.
 
-        :param parent: The parent widget or screen.
-        :param x: The x-coordinate.
-        :param y: The y-coordinate.
-        :param width: The width of the progress bar.
-        :param height: The height of the progress bar.
-        :param fg: The foreground color of the progress bar.
-        :param bg: The background color.
-        :param value: The initial value of the progress bar (0 to 1).
-        :param vertical: If True, the progress bar will fill vertically.
-        :param reverse: If True, the progress bar will fill in the reverse direction (top-to-bottom for vertical, right-to-left for horizontal).
+        Args:
+            parent (Widget): The parent widget or screen that contains this progress bar.
+            x (int): The x-coordinate of the progress bar.
+            y (int): The y-coordinate of the progress bar.
+            w (int): The width of the progress bar.
+            h (int): The height of the progress bar.
+            align (int): The alignment of the progress bar.
+            align_to (Widget): The widget to align to.
+            fg (int): The foreground color of the progress bar.
+            bg (int): The background color of the progress bar.
+            visible (bool): The visibility of the progress bar.
+            value (float): The initial value of the progress bar (0 to 1).
+            padding (tuple): The padding on each side of the progress bar.
+            vertical (bool): Whether the progress bar is vertical (True) or horizontal (False).
+            reverse (bool): Whether the progress bar is reversed (True) or not (False).
+
+        Usage:
+            progress_bar = ProgressBar(screen)
         """
         w = w or (ICON_SIZE.SMALL if vertical else ICON_SIZE.SMALL * 4)
         h = h or (ICON_SIZE.SMALL if not vertical else ICON_SIZE.SMALL * 4)
-        fg = fg if fg is not None else parent.theme.on_primary
-        bg = bg if bg is not None else parent.theme.primary_variant
+        fg = fg if fg is not None else parent.color_theme.on_primary
+        bg = bg if bg is not None else parent.color_theme.primary_variant
         self.vertical = vertical
         self.reverse = reverse
         self.end_radius = w//2 if self.vertical else h//2
@@ -1059,22 +1180,32 @@ class ProgressBar(Widget):
 
 
 class Slider(ProgressBar):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=0.0, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=0.0, padding=None,
                  vertical=False, reverse=False, knob_color=None, step=0.1):
         """
         Initialize a Slider widget with a circular knob that can be dragged.
         
-        :param parent: The parent widget or screen that contains this slider.
-        :param x: The x-coordinate of the slider.
-        :param y: The y-coordinate of the slider.
-        :param w: The width of the slider.
-        :param h: The height of the slider.
-        :param fg: The foreground color of the slider (progress bar).
-        :param bg: The background color of the slider.
-        :param knob_color: The color of the knob.
-        :param value: The initial value of the slider (0 to 1).
-        :param vertical: Whether the slider is vertical (True) or horizontal (False).
-        :param step: The step size for adjusting the slider value (default is 0.1).
+        Args:
+            parent (Widget): The parent widget or screen that contains this slider.
+            x (int): The x-coordinate of the slider.
+            y (int): The y-coordinate of the slider.
+            w (int): The width of the slider.
+            h (int): The height of the slider.
+            align (int): The alignment of the slider.
+            align_to (Widget): The widget to align to.
+            fg (int): The foreground color of the slider.
+            bg (int): The background color of the slider.
+            visible (bool): The visibility of the slider.
+            value (float): The initial value of the slider (0 to 1).
+            padding (tuple): The padding on each side of the slider.
+            vertical (bool): Whether the slider is vertical (True) or horizontal (False).
+            reverse (bool): Whether the slider is reversed (True) or not (False).
+            knob_color (int): The color of the knob.
+            step (float): The step size for value adjustments.
+
+        Usage:
+            slider = Slider(screen, vertical=True, step=0.1)
         """
         if vertical:
             w = w or ICON_SIZE.SMALL
@@ -1084,7 +1215,7 @@ class Slider(ProgressBar):
             w = w or parent.width if parent else 6 * ICON_SIZE.SMALL
             h = h or ICON_SIZE.SMALL
             align = align if align is not None else ALIGN.BOTTOM
-        self.knob_color = knob_color if knob_color is not None else parent.theme.secondary
+        self.knob_color = knob_color if knob_color is not None else parent.color_theme.secondary
         self.step = step  # Step size for value adjustments
         self.dragging = False  # Track whether the knob is being dragged
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, vertical, reverse)
@@ -1161,26 +1292,32 @@ class Slider(ProgressBar):
 
 
 class ScrollBar(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=0.0, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=0.0, padding=None,
                  vertical=False, reverse=False, knob_color=None, step=0.1):
         """
         Initialize a ScrollBar widget with two arrow IconButtons and a Slider.
 
-        :param parent: The parent widget or screen that contains this scrollbar.
-        :param x: The x-coordinate of the scrollbar.
-        :param y: The y-coordinate of the scrollbar.
-        :param w: The width of the scrollbar (only applies if horizontal).
-        :param h: The height of the scrollbar (only applies if vertical).
-        :param fg: The foreground color.
-        :param bg: The background color.
-        :param visible: Whether the scrollbar is visible.
-        :param align: The alignment of the scrollbar relative to the parent.
-        :param align_to: The widget to align to (default is the parent).
-        :param vertical: Whether the scrollbar is vertical (True) or horizontal (False).
-        :param value: The initial value of the scrollbar slider (0 to 1).
-        :param step: The step size for each arrow button press.
-        :param knob_color: The color of the slider knob.
-        :param reverse: Whether the scrollbar is reversed (default is False).
+        Args:
+            parent (Widget): The parent widget or screen that contains this scroll bar.
+            x (int): The x-coordinate of the scroll bar.
+            y (int): The y-coordinate of the scroll bar.
+            w (int): The width of the scroll bar.
+            h (int): The height of the scroll bar.
+            align (int): The alignment of the scroll bar.
+            align_to (Widget): The widget to align to.
+            fg (int): The foreground color of the scroll bar.
+            bg (int): The background color of the scroll bar.
+            visible (bool): The visibility of the scroll bar.
+            value (float): The initial value of the scroll bar (0 to 1).
+            padding (tuple): The padding on each side of the scroll bar.
+            vertical (bool): Whether the scroll bar is vertical (True) or horizontal (False).
+            reverse (bool): Whether the scroll bar is reversed (True) or not (False).
+            knob_color (int): The color of the knob.
+            step (float): The step size for value adjustments.
+
+        Usage:
+            scroll_bar = ScrollBar(screen, vertical=True, step=0.1)
         """
 
         if vertical:
@@ -1198,12 +1335,12 @@ class ScrollBar(Widget):
 
         # Add IconButton on each end and Slider in the middle
         if vertical:
-            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_up_18dp.pbm", fg=fg, bg=bg, align=ALIGN.TOP)
-            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_down_18dp.pbm", fg=fg, bg=bg, align=ALIGN.BOTTOM)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=icon_theme.up_arrow(ICON_SIZE.SMALL), fg=fg, bg=bg, align=ALIGN.TOP)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=icon_theme.down_arrow(ICON_SIZE.SMALL), fg=fg, bg=bg, align=ALIGN.BOTTOM)
             self.slider = Slider(self, w=icon_size, h=h-2*icon_size, vertical=True, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
         else:
-            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_left_18dp.pbm", fg=fg, bg=bg, align=ALIGN.LEFT)
-            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=ICONS + "keyboard_arrow_right_18dp.pbm", fg=fg, bg=bg, align=ALIGN.RIGHT)
+            self.neg_button = IconButton(self, w=icon_size, h=icon_size, icon_file=icon_theme.left_arrow(ICON_SIZE.SMALL), fg=fg, bg=bg, align=ALIGN.LEFT)
+            self.pos_button = IconButton(self, w=icon_size, h=icon_size, icon_file=icon_theme.right_arrow(ICON_SIZE.SMALL), fg=fg, bg=bg, align=ALIGN.RIGHT)
             self.slider = Slider(self, w=w-icon_size*2, h=icon_size, vertical=False, align=ALIGN.CENTER, value=value, step=step, reverse=reverse, knob_color=knob_color, fg=fg, bg=bg)
 
         # Set button callbacks to adjust slider value
@@ -1212,22 +1349,37 @@ class ScrollBar(Widget):
 
 
 class DigitalClock(Label):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, value=None, padding=None,
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, value=None, padding=None,
                  text_height=TEXT_SIZE.LARGE, scale=1):
         """
         Initialize a DigitalClock widget to display the current time.
-        
-        :param parent: The parent widget or screen that contains this digital clock.
-        :param x: The x-coordinate of the digital clock.
-        :param y: The y-coordinate of the digital clock.
-        :param h: The height of the digital clock.
-        :param fg: The color of the text (in a suitable color format).
-        :param bg: The background color of the digital clock.
+
+        Args:
+            parent (Widget): The parent widget or screen that contains this digital clock.
+            x (int): The x-coordinate of the digital clock.
+            y (int): The y-coordinate of the digital clock.
+            w (int): The width of the digital clock.
+            h (int): The height of the digital clock.
+            align (int): The alignment of the digital clock.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the digital clock.
+            bg (int): The background color of the digital clock.
+            visible (bool): The visibility of the digital clock.
+            value (str): The initial value of the digital clock.
+            padding (tuple): The padding on each side of the digital clock.
+            text_height (int): The height of the text (default is TEXT_SIZE.LARGE).
+            scale (int): The scale of the text (default is 1).
+
+        Usage:
+            clock = DigitalClock(screen, text_height=TEXT_SIZE.LARGE, scale=2)
         """
         if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
+        fg = fg if fg is not None else parent.fg
+        bg = bg if bg is not None else parent.bg
         w = w or (TEXT_WIDTH) * 8 * scale
-        super().__init__(parent, x, y, w, h, align, align_to, parent.fg, parent.bg, visible, value, padding, text_height, scale)
+        super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding, text_height, scale)
         self.task = self.display.add_task(self.update_time, 1000)
 
     def update_time(self):
@@ -1237,19 +1389,31 @@ class DigitalClock(Label):
 
 
 class ListView(Widget):
-    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None, fg=None, bg=None, visible=True, padding=None):
+    def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
+                 fg=None, bg=None, visible=True, padding=None):
         """
         Initialize a ListView widget to display a list of items.
         
-        :param parent: The parent widget or screen that contains this list view.
-        :param x: The x-coordinate of the list view.
-        :param y: The y-coordinate of the list view.
-        :param h: The height of the list view.
-        :param fg: The color of the text (in a suitable color format).
-        :param bg: The background color of the list view.
+        Args:
+            parent (Widget): The parent widget or screen that contains this list view.
+            x (int): The x-coordinate of the list view.
+            y (int): The y-coordinate of the list view.
+            w (int): The width of the list view.
+            h (int): The height of the list view.
+            align (int): The alignment of the list view.
+            align_to (Widget): The widget to align to.
+            fg (int): The color of the list view.
+            bg (int): The background color of the list view.
+            visible (bool): The visibility of the list view.
+            padding (tuple): The padding on each side of the list view.
+
+        Usage:
+            list_view = ListView(screen)
+            button1 = Button(list_view, label="Button 1", value=1)
+            button2 = Button(list_view, label="Button 2", value=2)
         """
-        fg = fg if fg is not None else parent.theme.on_primary
-        bg = bg if bg is not None else parent.theme.primary
+        fg = fg if fg is not None else parent.color_theme.on_primary
+        bg = bg if bg is not None else parent.color_theme.primary
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value=0, padding=padding)
         self.scrollbar = ScrollBar(parent, vertical=True, h=h, fg=fg, bg=bg, visible=False, align_to=self, align=ALIGN.OUTER_RIGHT)
         self.scrollbar.slider.set_change_cb(self.scroll)

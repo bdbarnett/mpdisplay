@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """
 Classes that dynamically calculate the percentage of the width and height of a Widget
 """

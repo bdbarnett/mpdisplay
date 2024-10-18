@@ -61,10 +61,10 @@ def toggle_auto_scroll(sender, event=None):
         auto_scroll_task = None
 
 
-home = pw.IconButton(top, align=pw.ALIGN.TOP_LEFT, icon_file=pw.ICONS+"home_filled_36dp.pbm")
+home = pw.IconButton(top, align=pw.ALIGN.TOP_LEFT, icon_file=pw.icon_theme.home(pw.ICON_SIZE.LARGE))
 toggle = pw.ToggleButton(top, align_to=home, align=pw.ALIGN.OUTER_RIGHT, value=False)
-down = pw.IconButton(top, align=pw.ALIGN.TOP_RIGHT, icon_file=pw.ICONS+"keyboard_arrow_down_36dp.pbm")
-up = pw.IconButton(top, align_to=down, align=pw.ALIGN.OUTER_LEFT, icon_file=pw.ICONS+"keyboard_arrow_up_36dp.pbm")
+down = pw.IconButton(top, align=pw.ALIGN.TOP_RIGHT, icon_file=pw.icon_theme.down_arrow(pw.ICON_SIZE.LARGE))
+up = pw.IconButton(top, align_to=down, align=pw.ALIGN.OUTER_LEFT, icon_file=pw.icon_theme.up_arrow(pw.ICON_SIZE.LARGE))
 slider1 = pw.Slider(top, y=9, w=up.x-toggle.x-toggle.width-16, h=18, align=pw.ALIGN.TOP, value=0, step=0.05)
 
 clock = pw.DigitalClock(bottom, y=-8, align=pw.ALIGN.BOTTOM_RIGHT, visible=False)

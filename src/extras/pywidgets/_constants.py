@@ -1,14 +1,25 @@
-class _CONSTANTS:
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
+from micropython import const
+
+
+PAD = const(2)
+DEFAULT_PADDING = (PAD, PAD, PAD, PAD)
+TEXT_WIDTH = const(8)
+
+
+class _Constants:
     """
     A base class for creating a struct-like class.  The class may be used to check if a value is one of the built-in values, for instance:
     ```
-    CONSTANTS = _CONSTANTS()
+    CONSTANTS = _Constants()
     if value in CONSTANTS:
         print("Value is valid")
     ```
     May also be used to iterate over the values:
     ```
-    CONSTANTS = _CONSTANTS()
+    CONSTANTS = _Constants()
     for value in CONSTANTS:
         print(value)
     ```
@@ -23,31 +34,31 @@ class _CONSTANTS:
         return iter(cls.__dict__.values())
 
 
-class _ICON_SIZE(_CONSTANTS):
+class _IconSize(_Constants):
     SMALL = 18
     MEDIUM = 24
     LARGE = 36
     XLARGE = 48
-ICON_SIZE = _ICON_SIZE()
+ICON_SIZE = _IconSize()
 
 
-class _TEXT_SIZE(_CONSTANTS):
+class _TextSize(_Constants):
     SMALL = 8
     MEDIUM = 14
     LARGE = 16
-TEXT_SIZE = _TEXT_SIZE()
+TEXT_SIZE = _TextSize()
 
 
-class _POSITION(_CONSTANTS):
+class _Position(_Constants):
     LEFT = 1 << 0
     RIGHT = 1 << 1
     TOP = 1 << 2
     BOTTOM = 1 << 3
     OUTER = 1 << 4
-POSITION = _POSITION()
+POSITION = _Position()
 
 
-class _ALIGN(_CONSTANTS):
+class _Align(_Constants):
     CENTER = 0  # 0
     TOP_LEFT = POSITION.TOP | POSITION.LEFT  # 5
     TOP = POSITION.TOP  # 4
@@ -65,4 +76,4 @@ class _ALIGN(_CONSTANTS):
     OUTER_BOTTOM_LEFT = POSITION.BOTTOM | POSITION.LEFT | POSITION.OUTER  # 25
     OUTER_BOTTOM = POSITION.BOTTOM | POSITION.OUTER  # 24
     OUTER_BOTTOM_RIGHT = POSITION.BOTTOM | POSITION.RIGHT | POSITION.OUTER  # 26
-ALIGN = _ALIGN()
+ALIGN = _Align()

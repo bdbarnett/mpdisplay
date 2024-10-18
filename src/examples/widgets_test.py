@@ -19,10 +19,9 @@ screen = pw.Screen(display, visible=False)
 
 status = pw.TextBox(screen, w=screen.width, align=pw.ALIGN.BOTTOM, scale=1)
 
-toggle = pw.Toggle(screen, on_file=pw.ICONS+"home_filled_36dp.pbm")  # noqa: F841
+toggle = pw.Toggle(screen, on_file=pw.icon_theme.home(pw.ICON_SIZE.LARGE))  # noqa: F841
 
 label1 = pw.Label(screen, align=pw.ALIGN.TOP, value="Inverted", bg=screen.bg, scale=2, inverted=True)  # noqa: F841
-print(f"{label1.bg=}")
 toggle_button = pw.ToggleButton(screen, align_to=toggle, align=pw.ALIGN.OUTER_RIGHT, value=False)
 def flip_label(sender, event):
     label1._inverted = not label1._inverted
@@ -70,8 +69,8 @@ slider1.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_val
 pbar = pw.ProgressBar(screen, y=slider1.y-screen.height, w=display.width//2, align=pw.ALIGN.BOTTOM, value=0.5, reverse=REVERSE)
 pbar.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value(f"Progress: {sender.value:.0%}"))
 pbtn1 = pw.Button(pbar, w=22, h=22, align=pw.ALIGN.OUTER_LEFT)
-pbtn1_icon = pw.Icon(pbtn1, align=pw.ALIGN.CENTER, value=pw.ICONS+"keyboard_arrow_left_18dp.pbm")  # noqa: F841
-pbtn2 = pw.IconButton(pbar, align=pw.ALIGN.OUTER_RIGHT, icon_file=pw.ICONS+"keyboard_arrow_right_18dp.pbm")
+pbtn1_icon = pw.Icon(pbtn1, align=pw.ALIGN.CENTER, value=pw.icon_theme.left_arrow(pw.ICON_SIZE.SMALL))  # noqa: F841
+pbtn2 = pw.IconButton(pbar, align=pw.ALIGN.OUTER_RIGHT, icon_file=pw.icon_theme.right_arrow(pw.ICON_SIZE.SMALL))
 pbtn1.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: pbar.set_value(pbar.value-0.1))
 pbtn2.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: pbar.set_value(pbar.value+0.1))
 
