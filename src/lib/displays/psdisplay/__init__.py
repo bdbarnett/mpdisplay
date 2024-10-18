@@ -6,7 +6,7 @@
 PyDevices psdisplay
 """
 
-from basedisplay import BaseDisplay, Area, color_rgb
+from basedisplay import DisplayDriver, Area, color_rgb
 from pyscript.ffi import create_proxy  # type: ignore
 from js import document, console  # type: ignore
 
@@ -83,7 +83,7 @@ class PSDevices:
         return False
 
 
-class PSDisplay(BaseDisplay):
+class PSDisplay(DisplayDriver):
     """
     A class to emulate a display on PyScript.
 

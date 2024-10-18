@@ -6,7 +6,7 @@
 PyDevices busdisplay
 """
 
-from basedisplay import BaseDisplay, Area, swap_bytes
+from basedisplay import DisplayDriver, Area, swap_bytes
 from micropython import const  # type: ignore
 import struct
 import sys
@@ -79,7 +79,7 @@ _MIRRORED_ROTATION_TABLE = (
 # fmt: on
 
 
-class BusDisplay(BaseDisplay):
+class BusDisplay(DisplayDriver):
     """
     Base class for displays connected via a bus.
 

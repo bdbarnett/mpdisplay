@@ -46,7 +46,7 @@ if not viper:
 gc.collect()
 
 
-class BaseDisplay:
+class DisplayDriver:
     def __init__(self):
         gc.collect()
         self._vssa = False  # False means no vertical scroll

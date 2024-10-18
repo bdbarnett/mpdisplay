@@ -6,13 +6,13 @@
 PyDevices fbdisplay
 """
 
-from basedisplay import BaseDisplay, np, Area, swap_bytes
+from basedisplay import DisplayDriver, np, Area, swap_bytes
 
 if not np:
     raise ImportError("This module depends on the numpy module. Please install it.")
 
 
-class FBDisplay(BaseDisplay):
+class FBDisplay(DisplayDriver):
     """
     A class to interface with CircuitPython FrameBuffer objects.
 

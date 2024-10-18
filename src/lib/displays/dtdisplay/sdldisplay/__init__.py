@@ -6,7 +6,7 @@
 PyDevices dtdisplay.sdldisplay
 """
 
-from .. import BaseDisplay, Area, color_rgb
+from .. import DisplayDriver, Area, color_rgb
 from eventsys.events import Events
 from sys import implementation
 from ._sdl2_lib import (
@@ -145,7 +145,7 @@ def retcheck(retvalue):
         raise RuntimeError(SDL_GetError())
 
 
-class SDLDisplay(BaseDisplay):
+class SDLDisplay(DisplayDriver):
     """
     A class to emulate an LCD using SDL2.
     Provides scrolling and rotation functions similar to an LCD.  The .texture

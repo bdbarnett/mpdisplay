@@ -6,12 +6,12 @@
 PyDevices jndisplay
 """
 
-from basedisplay import BaseDisplay, Area, color_rgb
+from basedisplay import DisplayDriver, Area, color_rgb
 from IPython.display import display, update_display  # type: ignore
 from PIL import Image, ImageDraw  # type: ignore
 
 
-class JNDisplay(BaseDisplay):
+class JNDisplay(DisplayDriver):
     """
     A class to emulate a display on Jupyter Notebook.
 

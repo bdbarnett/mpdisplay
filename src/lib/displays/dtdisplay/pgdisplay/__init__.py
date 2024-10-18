@@ -7,7 +7,7 @@ PyDevices dtdisplay.pgdisplay
 """
 
 import pygame as pg  # type: ignore
-from .. import BaseDisplay, Area, color_rgb
+from .. import DisplayDriver, Area, color_rgb
 
 try:
     from typing import Optional
@@ -25,7 +25,7 @@ def poll() -> Optional[pg.event.Event]:
     return pg.event.poll()
 
 
-class PGDisplay(BaseDisplay):
+class PGDisplay(DisplayDriver):
     """
     A class to emulate an LCD using pygame.
     Provides scrolling and rotation functions similar to an LCD.  The .texture
