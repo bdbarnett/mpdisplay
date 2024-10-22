@@ -6,7 +6,7 @@ PyDevices gfx
 """
 
 from basedisplay import Area  # noqa: F401
-from .shapes import arc, blit, blit_rect, blit_transparent, circle, ellipse, fill, fill_rect, hline, line, pixel, poly, polygon, rect, round_rect, triangle, vline  # noqa: F401
+from .shapes import arc, blit, blit_rect, blit_transparent, circle, ellipse, fill, fill_rect, gradient_rect, hline, line, pixel, poly, polygon, rect, round_rect, triangle, vline  # noqa: F401
 from .binfont import text, text8, text14, text16
 
 
@@ -43,6 +43,9 @@ class Draw:
 
     def fill_rect(self, x, y, w, h, c):
         return fill_rect(self.canvas, x, y, w, h, c)
+
+    def gradient_rect(self, x, y, w, h, c1, c2=None, vertical=True):
+        return gradient_rect(self.canvas, x, y, w, h, c1, c2, vertical)
 
     def hline(self, x, y, w, c):
         return hline(self.canvas, x, y, w, c)

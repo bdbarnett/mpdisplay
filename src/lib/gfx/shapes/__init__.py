@@ -354,6 +354,40 @@ def fill_rect(canvas, x, y, w, h, c):
                 pixel(canvas, i, j, c)
     return Area(x, y, w, h)
 
+def gradient_rect(canvas, x, y, w, h, c1, c2=None, vertical=True):
+    """
+    Fill a rectangle with a gradient.
+
+    Args:
+        x (int): X-coordinate of the top-left corner of the rectangle.
+        y (int): Y-coordinate of the top-left corner of the rectangle.
+        w (int): Width of the rectangle.
+        h (int): Height of the rectangle.
+        c1 (int): 565 encoded color for the top or left edge.
+        c2 (int): 565 encoded color for the bottom or right edge.  If None or the same as c1,
+                    fill_rect will be called instead.
+        vertical (bool): If True, the gradient will be vertical.  If False, the gradient will be horizontal.
+    """
+    if c2 is None or c1 == c2:
+        return fill_rect(canvas, x, y, w, h, c1)
+    r1, g1, b1 = (c1 >> 8) & 0xF8, (c1 >> 3) & 0xFC, (c1 << 3) & 0xF8
+    r2, g2, b2 = (c2 >> 8) & 0xF8, (c2 >> 3) & 0xFC, (c2 << 3) & 0xF8
+    if vertical:
+        for j in range(h):
+            r = r1 + (r2 - r1) * j // h
+            g = g1 + (g2 - g1) * j // h
+            b = b1 + (b2 - b1) * j // h
+            c = (r & 0xF8) << 8 | (g & 0xFC) << 3 | (b & 0xF8) >> 3
+            fill_rect(canvas, x, y + j, w, 1, c)
+    else:
+        for i in range(w):
+            r = r1 + (r2 - r1) * i // w
+            g = g1 + (g2 - g1) * i // w
+            b = b1 + (b2 - b1) * i // w
+            c = (r & 0xF8) << 8 | (g & 0xFC) << 3 | (b & 0xF8) >> 3
+            fill_rect(canvas, x + i, y, 1, h, c)
+    return Area(x, y, w, h)
+
 def hline(canvas, x0, y0, w, c):
     """Horizontal line drawing function.  Will draw a single pixel wide line."""
     if y0 < 0 or y0 > canvas.height or x0 < -w or x0 > canvas.width:
