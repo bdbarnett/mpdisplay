@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
-from gfx.framebuf_plus import FrameBuffer, RGB565, Area
+from pygfx.framebuf_plus import FrameBuffer, RGB565, Area
 from eventsys.events import Events
 from sys import exit
 from time import localtime  # for DigitalClock

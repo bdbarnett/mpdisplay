@@ -1,7 +1,7 @@
 from board_config import display_drv
-from palettes import get_palette
-from gfx.binfont import text16
-from gfx.framebuf_plus import FrameBuffer, RGB565
+from pygfx.palettes import get_palette
+from pygfx.binfont import text16
+from pygfx.framebuf_plus import FrameBuffer, RGB565
 from time import sleep
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,

@@ -26,7 +26,7 @@ import math
 import time
 
 import tft_config
-from palettes.wheel import WheelPalette
+from pygfx.palettes.wheel import WheelPalette
 
 
 

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices gfx.framebuf_plus
+PyDevices pygfx.framebuf_plus
 
 A subclass of FrameBuffer that adds some useful methods for drawing shapes and text.
 Each method returns a bounding box (x, y, w, h) of the drawn shape to indicate
@@ -19,20 +19,33 @@ modified area of the display.
 # framebuf.FrameBuffer are overridden to return an Area object.
 # The methods inherited from ExtendedShapes are not overridden, as they already
 # return an Area object.
-from framebuf import FrameBuffer as _FrameBuffer
-from framebuf import (
-    MVLSB,  # noqa: F401
-    MONO_VLSB,
-    MONO_HLSB,
-    MONO_HMSB,
-    RGB565,
-    GS2_HMSB,
-    GS4_HMSB,
-    GS8,
-)
-from .. import Area
-from .. import shapes
-from .. import binfont
+try:  # Try to import framebuf from MicroPython
+    from framebuf import (
+        MVLSB,  # noqa: F401
+        MONO_VLSB,
+        MONO_HLSB,
+        MONO_HMSB,
+        RGB565,
+        GS2_HMSB,
+        GS4_HMSB,
+        GS8,
+        FrameBuffer as _FrameBuffer,
+    )
+except ImportError:  # If framebuf is not available, import from framebuf.py
+    from .framebuf import (
+        MVLSB,  # noqa: F401
+        MONO_VLSB,
+        MONO_HLSB,
+        MONO_HMSB,
+        RGB565,
+        GS2_HMSB,
+        GS4_HMSB,
+        GS8,
+        FrameBuffer as _FrameBuffer,
+    )
+from . import Area
+from . import shapes
+from . import binfont
 import struct
 
 class ExtendedShapes:

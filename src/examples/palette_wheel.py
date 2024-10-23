@@ -1,5 +1,5 @@
 from board_config import display_drv
-from palettes import get_palette
+from pygfx.palettes import get_palette
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
 # disable it and set a flag so we can swap the color bytes as they are created.

@@ -6,7 +6,7 @@
 PyDevices dtdisplay.sdldisplay
 """
 
-from .. import DisplayDriver, Area, color_rgb
+from basedisplay import DisplayDriver, Area, color_rgb
 from eventsys.events import Events
 from sys import implementation
 from ._sdl2_lib import (

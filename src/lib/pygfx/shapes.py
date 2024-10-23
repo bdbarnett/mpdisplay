@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices gfx.shapes
+PyDevices pygfx.shapes
 ====================================================
 Graphics primitives for drawing on a canvas.
 
-Heavily modified from the original gfx.py library at:
+Heavily modified from the original pygfx.py library at:
 https://github.com/adafruit/Adafruit_CircuitPython_GFX.git
 * Author(s): Kattni Rembor, Tony DiCola, Jonah Yolles-Murphy, based on code by Phil Burgess
 
@@ -20,7 +20,7 @@ object has these methods.
 
 """
 
-from .. import Area
+from . import Area
 import math
 
 

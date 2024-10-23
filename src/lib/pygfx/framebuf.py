@@ -20,8 +20,7 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 
-from gfx import shapes
-from gfx import binfont
+from . import shapes, binfont
 
 try:
     from ulab import numpy as np  # type: ignore

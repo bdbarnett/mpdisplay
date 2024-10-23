@@ -5,13 +5,13 @@
 Makes a color cube palette.
 
 Usage:
-    from palettes import get_palette
+    from pygfx.palettes import get_palette
     palette = get_palette(name="cube", size=5, color_depth=16, swapped=False)
     # OR
     palette = get_palette(name="cube")
 
     # OR
-    from palettes.cube import CubePalette
+    from pygfx.palettes.cube import CubePalette
     palette = CubePalette(size=5, color_depth=24)
 
     print(f"Palette: {palette.name}, Length: {len(palette)}")

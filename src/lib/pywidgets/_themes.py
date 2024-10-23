@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 from ._constants import ICON_SIZE
-from palettes import get_palette  # noqa: F401
+from pygfx.palettes import get_palette  # noqa: F401
 try:
     from os import sep  # PyScript doesn't have os.sep
 except ImportError:

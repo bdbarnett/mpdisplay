@@ -65,7 +65,7 @@ from busdisplay import BusDisplay
 ```
 to 
 ```
-from lib.displays.busdisplay import BusDisplay  # leave `.displays` out if your `busdisplay` is in `lib`
+from lib.busdisplay import BusDisplay 
 ```
 
 Framebuffer based devices such as hardware parallel buses (called RGB666 by Adafruit) and USB Video class devices won't need anything special after you get CircuitPython to see them.  They use PyDevices's `fbdisplay.FBDisplay`.  See the CircuitPython example board_configs for more information.

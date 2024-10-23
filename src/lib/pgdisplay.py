@@ -6,8 +6,8 @@
 PyDevices dtdisplay.pgdisplay
 """
 
+from basedisplay import DisplayDriver, Area, color_rgb
 import pygame as pg  # type: ignore
-from .. import DisplayDriver, Area, color_rgb
 
 try:
     from typing import Optional

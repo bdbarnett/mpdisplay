@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices gfx
+PyDevices pygfx
 """
 
-from basedisplay import Area  # noqa: F401
+from area import Area  # noqa: F401
 from .shapes import arc, blit, blit_rect, blit_transparent, circle, ellipse, fill, fill_rect, gradient_rect, hline, line, pixel, poly, polygon, rect, round_rect, triangle, vline  # noqa: F401
 from .binfont import text, text8, text14, text16
 

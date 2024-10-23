@@ -4,7 +4,7 @@ print("It is a work in progress and is not complete.")
 print("Please do not report errors or request changes.")
 
 ############## file:  __init__.py
-from palettes import get_palette
+from pygfx.palettes import get_palette
 
 colors = get_palette()
 
@@ -36,7 +36,7 @@ class parts:
 
 
 ############## file:  screen.py
-from gfx import Area  # noqa: E402
+from pygfx import Area  # noqa: E402
 
 
 class Screen:

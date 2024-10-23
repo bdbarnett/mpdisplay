@@ -4,9 +4,9 @@ Simple test example to demonstrate the use of Shapes.
 
 from board_config import display_drv
 from array import array  # for defining a polygon
-from gfx import shapes
-from gfx.binfont import text
-from palettes import get_palette
+from pygfx import shapes
+from pygfx.binfont import text
+from pygfx.palettes import get_palette
 
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,

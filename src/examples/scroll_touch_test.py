@@ -1,6 +1,6 @@
 from board_config import display_drv, broker
-from gfx import Draw
-from palettes import get_palette
+from pygfx import Draw
+from pygfx.palettes import get_palette
 from random import getrandbits
 
 

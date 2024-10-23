@@ -1,7 +1,7 @@
 from board_config import display_drv
 from framebuf import FrameBuffer, RGB565
 from pbm import PBM
-from gfx import shapes
+from pygfx import shapes
 
 def draw_logo(canvas):
     w = canvas.width

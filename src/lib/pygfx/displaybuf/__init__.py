@@ -11,7 +11,7 @@ but may also be used without them.
 
 Usage:
     'color_setup.py'
-        from displaybuf import DisplayBuffer as SSD
+        from pygfx.displaybuf import DisplayBuffer as SSD
         from board_config import display_drv
 
         format = SSD.RGB565  # or .GS8 or .GS4_HMSB
@@ -25,10 +25,10 @@ Usage:
 
 import gc
 import sys
-from basedisplay import Area, color565, color565_swapped, color332
+from area import Area
 
 try:
-    from gfx import framebuf_plus as framebuf
+    from .. import framebuf_plus as framebuf
 except ImportError:
     import framebuf
 
@@ -46,6 +46,35 @@ else:
 
 gc.collect()
 
+def color565(r, g=0, b=0):
+    """
+    Convert RGB values to a 16-bit color value.
+
+    :param r: The red value.
+    :type r: int
+    :param g: The green value.
+    :type g: int
+    :param b: The blue value.
+    :type b: int
+    :return: The 16-bit color value.
+    :rtype: int
+    """
+    if isinstance(r, (tuple, list)):
+        r, g, b = r[:3]
+    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
+
+def color565_swapped(r, g=0, b=0):
+    # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
+    # ggbbbbbb rrrrrggg
+    if isinstance(r, (tuple, list)):
+        r, g, b = r[:3]
+    color = color565(r, g, b)
+    return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
+
+def color332(r, g, b):
+    # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
+    # rrrgggbb
+    return (r & 0xE0) | ((g >> 3) & 0x1C) | (b >> 6)
 
 def alloc_buffer(size):
     return memoryview(bytearray(size))

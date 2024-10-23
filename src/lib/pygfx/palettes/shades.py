@@ -2,7 +2,7 @@
 Creates a palette with a range of shades of a single color.
 
 Usage:
-    from palettes.shades import ShadesPalette
+    from pygfx.palettes.shades import ShadesPalette
 
     pal = ShadesOfRGBPalette(color_depth=16, swapped=False, cached=True, length=256, rgb=(255, 0, 255))
     for i in range(len(pal)):
