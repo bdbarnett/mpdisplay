@@ -70,14 +70,13 @@ class PBM(FrameBuffer):
                 print("ASCII")
                 raise NotImplementedError("ASCII PBM files are not supported yet")
             elif header == b"P4":
-                # Binary
-                next_line = f.readline().strip()
-                while next_line[0] == 35:  # 35 is the ASCII code for #
-                    next_line = f.readline().strip()
-                dimensions = next_line.split()
-                self._width = int(dimensions[0])
-                self._height = int(dimensions[1])
-                self._buffer = memoryview(array("B", f.read()))
+                data = f.read()  # Read the rest as binary, since MicroPython can't do readline here
+                while data[0] == 35:  # Ignore comment lines starting with b'#'
+                    data = data.split(b'\n', 1)[1]
+                dims, data = data.split(b'\n', 1)  # Assumes no comments after dimensions
+                self._width, self._height = map(int, dims.split())
+                self._buffer = memoryview(bytearray((self._width + 7) // 8 * self._height))
+                self._buffer[:] = data
 
     def render(self, canvas, x, y, fg=0, bg=None):
         col = row = 0

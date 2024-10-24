@@ -371,12 +371,15 @@ def pbm_to_framebuffer(filename):
     Convert a PBM file to a MONO_HLSB FrameBuffer
     """
     with open(filename, "rb") as f:
-        lines = f.readlines()
-    if lines[0] != b"P4\n":
-        raise ValueError(f"Invalid PBM file {filename}")
-    width, height = map(int, lines[1].split())
+        if f.read(3) != b"P4\n":
+            raise ValueError(f"Invalid PBM file {filename}")
+        data = f.read()  # Read the rest as binary, since MicroPython can't do readline here
+    while data[0] == 35:  # Ignore comment lines starting with b'#'
+        data = data.split(b'\n', 1)[1]
+    dims, data = data.split(b'\n', 1)  # Assumes no comments after dimensions
+    width, height = map(int, dims.split())
     buffer = memoryview(bytearray((width + 7) // 8 * height))
-    buffer[:] = b"".join(lines[2:])
+    buffer[:] = data
     return FrameBuffer(buffer, width, height, MONO_HLSB)
 
 def pgm_to_framebuffer(filename):
@@ -384,11 +387,17 @@ def pgm_to_framebuffer(filename):
     Convert a PGM file to a GS2_HMSB, GS4_HMSB or GS8 FrameBuffer
     """
     with open(filename, "rb") as f:
-        lines = f.readlines()
-    if lines[0] != b"P5\n":
-        raise ValueError(f"Invalid PGM file {filename}")
-    width, height = map(int, lines[1].split())
-    max_value = int(lines[2])
+        if f.read(3) != b"P5\n":
+            raise ValueError(f"Invalid PGM file {filename}")
+        data = f.read()  # Read the rest as binary, since MicroPython can't do readline here
+    while data[0] == 35:  # Ignore comment lines starting with b'#'
+        data = data.split(b'\n', 1)[1]
+    dims, data = data.split(b'\n', 1)
+    width, height = map(int, dims.split())
+    while data[0] == 35:  # Ignore comment lines starting with b'#'
+        data = data.split(b'\n', 1)[1]
+    max_val_b, data = data.split(b'\n', 1)  # Assumes no comments after max val
+    max_value = int(max_val_b)
     if max_value == 3:
         format = GS2_HMSB
         array_size = (width + 3) // 4 * height
@@ -401,7 +410,7 @@ def pgm_to_framebuffer(filename):
     else:
         raise ValueError(f"Unsupported max value {max_value}")
     buffer = memoryview(bytearray(array_size))
-    buffer[:] = b"".join(lines[3:])
+    buffer[:] = data
     return FrameBuffer(buffer, width, height, format)
 
 def bmp_to_framebuffer(filename):
