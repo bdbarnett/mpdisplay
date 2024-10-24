@@ -189,10 +189,6 @@
       "github:bdbarnett/mpdisplay/src/lib/eventsys/devices.py"
     ],
     [
-      "lib/eventsys/events.py",
-      "github:bdbarnett/mpdisplay/src/lib/eventsys/events.py"
-    ],
-    [
       "lib/eventsys/keys.py",
       "github:bdbarnett/mpdisplay/src/lib/eventsys/keys.py"
     ],

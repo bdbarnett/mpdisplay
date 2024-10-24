@@ -22,11 +22,11 @@ while True:
         print(key)
 """
 
-from .events import Events
+from . import Events
 try:
-    from basedisplay import Area
+    from area import Area
 except ImportError:
-    print("basedisplay module not found.  Keypad.areas attribut will not be available.")
+    print("area module not found.  Keypad.areas attribut will not be available.")
     Area = None
 
 

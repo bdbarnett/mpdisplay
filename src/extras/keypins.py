@@ -26,7 +26,7 @@ Usage:
                 print(f"{button.name} ({button.keyname}) pressed")
 """
 
-from eventsys.events import Events
+from eventsys import Events
 from eventsys.keys import Keys
 
 

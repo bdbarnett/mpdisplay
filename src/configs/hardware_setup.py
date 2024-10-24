@@ -8,7 +8,7 @@ Usage:
 '''
 from pygfx.displaybuf import DisplayBuffer as SSD
 from board_config import display_drv, broker
-from eventsys.events import Events
+from eventsys import Events
 
 # format = SSD.GS4_HMSB  # 4-bit (16 item) lookup table of 16-bit RGB565 colors; w*h/2 buffer
 # format = SSD.GS8  # 256 8-bit RGB332 colors; w*h buffer

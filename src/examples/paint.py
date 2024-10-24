@@ -3,7 +3,7 @@ A simple paint application demonstrating the use of PyDevices.
 """
 
 from board_config import display_drv, broker
-from eventsys.events import Events
+from eventsys import Events
 import asyncio
 
 async def main():

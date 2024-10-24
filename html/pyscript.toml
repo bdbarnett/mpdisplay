@@ -82,7 +82,6 @@
 "../src/lib/basedisplay/_viper.py" = "/lib/basedisplay/"
 "../src/lib/eventsys/__init__.py" = "/lib/eventsys/"
 "../src/lib/eventsys/devices.py" = "/lib/eventsys/"
-"../src/lib/eventsys/events.py" = "/lib/eventsys/"
 "../src/lib/eventsys/keys.py" = "/lib/eventsys/"
 "../src/lib/eventsys/touch_keypad.py" = "/lib/eventsys/"
 "../src/lib/pywidgets/__init__.py" = "/lib/pywidgets/"

@@ -31,7 +31,7 @@ Devices can be created with the following types:
 """
 
 from micropython import const
-from .events import Events
+from . import Events
 from sys import exit
 
 
@@ -97,7 +97,7 @@ class Devices:
 
             ```python
             from eventsys.devices import Devices
-            from eventsys.events import Events
+            from eventsys import Events
 
             KeypadDevice = Devices.new_type("KEYPAD", [Events.KEYDOWN, Events.KEYUP])
             ```

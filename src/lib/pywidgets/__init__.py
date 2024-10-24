@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 from pygfx.framebuf_plus import FrameBuffer, RGB565, Area
-from eventsys.events import Events
+from eventsys import Events
 from sys import exit
 from time import localtime  # for DigitalClock
 from random import getrandbits  # for MARK_UPDATES

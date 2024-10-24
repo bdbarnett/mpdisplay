@@ -199,7 +199,7 @@ STYLES[IconButton] = {
 # from color_setup import ssd as display  # noqa: E402
 from board_config import display_drv  as display  # noqa: E402
 from board_config import broker  # noqa: E402
-from eventsys.events import Events  # noqa: E402
+from eventsys import Events  # noqa: E402
 try:
     from time import ticks_ms, ticks_diff  # noqa: E402
 except ImportError:
