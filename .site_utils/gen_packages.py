@@ -21,21 +21,9 @@ display_deps = [
 # list of package directories, dependencies and extra files in that package
 packages = [
     ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],  # Configs
-    ["examples", [], []],                           # Examples
-    ["extras", [], []],                             # Extras
-    ["lib/buses/spibus", [], []],                   # Core
-    ["lib/buses/i80bus", [], []],                   # Core
-    ["lib/displays/basedisplay", [], []],           # Core
-    ["lib/displays/busdisplay", display_deps, []],  # Core
-    ["lib/displays/dtdisplay", display_deps, []],   # Core
-    ["lib/displays/fbdisplay", display_deps, []],   # Core
-    ["lib/displays/jndisplay", display_deps, []],   # Core
-    ["lib/displays/psdisplay", display_deps, []],   # Core
-    ["lib/displays/displaybuf", display_deps, []],  # Gfx
-    ["lib/eventsys", [], []],                       # Core
-    ["lib/gfx", [], ["framebuf.py",]],              # Gfx
-    ["lib/palettes", [], []],                       # Gfx
-    ["lib/timer", [], []],                          # Core
+    ["examples", [], []],                                    # Examples
+    ["extras", [], []],                                      # Extras
+    ["lib", [], []],                                         # Core
     ]
 
 master_exclude = ["examples"]

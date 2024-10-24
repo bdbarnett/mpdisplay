@@ -27,10 +27,6 @@
     [
       "configs/tft_config.py",
       "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
-    ],
-    [
-      "configs/__pycache__/board_config.cpython-312.pyc",
-      "github:bdbarnett/mpdisplay/src/configs/__pycache__/board_config.cpython-312.pyc"
     ]
   ],
   "deps": [],
