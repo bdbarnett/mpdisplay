@@ -20,7 +20,7 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 
-from . import shapes, binfont
+import pygfx
 
 try:
     from ulab import numpy as np  # type: ignore
@@ -53,14 +53,14 @@ class BasicShapes:
     # Inherited from the FrameBuffer class
     # Do not include fill, fill_rect or pixel because they need to be
     # specific to the class format that uses them
-    blit = shapes.blit
-    ellipse = shapes.ellipse
-    hline = shapes.hline
-    line = shapes.line
-    poly = shapes.poly
-    rect = shapes.rect
-    vline = shapes.vline
-    text = binfont.text
+    blit = pygfx.blit
+    ellipse = pygfx.ellipse
+    hline = pygfx.hline
+    line = pygfx.line
+    poly = pygfx.poly
+    rect = pygfx.rect
+    vline = pygfx.vline
+    text = pygfx.text
 
 
 class MVLSBFormat:

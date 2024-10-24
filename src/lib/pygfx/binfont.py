@@ -11,7 +11,7 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from . import Area
+from area import Area
 
 
 if hasattr(os, "sep"):

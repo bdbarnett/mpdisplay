@@ -53,7 +53,6 @@
 "../src/lib/pygfx/binfont_8x8.bin" = "/lib/pygfx/"
 "../src/lib/pygfx/framebuf.py" = "/lib/pygfx/"
 "../src/lib/pygfx/framebuf_plus.py" = "/lib/pygfx/"
-"../src/lib/pygfx/shapes.py" = "/lib/pygfx/"
 "../src/lib/pygfx/palettes/__init__.py" = "/lib/pygfx/palettes/"
 "../src/lib/pygfx/palettes/_cube125.py" = "/lib/pygfx/palettes/"
 "../src/lib/pygfx/palettes/_cube27.py" = "/lib/pygfx/palettes/"

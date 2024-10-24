@@ -209,10 +209,6 @@
       "github:bdbarnett/mpdisplay/src/lib/pygfx/framebuf_plus.py"
     ],
     [
-      "lib/pygfx/shapes.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygfx/shapes.py"
-    ],
-    [
       "lib/pygfx/palettes/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/pygfx/palettes/__init__.py"
     ],

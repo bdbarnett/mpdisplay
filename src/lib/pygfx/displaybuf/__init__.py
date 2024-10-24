@@ -297,19 +297,6 @@ class DisplayBuffer(framebuf.FrameBuffer):
         DisplayBuffer.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
         return idx  # Return the index of the registered color
 
-    def screenshot(self, filename="screenshot.bmp"):
-        if self._buffer_depth != 16:
-            raise ValueError("Screenshots are only supported for 16-bit buffers.")
-        try:
-            from bmp565 import BMP565
-        except ImportError:
-            raise ImportError(
-                "The bmp565 module is required to save screenshots.  Please install it."
-            )
-        bmp = BMP565(source=self.buffer, width=self.width, height=self.height)
-        filename = bmp.save(filename)
-        print(f"\nSaved BMP565 file as '{filename}'")
-
 
 class BoolPalette(framebuf.FrameBuffer):
     # This is a 2-value color palette for rendering monochrome glyphs to color

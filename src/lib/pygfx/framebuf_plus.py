@@ -21,7 +21,6 @@ modified area of the display.
 # return an Area object.
 try:  # Try to import framebuf from MicroPython
     from framebuf import (
-        MVLSB,  # noqa: F401
         MONO_VLSB,
         MONO_HLSB,
         MONO_HMSB,
@@ -33,7 +32,6 @@ try:  # Try to import framebuf from MicroPython
     )
 except ImportError:  # If framebuf is not available, import from framebuf.py
     from .framebuf import (
-        MVLSB,  # noqa: F401
         MONO_VLSB,
         MONO_HLSB,
         MONO_HMSB,
@@ -43,28 +41,29 @@ except ImportError:  # If framebuf is not available, import from framebuf.py
         GS8,
         FrameBuffer as _FrameBuffer,
     )
-from . import Area
-from . import shapes
-from . import binfont
+from area import Area
+import pygfx
 import struct
+
 
 class ExtendedShapes:
     """
-    All the methods from shapes.py except for
+    All the methods from pygfx except for
     those implemented in framebuf.FrameBuffer.
     """
 
-    arc = shapes.arc
-    blit_rect = shapes.blit_rect
-    blit_transparent = shapes.blit_transparent
-    circle = shapes.circle
-    ellipse = shapes.ellipse
-    polygon = shapes.polygon
-    round_rect = shapes.round_rect
-    triangle = shapes.triangle
-    text8 = binfont.text8
-    text14 = binfont.text14
-    text16 = binfont.text16
+    arc = pygfx.arc
+    blit_rect = pygfx.blit_rect
+    blit_transparent = pygfx.blit_transparent
+    circle = pygfx.circle
+    ellipse = pygfx.ellipse
+    gradient_rect = pygfx.gradient_rect
+    polygon = pygfx.polygon
+    round_rect = pygfx.round_rect
+    triangle = pygfx.triangle
+    text8 = pygfx.text8
+    text14 = pygfx.text14
+    text16 = pygfx.text16
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
@@ -264,7 +263,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             font_file (str): Font file (default: None)
             height (int): Font height in pixels (default: 8)
         """
-        return binfont.text(self, s, x, y, c, scale, inverted, font_file, height=height)
+        return pygfx.text(self, s, x, y, c, scale, inverted, font_file, height=height)
 
     def blit(self, buf, x, y, key=-1, palette=None):
         """

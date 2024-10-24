@@ -1,7 +1,7 @@
 from board_config import display_drv
 from framebuf import FrameBuffer, RGB565
 from pbm import PBM
-from pygfx import shapes
+import pygfx
 
 def draw_logo(canvas):
     w = canvas.width
@@ -15,32 +15,32 @@ def draw_logo(canvas):
     canvas.fill(background)
 
     # Draw the 3 concentric circles
-    shapes.circle(canvas, center_x, center_y, unit, blue, True)
-    shapes.circle(canvas, center_x, center_y, int(unit * .9), black, True)
-    shapes.circle(canvas, center_x, center_y, int(unit * .8), amber, True)
+    pygfx.circle(canvas, center_x, center_y, unit, blue, True)
+    pygfx.circle(canvas, center_x, center_y, int(unit * .9), black, True)
+    pygfx.circle(canvas, center_x, center_y, int(unit * .8), amber, True)
 
     # Draw the outer rounded rectangle
     left = int(center_x - (unit * 1.2) // 2)
     top = int(center_y - (unit * 1.0 ) // 2)
-    shapes.round_rect(canvas, left, top, int(unit*1.2), int(unit*1.0), unit//7, black, True)
+    pygfx.round_rect(canvas, left, top, int(unit*1.2), int(unit*1.0), unit//7, black, True)
 
     # Draw the inner rounded rectangle
     left = int(center_x - (unit * 1.1) // 2)
     top = int(center_y - (unit * 0.9) // 2)
-    shapes.round_rect(canvas, left, top, int(unit*1.1), int(unit*0.9), unit//9, amber, True)
+    pygfx.round_rect(canvas, left, top, int(unit*1.1), int(unit*0.9), unit//9, amber, True)
 
     # Draw the 2 small squares
     left = center_x - (unit * 3 // 8)
     top = center_y - (unit * 3 // 8)
     size = unit // 4
 
-    shapes.fill_rect(canvas, left, top, size, size, black)
-    shapes.fill_rect(canvas, w - (left + size), h - (top + size), size, size, black)
+    pygfx.fill_rect(canvas, left, top, size, size, black)
+    pygfx.fill_rect(canvas, w - (left + size), h - (top + size), size, size, black)
 
     # Draw the 2 small circles
     size = size // 2
-    shapes.circle(canvas, w - (left + size), top + size, size, black, True)
-    shapes.circle(canvas, left + size, h - (top + size), size, black, True)
+    pygfx.circle(canvas, w - (left + size), top + size, size, black, True)
+    pygfx.circle(canvas, left + size, h - (top + size), size, black, True)
 
 
 display_drv.fill(0xF800)

@@ -10,16 +10,14 @@ Area objects have the attributes x, y, w and h.  They may be added together, suc
 and may be unpacked, such as:
     x, y, w, h = area3
 or as a function argument:
-    shapes.rect(display_drv, *area3, 0x00FF)
+    rect(display_drv, *area3, 0x00FF)
 
 """
 
 from board_config import display_drv
-from pygfx import shapes
+from pygfx import rect, circle, ellipse
 
 
-dirty = shapes.circle(display_drv, 120, 120, 50, 0XFF00, True)
-dirty += shapes.ellipse(
-    display_drv, 100, 85, 50, 30, 0X0FF0, True, 0b1111
-)
-shapes.rect(display_drv, *dirty, 0x00FF)
+dirty = circle(display_drv, 120, 120, 50, 0XFF00, True)
+dirty += ellipse(display_drv, 100, 85, 50, 30, 0X0FF0, True, 0b1111)
+rect(display_drv, *dirty, 0x00FF)
