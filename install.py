@@ -39,19 +39,7 @@ packages = [
     ("configs", ""),
     ("examples", ""),
     ("extras", ""),
-    ("i80bus", "/lib/buses"),
-    ("spibus", "/lib/buses"),
-    ("basedisplay", "/lib/displays"),
-    ("busdisplay", "/lib/displays"),
-    ("dtdisplay", "/lib/displays"),
-    ("fbdisplay", "/lib/displays"),
-    ("jndisplay", "/lib/displays"),
-    ("psdisplay", "/lib/displays"),
-    ("displaybuf", "/lib/displays"),
-    ("eventsys", "/lib"),
-    ("gfx", "/lib"),
-    ("palettes", "/lib"),
-    ("timer", "/lib"),
+    ("lib", ""),
 ]
 
 # Install each package
