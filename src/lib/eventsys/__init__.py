@@ -11,6 +11,9 @@ from micropython import const
 
 
 class Events:
+    """
+    A container for event types and classes.  Similar to a C enum and struct.
+    """
     # Event types (from SDL2 / PyGame, not complete)
     QUIT = const(0x100)  # User clicked the window close button
     KEYDOWN = const(0x300)  # Key pressed

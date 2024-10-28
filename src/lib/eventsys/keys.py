@@ -10,6 +10,9 @@ from micropython import const as _const
 
 
 class Keys:
+    """
+    A container for key codes and names.  Similar to a C enum and struct.
+    """
     def keyname(x):
         return Keys._keytable.get(x, "Unknown")
 

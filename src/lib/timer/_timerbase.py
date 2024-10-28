@@ -25,8 +25,9 @@ class _TimerBase:
         """
         Initializes the timer with the given parameters.
 
-        :param id: The timer ID (default is -1).
-        :type id: int
+        Args:
+            id (int): The timer ID (default is -1).
+            **kwargs: Additional keyword arguments.
         """
         self.id = id
         self._busy = False
@@ -37,10 +38,15 @@ class _TimerBase:
     def init(self, *, mode, freq=-1, period=-1, callback=None):
         """
         Initialize the timer.
-        :param mode: Timer mode (Timer.ONE_SHOT or Timer.PERIODIC)
-        :param freq: Timer frequency in Hz (optional)
-        :param period: Timer period in milliseconds (optional, ignored if freq is specified)
-        :param callback: Callable to execute upon timer expiration
+
+        Args:
+            mode (int): Timer mode (Timer.ONE_SHOT or Timer.PERIODIC).
+            freq (int, optional): Timer frequency in Hz. Defaults to -1.
+            period (int, optional): Timer period in milliseconds. Ignored if freq is specified. Defaults to -1.
+            callback (callable, optional): Callable to execute upon timer expiration. Defaults to None.
+
+        Raises:
+            ValueError: If an invalid timer mode or interval is provided.
         """
         if mode in (self.ONE_SHOT, self.PERIODIC):
             self._mode = mode
@@ -73,6 +79,13 @@ class _TimerBase:
         SDL2 timers call the handler with the interval and a user-defined parameter,
         while librt timers call the handler with the interval only.
         They are ignored here.
+
+        Args:
+            interval (int): The interval at which the timer expires.
+            param: User-defined parameter (ignored).
+
+        Returns:
+            int: The next interval for SDL2 timers, 0 for one-shot timers.
         """
         if self._busy:
             return
@@ -90,7 +103,19 @@ class _TimerBase:
         return self._interval
 
     def _start(self):
+        """
+        Starts the timer. Must be implemented by subclasses.
+        
+        Raises:
+            NotImplementedError: If not implemented by subclass.
+        """
         raise NotImplementedError("Subclasses must implement this method")
 
     def _stop(self):
+        """
+        Stops the timer. Must be implemented by subclasses.
+        
+        Raises:
+            NotImplementedError: If not implemented by subclass.
+        """
         raise NotImplementedError("Subclasses must implement this method")

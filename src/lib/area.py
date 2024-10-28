@@ -69,10 +69,8 @@ class Area:
         Returns:
             bool: True if the two Area objects intersect, False otherwise.
         """
-        # Check if one rectangle is to the left of the other
         if self.x + self.w <= other.x or other.x + other.w <= self.x:
             return False
-        # Check if one rectangle is above the other
         if self.y + self.h <= other.y or other.y + other.h <= self.y:
             return False
         return True
@@ -87,10 +85,8 @@ class Area:
         Returns:
             bool: True if the two Area objects touch or intersect, False otherwise.
         """
-        # Check if one rectangle is to the left of the other
         if self.x + self.w < other.x or other.x + other.w < self.x:
             return False
-        # Check if one rectangle is above the other
         if self.y + self.h < other.y or other.y + other.h < self.y:
             return False
         return True

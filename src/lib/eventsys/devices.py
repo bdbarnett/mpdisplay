@@ -128,11 +128,14 @@ class Devices:
 class _Device:
     """
     Base class for devices.
+
+    Attributes:
+        type (Devices): The type of the device.
+        responses (list): The list of event types that the device can respond to.
     """
 
     type = Devices.UNDEFINED
     responses = Events.filter
-    Events = Events
     _broker = None
 
     def __init__(self, read=None, data=None, read2=None, data2=None):
