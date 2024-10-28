@@ -43,10 +43,10 @@ class CST8XX():
 
         self._bus = bus
         self._address = address
-        if self._read(_REG_CHIP_ID)[0] not in (_CST816S_ID, _CST816T_ID, _CST816D_ID, _CST820_ID, _CST826_ID):
-            raise ValueError("Error:  CST8xx not detected.")
         self.rst = Pin(rst_pin, Pin.OUT) if isinstance(rst_pin, int) else rst_pin
         self.reset()
+        if self._read(_REG_CHIP_ID)[0] not in (_CST816S_ID, _CST816T_ID, _CST816D_ID, _CST820_ID, _CST826_ID):
+            raise ValueError("Error:  CST8xx not detected.")
         self.disable_autosleep()
 
         self.irq = Pin(irq_pin, Pin.IN, Pin.PULL_UP) if isinstance(irq_pin, int) else irq_pin
