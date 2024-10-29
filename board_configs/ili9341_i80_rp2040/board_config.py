@@ -4,7 +4,7 @@ from i80bus import I80Bus
 from ili9341 import ILI9341
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-from eventsys.devices import Devices, Broker
+from pydevices.devices import Devices, Broker
 
 
 reset=Pin(12, Pin.OUT, value=1)

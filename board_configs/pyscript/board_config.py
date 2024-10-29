@@ -1,7 +1,7 @@
 """ board_config.py - board configuration for PyScript """
 
 from psdisplay import PSDisplay, PSDevices
-from eventsys.devices import Devices, Broker # type: ignore
+from pydevices.devices import Devices, Broker # type: ignore
 
 
 display_drv = PSDisplay("display_canvas", 480, 320)

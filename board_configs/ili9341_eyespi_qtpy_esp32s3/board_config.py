@@ -4,7 +4,7 @@ from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-from eventsys.devices import Devices, Broker
+from pydevices.devices import Devices, Broker
 
 
 display_bus = SPIBus(

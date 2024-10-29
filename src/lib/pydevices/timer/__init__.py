@@ -6,7 +6,7 @@ PyDevices timer
 
 Cross-platform Timer class for *Python.
 
-Enables using 'from timer import Timer' on MicroPython on microcontrollers,
+Enables using 'from pydevices.timer import Timer' on MicroPython on microcontrollers,
 on MicroPython on Unix (which doesn't have a machine.Timer) and CPython (ditto).
 
 _librt.py uses uses MicroPython ffi to connect to libc and librt, while _sdl2.py uses
@@ -16,7 +16,7 @@ Returns None if the platform is not supported rather than raising an ImportError
 the client can handle the error more gracefully (e.g. by using `if Timer is not None:`).
 
 Usage:
-    from timer import Timer
+    from pydevices.timer import Timer
     tim = Timer()
     tim.init(mode=Timer.PERIODIC, period=500, callback=lambda t: print("."))
     ....

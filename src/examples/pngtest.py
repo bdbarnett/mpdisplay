@@ -1,8 +1,7 @@
 import png
 from board_config import display_drv
-from pygfx.palettes.shades import ShadesPalette
-from basedisplay import Area
-from displaybuf import DisplayBuffer
+from pygraphics.palettes.shades import ShadesPalette
+from pydevices.displaybuf import DisplayBuffer
 from collections import namedtuple
 from time import sleep
 import os

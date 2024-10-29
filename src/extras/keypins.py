@@ -26,8 +26,8 @@ Usage:
                 print(f"{button.name} ({button.keyname}) pressed")
 """
 
-from eventsys import Events
-from eventsys.keys import Keys
+from pydevices import Events
+from pydevices.keys import Keys
 
 
 class KeyPins:

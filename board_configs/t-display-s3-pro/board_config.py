@@ -6,7 +6,7 @@ from spibus import SPIBus
 from st7796 import ST7796
 from machine import Pin, I2C
 from cst226 import CST226
-from eventsys.devices import Devices, Broker
+from pydevices.devices import Devices, Broker
 
 
 display_bus = SPIBus(

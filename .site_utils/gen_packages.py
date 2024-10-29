@@ -20,10 +20,13 @@ display_deps = [
 
 # list of package directories, dependencies and extra files in that package
 packages = [
-    ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],  # Configs
-    ["examples", [], []],                                    # Examples
-    ["extras", [], []],                                      # Extras
-    ["lib", [], []],                                         # Core
+    ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],
+    ["displays", [], []],
+    ["examples", [], []],
+    ["extras", [], []],
+    ["lib/pydevices", [], ["adafruit_ticks.py", "micropython.py"]],
+    ["lib/pygraphics", [], []],
+    ["lib/pywidgets", [], []],
     ]
 
 master_exclude = ["examples"]

@@ -4,7 +4,7 @@ Usage:
     from color_setup import ssd
     <your code here>
 '''
-from pygfx.displaybuf import DisplayBuffer as SSD
+from pydevices.displaybuf import DisplayBuffer as SSD
 from board_config import display_drv
 import sys
 

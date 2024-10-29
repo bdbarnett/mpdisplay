@@ -24,7 +24,7 @@ while True:
 
 from . import Events
 try:
-    from area import Area
+    from pydevices import Area
 except ImportError:
     print("area module not found.  Keypad.areas attribut will not be available.")
     Area = None

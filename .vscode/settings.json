@@ -2,11 +2,10 @@
     "python.analysis.extraPaths": [
         "./src",
         "./src/configs",
+        "./src/displays",
         "./src/examples",
         "./src/extras",
-        "./src/lib",
-        "./src/lib/buses",
-        "./src/lib/displays"
+        "./src/lib"
     ],
     "python.analysis.typeCheckingMode": "off"
 }

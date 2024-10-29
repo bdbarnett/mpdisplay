@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
-from pygfx.framebuf_plus import FrameBuffer, RGB565, Area
-from eventsys import Events
+from pygraphics.framebuf_plus import FrameBuffer, RGB565
+from pydevices import Events, Area
 from sys import exit
 from time import localtime  # for DigitalClock
 from random import getrandbits  # for MARK_UPDATES
@@ -28,7 +28,7 @@ def tick(_=None):
 
 def init_timer(period=10):
     if Display.timer is None:
-        from timer import get_timer
+        from pydevices.timer import get_timer
         Display.timer = get_timer(tick, period)
 
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to", "translate_point"}

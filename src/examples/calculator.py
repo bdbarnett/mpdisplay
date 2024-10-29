@@ -3,11 +3,11 @@ Simple calculator example to demonstrate the use of framebuf.FrameBuffer
 """
 
 from board_config import display_drv, broker
-from eventsys.touch_keypad import Keypad
+from pydevices.touch_keypad import Keypad
 from time import sleep
-from pygfx.framebuf_plus import FrameBuffer, RGB565
-from eventsys.keys import Keys
-from pygfx.palettes import get_palette
+from pygraphics.framebuf_plus import FrameBuffer, RGB565
+from pydevices.keys import Keys
+from pygraphics.palettes import get_palette
 import asyncio
 
 

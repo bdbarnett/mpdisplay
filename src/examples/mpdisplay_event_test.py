@@ -1,5 +1,5 @@
 from board_config import broker
-from eventsys import Events
+from pydevices import Events
 import asyncio
 
 

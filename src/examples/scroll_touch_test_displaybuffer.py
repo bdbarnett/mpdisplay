@@ -1,8 +1,8 @@
 from board_config import display_drv, broker
-from pygfx import Draw
-from pygfx.palettes import get_palette
+from pygraphics import Draw
+from pygraphics.palettes import get_palette
 from random import getrandbits
-from pygfx.displaybuf import DisplayBuffer
+from pydevices.displaybuf import DisplayBuffer
 
 
 canvas = DisplayBuffer(display_drv)

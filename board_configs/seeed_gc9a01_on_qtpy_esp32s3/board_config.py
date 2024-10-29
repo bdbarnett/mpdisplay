@@ -4,7 +4,7 @@ from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-from eventsys.devices import Devices, Broker
+from pydevices.devices import Devices, Broker
 
 
 display_bus = SPIBus(

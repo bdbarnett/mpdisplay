@@ -4,7 +4,7 @@ from spibus import SPIBus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-from eventsys.devices import Devices, Broker
+from pydevices.devices import Devices, Broker
 
 
 display_bus = SPIBus(

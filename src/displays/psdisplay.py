@@ -6,7 +6,7 @@
 PyDevices psdisplay
 """
 
-from basedisplay import DisplayDriver, Area, color_rgb
+from pydevices import DisplayDriver, Area, color_rgb
 from pyscript.ffi import create_proxy  # type: ignore
 from js import document, console  # type: ignore
 

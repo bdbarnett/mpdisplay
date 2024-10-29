@@ -96,8 +96,8 @@ class Devices:
             To create the KEYPAD device type and `KeypadDevice` class:
 
             ```python
-            from eventsys.devices import Devices
-            from eventsys import Events
+            from pydevices.devices import Devices
+            from pydevices import Events
 
             KeypadDevice = Devices.new_type("KEYPAD", [Events.KEYDOWN, Events.KEYUP])
             ```

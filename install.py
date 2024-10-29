@@ -37,9 +37,12 @@ dest_base = "."
 # List of package, target pairs
 packages = [
     ("configs", ""),
+    ("displays", ""),
     ("examples", ""),
     ("extras", ""),
-    ("lib", ""),
+    ("pydevices", ""),
+    ("pygraphics", ""),
+    ("pywidgets", ""),
 ]
 
 # Install each package

@@ -20,7 +20,7 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 
-import pygfx
+import pygraphics
 
 try:
     from ulab import numpy as np  # type: ignore
@@ -53,14 +53,14 @@ class BasicShapes:
     # Inherited from the FrameBuffer class
     # Do not include fill, fill_rect or pixel because they need to be
     # specific to the class format that uses them
-    blit = pygfx.blit
-    ellipse = pygfx.ellipse
-    hline = pygfx.hline
-    line = pygfx.line
-    poly = pygfx.poly
-    rect = pygfx.rect
-    vline = pygfx.vline
-    text = pygfx.text
+    blit = pygraphics.blit
+    ellipse = pygraphics.ellipse
+    hline = pygraphics.hline
+    line = pygraphics.line
+    poly = pygraphics.poly
+    rect = pygraphics.rect
+    vline = pygraphics.vline
+    text = pygraphics.text
 
 
 class MVLSBFormat:

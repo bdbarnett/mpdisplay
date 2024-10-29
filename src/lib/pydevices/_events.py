@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices eventsys
+PyDevices events
 """
 
 from collections import namedtuple
@@ -55,8 +55,8 @@ class Events:
 
         For example, to create the events and device class for the keypad device:
         ```
-        from eventsys import Events
-        from eventsys.devices import Devices
+        from pydevices import Events
+        from pydevices.devices import Devices
 
         types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
         classes = {

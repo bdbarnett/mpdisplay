@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices pygfx.framebuf_plus
+PyDevices pygraphics.framebuf_plus
 
 A subclass of FrameBuffer that adds some useful methods for drawing shapes and text.
 Each method returns a bounding box (x, y, w, h) of the drawn shape to indicate
@@ -41,29 +41,29 @@ except ImportError:  # If framebuf is not available, import from framebuf.py
         GS8,
         FrameBuffer as _FrameBuffer,
     )
-from area import Area
-import pygfx
+from pydevices import Area
+import pygraphics
 import struct
 
 
 class ExtendedShapes:
     """
-    All the methods from pygfx except for
+    All the methods from pygraphics except for
     those implemented in framebuf.FrameBuffer.
     """
 
-    arc = pygfx.arc
-    blit_rect = pygfx.blit_rect
-    blit_transparent = pygfx.blit_transparent
-    circle = pygfx.circle
-    ellipse = pygfx.ellipse
-    gradient_rect = pygfx.gradient_rect
-    polygon = pygfx.polygon
-    round_rect = pygfx.round_rect
-    triangle = pygfx.triangle
-    text8 = pygfx.text8
-    text14 = pygfx.text14
-    text16 = pygfx.text16
+    arc = pygraphics.arc
+    blit_rect = pygraphics.blit_rect
+    blit_transparent = pygraphics.blit_transparent
+    circle = pygraphics.circle
+    ellipse = pygraphics.ellipse
+    gradient_rect = pygraphics.gradient_rect
+    polygon = pygraphics.polygon
+    round_rect = pygraphics.round_rect
+    triangle = pygraphics.triangle
+    text8 = pygraphics.text8
+    text14 = pygraphics.text14
+    text16 = pygraphics.text16
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
@@ -263,7 +263,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             font_file (str): Font file (default: None)
             height (int): Font height in pixels (default: 8)
         """
-        return pygfx.text(self, s, x, y, c, scale, inverted, font_file, height=height)
+        return pygraphics.text(self, s, x, y, c, scale, inverted, font_file, height=height)
 
     def blit(self, buf, x, y, key=-1, palette=None):
         """

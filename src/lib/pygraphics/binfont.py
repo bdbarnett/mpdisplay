@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices pygfx.binfont
+PyDevices pygraphics.binfont
 
 A module to draw text to a canvas using fonts from
 https://github.com/spacerace/romfont
@@ -11,7 +11,7 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from area import Area
+from pydevices import Area
 
 
 if hasattr(os, "sep"):

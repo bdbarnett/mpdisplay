@@ -14,7 +14,7 @@ Only directories that already exist in the current working directory will be add
 """
 
 # Edit this list to include the directories you want to add to the path.
-directories = ["lib", "extras", "examples", "drivers", "configs", "lib/buses", "lib/displays"]
+directories = ["lib", "extras", "examples", "displays", "configs"]
 
 # Set to True to use relative paths instead of absolute paths.
 RELPATH = True

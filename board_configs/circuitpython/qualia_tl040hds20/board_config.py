@@ -9,7 +9,7 @@ import board
 
 from fbdisplay import FBDisplay
 import adafruit_focaltouch
-from eventsys.devices import Devices, Broker
+from pydevices.devices import Devices, Broker
 
 
 # This first part is particular to CircuitPython-based framebuffer-based displays

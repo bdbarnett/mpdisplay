@@ -1,6 +1,6 @@
 from board_config import display_drv
-from pygfx.palettes import get_palette
-from pygfx import Draw
+from pygraphics.palettes import get_palette
+from pygraphics import Draw
 import tft_text
 import sys
 import os
@@ -19,8 +19,8 @@ if sys.implementation.name == "esp32":
 BUFFERED = False
 
 if BUFFERED:
-    from pygfx.displaybuf import DisplayBuffer
-    from timer import Timer
+    from pydevices.displaybuf import DisplayBuffer
+    from pydevices.timer import Timer
 
 
 font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"

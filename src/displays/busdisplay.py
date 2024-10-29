@@ -6,7 +6,7 @@
 PyDevices busdisplay
 """
 
-from basedisplay import DisplayDriver, Area, swap_bytes
+from pydevices import DisplayDriver, Area, swap_bytes
 from micropython import const  # type: ignore
 import struct
 import sys

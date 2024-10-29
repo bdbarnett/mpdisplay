@@ -15,7 +15,7 @@ or as a function argument:
 """
 
 from board_config import display_drv
-from pygfx import rect, circle, ellipse
+from pygraphics import rect, circle, ellipse
 
 
 dirty = circle(display_drv, 120, 120, 50, 0XFF00, True)

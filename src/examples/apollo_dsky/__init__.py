@@ -6,8 +6,8 @@ Image source:  https://commons.wikimedia.org/wiki/File:Apollo_DSKY_interface.svg
 
 from board_config import display_drv, broker
 from bmp565 import BMP565
-from eventsys.touch_keypad import Keypad
-from area import Area
+from pydevices.touch_keypad import Keypad
+from pydevices import Area
 
 try:
     from os import sep

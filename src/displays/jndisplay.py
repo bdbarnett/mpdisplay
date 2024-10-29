@@ -3,39 +3,40 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices fbdisplay
+PyDevices jndisplay
 """
 
-from basedisplay import DisplayDriver, np, Area, swap_bytes
+from pydevices import DisplayDriver, Area, color_rgb
+from IPython.display import display, update_display  # type: ignore
+from PIL import Image, ImageDraw  # type: ignore
 
-if not np:
-    raise ImportError("This module depends on the numpy module. Please install it.")
 
-
-class FBDisplay(DisplayDriver):
+class JNDisplay(DisplayDriver):
     """
-    A class to interface with CircuitPython FrameBuffer objects.
+    A class to emulate a display on Jupyter Notebook.
 
     Args:
-        buffer (FrameBuffer): The CircuitPython FrameBuffer object.
-        width (int, optional): The width of the display. Defaults to None.
-        height (int, optional): The height of the display. Defaults to None.
-        reverse_bytes_in_word (bool, optional): Whether to reverse the bytes in a word. Defaults to False.
+        width (int): The width of the display.
+        height (int): The height of the display.
 
     Attributes:
         color_depth (int): The color depth of the display
     """
 
-    def __init__(self, buffer, width=None, height=None, reverse_bytes_in_word=False):
+    _next_display_id = 0
+
+    def __init__(self, width, height):
         super().__init__()
-        self._raw_buffer = buffer
-        self._buffer = memoryview(buffer)
-        self._width = width if width else buffer.width
-        self._height = height if height else buffer.height
-        self._requires_byte_swap = reverse_bytes_in_word
+        self._display_id = f"JNDisplay_{JNDisplay._next_display_id}"
+        JNDisplay._next_display_id += 1
+        self._width = width
+        self._height = height
+        self._requires_byte_swap = False
         self._auto_byte_swap_enabled = self._requires_byte_swap
         self._rotation = 0
         self.color_depth = 16
+        self._buffer = Image.new("RGB", (self.width, self.height))
+        self._draw = ImageDraw.Draw(self._buffer)
 
         self.init()
 
@@ -45,7 +46,7 @@ class FBDisplay(DisplayDriver):
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        pass
+        display(self._buffer, display_id=self._display_id)
 
     def fill_rect(self, x, y, w, h, c) -> Area:
         """
@@ -61,21 +62,15 @@ class FBDisplay(DisplayDriver):
         Returns:
             Area: The Area object representing the filled rectangle.
         """
-        if self._auto_byte_swap_enabled:
-            c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
-
+        color = c & 0xFFFF
+        r, g, b = color_rgb(color)
         x2 = x + w
         y2 = y + h
         top = min(y, y2)
         left = min(x, x2)
         bottom = max(y, y2)
         right = max(x, x2)
-        color = c & 0xFFFF
-        arr = np.frombuffer(self._buffer, dtype=np.uint16)
-        for _y in range(y, y + h):
-            begin = _y * self.width + left
-            end = begin + w
-            arr[begin:end] = color
+        self._draw.rectangle([(left, top), (right, bottom)], fill=(r, g, b))
         return Area(left, top, right - left, bottom - top)
 
     def blit_rect(self, buf, x, y, w, h) -> Area:
@@ -83,50 +78,49 @@ class FBDisplay(DisplayDriver):
         Blits a buffer to the display at the given coordinates.
 
         Args:
-            buf (memoryview): The buffer to blit.
-            x (int): The x-coordinate of the buffer.
-            y (int): The y-coordinate of the buffer.
+            buf (bytearray): The buffer to blit to the display.
+            x (int): The x-coordinate of the top-left corner of the buffer.
+            y (int): The y-coordinate of the top-left corner of the buffer.
             w (int): The width of the buffer.
             h (int): The height of the buffer.
 
         Returns:
             Area: The Area object representing the blitted buffer.
         """
-        if self._auto_byte_swap_enabled:
-            swap_bytes(buf, w * h)
 
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
             raise ValueError("The provided x, y, w, h values are out of range")
         if len(buf) != w * h * BPP:
             raise ValueError("The source buffer is not the correct size")
-        arr = np.frombuffer(self._buffer, dtype=np.uint8)
-        for row in range(h):
-            source_begin = row * w * BPP
-            source_end = source_begin + w * BPP
-            dest_begin = ((y + row) * self.width + x) * BPP
-            dest_end = dest_begin + w * BPP
-            arr[dest_begin:dest_end] = buf[source_begin:source_end]
+
+        for j in range(h):
+            for i in range(w):
+                color = buf[(j * w + i) * BPP : (j * w + i) * BPP + BPP]
+                self.pixel(x + i, y + j, color)
+
         return Area(x, y, w, h)
 
     def pixel(self, x, y, c) -> Area:
         """
-        Sets the color of the pixel at the given coordinates.
+        Sets a pixel to the given color.
 
         Args:
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
-            c (int): The color of the pixel.
+            c (int): The color to set the pixel to.
 
         Returns:
-            Area: The Area object representing the pixel.
+            Area: The Area object representing the set pixel.
         """
-        return self.fill_rect(x, y, 1, 1, c)
+        r, g, b = color_rgb(c)
+        self._draw.point((x, y), fill=(r, g, b))
+        return Area(x, y, 1, 1)
 
     ############### Optional API Methods ################
 
     def show(self) -> None:
         """
-        Refreshes the display.
+        Updates the display with the current buffer.
         """
-        self._raw_buffer.refresh()
+        update_display(self._buffer, display_id=self._display_id)

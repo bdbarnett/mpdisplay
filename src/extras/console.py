@@ -32,7 +32,7 @@ SOFTWARE.
 import io
 import framebuf
 import gc
-from timer import Timer
+from pydevices.timer import Timer
 
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 

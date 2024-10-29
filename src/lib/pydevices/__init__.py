@@ -8,7 +8,8 @@ PyDevices basedisplay
 
 import gc
 from sys import implementation
-from area import Area
+from ._area import Area
+from ._events import Events  # noqa: F401
 
 try:
     from typing import Optional

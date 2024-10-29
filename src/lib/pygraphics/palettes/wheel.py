@@ -3,13 +3,13 @@ This module contains the cool wheel color palette as a class object.
 
 
 Usage:
-    from pygfx.palettes import get_palette
+    from pygraphics.palettes import get_palette
     palette = get_palette(name="wheel", color_depth=16, swapped=False, length=256)
     # OR
     palette = get_palette(name="wheel")
 
     # OR
-    from pygfx.palettes.wheel import WheelPalette
+    from pygraphics.palettes.wheel import WheelPalette
     palette = WheelPalette(color_depth=16, swapped=False, length=256)
 
     print(f"Palette: {palette.name}, Length: {len(palette)}")

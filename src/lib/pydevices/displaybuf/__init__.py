@@ -11,7 +11,7 @@ but may also be used without them.
 
 Usage:
     'color_setup.py'
-        from pygfx.displaybuf import DisplayBuffer as SSD
+        from pydevices.displaybuf import DisplayBuffer as SSD
         from board_config import display_drv
 
         format = SSD.RGB565  # or .GS8 or .GS4_HMSB
@@ -25,7 +25,7 @@ Usage:
 
 import gc
 import sys
-from area import Area
+from pydevices import Area
 
 try:
     from .. import framebuf_plus as framebuf

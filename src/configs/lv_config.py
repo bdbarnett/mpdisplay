@@ -7,8 +7,8 @@ lv_config.py - LVGL driver configuration for PyDevices
 """
 
 from board_config import display_drv, broker
-from eventsys import Events
-from eventsys.devices import Devices
+from pydevices import Events
+from pydevices.devices import Devices
 import lvgl as lv # type: ignore
 import gc
 

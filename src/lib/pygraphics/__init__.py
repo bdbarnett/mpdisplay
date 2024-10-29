@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices pygfx
+PyDevices pygraphics
 ====================================================
 Graphics primitives for drawing on a canvas.
 
@@ -19,7 +19,7 @@ object has these methods.
 
 """
 
-from area import Area  # noqa: F401
+from pydevices import Area  # noqa: F401
 import math
 from .binfont import text, text8, text14, text16
 

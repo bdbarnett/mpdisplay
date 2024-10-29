@@ -4,7 +4,7 @@
 # a time instead of the full bitmap.
 from board_config import display_drv
 from bmp565 import BMP565
-from pygfx import hline
+from pygraphics import hline
 
 
 try:
