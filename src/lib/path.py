@@ -3,7 +3,7 @@ path.py
 To run this command when you launch *Python, type the following, substituting 'python' with the name
 of your *Python executable, such as 'python3' or 'micropython':
 
-    python -i path.py
+    python -i lib/path.py
 
 On microcontrollers, you may include it in your boot.py, main.py or code.py, whichever is appropriate:
     

@@ -16,11 +16,11 @@ master_package_name = "package"
 
 # list of package directories, dependencies and extra files in that package
 packages = [
-    ["configs", [], ["../path.py", "../jupyter_notebook.ipynb"]],
+    ["configs", [], []],
     ["displays", [], []],
     ["examples", [], []],
     ["extras", [], []],
-    ["lib/pydevices", [], ["adafruit_ticks.py", "micropython.py"]],
+    ["lib/pydevices", [], ["adafruit_ticks.py", "micropython.py", "path.py"]],
     ["lib/pygraphics", [], []],
     ["lib/pywidgets", [], []],
     ]
