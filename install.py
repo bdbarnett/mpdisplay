@@ -17,7 +17,7 @@ Also equivalent to running the following commands in the REPL:
 ```
 import mip
 mip.install("github:bdbarnett/mpdisplay", target=".")  # Does not include examples
-mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target=".")
+mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target="examples")
 ```
 """
 from sys import implementation
@@ -36,13 +36,13 @@ dest_base = "."
 
 # List of package, target pairs
 packages = [
-    ("configs", ""),
-    ("displays", ""),
-    ("examples", ""),
-    ("extras", ""),
-    ("pydevices", ""),
-    ("pygraphics", ""),
-    ("pywidgets", ""),
+    ("configs", "configs"),
+    ("displays", "displays"),
+    ("examples", "examples"),
+    ("extras", "extras"),
+    ("pydevices", "lib"),
+    ("pygraphics", "lib"),
+    ("pywidgets", "lib"),
 ]
 
 # Install each package

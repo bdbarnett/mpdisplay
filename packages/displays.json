@@ -1,47 +1,47 @@
 {
   "urls": [
     [
-      "displays/busdisplay.py",
+      "busdisplay.py",
       "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"
     ],
     [
-      "displays/dtdisplay.py",
+      "dtdisplay.py",
       "github:bdbarnett/mpdisplay/src/displays/dtdisplay.py"
     ],
     [
-      "displays/fbdisplay.py",
+      "fbdisplay.py",
       "github:bdbarnett/mpdisplay/src/displays/fbdisplay.py"
     ],
     [
-      "displays/jndisplay.py",
+      "jndisplay.py",
       "github:bdbarnett/mpdisplay/src/displays/jndisplay.py"
     ],
     [
-      "displays/pgdisplay.py",
+      "pgdisplay.py",
       "github:bdbarnett/mpdisplay/src/displays/pgdisplay.py"
     ],
     [
-      "displays/psdisplay.py",
+      "psdisplay.py",
       "github:bdbarnett/mpdisplay/src/displays/psdisplay.py"
     ],
     [
-      "displays/sdldisplay/__init__.py",
+      "sdldisplay/__init__.py",
       "github:bdbarnett/mpdisplay/src/displays/sdldisplay/__init__.py"
     ],
     [
-      "displays/sdldisplay/_sdl2_lib/__init__.py",
+      "sdldisplay/_sdl2_lib/__init__.py",
       "github:bdbarnett/mpdisplay/src/displays/sdldisplay/_sdl2_lib/__init__.py"
     ],
     [
-      "displays/sdldisplay/_sdl2_lib/_constants.py",
+      "sdldisplay/_sdl2_lib/_constants.py",
       "github:bdbarnett/mpdisplay/src/displays/sdldisplay/_sdl2_lib/_constants.py"
     ],
     [
-      "displays/sdldisplay/_sdl2_lib/_cpython.py",
+      "sdldisplay/_sdl2_lib/_cpython.py",
       "github:bdbarnett/mpdisplay/src/displays/sdldisplay/_sdl2_lib/_cpython.py"
     ],
     [
-      "displays/sdldisplay/_sdl2_lib/_micropython.py",
+      "sdldisplay/_sdl2_lib/_micropython.py",
       "github:bdbarnett/mpdisplay/src/displays/sdldisplay/_sdl2_lib/_micropython.py"
     ]
   ],

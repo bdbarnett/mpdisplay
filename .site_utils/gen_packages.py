@@ -14,10 +14,6 @@ packages_dir = "packages/"
 toml_full_path = output_dir + "html/pyscript.toml"
 master_package_name = "package"
 
-display_deps = [
-    [f"{repo_url}{packages_dir}basedisplay.json", "main"],
-]
-
 # list of package directories, dependencies and extra files in that package
 packages = [
     ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],
@@ -52,6 +48,7 @@ for package_path, deps, extra_files in packages:
         package_sub_dir = package_name + "/"
     # Add a dictionary for the package
     package_dicts[package_name] = {"urls": [], "deps": deps, "version": package_ver}
+    print(f"\n{package_path=}, {deps=}, {extra_files=}, {package_name=}, {full_path=}, {parent_path=}, {trim_path=}, {package_sub_dir=}")
 
     # Iterate over the extra files in the package
     for extra_file in sorted(extra_files):
@@ -79,7 +76,7 @@ for package_path, deps, extra_files in packages:
         for f in sorted(files):
             # Add the file to the package
             full_file_path = os.path.join(root, f)
-            dest_file = package_sub_dir + os.path.relpath(full_file_path, trim_path)
+            dest_file = package_sub_dir + os.path.relpath(full_file_path, full_path)
             src_file = repo_url + os.path.relpath(full_file_path, repo_dir)
             package_dicts[package_name]["urls"].append([dest_file, src_file])
 

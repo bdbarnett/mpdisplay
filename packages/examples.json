@@ -1,371 +1,371 @@
 {
   "urls": [
     [
-      "examples/apollo.py",
+      "apollo.py",
       "github:bdbarnett/mpdisplay/src/examples/apollo.py"
     ],
     [
-      "examples/binfont_list.py",
+      "binfont_list.py",
       "github:bdbarnett/mpdisplay/src/examples/binfont_list.py"
     ],
     [
-      "examples/binfont_simpletest.py",
+      "binfont_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest.py"
     ],
     [
-      "examples/binfont_simpletest2.py",
+      "binfont_simpletest2.py",
       "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest2.py"
     ],
     [
-      "examples/binfont_simpletest3.py",
+      "binfont_simpletest3.py",
       "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest3.py"
     ],
     [
-      "examples/bmp565_blit.py",
+      "bmp565_blit.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_blit.py"
     ],
     [
-      "examples/bmp565_scroll.py",
+      "bmp565_scroll.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_scroll.py"
     ],
     [
-      "examples/bmp565_scroll_sprite.py",
+      "bmp565_scroll_sprite.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_scroll_sprite.py"
     ],
     [
-      "examples/bmp565_simpletest.py",
+      "bmp565_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_simpletest.py"
     ],
     [
-      "examples/bmp565_sprite.py",
+      "bmp565_sprite.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_sprite.py"
     ],
     [
-      "examples/bmp565_sprite_transparent.py",
+      "bmp565_sprite_transparent.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_sprite_transparent.py"
     ],
     [
-      "examples/boxlines.py",
+      "boxlines.py",
       "github:bdbarnett/mpdisplay/src/examples/boxlines.py"
     ],
     [
-      "examples/calculator.py",
+      "calculator.py",
       "github:bdbarnett/mpdisplay/src/examples/calculator.py"
     ],
     [
-      "examples/color_test.py",
+      "color_test.py",
       "github:bdbarnett/mpdisplay/src/examples/color_test.py"
     ],
     [
-      "examples/console_advanced_demo.py",
+      "console_advanced_demo.py",
       "github:bdbarnett/mpdisplay/src/examples/console_advanced_demo.py"
     ],
     [
-      "examples/console_simpletest.py",
+      "console_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/console_simpletest.py"
     ],
     [
-      "examples/displaybuf_blit.py",
+      "displaybuf_blit.py",
       "github:bdbarnett/mpdisplay/src/examples/displaybuf_blit.py"
     ],
     [
-      "examples/displaybuf_simpletest.py",
+      "displaybuf_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/displaybuf_simpletest.py"
     ],
     [
-      "examples/ezfont_simpletest.py",
+      "ezfont_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/ezfont_simpletest.py"
     ],
     [
-      "examples/feathers.py",
+      "feathers.py",
       "github:bdbarnett/mpdisplay/src/examples/feathers.py"
     ],
     [
-      "examples/first_test.py",
+      "first_test.py",
       "github:bdbarnett/mpdisplay/src/examples/first_test.py"
     ],
     [
-      "examples/fonts.py",
+      "fonts.py",
       "github:bdbarnett/mpdisplay/src/examples/fonts.py"
     ],
     [
-      "examples/framebuf_simpletest.py",
+      "framebuf_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/framebuf_simpletest.py"
     ],
     [
-      "examples/gui_test.py",
+      "gui_test.py",
       "github:bdbarnett/mpdisplay/src/examples/gui_test.py"
     ],
     [
-      "examples/hello.py",
+      "hello.py",
       "github:bdbarnett/mpdisplay/src/examples/hello.py"
     ],
     [
-      "examples/keypins_simpletest.py",
+      "keypins_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/keypins_simpletest.py"
     ],
     [
-      "examples/lv_touch_test.py",
+      "lv_touch_test.py",
       "github:bdbarnett/mpdisplay/src/examples/lv_touch_test.py"
     ],
     [
-      "examples/md_to_pbm.py",
+      "md_to_pbm.py",
       "github:bdbarnett/mpdisplay/src/examples/md_to_pbm.py"
     ],
     [
-      "examples/mpdisplay_encoder_test.py",
+      "mpdisplay_encoder_test.py",
       "github:bdbarnett/mpdisplay/src/examples/mpdisplay_encoder_test.py"
     ],
     [
-      "examples/mpdisplay_event_test.py",
+      "mpdisplay_event_test.py",
       "github:bdbarnett/mpdisplay/src/examples/mpdisplay_event_test.py"
     ],
     [
-      "examples/mpdisplay_logo.py",
+      "mpdisplay_logo.py",
       "github:bdbarnett/mpdisplay/src/examples/mpdisplay_logo.py"
     ],
     [
-      "examples/mpdisplay_simpletest.py",
+      "mpdisplay_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/mpdisplay_simpletest.py"
     ],
     [
-      "examples/mpdisplay_touch_test.py",
+      "mpdisplay_touch_test.py",
       "github:bdbarnett/mpdisplay/src/examples/mpdisplay_touch_test.py"
     ],
     [
-      "examples/nano_gui_simpletest.py",
+      "nano_gui_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/nano_gui_simpletest.py"
     ],
     [
-      "examples/paint.py",
+      "paint.py",
       "github:bdbarnett/mpdisplay/src/examples/paint.py"
     ],
     [
-      "examples/palette_cube.py",
+      "palette_cube.py",
       "github:bdbarnett/mpdisplay/src/examples/palette_cube.py"
     ],
     [
-      "examples/palette_material.py",
+      "palette_material.py",
       "github:bdbarnett/mpdisplay/src/examples/palette_material.py"
     ],
     [
-      "examples/palette_name_check.py",
+      "palette_name_check.py",
       "github:bdbarnett/mpdisplay/src/examples/palette_name_check.py"
     ],
     [
-      "examples/palette_wheel.py",
+      "palette_wheel.py",
       "github:bdbarnett/mpdisplay/src/examples/palette_wheel.py"
     ],
     [
-      "examples/pbm_create_new.py",
+      "pbm_create_new.py",
       "github:bdbarnett/mpdisplay/src/examples/pbm_create_new.py"
     ],
     [
-      "examples/pbm_simpletest.py",
+      "pbm_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/pbm_simpletest.py"
     ],
     [
-      "examples/pngtest.py",
+      "pngtest.py",
       "github:bdbarnett/mpdisplay/src/examples/pngtest.py"
     ],
     [
-      "examples/rotations.py",
+      "rotations.py",
       "github:bdbarnett/mpdisplay/src/examples/rotations.py"
     ],
     [
-      "examples/scroll.py",
+      "scroll.py",
       "github:bdbarnett/mpdisplay/src/examples/scroll.py"
     ],
     [
-      "examples/scroll_touch_test.py",
+      "scroll_touch_test.py",
       "github:bdbarnett/mpdisplay/src/examples/scroll_touch_test.py"
     ],
     [
-      "examples/scroll_touch_test_displaybuffer.py",
+      "scroll_touch_test_displaybuffer.py",
       "github:bdbarnett/mpdisplay/src/examples/scroll_touch_test_displaybuffer.py"
     ],
     [
-      "examples/shapes_area_test.py",
+      "shapes_area_test.py",
       "github:bdbarnett/mpdisplay/src/examples/shapes_area_test.py"
     ],
     [
-      "examples/shapes_simpletest.py",
+      "shapes_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/shapes_simpletest.py"
     ],
     [
-      "examples/testris.py",
+      "testris.py",
       "github:bdbarnett/mpdisplay/src/examples/testris.py"
     ],
     [
-      "examples/timer_simpletest.py",
+      "timer_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/timer_simpletest.py"
     ],
     [
-      "examples/tiny_hello.py",
+      "tiny_hello.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_hello.py"
     ],
     [
-      "examples/widgets_calc.py",
+      "widgets_calc.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_calc.py"
     ],
     [
-      "examples/widgets_console.py",
+      "widgets_console.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_console.py"
     ],
     [
-      "examples/widgets_demo.py",
+      "widgets_demo.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_demo.py"
     ],
     [
-      "examples/widgets_list.py",
+      "widgets_list.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_list.py"
     ],
     [
-      "examples/widgets_percent.py",
+      "widgets_percent.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_percent.py"
     ],
     [
-      "examples/widgets_scrollbar.py",
+      "widgets_scrollbar.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_scrollbar.py"
     ],
     [
-      "examples/widgets_stub.py",
+      "widgets_stub.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_stub.py"
     ],
     [
-      "examples/widgets_test.py",
+      "widgets_test.py",
       "github:bdbarnett/mpdisplay/src/examples/widgets_test.py"
     ],
     [
-      "examples/noto_fonts/NotoSansMono_32.py",
+      "noto_fonts/NotoSansMono_32.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/NotoSansMono_32.py"
     ],
     [
-      "examples/noto_fonts/NotoSans_32.py",
+      "noto_fonts/NotoSans_32.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/NotoSans_32.py"
     ],
     [
-      "examples/noto_fonts/NotoSerif_32.py",
+      "noto_fonts/NotoSerif_32.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/NotoSerif_32.py"
     ],
     [
-      "examples/noto_fonts/__init__.py",
+      "noto_fonts/__init__.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/__init__.py"
     ],
     [
-      "examples/noto_fonts/noto_fonts.py",
+      "noto_fonts/noto_fonts.py",
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/noto_fonts.py"
     ],
     [
-      "examples/assets/longstreet.bmp",
+      "assets/longstreet.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/longstreet.bmp"
     ],
     [
-      "examples/assets/micropython-ascii.pbm",
+      "assets/micropython-ascii.pbm",
       "github:bdbarnett/mpdisplay/src/examples/assets/micropython-ascii.pbm"
     ],
     [
-      "examples/assets/micropython.pbm",
+      "assets/micropython.pbm",
       "github:bdbarnett/mpdisplay/src/examples/assets/micropython.pbm"
     ],
     [
-      "examples/assets/runner.bmp",
+      "assets/runner.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/runner.bmp"
     ],
     [
-      "examples/assets/warrior.bmp",
+      "assets/warrior.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
     ],
     [
-      "examples/apollo_dsky/Apollo_DSKY_interface.bmp",
+      "apollo_dsky/Apollo_DSKY_interface.bmp",
       "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
     ],
     [
-      "examples/apollo_dsky/Apollo_DSKY_interface.svg",
+      "apollo_dsky/Apollo_DSKY_interface.svg",
       "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
     ],
     [
-      "examples/apollo_dsky/__init__.py",
+      "apollo_dsky/__init__.py",
       "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
     ],
     [
-      "examples/chango/__init__.py",
+      "chango/__init__.py",
       "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
     ],
     [
-      "examples/chango/chango.py",
+      "chango/chango.py",
       "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
     ],
     [
-      "examples/chango/chango_16.py",
+      "chango/chango_16.py",
       "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
     ],
     [
-      "examples/chango/chango_32.py",
+      "chango/chango_32.py",
       "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
     ],
     [
-      "examples/chango/chango_64.py",
+      "chango/chango_64.py",
       "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ],
     [
-      "examples/proverbs/__init__.py",
+      "proverbs/__init__.py",
       "github:bdbarnett/mpdisplay/src/examples/proverbs/__init__.py"
     ],
     [
-      "examples/proverbs/make_proverbs_fonts.sh",
+      "proverbs/make_proverbs_fonts.sh",
       "github:bdbarnett/mpdisplay/src/examples/proverbs/make_proverbs_fonts.sh"
     ],
     [
-      "examples/proverbs/proverbs.py",
+      "proverbs/proverbs.py",
       "github:bdbarnett/mpdisplay/src/examples/proverbs/proverbs.py"
     ],
     [
-      "examples/proverbs/proverbs_20.py",
+      "proverbs/proverbs_20.py",
       "github:bdbarnett/mpdisplay/src/examples/proverbs/proverbs_20.py"
     ],
     [
-      "examples/proverbs/proverbs_30.py",
+      "proverbs/proverbs_30.py",
       "github:bdbarnett/mpdisplay/src/examples/proverbs/proverbs_30.py"
     ],
     [
-      "examples/alien/__init__.py",
+      "alien/__init__.py",
       "github:bdbarnett/mpdisplay/src/examples/alien/__init__.py"
     ],
     [
-      "examples/alien/alien.png",
+      "alien/alien.png",
       "github:bdbarnett/mpdisplay/src/examples/alien/alien.png"
     ],
     [
-      "examples/alien/alien.py",
+      "alien/alien.py",
       "github:bdbarnett/mpdisplay/src/examples/alien/alien.py"
     ],
     [
-      "examples/alien/alien_bitmap.py",
+      "alien/alien_bitmap.py",
       "github:bdbarnett/mpdisplay/src/examples/alien/alien_bitmap.py"
     ],
     [
-      "examples/alien/make_alien_bitmap.sh",
+      "alien/make_alien_bitmap.sh",
       "github:bdbarnett/mpdisplay/src/examples/alien/make_alien_bitmap.sh"
     ],
     [
-      "examples/tiny_toasters/__init__.py",
+      "tiny_toasters/__init__.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/__init__.py"
     ],
     [
-      "examples/tiny_toasters/make_tiny_toast_bitmaps.sh",
+      "tiny_toasters/make_tiny_toast_bitmaps.sh",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/make_tiny_toast_bitmaps.sh"
     ],
     [
-      "examples/tiny_toasters/tiny_toasters.bmp",
+      "tiny_toasters/tiny_toasters.bmp",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters.bmp"
     ],
     [
-      "examples/tiny_toasters/tiny_toasters.py",
+      "tiny_toasters/tiny_toasters.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters.py"
     ],
     [
-      "examples/tiny_toasters/tiny_toasters_bitmaps.py",
+      "tiny_toasters/tiny_toasters_bitmaps.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
     ]
   ],

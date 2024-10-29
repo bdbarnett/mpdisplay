@@ -1,111 +1,111 @@
 {
   "urls": [
     [
-      "extras/bmp565.py",
+      "bmp565.py",
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
     [
-      "extras/console.py",
+      "console.py",
       "github:bdbarnett/mpdisplay/src/extras/console.py"
     ],
     [
-      "extras/ezfont.py",
+      "ezfont.py",
       "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
     ],
     [
-      "extras/keypins.py",
+      "keypins.py",
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
     ],
     [
-      "extras/pbm.py",
+      "pbm.py",
       "github:bdbarnett/mpdisplay/src/extras/pbm.py"
     ],
     [
-      "extras/png.py",
+      "png.py",
       "github:bdbarnett/mpdisplay/src/extras/png.py"
     ],
     [
-      "extras/romfont.py",
+      "romfont.py",
       "github:bdbarnett/mpdisplay/src/extras/romfont.py"
     ],
     [
-      "extras/tft_bitmap.py",
+      "tft_bitmap.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_bitmap.py"
     ],
     [
-      "extras/tft_write.py",
+      "tft_write.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_write.py"
     ],
     [
-      "extras/wifi.py",
+      "wifi.py",
       "github:bdbarnett/mpdisplay/src/extras/wifi.py"
     ],
     [
-      "extras/tft_text/__init__.py",
+      "tft_text/__init__.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/__init__.py"
     ],
     [
-      "extras/tft_text/_python.py",
+      "tft_text/_python.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/_python.py"
     ],
     [
-      "extras/tft_text/_viper.py",
+      "tft_text/_viper.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/_viper.py"
     ],
     [
-      "extras/tft_text/fonts/__init__.py",
+      "tft_text/fonts/__init__.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/__init__.py"
     ],
     [
-      "extras/tft_text/fonts/compile_upload.sh",
+      "tft_text/fonts/compile_upload.sh",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/compile_upload.sh"
     ],
     [
-      "extras/tft_text/fonts/vga1_16x16.py",
+      "tft_text/fonts/vga1_16x16.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_16x32.py",
+      "tft_text/fonts/vga1_16x32.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_16x32.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_8x16.py",
+      "tft_text/fonts/vga1_8x16.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_8x8.py",
+      "tft_text/fonts/vga1_8x8.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_8x8.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_bold_16x16.py",
+      "tft_text/fonts/vga1_bold_16x16.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_bold_16x32.py",
+      "tft_text/fonts/vga1_bold_16x32.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga1_bold_16x32.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_16x16.py",
+      "tft_text/fonts/vga2_16x16.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_16x32.py",
+      "tft_text/fonts/vga2_16x32.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_16x32.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_8x16.py",
+      "tft_text/fonts/vga2_8x16.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_8x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_8x8.py",
+      "tft_text/fonts/vga2_8x8.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_8x8.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_bold_16x16.py",
+      "tft_text/fonts/vga2_bold_16x16.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_bold_16x32.py",
+      "tft_text/fonts/vga2_bold_16x32.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
     ]
   ],

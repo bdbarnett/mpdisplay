@@ -9,23 +9,23 @@
       "github:bdbarnett/mpdisplay/src/path.py"
     ],
     [
-      "configs/board_config.py",
+      "board_config.py",
       "github:bdbarnett/mpdisplay/src/configs/board_config.py"
     ],
     [
-      "configs/color_setup.py",
+      "color_setup.py",
       "github:bdbarnett/mpdisplay/src/configs/color_setup.py"
     ],
     [
-      "configs/hardware_setup.py",
+      "hardware_setup.py",
       "github:bdbarnett/mpdisplay/src/configs/hardware_setup.py"
     ],
     [
-      "configs/lv_config.py",
+      "lv_config.py",
       "github:bdbarnett/mpdisplay/src/configs/lv_config.py"
     ],
     [
-      "configs/tft_config.py",
+      "tft_config.py",
       "github:bdbarnett/mpdisplay/src/configs/tft_config.py"
     ]
   ],
