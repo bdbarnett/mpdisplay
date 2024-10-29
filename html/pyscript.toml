@@ -1,6 +1,6 @@
 [files]
-"../src/jupyter_notebook.ipynb" = "/"
-"../src/path.py" = "/"
+"../jupyter_notebook.ipynb" = "/../"
+"../path.py" = "/../"
 "../src/configs/board_config.py" = "/configs/"
 "../src/configs/color_setup.py" = "/configs/"
 "../src/configs/hardware_setup.py" = "/configs/"

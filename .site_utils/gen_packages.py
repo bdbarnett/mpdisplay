@@ -16,7 +16,7 @@ master_package_name = "package"
 
 # list of package directories, dependencies and extra files in that package
 packages = [
-    ["configs", [], ["path.py", "jupyter_notebook.ipynb"]],
+    ["configs", [], ["../path.py", "../jupyter_notebook.ipynb"]],
     ["displays", [], []],
     ["examples", [], []],
     ["extras", [], []],

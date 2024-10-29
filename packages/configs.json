@@ -1,12 +1,12 @@
 {
   "urls": [
     [
-      "jupyter_notebook.ipynb",
-      "github:bdbarnett/mpdisplay/src/jupyter_notebook.ipynb"
+      "../jupyter_notebook.ipynb",
+      "github:bdbarnett/mpdisplay/jupyter_notebook.ipynb"
     ],
     [
-      "path.py",
-      "github:bdbarnett/mpdisplay/src/path.py"
+      "../path.py",
+      "github:bdbarnett/mpdisplay/path.py"
     ],
     [
       "board_config.py",

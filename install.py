@@ -32,7 +32,7 @@ else:
 
 
 src_base = "github:bdbarnett/mpdisplay/packages/"
-dest_base = "."
+dest_base = "./"
 
 # List of package, target pairs
 packages = [
