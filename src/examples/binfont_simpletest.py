@@ -43,9 +43,9 @@ def main():
     if cwd[-1] != "/":
         cwd += "/"
 
-    font1 = BinFont(f"{cwd}lib/pygraphics/binfont/binfont_8x8.bin")
-    font2 = BinFont(f"{cwd}lib/pygraphics/binfont/binfont_8x14.bin")
-    font3 = BinFont(f"{cwd}lib/pygraphics/binfont/binfont_8x16.bin")
+    font1 = BinFont(f"{cwd}lib/pygraphics/binfont_8x8.bin")
+    font2 = BinFont(f"{cwd}lib/pygraphics/binfont_8x14.bin")
+    font3 = BinFont(f"{cwd}lib/pygraphics/binfont_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.width for font in fonts])
