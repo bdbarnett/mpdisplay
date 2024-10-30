@@ -29,12 +29,13 @@
                 file = e.target.id.split('.')[0]
                 output.style.display = 'none'
                 module = __import__(file)
-                print(f"Loaded {file=} ({dir(module)=})")
+                # print(f"Loaded {file=} ({dir(module)=})")
                 if hasattr(module, "task"):
                     if module.task.done():
                         module.task = module.loop.create_task(module.main())
                 else:
-                    print(f"No task found in {file=}")
+                    # print(f"No task found in {file=}")
+                    pass
 
             click_proxy = create_proxy(click_handler)
             
