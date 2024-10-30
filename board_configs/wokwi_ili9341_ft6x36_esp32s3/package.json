@@ -1,6 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/wokwi_ili9341_ft6x36_esp32s3/board_config.py"],
+      ["busdisplay.py", "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"],
       ["spibus.py", "github:bdbarnett/mpdisplay/drivers/bus/spibus.py"],
       ["ili9341.py", "github:bdbarnett/mpdisplay/drivers/display/ili9341.py"],
       ["ft6x36.py", "github:bdbarnett/mpdisplay/drivers/touch/ft6x36.py"]
