@@ -49,8 +49,6 @@
 "../src/lib/micropython.py" = "/lib/"
 "../src/lib/path.py" = "/lib/"
 "../src/lib/pydevices/__init__.py" = "/lib/pydevices/"
-"../src/lib/pydevices/_area.py" = "/lib/pydevices/"
-"../src/lib/pydevices/_events.py" = "/lib/pydevices/"
 "../src/lib/pydevices/_numpy.py" = "/lib/pydevices/"
 "../src/lib/pydevices/_viper.py" = "/lib/pydevices/"
 "../src/lib/pydevices/devices.py" = "/lib/pydevices/"
