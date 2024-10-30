@@ -1,6 +1,7 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/bpi-centi-s3/board_config.py"],
+      ["busdisplay.py", "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"],
       ["i80bus.py", "github:bdbarnett/mpdisplay/drivers/bus/i80bus.py"],
       ["gpio_pin.py", "github:bdbarnett/mpdisplay/drivers/bus/gpio_pin.py"],
       ["st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"],

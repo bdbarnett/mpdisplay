@@ -1,6 +1,8 @@
 {
     "urls": [
       ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/seeed_gc9a01_on_qtpy_esp32s3/board_config.py"],
+      ["busdisplay.py", "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"],
+      ["spibus.py", "github:bdbarnett/mpdisplay/drivers/bus/spibus.py"],
       ["gc9a01.py", "github:bdbarnett/mpdisplay/drivers/display/gc9a01.py"],
       ["chsc6x.py", "github:bdbarnett/mpdisplay/drivers/touch/chsc6x.py"]
     ],
