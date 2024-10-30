@@ -24,7 +24,7 @@ Usage:
 """
 import sys
 try:
-    from machine import Timer  # type: ignore # MicroPython on microcontrollers
+    from machine import Timer  # MicroPython on microcontrollers
 except ImportError:
 
     if sys.implementation.name == "micropython":  # MicroPython on Unix

@@ -7,8 +7,8 @@ PyDevices jndisplay
 """
 
 from pydevices import DisplayDriver, Area, color_rgb
-from IPython.display import display, update_display  # type: ignore
-from PIL import Image, ImageDraw  # type: ignore
+from IPython.display import display, update_display 
+from PIL import Image, ImageDraw 
 
 
 class JNDisplay(DisplayDriver):

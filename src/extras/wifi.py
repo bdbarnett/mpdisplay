@@ -5,7 +5,7 @@ Usage:
     import wifi
     wifi.radio.connect('ssid', 'password')
 '''
-import network # type: ignore
+import network
 from time import sleep_ms
 _retries = 50
 

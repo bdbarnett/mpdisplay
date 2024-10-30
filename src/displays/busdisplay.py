@@ -7,7 +7,7 @@ PyDevices busdisplay
 """
 
 from pydevices import DisplayDriver, Area, swap_bytes
-from micropython import const  # type: ignore
+from micropython import const 
 import struct
 import sys
 import gc
@@ -18,13 +18,13 @@ except ImportError:
     pass
 
 if sys.implementation.name == "micropython":
-    from machine import Pin  # type: ignore
+    from machine import Pin 
     from time import sleep_ms
-    from micropython import alloc_emergency_exception_buf  # type: ignore
+    from micropython import alloc_emergency_exception_buf 
 
     alloc_emergency_exception_buf(256)
 elif sys.implementation.name == "circuitpython":
-    import digitalio  # type: ignore
+    import digitalio 
     from time import sleep
 
     def sleep_ms(ms):
@@ -189,7 +189,7 @@ class BusDisplay(DisplayDriver):
 
         if self._backlight_pin is not None:
             try:
-                from machine import PWM  # type: ignore
+                from machine import PWM 
 
                 self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True

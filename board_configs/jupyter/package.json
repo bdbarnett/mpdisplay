@@ -1,0 +1,7 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/jupyter/board_config.py"],
+      ["jndisplay.py", "github:bdbarnett/mpdisplay/src/displays/jndisplay.py"]
+    ],
+    "version": "0.1"
+  }

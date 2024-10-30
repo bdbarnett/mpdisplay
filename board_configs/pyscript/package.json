@@ -1,0 +1,7 @@
+{
+    "urls": [
+      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/pyscript/board_config.py"],
+      ["psdisplay.py", "github:bdbarnett/mpdisplay/src/displays/psdisplay.py"]
+    ],
+    "version": "0.1"
+  }

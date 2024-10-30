@@ -18,10 +18,10 @@ except ImportError:
 
 np = False
 try:
-    import ulab.numpy as np  # type: ignore
+    import ulab.numpy as np 
 except ImportError:
     try:
-        import numpy as np  # type: ignore
+        import numpy as np 
     except ImportError:
         pass
 

@@ -14,10 +14,10 @@ _BIT1 = micropython.const(0x02)
 _BIT0 = micropython.const(0x01)
 
 @micropython.viper
-def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint): # type: ignore  # noqa: F821
+def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821
     buffer = bytearray(128)
-    bitmap = ptr16(buffer)  # type: ignore # noqa: F821
-    glyph = ptr8(glyphs)  # type: ignore # noqa: F821
+    bitmap = ptr16(buffer)  # noqa: F821
+    glyph = ptr8(glyphs)  # noqa: F821
 
     for i in range(0, 64, 8):
         byte = glyph[idx]
@@ -34,10 +34,10 @@ def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint): # type: ignore  #
     return buffer
 
 @micropython.viper
-def _pack16(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # type: ignore # noqa: F821
+def _pack16(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821
     buffer = bytearray(256)
-    bitmap = ptr16(buffer)  # type: ignore # noqa: F821
-    glyph = ptr8(glyphs)  # type: ignore # noqa: F821
+    bitmap = ptr16(buffer)  # noqa: F821
+    glyph = ptr8(glyphs)  # noqa: F821
 
     for i in range(0, 128, 16):
         byte = glyph[idx]

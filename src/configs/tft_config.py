@@ -12,7 +12,7 @@ else:
     sep = "/"
 
 if sys.implementation.name == "esp32":
-    from machine import freq # type: ignore
+    from machine import freq
 
     freq(240_000_000)
 

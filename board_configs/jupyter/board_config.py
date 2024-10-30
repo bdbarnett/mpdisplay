@@ -3,8 +3,9 @@ Board configuration for Jupyter Notebook.
 
 """
 from jndisplay import JNDisplay
-from pydevices.timer import get_timer
+from pydevices.devices import Broker
 
+
+broker = Broker()
 
 display_drv = JNDisplay(480, 320)
-tim = get_timer(display_drv.show)

@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-from machine import Pin as _Pin  # type: ignore
+from machine import Pin as _Pin 
 from sys import platform, implementation
 
 
 if platform == "pyboard":
-    import stm  # type: ignore
+    import stm 
 
     gpio_data = {
         "pyboard": {

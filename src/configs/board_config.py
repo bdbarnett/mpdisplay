@@ -9,18 +9,18 @@ scale = 2.0
 
 _ps = _jn = False
 try:
-    import pyscript  # type: ignore # noqa: F401
+    import pyscript  # noqa: F401
     _ps = True
 except ImportError:
     try:
-        get_ipython()  # type: ignore # noqa: F821
+        get_ipython()  # noqa: F821
         _jn = True
     except NameError:
         pass
 
 if _ps:
     from psdisplay import PSDisplay, PSDevices
-    from pydevices.devices import DeviceTypes, Broker # type: ignore
+    from pydevices.devices import DeviceTypes, Broker
 
 
     display_drv = PSDisplay("display_canvas", width, height)
@@ -36,15 +36,16 @@ if _ps:
     )
 elif _jn:
     from jndisplay import JNDisplay
-    from pydevices.devices import DeviceTypes, Broker # type: ignore
+    from pydevices.devices import Broker
 
     broker = Broker()
     
     display_drv = JNDisplay(width, height)
 else:
-    from dtdisplay import DTDisplay, poll # type: ignore
-    from pydevices.devices import DeviceTypes, Broker # type: ignore
+    from dtdisplay import DTDisplay, poll
+    from pydevices.devices import DeviceTypes, Broker
     import sys
+
 
     display_drv = DTDisplay(
         width=width,

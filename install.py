@@ -22,7 +22,7 @@ mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target="example
 """
 from sys import implementation
 if implementation.name == "micropython":
-    import mip # type: ignore
+    import mip
     def install(package, target):
         mip.install(package, target=target)
 else:

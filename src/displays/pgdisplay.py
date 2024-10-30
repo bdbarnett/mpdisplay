@@ -7,7 +7,7 @@ PyDevices dtdisplay.pgdisplay
 """
 
 from pydevices import DisplayDriver, Area, color_rgb
-import pygame as pg  # type: ignore
+import pygame as pg 
 
 try:
     from typing import Optional

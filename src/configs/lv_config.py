@@ -9,7 +9,7 @@ lv_config.py - LVGL driver configuration for PyDevices
 from board_config import display_drv, broker
 from pydevices import Events
 from pydevices.devices import DeviceTypes
-import lvgl as lv # type: ignore
+import lvgl as lv
 import gc
 
 def main(warn=True):
@@ -23,13 +23,13 @@ def main(warn=True):
 
     try:
         # lv_micropython provides 'lv_utils'
-        import lv_utils # type: ignore
+        import lv_utils
 
         if not lv_utils.event_loop.is_running():
             _eventloop = lv_utils.event_loop()
     except ImportError:
         # lvgl_micropython provides 'task_handler'
-        import task_handler # type: ignore
+        import task_handler
 
         _task_handler = task_handler.TaskHandler()
 

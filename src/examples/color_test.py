@@ -24,7 +24,7 @@ gradient.  Then repeatedly draws a borders around the display in the same colors
 from time import sleep
 import tft_config
 import tft_text
-import vga2_bold_16x32 as font # type: ignore
+import vga2_bold_16x32 as font
 
 
 palette = tft_config.palette

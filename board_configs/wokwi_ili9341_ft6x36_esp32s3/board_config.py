@@ -1,9 +1,9 @@
 """ Wokwi ESP32S3 and ILI9341 Touchscreen Display """
 
-from spibus import SPIBus  # type: ignore
-from ili9341 import ILI9341  # type: ignore
-from machine import Pin, I2C  # type: ignore
-from ft6x36 import FT6x36  # type: ignore
+from spibus import SPIBus 
+from ili9341 import ILI9341 
+from machine import Pin, I2C 
+from ft6x36 import FT6x36 
 from pydevices.devices import DeviceTypes, Broker
 
 

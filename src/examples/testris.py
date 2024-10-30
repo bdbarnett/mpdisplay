@@ -3,19 +3,19 @@ Testris game implemented in MicroPython by Brad Barnett.
 """
 
 # For the display & optional touch drivers
-from board_config import display_drv, broker # type: ignore
-from pydevices.touch_keypad import Keypad # type: ignore
-from pydevices.keys import Keys # type: ignore
+from board_config import display_drv, broker
+from pydevices.touch_keypad import Keypad
+from pydevices.keys import Keys
 from random import choice  # For random piece selection
 from json import load, dump  # For saving the high score
 from sys import exit  # For exiting the game
-from framebuf import FrameBuffer, RGB565  # type: ignore # For drawing text boxes
+from framebuf import FrameBuffer, RGB565  # For drawing text boxes
 from micropython import const  # For constant values
 
 try:
     from time import ticks_ms, ticks_diff  # For timing
 except ImportError:
-    from adafruit_ticks import ticks_ms, ticks_diff # type: ignore
+    from adafruit_ticks import ticks_ms, ticks_diff
 
 if display_drv.width > display_drv.height:
     display_drv.rotation += 90

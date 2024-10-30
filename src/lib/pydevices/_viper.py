@@ -1,8 +1,8 @@
-import micropython  # type: ignore
+import micropython 
 
 
 @micropython.viper
-def swap_bytes(buf: ptr8, buf_size_px: int):  # type: ignore # noqa: F821
+def swap_bytes(buf: ptr8, buf_size_px: int):  # noqa: F821
     """
     Swap the bytes in a buffer of RGB565 data.
 

@@ -23,10 +23,10 @@ you need to use the returned Areas so your code will be transferable.
 import pygraphics
 
 try:
-    from ulab import numpy as np  # type: ignore
+    from ulab import numpy as np 
 except ImportError:
     try:
-        import numpy as np  # type: ignore
+        import numpy as np 
     except ImportError:
         np = None
 

@@ -6,7 +6,7 @@ PyDevices i80bus
 """
 
 from array import array
-from uctypes import addressof  # type: ignore
+from uctypes import addressof 
 import struct
 import micropython
 from micropython import const
@@ -20,7 +20,7 @@ except ImportError:
 try:
     from .gpio_pin import GPIO_Pin as Pin
 except ImportError:
-    from machine import Pin  # type: ignore
+    from machine import Pin 
 
 if 0:
     ptr8 = ptr16 = ptr32 = None  # For type hints
@@ -250,7 +250,7 @@ class I80Bus(_I80BaseBus):
         )  # Save a memoryview into pin_data for use in viper
 
     @micropython.viper
-    def _write_lut(self, data: ptr8, length: int):  # type: ignore
+    def _write_lut(self, data: ptr8, length: int): 
         # Cache these values to avoid accessing the self namespace every iteration
         wr_not_reg = ptr32(self._wr_not_reg)
         wr_not_mask = int(self._wr_not_mask)
@@ -329,7 +329,7 @@ class I80Bus(_I80BaseBus):
         self._pin_data = memoryview(pin_data)
 
     @micropython.viper
-    def _write_seq8(self, data: ptr8, length: int):  # type: ignore
+    def _write_seq8(self, data: ptr8, length: int): 
         # Cache these values to avoid accessing the self namespace every iteration
         wr_not_reg = ptr32(self._wr_not_reg)
         wr_not_mask = int(self._wr_not_mask)
@@ -360,5 +360,5 @@ class I80Bus(_I80BaseBus):
             wr_reg[0] = wr_mask  # WR Active
 
     @micropython.viper
-    def _write_seq16(self, data: ptr16, length: int):  # type: ignore
+    def _write_seq16(self, data: ptr16, length: int): 
         raise NotImplementedError("16 pin sequential mode not implemented")

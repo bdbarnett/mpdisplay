@@ -3,7 +3,7 @@
 PyDevices spibus
 """
 
-from machine import Pin, SPI  # type: ignore
+from machine import Pin, SPI 
 import struct
 import micropython
 from micropython import const

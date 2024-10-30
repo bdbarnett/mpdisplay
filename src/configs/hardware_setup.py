@@ -49,5 +49,5 @@ class Poller:
 tpad = Poller(broker.poll)
 broker.subscribe(tpad.callback, event_types=[Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP])
 
-from gui.core.tgui import Display  # type: ignore # noqa: E402
+from gui.core.tgui import Display  # noqa: E402
 display = Display(ssd, tpad)
