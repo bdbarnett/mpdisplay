@@ -32,7 +32,7 @@ if implementation.name == "micropython":
 
         viper = True
     except Exception as e:
-        print(f"PyDevices:  {e}")
+        print(f"Skipping viper:  {e}")
 
 if not viper:
     if np:
