@@ -8,7 +8,7 @@ lv_config.py - LVGL driver configuration for PyDevices
 
 from board_config import display_drv, broker
 from pydevices import Events
-from pydevices.devices import Devices
+from pydevices.devices import DeviceTypes
 import lvgl as lv # type: ignore
 import gc
 
@@ -77,18 +77,18 @@ class DisplayDriver:
         #     indev.set_group(new_group)
         #     indev.set_display(new_display)
         for device in devices:
-            if device.type in (Devices.TOUCH, Devices.ENCODER, Devices.KEYPAD):
+            if device.type in (DeviceTypes.TOUCH, DeviceTypes.ENCODER, DeviceTypes.KEYPAD):
                 indev = lv.indev_create()
                 indev.set_display(self.lv_display)
                 indev.set_group(lv.group_get_default())
                 device.user_data = indev
-                if device.type == Devices.TOUCH:
+                if device.type == DeviceTypes.TOUCH:
                     device.set_read_cb(self._touch_cb)  # Called by device
                     indev.set_type(lv.INDEV_TYPE.POINTER)
-                elif device.type == Devices.ENCODER:
+                elif device.type == DeviceTypes.ENCODER:
                     device.set_read_cb(self._encoder_cb)  # Called by device
                     indev.set_type(lv.INDEV_TYPE.ENCODER)
-                elif device.type == Devices.KEYPAD:
+                elif device.type == DeviceTypes.KEYPAD:
                     device.set_read_cb(self._keypad_cb)  # Called by device
                     indev.set_type(lv.INDEV_TYPE.KEYPAD)
                 indev.set_read_cb(device.read_cb)  # Called by lv task handler

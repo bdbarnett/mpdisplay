@@ -7,7 +7,7 @@ from fourwire import FourWire
 from ili9341 import ILI9341
 import board
 from adafruit_focaltouch import Adafruit_FocalTouch
-from pydevices.devices import Devices, Broker
+from pydevices.devices import DeviceTypes, Broker
 
 
 display_bus = FourWire(
@@ -52,7 +52,7 @@ touch_rotation_table=(6, 3, 0, 5)
 broker = Broker()
 
 touch_dev = broker.create_device(
-    type=Devices.TOUCH,
+    type=DeviceTypes.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

@@ -27,7 +27,6 @@ class FBDisplay(DisplayDriver):
     """
 
     def __init__(self, buffer, width=None, height=None, reverse_bytes_in_word=False):
-        super().__init__()
         self._raw_buffer = buffer
         self._buffer = memoryview(buffer)
         self._width = width if width else buffer.width
@@ -37,7 +36,7 @@ class FBDisplay(DisplayDriver):
         self._rotation = 0
         self.color_depth = 16
 
-        self.init()
+        super().__init__()
 
     ############### Required API Methods ################
 

@@ -20,7 +20,7 @@ except ImportError:
 
 if _ps:
     from psdisplay import PSDisplay, PSDevices
-    from pydevices.devices import Devices, Broker # type: ignore
+    from pydevices.devices import DeviceTypes, Broker # type: ignore
 
 
     display_drv = PSDisplay("display_canvas", width, height)
@@ -30,23 +30,20 @@ if _ps:
     touch_drv = PSDevices("display_canvas")
 
     touch_dev = broker.create_device(
-        type=Devices.TOUCH,
+        type=DeviceTypes.TOUCH,
         read=touch_drv.get_mouse_pos,
         data=display_drv,
     )
 elif _jn:
     from jndisplay import JNDisplay
-    from pydevices.devices import Devices, Broker # type: ignore
-    from pydevices.timer import get_timer
+    from pydevices.devices import DeviceTypes, Broker # type: ignore
 
     broker = Broker()
     
     display_drv = JNDisplay(width, height)
-    tim = get_timer(display_drv.show)
 else:
     from dtdisplay import DTDisplay, poll # type: ignore
-    from pydevices.devices import Devices, Broker # type: ignore
-    from pydevices.timer import get_timer
+    from pydevices.devices import DeviceTypes, Broker # type: ignore
     import sys
 
     display_drv = DTDisplay(
@@ -61,11 +58,10 @@ else:
     broker = Broker()
 
     events_dev = broker.create_device(
-        type=Devices.QUEUE,
+        type=DeviceTypes.QUEUE,
         read=poll,
         data=display_drv,
         # data2=Events.filter,
     )
-    tim = get_timer(display_drv.show)
 
 display_drv.fill(0xACED)  # Something other than white or black to show display is working

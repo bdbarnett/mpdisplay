@@ -4,7 +4,7 @@ from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-from pydevices.devices import Devices, Broker
+from pydevices.devices import DeviceTypes, Broker
 
 
 display_bus = SPIBus(
@@ -46,7 +46,7 @@ touch_rotation_table=(0, 5, 6, 3)
 broker = Broker()
 
 touch_dev = broker.create_device(
-    type=Devices.TOUCH,
+    type=DeviceTypes.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

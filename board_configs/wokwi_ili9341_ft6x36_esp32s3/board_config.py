@@ -4,7 +4,7 @@ from spibus import SPIBus  # type: ignore
 from ili9341 import ILI9341  # type: ignore
 from machine import Pin, I2C  # type: ignore
 from ft6x36 import FT6x36  # type: ignore
-from pydevices.devices import Devices, Broker
+from pydevices.devices import DeviceTypes, Broker
 
 
 display_bus = SPIBus(
@@ -46,7 +46,7 @@ touch_rotation_table=(6, 3, 0, 5)
 broker = Broker()
 
 touch_dev = broker.create_device(
-    type=Devices.TOUCH,
+    type=DeviceTypes.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

@@ -4,7 +4,7 @@ from i80bus import I80Bus
 from st7789 import ST7789
 from machine import SPI, Pin  # See the note about reset below
 from xpt2046 import Touch
-from pydevices.devices import Devices, Broker
+from pydevices.devices import DeviceTypes, Broker
 
 
 display_bus = I80Bus(
@@ -58,7 +58,7 @@ touch_rotation_table=None
 broker = Broker()
 
 touch_dev = broker.create_device(
-    type=Devices.TOUCH,
+    type=DeviceTypes.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

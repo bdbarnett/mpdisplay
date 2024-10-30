@@ -94,7 +94,6 @@ class PSDisplay(DisplayDriver):
     """
 
     def __init__(self, id, width=None, height=None):
-        super().__init__()
         self._canvas = document.getElementById(id)
         self._ctx = self._canvas.getContext("2d")
         self._width = width or self._canvas.width
@@ -105,7 +104,7 @@ class PSDisplay(DisplayDriver):
         self.color_depth = 16
         self._draw = self._ctx
 
-        self.init()
+        super().__init__()
 
     ############### Required API Methods ################
 

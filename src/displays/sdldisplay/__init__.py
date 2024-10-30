@@ -176,7 +176,6 @@ class SDLDisplay(DisplayDriver):
         x=SDL_WINDOWPOS_CENTERED,
         y=SDL_WINDOWPOS_CENTERED,
     ):
-        super().__init__()
         self._width = width
         self._height = height
         self._rotation = rotation
@@ -222,7 +221,7 @@ class SDLDisplay(DisplayDriver):
             raise RuntimeError(f"{SDL_GetError()}")
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
-        self.init()
+        super().__init__(auto_refresh=True)
 
     ############### Required API Methods ################
 

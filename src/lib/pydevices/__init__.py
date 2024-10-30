@@ -8,8 +8,8 @@ PyDevices basedisplay
 
 import gc
 from sys import implementation
-from ._area import Area
-from ._events import Events  # noqa: F401
+from micropython import const
+from collections import namedtuple
 
 try:
     from typing import Optional
@@ -106,14 +106,262 @@ def color_rgb(color):
     return (r, g, b)
 
 
+class Area:
+    """
+    Represents a rectangular area defined by its position and dimensions.
+    """
+
+    def __init__(self, x, y, w, h):
+        """
+        Initializes a new instance of the Area class.
+
+        Args:
+            x (int | float): The x-coordinate of the top-left corner of the area.
+            y (int | float): The y-coordinate of the top-left corner of the area.
+            w (int | float): The width of the area.
+            h (int | float): The height of the area.
+        """
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+    def contains(self, x, y=None):
+        """
+        Checks if the specified point is contained within the area.
+
+        Args:
+            x (int | tuple): The x-coordinate of the point to check
+                or a tuple containing the x and y coordinates of the point.
+            y (int): The y-coordinate of the point to check.
+
+        Returns:
+            bool: True if the point is contained within the area, False otherwise.
+        """
+        if isinstance(x, tuple):
+            x, y = x
+        return self.x <= x < self.x + self.w and self.y <= y < self.y + self.h
+
+    def contains_area(self, other):
+        """
+        Checks if the specified area is contained within the area.
+
+        Args:
+            other (Area): The other area to check.
+
+        Returns:
+            bool: True if the other area is contained within the area, False otherwise.
+        """
+        return (
+            self.x <= other.x
+            and self.y <= other.y
+            and self.x + self.w >= other.x + other.w
+            and self.y + self.h >= other.y + other.h
+        )
+
+    def intersects(self, other):
+        """
+        Checks if the current Area object intersects with another Area object.
+
+        Args:
+            other (Area): The other Area object to check for overlap.
+
+        Returns:
+            bool: True if the two Area objects intersect, False otherwise.
+        """
+        if self.x + self.w <= other.x or other.x + other.w <= self.x:
+            return False
+        if self.y + self.h <= other.y or other.y + other.h <= self.y:
+            return False
+        return True
+    
+    def touches_or_intersects(self, other):
+        """
+        Checks if the current Area object touches or intersects with another Area object.
+
+        Args:
+            other (Area): The other Area object to check for overlap or touch.
+
+        Returns:
+            bool: True if the two Area objects touch or intersect, False otherwise.
+        """
+        if self.x + self.w < other.x or other.x + other.w < self.x:
+            return False
+        if self.y + self.h < other.y or other.y + other.h < self.y:
+            return False
+        return True
+
+    def shift(self, dx=0, dy=0):
+        """
+        Returns a new Area shifted by the specified amount in the x and y directions.
+
+        Args:
+            dx (int | float): The amount to shift the area in the x direction.
+            dy (int | float): The amount to shift the area in the y direction.
+
+        Returns:
+            Area: A new Area object shift by the specified amount in the x and y directions.
+        """
+        return Area(self.x + dx, self.y + dy, self.w, self.h)
+
+    def clip(self, other):
+        """
+        Clips the current Area object to the specified Area object.
+
+        Args:
+            other (Area): The other Area object to clip to.
+
+        Returns:
+            Area: A new Area object representing the clipped area.
+        """
+        x = max(self.x, other.x)
+        y = max(self.y, other.y)
+        w = min(self.x + self.w, other.x + other.w) - x
+        h = min(self.y + self.h, other.y + other.h) - y
+        return Area(x, y, w, h)
+    
+    def offset(self, d1, d2=None, d3=None, d4=None):
+        """
+        Returns a new Area offset by the specified amount(s).
+
+        If only one argument is provided, it is used as the offset in all 4 directions.
+        If two arguments are provided, the first is used as the offset in the x direction and the second as the offset in the y direction.
+        If three arguments are provided, they are used as the offsets in the left, top/bottom, and right directions, respectively.
+        If four arguments are provided, they are used as the offsets in the left, top, right, and bottom directions, respectively.
+
+        Args:
+            d1 (int | float): The offset in the x direction or the offset in all 4 directions.
+            d2 (int | float): The offset in the y direction or the offset in the top/bottom direction.
+            d3 (int | float): The offset in the right direction.
+            d4 (int | float): The offset in the bottom direction.
+
+        Returns:
+            Area: A new Area object offset by the specified amount(s).
+        """
+        if d2 is None:
+            d2 = d3 = d4 = d1
+        elif d3 is None:
+            d3 = d1
+            d4 = d2
+        elif d4 is None:
+            d4 = d2
+        return Area(self.x - d1, self.y - d2, self.w + d1 + d3, self.h + d2 + d4)
+    
+    def inset(self, d1, d2=None, d3=None, d4=None):
+        """
+        Returns a new Area inset by the specified amount(s).
+
+        If only one argument is provided, it is used as the inset in all 4 directions.
+        If two arguments are provided, the first is used as the inset in the x direction and the second as the inset in the y direction.
+        If three arguments are provided, they are used as the insets in the left, top/bottom, and right directions, respectively.
+        If four arguments are provided, they are used as the insets in the left, top, right, and bottom directions, respectively.
+
+        Args:
+            d1 (int | float): The inset in the x direction or the inset in all 4 directions.
+            d2 (int | float): The inset in the y direction or the inset in the top/bottom direction.
+            d3 (int | float): The inset in the right direction.
+            d4 (int | float): The inset in the bottom direction.
+
+        Returns:
+            Area: A new Area object inset by the specified amount(s).
+        """
+        if d2 is None:
+            d2 = d3 = d4 = d1
+        elif d3 is None:
+            d3 = d1
+            d4 = d2
+        elif d4 is None:
+            d4 = d2
+        return Area(self.x + d1, self.y + d2, self.w - d1 - d3, self.h - d2 - d4)
+
+    def __eq__(self, other):
+        """
+        Checks if the current Area object is equal to another Area object.
+
+        Args:
+            other (Area): The other Area object to compare with.
+
+        Returns:
+            bool: True if the two Area objects are equal, False otherwise.
+        """
+        return (
+            self.x == other.x
+            and self.y == other.y
+            and self.w == other.w
+            and self.h == other.h
+        )
+
+    def __ne__(self, other):
+        """
+        Checks if the current Area object is not equal to another Area object.
+
+        Args:
+            other (Area): The other Area object to compare with.
+
+        Returns:
+            bool: True if the two Area objects are not equal, False otherwise.
+        """
+        return not self.__eq__(other)
+
+    def __add__(self, other):
+        """
+        Computes the union of the current Area object and another Area object.
+
+        Args:
+            other (Area): The other Area object to compute the union with.
+
+        Returns:
+            Area: A new Area object representing the union of the two areas.
+        """
+        return Area(
+            min(self.x, other.x),
+            min(self.y, other.y),
+            max(self.x + self.w, other.x + other.w) - min(self.x, other.x),
+            max(self.y + self.h, other.y + other.h) - min(self.y, other.y),
+        )
+
+    def __iter__(self):
+        """
+        Returns an iterator over the elements of the Area object.
+
+        Returns:
+            iterator: An iterator over the elements of the Area object.
+        """
+        return iter((self.x, self.y, self.w, self.h))
+
+    def __repr__(self):
+        """
+        Returns a string representation of the Area object.
+
+        Returns:
+            str: A string representation of the Area object.
+        """
+        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
+
+    def __str__(self):
+        """
+        Returns a string representation of the Area object.
+
+        Returns:
+            str: A string representation of the Area object.
+        """
+        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
+
+
 class DisplayDriver:
-    def __init__(self):
+    def __init__(self, auto_refresh=False):
         gc.collect()
         self._vssa = False  # False means no vertical scroll
         self._requires_byte_swap = False
         self._auto_byte_swap_enabled = self._requires_byte_swap
         self._touch_device = None
         print(f"{self.__class__.__name__} initialized.")
+        if auto_refresh:
+            from .timer import get_timer
+            self._timer = get_timer(self.show)
+        else:
+            self._timer = None
+        self.init()
         gc.collect()
 
     def __del__(self):
@@ -551,3 +799,99 @@ class DisplayDriver:
         Show the display.  Base class method does nothing.  May be overridden by subclasses.
         """
         return
+
+
+class Events:
+    """
+    A container for event types and classes.  Similar to a C enum and struct.
+    """
+    # Event types (from SDL2 / PyGame, not complete)
+    QUIT = const(0x100)  # User clicked the window close button
+    KEYDOWN = const(0x300)  # Key pressed
+    KEYUP = const(0x301)  # Key released
+    MOUSEMOTION = const(0x400)  # Mouse moved
+    MOUSEBUTTONDOWN = const(0x401)  # Mouse button pressed
+    MOUSEBUTTONUP = const(0x402)  # Mouse button released
+    MOUSEWHEEL = const(0x403)  # Mouse wheel motion
+    JOYAXISMOTION = const(0x600)  # Joystick axis motion
+    JOYBALLMOTION = const(0x601)  # Joystick trackball motion
+    JOYHATMOTION = const(0x602)  # Joystick hat position change
+    JOYBUTTONDOWN = const(0x603)  # Joystick button pressed
+    JOYBUTTONUP = const(0x604)  # Joystick button released
+    _USER_TYPE_BASE = 0x8000
+
+    filter = [
+        QUIT,
+        KEYDOWN,
+        KEYUP,
+        MOUSEMOTION,
+        MOUSEBUTTONDOWN,
+        MOUSEBUTTONUP,
+        MOUSEWHEEL,
+    ]
+
+    # Event classes from PyGame
+    Unknown = namedtuple("Common", "type")
+    Motion = namedtuple("Motion", "type pos rel buttons touch window")
+    Button = namedtuple("Button", "type pos button touch window")
+    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
+    Key = namedtuple("Key", "type name key mod scancode window")
+    Quit = namedtuple("Quit", "type")
+    Any = namedtuple("Any", "type")
+
+    @staticmethod
+    def new(types: list[str | tuple[str, int]] = [], classes: dict[str, str] = {}):
+        """
+        Create new event types and classes for the Events class.
+
+        For example, to create the events and device class for the keypad device:
+        ```
+        from pydevices import Events
+        from pydevices.devices import DeviceTypes
+
+        types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
+        classes = {
+            "Key": "type name key mod scancode window",
+        }
+        Events.new_types(types, classes)
+
+        # Optionally update the filter
+        Events.filter += [Events.KEYDOWN, Events.KEYUP]
+        ```
+
+        Args:
+            types (list[str | tuple[str, int]]): List of event types or tuples of event type and value.
+                If a value is not provided, the next available value will be used.
+            classes (dict[str, str]): Dictionary of event classes and fields.
+        """
+        for type_name in types:
+            if isinstance(type_name, tuple):
+                type_name, value = type_name
+            else:
+                value = None
+            type_name = type_name.upper()
+            if hasattr(Events, type_name):
+                raise ValueError(
+                    f"Event type {type_name} already exists in Events class."
+                )
+            else:
+                setattr(Events, type_name, value if value else Events._USER_TYPE_BASE)
+                if not value:
+                    Events._USER_TYPE_BASE += 1
+
+        for event_class_name, event_class_fields in classes.items():
+            event_class_name = (
+                event_class_name[0].upper() + event_class_name[1:].lower()
+            )
+            if hasattr(Events, event_class_name):
+                raise ValueError(
+                    f"Event class {event_class_name} already exists in Events class."
+                )
+            else:
+                event_class_fields = event_class_fields.lower()
+                setattr(
+                    Events,
+                    event_class_name,
+                    namedtuple(event_class_name, event_class_fields),
+                )
+

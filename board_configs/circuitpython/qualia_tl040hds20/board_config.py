@@ -9,7 +9,7 @@ import board
 
 from fbdisplay import FBDisplay
 import adafruit_focaltouch
-from pydevices.devices import Devices, Broker
+from pydevices.devices import DeviceTypes, Broker
 
 
 # This first part is particular to CircuitPython-based framebuffer-based displays
@@ -64,7 +64,7 @@ touch_rotation_table=(0, 0, 0, 0)
 broker = Broker()
 
 touch_dev = broker.create_device(
-    type=Devices.TOUCH,
+    type=DeviceTypes.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

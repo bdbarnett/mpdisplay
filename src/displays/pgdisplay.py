@@ -55,7 +55,6 @@ class PGDisplay(DisplayDriver):
         scale=1.0,
         window_flags=pg.SHOWN,
     ):
-        super().__init__()
         self._width = width
         self._height = height
         self._rotation = rotation
@@ -81,7 +80,7 @@ class PGDisplay(DisplayDriver):
         )
         self._buffer.fill((0, 0, 0))
 
-        self.init()
+        super().__init__(auto_refresh=True)
 
     ############### Required API Methods ################
 

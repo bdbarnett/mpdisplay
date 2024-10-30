@@ -26,7 +26,6 @@ class JNDisplay(DisplayDriver):
     _next_display_id = 0
 
     def __init__(self, width, height):
-        super().__init__()
         self._display_id = f"JNDisplay_{JNDisplay._next_display_id}"
         JNDisplay._next_display_id += 1
         self._width = width
@@ -38,7 +37,7 @@ class JNDisplay(DisplayDriver):
         self._buffer = Image.new("RGB", (self.width, self.height))
         self._draw = ImageDraw.Draw(self._buffer)
 
-        self.init()
+        super().__init__(auto_refresh=True)
 
     ############### Required API Methods ################
 
