@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices palettes
+PyPalettes
 """
 
 # The 16 colors of the standard Windows 16-color palette
@@ -141,25 +141,25 @@ class Palette:
             r, g, b = color
         return (r, g, b)
 
-        def color_name(self, index):
-            return self.rgb_name(self._get_rgb(self._normalize(index)))
+    def color_name(self, index):
+        return self.rgb_name(self._get_rgb(self._normalize(index)))
 
-        def rgb_name(self, r, g=None, b=None):
-            if isinstance(r, (tuple, list)):
-                r, g, b = r
-            return self._names.get(r << 16 | g << 8 | b, f"#{r:02X}{g:02X}{b:02X}")
+    def rgb_name(self, r, g=None, b=None):
+        if isinstance(r, (tuple, list)):
+            r, g, b = r
+        return self._names.get(r << 16 | g << 8 | b, f"#{r:02X}{g:02X}{b:02X}")
 
-        def luminance(self, index):
-            r, g, b = self._get_rgb(index)
-            return 0.299 * r + 0.587 * g + 0.114 * b
+    def luminance(self, index):
+        r, g, b = self._get_rgb(index)
+        return 0.299 * r + 0.587 * g + 0.114 * b
 
-        def brightness(self, index):
-            r, g, b = self._get_rgb(index)
-            return (r + g + b) / 3 / 255
+    def brightness(self, index):
+        r, g, b = self._get_rgb(index)
+        return (r + g + b) / 3 / 255
 
-        def _get_rgb(self, index):
-            color = list(self._names.keys())[index]
-            return color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF
+    def _get_rgb(self, index):
+        color = list(self._names.keys())[index]
+        return color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF
 
 
 class MappedPalette(Palette):
@@ -175,59 +175,3 @@ class MappedPalette(Palette):
     def _get_rgb(self, index):
         r, g, b = self._color_map[index * 3 : index * 3 + 3]
         return r, g, b
-
-
-class Theme:
-    """
-    A class to represent a Material Design 2 color theme.
-    """
-    _names = [
-        "background",
-        "on_background",
-        "surface",
-        "on_surface",
-        "primary",
-        "on_primary",
-        "secondary",
-        "on_secondary",
-        "error",
-        "on_error",
-        "primary_variant",
-        "secondary_variant",
-        "tertiary",
-        "on_tertiary",
-        "tertiary_variant",
-        "transparent",
-    ]
-
-    def __init__(self, **args):
-        for arg in args:
-            if arg not in self._names:
-                raise ValueError(f"Invalid theme color: {arg}")
-        for name in self._names:
-            setattr(self, name, args.get(name, 0))
-
-    def __getitem__(self, index):
-        if type(index) is int:
-            return getattr(self, self._names[index])
-        return getattr(self, index)
-
-    def __setitem__(self, index, value):
-        if type(index) is int:
-            setattr(self, self._names[index], value)
-        setattr(self, index, value)
-
-    def __iter__(self):
-        for i in range(len(self._names)):
-            yield self[i]
-
-    def __len__(self):
-        return len(self._names)
-
-    def __repr__(self):
-        theme = ', '.join([f'{name}={getattr(self, name)}' for name in self._names])
-        return f"Theme({theme})"
-
-    def __str__(self):
-        theme = ', '.join([f'{name}={getattr(self, name)}' for name in self._names])
-        return f"Theme({theme})"

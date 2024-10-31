@@ -2,7 +2,7 @@
 feathers.py
 ===========
 Modified by Brad Barnett from Russ Hughes's original to scroll vertically instead of horizontally
-and to use palettes.wheel.WheelPalette for deeper colors from HSV instead of RGB.
+and to use pypalettes.wheel.WheelPalette for deeper colors from HSV instead of RGB.
 
 .. figure:: ../_static/feathers.jpg
     :align: center
@@ -26,7 +26,7 @@ import math
 import time
 
 import tft_config
-from pygraphics.palettes.wheel import WheelPalette
+from pypalettes.wheel import WheelPalette
 
 
 

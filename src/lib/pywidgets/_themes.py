@@ -1,8 +1,11 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+"""
+Themes used by the PyWidgets library.  The IconTheme class is used to manage icons and the ColorTheme class is used to manage colors.
+"""
 from ._constants import ICON_SIZE
-from pygraphics.palettes import get_palette  # noqa: F401
+from pypalettes import get_palette  # noqa: F401
 try:
     from os import sep  # PyScript doesn't have os.sep
 except ImportError:
@@ -59,6 +62,12 @@ icon_theme = IconTheme(sep.join(__file__.split(sep)[0:-1]) + sep + "icons" + sep
 
 
 class ColorTheme:
+    """
+    A class to manage color themes.  The color theme is based on the Material Design color palette.
+
+    Args:
+        pal (Palette): A palette object from the pygraphics library.
+    """
     def __init__(self, pal):
         self.background = pal.white[0]
         self.on_background = pal.black[0]

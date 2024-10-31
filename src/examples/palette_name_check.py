@@ -1,7 +1,7 @@
 """
 Checks if all the colors in a palette are present in larger palettes.
 """
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 
 cube8 = get_palette("cube", size=2)
 cube27 = get_palette("cube", size=3)

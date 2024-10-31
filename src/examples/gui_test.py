@@ -4,7 +4,7 @@ print("It is a work in progress and is not complete.")
 print("Please do not report errors or request changes.")
 
 ############## file:  __init__.py
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 
 colors = get_palette()
 

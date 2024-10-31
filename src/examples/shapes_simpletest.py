@@ -4,7 +4,7 @@ Simple test example to demonstrate the use of pygraphics.
 
 from board_config import display_drv
 from array import array  # for defining a polygon
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 import pygraphics
 
 

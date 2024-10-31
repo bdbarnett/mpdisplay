@@ -9,7 +9,7 @@ from board_config import display_drv
 from pygraphics.binfont import BinFont
 import random
 from pydevices.displaybuf import DisplayBuffer
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 import os
 
 display = DisplayBuffer(display_drv)

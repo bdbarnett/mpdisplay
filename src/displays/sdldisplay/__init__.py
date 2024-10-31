@@ -345,10 +345,13 @@ class SDLDisplay(DisplayDriver):
 
     def vscsad(self, vssa: Optional[int] = None) -> int:
         """
-        Set the vertical scroll start address.
+        Set or get the vertical scroll start address.
 
-        :param vssa: The vertical scroll start address.
-        :type vssa: int
+        Args:
+            vssa (int): The vertical scroll start address. Defaults to None.
+
+        Returns:
+            int: The vertical scroll start address.
         """
         if vssa is not None:
             super().vscsad(vssa)
@@ -360,8 +363,8 @@ class SDLDisplay(DisplayDriver):
         Creates a new texture to use as the buffer and copies the old one,
         applying rotation with SDL_RenderCopyEx.  Destroys the old buffer.
 
-        :param value: The rotation of the display.
-        :type value: int
+        Args:
+            value (int): The new rotation value.
         """
 
         if (angle := (value % 360) - (self._rotation % 360)) != 0:

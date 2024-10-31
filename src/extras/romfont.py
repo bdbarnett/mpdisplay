@@ -12,12 +12,11 @@ class ROMFont:
         256 characters.  Each character is 8 pixels wide and any number of pixels high.
 
         Args:
-            font_file: The path to the raw binary font file.
+            font_file (str): The path to the raw binary font file.
 
         Usage:
             font = ROMFont("fontfile.bin")
             font.text(canvas, "Hello", 0, 0, 1)
-
         """
         with open(font_file, "rb") as f:
             raw = f.read()
@@ -31,12 +30,14 @@ class ROMFont:
 
         Args:
             canvas (FrameBuffer): The canvas to draw on.
-            c: The character to draw.
-            x: The x coordinate.
-            y: The y coordinate.
-            key: The transparency key to use for the text.
-            pal: The color to draw the text in.
+            c (str): The character to draw.
+            x (int): The x coordinate.
+            y (int): The y coordinate.
+            key (int): The color key.
+            pal (FrameBuffer): The palette to use.
 
+        Returns:
+            Area: The area of the canvas that was drawn on.
         """
         # create a memoryview of the character in the font
         offset = ord(c) * self.char_height
@@ -50,12 +51,16 @@ class ROMFont:
 
         Does not break on line going off canvas.
 
-        :param canvas: The canvas to draw on.
-        :param s: The text to draw.
-        :param x: The x coordinate.
-        :param y: The y coordinate.
-        :param fg: The color to draw the text in.
-        :param bg: The color to draw the background in.
+        Args:
+            canvas (Canvas): The DisplayDriver, FrameBuffer, or other canvas-like object to draw on.
+            s (str): The text to draw.
+            x (int): The x coordinate.
+            y (int): The y coordinate.
+            fg (int): The foreground color.
+            bg (int): The background color.
+
+        Returns:
+            Area: The area of the canvas that was drawn on.
         """
         pal = FrameBuffer(memoryview(bytearray(4)), 2, 1, RGB565)
         if bg is None:

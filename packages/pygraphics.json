@@ -27,46 +27,6 @@
     [
       "pygraphics/framebuf_plus.py",
       "github:bdbarnett/mpdisplay/src/lib/pygraphics/framebuf_plus.py"
-    ],
-    [
-      "pygraphics/palettes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/__init__.py"
-    ],
-    [
-      "pygraphics/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube125.py"
-    ],
-    [
-      "pygraphics/palettes/_cube27.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube27.py"
-    ],
-    [
-      "pygraphics/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube64.py"
-    ],
-    [
-      "pygraphics/palettes/_cube8.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube8.py"
-    ],
-    [
-      "pygraphics/palettes/_material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_material_design.py"
-    ],
-    [
-      "pygraphics/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/cube.py"
-    ],
-    [
-      "pygraphics/palettes/material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/material_design.py"
-    ],
-    [
-      "pygraphics/palettes/shades.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/shades.py"
-    ],
-    [
-      "pygraphics/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/wheel.py"
     ]
   ],
   "deps": [],

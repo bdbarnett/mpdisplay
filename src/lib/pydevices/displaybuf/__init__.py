@@ -46,18 +46,14 @@ else:
 
 gc.collect()
 
-def color565(r, g=0, b=0):
+def color565(r, g=None, b=None):
     """
     Convert RGB values to a 16-bit color value.
 
-    :param r: The red value.
-    :type r: int
-    :param g: The green value.
-    :type g: int
-    :param b: The blue value.
-    :type b: int
-    :return: The 16-bit color value.
-    :rtype: int
+    Args:
+        r (int, tuple, list): Red component (0-255) or a tuple or list of RGB values
+        g (int): Green component (0-255)
+        b (int): Blue component (0-255)
     """
     if isinstance(r, (tuple, list)):
         r, g, b = r[:3]
@@ -266,12 +262,18 @@ class DisplayBuffer(framebuf.FrameBuffer):
         This is a convenience function for using this framework WITHOUT Nano-GUI or Micro-GUI.
         Those packages have their own methods of registering colors.
 
-        :param r: Red component (0-255)
-        :param g: Green component (0-255)
-        :param b: Blue component (0-255)
-        :param idx: Optional index to register the color in the display's LUT (0-15);
-                    ignored if the display doesn't use a LUT in its current format
-        :return: RGB565 color value in RG565 format;
+        Args:
+            r (int): Red component (0-255)
+            g (int): Green component (0-255)
+            b (int): Blue component (0-255)
+            idx (int): Optional index to register the color in the display's LUT (0-15);
+                ignored if the display doesn't use a LUT in its current format
+
+        Raises:
+            ValueError: If 16 colors have already been registered or if the index is out of range
+
+        Returns:
+            int: RGB565 color value in RG565 format;
                  RGB332 color value in GS8 format;
                  the index of the registered color in the LUT in GS4_HMSB format
         """

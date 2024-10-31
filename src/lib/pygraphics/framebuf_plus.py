@@ -1,24 +1,23 @@
-# SPDX-FileCopyrightText: <text> 2018 Kattni Rembor, Melissa LeBlanc-Williams
-# and Tony DiCola, for Adafruit Industries.
-# Copyright 2024 Brad Barnett
-# Original file created by Damien P. George
+# SPDX-FileCopyrightText: 2024 Brad Barnett
+#
 # SPDX-License-Identifier: MIT
-
 """
-PyDevices pygraphics.framebuf_plus
+PyGraphics.framebuf_plus
 
 A subclass of FrameBuffer that adds some useful methods for drawing shapes and text.
 Each method returns a bounding box (x, y, w, h) of the drawn shape to indicate
 the area of the display that was modified.  This can be used to update only the
-modified area of the display.
-"""
+modified area of the display.  Exposes attributes not exposed in the base class, such
+as color_depth, width, height, buffer, and format.  Also adds a save method to save
+the framebuffer to a file, and a from_file method to load a framebuffer from a file.
 
-# Inherits from frambuf.Framebuffer, which may be compiled into MicroPython
-# or may be from framebuf.py.  This module should return an Area object, but
-# the MicroPython framebuf module returns None, so the methods inherited from
-# framebuf.FrameBuffer are overridden to return an Area object.
-# The methods inherited from ExtendedShapes are not overridden, as they already
-# return an Area object.
+Inherits from frambuf.Framebuffer, which may be compiled into MicroPython
+or may be from framebuf.py.  Methods should return an Area object, but
+the MicroPython framebuf module returns None, so the methods inherited from
+framebuf.FrameBuffer are overridden to return an Area object.
+The methods inherited from ExtendedShapes are not overridden, as they already
+return an Area object.
+"""
 try:  # Try to import framebuf from MicroPython
     from framebuf import (
         MONO_VLSB,
@@ -67,6 +66,22 @@ class ExtendedShapes:
 
 
 class FrameBuffer(_FrameBuffer, ExtendedShapes):
+    """
+    A subclass of framebuf.FrameBuffer that adds some useful methods for drawing shapes and text.
+
+    Args:
+        buffer (bytearray): Framebuffer buffer
+        width (int): Width in pixels
+        height (int): Height in pixels
+        format (int): Framebuffer format
+
+    Attributes:
+        buffer (bytearray): Framebuffer buffer
+        width (int): Width in pixels
+        height (int): Height in pixels
+        format (int): Framebuffer format
+        color_depth (int): Color depth
+    """
     def __init__(self, buffer, width, height, format, *args, **kwargs):
         super().__init__(buffer, width, height, format, *args, **kwargs)
         self._width = width
@@ -119,7 +134,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             y (int): y coordinate
             w (int): Width in pixels
             h (int): Height in pixels
-            c (int): 565 encoded color
+            c (int): color
+
+        Returns:
+            Area: Bounding box of the filled rectangle
         """
         super().fill_rect(x, y, w, h, c)
         return Area(x, y, w, h)
@@ -131,7 +149,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
         Args:
             x (int): x coordinate
             y (int): y coordinate
-            c (int): 565 encoded color (default: None)
+            c (int): color (default: None)
+
+        Returns:
+            Area: Bounding box of the pixel
         """
         if c is None:
             return super().pixel(x, y)
@@ -140,10 +161,13 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
 
     def fill(self, c):
         """
-        Fill the entire display with the given color.
+        Fill the buffer with the given color.
 
         Args:
-            c (int): 565 encoded color
+            c (int): color
+
+        Returns:
+            Area: Bounding box of the filled buffer
         """
         super().fill(c)
         return Area(0, 0, self.width, self.height)
@@ -157,9 +181,12 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             y (int): Center y coordinate
             rx (int): X radius
             ry (int): Y radius
-            c (int): 565 encoded color
+            c (int): color
             f (bool): Fill the ellipse (default: False)
             m (int): Bitmask to determine which quadrants to draw (default: 0b1111)
+
+        Returns:
+            Area: Bounding box of the ellipse
         """
         super().ellipse(x, y, rx, ry, c, f, m)
         return Area(x - rx, y - ry, 2 * rx, 2 * ry)
@@ -172,7 +199,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             x (int): x coordinate
             y (int): y coordinate
             w (int): Width in pixels
-            c (int): 565 encoded color
+            c (int): color
+
+        Returns:
+            Area: Bounding box of the horizontal line
         """
         super().hline(x, y, w, c)
         return Area(x, y, w, 1)
@@ -186,7 +216,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             y1 (int): Start y coordinate
             x2 (int): End x coordinate
             y2 (int): End y coordinate
-            c (int): 565 encoded color
+            c (int): color
+
+        Returns:
+            Area: Bounding box of the line
         """
         super().line(x1, y1, x2, y2, c)
         return Area(min(x1, x2), min(y1, y2), abs(x2 - x1) + 1, abs(y2 - y1) + 1)
@@ -199,8 +232,11 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             x (int): x coordinate
             y (int): y coordinate
             coords (array): Array of x, y coordinate tuples
-            c (int): 565 encoded color
+            c (int): color
             f (bool): Fill the polygon (default: False)
+
+        Returns:
+            Area: Bounding box of the polygon
         """
         super().poly(x, y, coords, c, f)
         # Calculate the bounding box of the polygon
@@ -230,8 +266,11 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             y (int): Top left corner y coordinate
             w (int): Width in pixels
             h (int): Height in pixels
-            c (int): 565 encoded color
+            c (int): color
             f (bool): Fill the rectangle (default: False)
+
+        Returns:
+            Area: Bounding box of the rectangle
         """
         super().rect(x, y, w, h, c, f)
         return Area(x, y, w, h)
@@ -244,7 +283,10 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             x (int): x coordinate
             y (int): y coordinate
             h (int): Height in pixels
-            c (int): 565 encoded color
+            c (int): color
+
+        Returns:
+            Area: Bounding box of the vertical line
         """
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
@@ -257,11 +299,14 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             s (str): Text to draw
             x (int): x coordinate
             y (int): y coordinate
-            c (int): 565 encoded color
+            c (int): color
             scale (int): Font scale (default: 1)
             inverted (bool): Invert the text (default: False)
             font_file (str): Font file (default: None)
             height (int): Font height in pixels (default: 8)
+
+        Returns:
+            Area: Bounding box of the text
         """
         return pygraphics.text(self, s, x, y, c, scale, inverted, font_file, height=height)
 
@@ -275,13 +320,20 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             y (int): y coordinate
             key (int): Color key (default: -1)
             palette (list): Palette (default: None)
+
+        Returns:
+            Area: Bounding box of the blitted buffer
         """
         super().blit(buf, x, y, key, palette)
         return
 
     def save(self, filename=None):
         """
-        Save the framebuffer to a file.  The file extension must match the format.
+        Save the framebuffer to a file.  The file extension must match the format, otherwise
+        the extension will be appended to the filename.
+
+        Saves 1-bit formats as PBM, 2-bit formats as PGM with max value 3, 4-bit formats as PGM with max value 15,
+        8-bit formats as PGM with max value 255, and 16-bit formats as BMP.
 
         Args:
             filename (str): Filename to save to
@@ -369,6 +421,9 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
 def pbm_to_framebuffer(filename):
     """
     Convert a PBM file to a MONO_HLSB FrameBuffer
+
+    Args:
+        filename (str): Filename of the PBM file
     """
     with open(filename, "rb") as f:
         if f.read(3) != b"P4\n":
@@ -385,6 +440,9 @@ def pbm_to_framebuffer(filename):
 def pgm_to_framebuffer(filename):
     """
     Convert a PGM file to a GS2_HMSB, GS4_HMSB or GS8 FrameBuffer
+
+    Args:
+        filename (str): Filename of the PGM file
     """
     with open(filename, "rb") as f:
         if f.read(3) != b"P5\n":
@@ -415,8 +473,11 @@ def pgm_to_framebuffer(filename):
 
 def bmp_to_framebuffer(filename):
     """
-    Convert a BMP file to a RGB565 FrameBuffer
+    Convert a BMP file to a RGB565 FrameBuffer.
     First ensures planes is 1, bits per pixel is 16, and compression is 0.
+
+    Args:
+        filename (str): Filename of the
     """
     with open(filename, "rb") as f:
         if f.read(2) != b"BM":

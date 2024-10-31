@@ -261,44 +261,40 @@
       "github:bdbarnett/mpdisplay/src/lib/pygraphics/framebuf_plus.py"
     ],
     [
-      "lib/pygraphics/palettes/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/__init__.py"
+      "lib/pypalettes/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/__init__.py"
     ],
     [
-      "lib/pygraphics/palettes/_cube125.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube125.py"
+      "lib/pypalettes/_cube125.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/_cube125.py"
     ],
     [
-      "lib/pygraphics/palettes/_cube27.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube27.py"
+      "lib/pypalettes/_cube27.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/_cube27.py"
     ],
     [
-      "lib/pygraphics/palettes/_cube64.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube64.py"
+      "lib/pypalettes/_cube64.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/_cube64.py"
     ],
     [
-      "lib/pygraphics/palettes/_cube8.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_cube8.py"
+      "lib/pypalettes/_cube8.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/_cube8.py"
     ],
     [
-      "lib/pygraphics/palettes/_material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/_material_design.py"
+      "lib/pypalettes/_material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/_material_design.py"
     ],
     [
-      "lib/pygraphics/palettes/cube.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/cube.py"
+      "lib/pypalettes/cube.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/cube.py"
     ],
     [
-      "lib/pygraphics/palettes/material_design.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/material_design.py"
+      "lib/pypalettes/material_design.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/material_design.py"
     ],
     [
-      "lib/pygraphics/palettes/shades.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/shades.py"
-    ],
-    [
-      "lib/pygraphics/palettes/wheel.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/palettes/wheel.py"
+      "lib/pypalettes/wheel.py",
+      "github:bdbarnett/mpdisplay/src/lib/pypalettes/wheel.py"
     ],
     [
       "lib/pywidgets/__init__.py",

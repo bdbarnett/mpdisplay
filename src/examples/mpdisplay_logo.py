@@ -1,5 +1,5 @@
 from board_config import display_drv
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 import pygraphics
 
 

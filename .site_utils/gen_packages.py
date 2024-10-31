@@ -22,6 +22,7 @@ packages = [
     ["extras", [], []],
     ["lib/pydevices", [], ["adafruit_ticks.py", "micropython.py", "path.py"]],
     ["lib/pygraphics", [], []],
+    ["lib/pypalettes", [], []],
     ["lib/pywidgets", [], []],
     ]
 
@@ -48,7 +49,6 @@ for package_path, deps, extra_files in packages:
         package_sub_dir = package_name + "/"
     # Add a dictionary for the package
     package_dicts[package_name] = {"urls": [], "deps": deps, "version": package_ver}
-    print(f"\n{package_path=}, {deps=}, {extra_files=}, {package_name=}, {full_path=}, {parent_path=}, {trim_path=}, {package_sub_dir=}")
 
     # Iterate over the extra files in the package
     for extra_file in sorted(extra_files):

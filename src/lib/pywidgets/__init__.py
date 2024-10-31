@@ -1,6 +1,36 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+"""
+PyWidgets provides a collection of widgets for creating graphical user interfaces on embedded systems.
+It includes base classes for widgets, as well as specific widgets such as buttons, labels, sliders, and more.
+
+Classes:
+    Task: A task that runs a callback function after a specified delay.
+    Widget: The base class for creating widgets.
+    Display: Manages the display and child widgets.
+    Screen: A container for widgets.
+    Button: A widget that displays an icon and/or text.
+    Label: A widget that displays text.
+    TextBox: A widget that displays formatted text.
+    Icon: A widget that displays an icon.
+    IconButton: A button widget that displays an icon.
+    Toggle: A button widget that toggles between two states.
+    ToggleButton: A toggle button widget.
+    CheckBox: A checkbox widget.
+    RadioGroup: Manages a group of radio buttons.
+    RadioButton: A radio button widget.
+    ProgressBar: A widget that displays a progress bar.
+    Slider: A widget that displays a slider with a circular knob.
+    ScrollBar: A widget that displays a scroll bar with two arrow buttons and a slider.
+    DigitalClock: A widget that displays the current time.
+    ListView: A widget that displays a list of items.
+
+Functions:
+    tick: Calls the tick method of all Display objects.
+    init_timer: Initializes the timer to call the tick function at regular intervals.
+"""
+
 from pygraphics.framebuf_plus import FrameBuffer, RGB565
 from pydevices import Events, Area
 from sys import exit
@@ -18,15 +48,24 @@ DEBUG = False
 MARK_UPDATES = False
 
 
-def log(*args, **kwargs):
+def _log(*args, **kwargs):
     if DEBUG:
         print(*args, **kwargs)
 
 def tick(_=None):
+    """
+    Function to call the tick method of all Display objects.
+    """
     for display in Display.displays:
         display.tick()
 
 def init_timer(period=10):
+    """
+    Initialize the timer to call the tick function at regular intervals.
+    
+    Args:
+        period (int): The period in milliseconds to call the tick function.
+    """
     if Display.timer is None:
         from pydevices.timer import get_timer
         Display.timer = get_timer(tick, period)
@@ -58,6 +97,12 @@ class Task:
         self.next_run = ticks_add(ticks_ms(), delay)
 
     def run(self, t):
+        """
+        Run the callback function and set the next run time.
+
+        Args:
+            t (int): The current time in milliseconds.
+        """
         self.callback()
         self.next_run = ticks_add(t, self.delay)
 
@@ -139,7 +184,9 @@ class Widget:
         Handle an event and propagate it to child widgets.  Subclasses that need to handle events
         should override this method and call this method to propagate the event to children.
         
-        :param event: An event from the event system (e.g., mouse or keyboard event).
+        Args:
+            event (Event): The event to handle.
+            condition (callable): A function that returns True if the event should be handled by the child widget.
         """
         if condition is None:
             if event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP, Events.MOUSEMOTION):
@@ -299,7 +346,7 @@ class Widget:
 
     def add_child(self, child):
         """Adds a child widget to the current widget."""
-        log("Adding", child, "to", self)
+        _log("Adding", child, "to", self)
         self.children.append(child)
         child.invalidate()
 
@@ -377,7 +424,7 @@ class Widget:
 
     def render(self):
         if self.invalidated:
-            log("Drawing", self, "on", self.parent, "at", self.area)
+            _log("Drawing", self, "on", self.parent, "at", self.area)
             self.draw()
             self.invalidated = False
             if self.parent:
@@ -505,7 +552,7 @@ class Display(Widget):
 
     def refresh(self, area: Area):
         area = area.clip(self.area)
-        log("Refreshing", area)
+        _log("Refreshing", area)
         x, y, w, h = area
         for row in range(y, y + h):
             buffer_begin = (row * self.width + x) * 2
@@ -1038,7 +1085,8 @@ class RadioGroup:
         """
         Add a RadioButton to the group.
         
-        :param radio_button: The RadioButton to add to this group.
+        Args:
+            radio_button (RadioButton): The RadioButton to add to the group.
         """
         self.radio_buttons.append(radio_button)
 
@@ -1046,7 +1094,8 @@ class RadioGroup:
         """
         Ensure only the selected button is checked in the group.
         
-        :param selected_button: The RadioButton that should be checked.
+        Args:
+            selected_button (RadioButton): The RadioButton to check.
         """
         for radio_button in self.radio_buttons:
             radio_button.value = (radio_button == selected_button)

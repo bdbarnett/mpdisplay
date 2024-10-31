@@ -5,13 +5,13 @@
 Makes a color cube palette.
 
 Usage:
-    from pygraphics.palettes import get_palette
+    from pypalettes import get_palette
     palette = get_palette(name="cube", size=5, color_depth=16, swapped=False)
     # OR
     palette = get_palette(name="cube")
 
     # OR
-    from pygraphics.palettes.cube import CubePalette
+    from pypalettes.cube import CubePalette
     palette = CubePalette(size=5, color_depth=24)
 
     print(f"Palette: {palette.name}, Length: {len(palette)}")
@@ -24,7 +24,7 @@ from . import Palette as _Palette
 
 class CubePalette(_Palette):
     """
-    size specifies the number of values per color channel.
+    A color cube palette.  The size of the cube is determined by the size parameter.
     """
 
     def __init__(self, name="", color_depth=16, swapped=False, cached=True, size=5):

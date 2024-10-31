@@ -1,6 +1,9 @@
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
+"""
+Constants used by the PyWidgets library.
+"""
 from micropython import const
 
 

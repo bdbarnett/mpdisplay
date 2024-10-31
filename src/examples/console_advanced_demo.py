@@ -3,7 +3,7 @@ console_advanced_demo.py - Advanced demo of the mpconsole module
 """
 
 from board_config import display_drv
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 from console import Console
 from sys import implementation, platform
 from pygraphics.binfont import text16

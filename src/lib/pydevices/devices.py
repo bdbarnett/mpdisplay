@@ -397,7 +397,8 @@ class Broker(_Device):
         """
         Sets the function to call when the window close button is clicked.
 
-        :param value: The function to call.
+        Args:
+            value (function): The function to call when the window close button is clicked.
         """
         if not callable(value):
             raise ValueError("quit_func must be callable")

@@ -306,26 +306,27 @@ class GS8Format:
 
 
 class FrameBuffer(BasicShapes):
-    """FrameBuffer object.
+    """
+    FrameBuffer object.
 
-    :param buffer: An object with a buffer protocol which must be large enough to contain every
-                   pixel defined by the width, height and format of the FrameBuffer.
-    :param width: The width of the FrameBuffer in pixels
-    :param height: The height of the FrameBuffer in pixels
-    :param format: Specifies the type of pixel used in the FrameBuffer; permissible values
-                   are listed under Constants below. These set the number of bits used to
-                   encode a color value and the layout of these bits in ``buf``. Where a
-                   color value c is passed to a method, c is  a small integer with an encoding
-                   that is dependent on the format of the FrameBuffer.
-    :param stride: The number of pixels between each horizontal line of pixels in the
-                   FrameBuffer. This defaults to ``width`` but may need adjustments when
-                   implementing a FrameBuffer within another larger FrameBuffer or screen. The
-                   ``buffer`` size must accommodate an increased step size.
-
+    Args:
+        buffer (bytearray): The buffer to use for the frame buffer.
+        width (int): The width of the frame buffer in pixels.
+        height (int): The height of the frame buffer in pixels.
+        format (int): The format of the frame buffer. One of:
+            - ``MONO_VLSB``: Single bit displays (like SSD1306 OLED)
+            - ``MONO_HLSB``: Single bit files like PBM (Portable BitMap)
+            - ``MONO_HMSB``: Single bit displays where the bits in a byte are horizontally mapped
+                Each byte occupies 8 horizontal pixels with bit 0 being the leftmost.
+            - ``RGB565``: 16-bit color displays
+            - ``GS2_HMSB``: 2-bit color displays like the HT16K33 8x8 Matrix
+            - ``GS4_HMSB``: Unimplemented!
+            - ``GS8``: Unimplemented!
+        stride (int): The number of bytes between each horizontal line of the frame buffer
+            If not given, it is assumed to be equal to the width.
     """
 
     def __init__(self, buffer, width, height, format, stride=None):
-        # pylint: disable=too-many-arguments
         self._buffer = buffer
         self._width = width
         self._height = height
@@ -354,20 +355,50 @@ class FrameBuffer(BasicShapes):
 
     @property
     def width(self):
+        """
+        The width of the FrameBuffer in pixels.
+        """
         return self._width
 
     @property
     def height(self):
+        """
+        The height of the FrameBuffer in pixels.
+        """
         return self._height
 
     def fill_rect(self, x, y, w, h, c):
-        """Draw a filled rectangle at the given location, size and color."""
+        """
+        Draw a rectangle at the given location, size and color.
+
+        Args:
+            x (int): The x-coordinate of the top left corner of the rectangle.
+            y (int): The y-coordinate of the top left corner of the rectangle.
+            w (int): The width of the rectangle.
+            h (int): The height of the rectangle.
+            c (int): The color of the rectangle.
+
+        Returns:
+            tuple: A tuple containing the x, y, width, and height of the rectangle
+        """
         self._format.fill_rect(self, x, y, w, h, c)
         return (x, y, w, h)
 
     def pixel(self, x, y, c=None):
-        """If ``c`` is not given, get the color value of the specified pixel. If ``c`` is
-        given, set the specified pixel to the given color."""
+        """
+        Set or get the color of a given pixel.
+
+        Args:
+            x (int): The x-coordinate of the pixel.
+            y (int): The y-coordinate of the pixel.
+            c (int): The color of the pixel. If not given, the color of the pixel is returned.
+
+        Returns:
+            int, tuple or None:  If c is not given, the color of the pixel is returned.
+                If c is given and x and y are within the bounds of the FrameBuffer,
+                the x, y, width, and height of the pixel are returned.
+                If x and y are not within the bounds of the FrameBuffer, None is returned.
+        """
         if x < 0 or x >= self._width or y < 0 or y >= self._height:
             return None
         if c is None:
@@ -376,7 +407,15 @@ class FrameBuffer(BasicShapes):
         return (x, y, 1, 1)
 
     def fill(self, c):
-        """Fill the entire FrameBuffer with the specified color."""
+        """
+        Fill the entire FrameBuffer with the specified color.
+        
+        Args:
+            c (int): The color to fill the FrameBuffer with.
+
+        Returns:
+            tuple: A tuple containing the x, y, width, and height of the FrameBuffer.
+        """
         self._format.fill(self, c)
         return (0, 0, self._width, self._height)
 
@@ -384,6 +423,16 @@ class FrameBuffer(BasicShapes):
         """
         Shift the contents of the FrameBuffer by the given vector (xstep, ystep).
         This may leave a footprint of the previous colors in the FrameBuffer.
+
+        Args:
+            xstep (int): The number of pixels to shift the FrameBuffer in the x direction.
+            ystep (int): The number of pixels to shift the FrameBuffer in the y direction.
+
+        Raises:
+            ValueError: If the FrameBuffer format depth is not a multiple of 8
+
+        Returns:
+            None
         """
         # Check to make sure self._format.depth is a multiple of 8
         if self._format.depth % 8 != 0:
@@ -438,4 +487,7 @@ class FrameBuffer(BasicShapes):
 
 
 def FrameBuffer1(buffer, width, height, format, stride=None):
+    """
+    Create a new FrameBuffer object.  Here only for historical reasons.
+    """
     return FrameBuffer(buffer, width, height, format, stride)

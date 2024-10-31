@@ -2,17 +2,17 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices pygraphics
+PyGraphics
 ====================================================
 Graphics primitives for drawing on a canvas.
 
 Heavily modified from gfx.py at:
-https://github.com/adafruit/Adafruit_CircuitPython_GFX.git
+https://github.com/adafruit/Adafruit_CircuitPython_GFX
 * Author(s): Kattni Rembor, Tony DiCola, Jonah Yolles-Murphy, based on code by Phil Burgess
 
 Implementation Notes
 --------------------
-.pixel(), .fill_rect() and .blit_rect() will be called from the canvas object if the canvas
+.pixel(), .fill_rect(), .fill() and .blit_rect() will be called from the canvas object if the canvas
 object has these methods.
 
 .pixel() and .blit_rect() assume 16-bit color depth.
@@ -25,6 +25,21 @@ from .binfont import text, text8, text14, text16
 
 
 def arc(canvas, x, y, r, a0, a1, c):
+    """
+    Arc drawing function.  Will draw a single pixel wide arc with a radius r
+    centered at x, y from a0 to a1.
+    
+    Args:
+        x (int): X-coordinate of the arc's center.
+        y (int): Y-coordinate of the arc's center.
+        r (int): Radius of the arc.
+        a0 (float): Starting angle in degrees.
+        a1 (float): Ending angle in degrees.
+        c (int): color.
+
+    Returns:
+        Area: The bounding box of the arc.
+    """
     resolution = 60
     a0 = math.radians(a0)
     a1 = math.radians(a1)
@@ -51,6 +66,19 @@ def arc(canvas, x, y, r, a0, a1, c):
     return Area(x_min, y_min, x_max - x_min, y_max - y_min)
 
 def blit(canvas, source, x, y, key=-1, palette=None):
+    """
+    Blit a source to the canvas at the specified x, y location.
+
+    Args:
+        source (FrameBuffer): Source FrameBuffer object.
+        x (int): X-coordinate to blit to.
+        y (int): Y-coordinate to blit to.
+        key (int): Key value for transparency (default: -1).
+        palette (Palette): Palette object for color translation (default: None).
+
+    Returns:
+        Area: The bounding box of the blitted area.
+    """
     if (
         (-x >= source.width)
         or (-y >= source.height)
@@ -82,13 +110,18 @@ def blit(canvas, source, x, y, key=-1, palette=None):
 
 def blit_rect(canvas, buf, x, y, w, h):
     """
-    Blit a rectangular area from a buffer to the canvas.
-    :param buf: Buffer containing the data to blit
-    :param x: X coordinate of the top-left corner of the area
-    :param y: Y coordinate of the top-left corner of the area
-    :param w: Width of the area
-    :param h: Height of the area
-    :return: Area object representing the blitted area
+    Blit a rectangular area from a buffer to the canvas.  Uses the canvas's blit_rect method if available,
+    otherwise writes directly to the buffer.
+
+    Args:
+        buf (memoryview): Buffer to blit. Must already be byte-swapped if necessary.
+        x (int): X-coordinate to blit to.
+        y (int): Y-coordinate to blit to.
+        w (int): Width of the area to blit.
+        h (int): Height of the area to blit.
+
+    Returns:
+        Area: The bounding box of the blitted area.
     """
     if hasattr(canvas, "blit_rect"):
         return canvas.blit_rect(buf, x, y, w, h)
@@ -114,18 +147,16 @@ def blit_transparent(canvas, buf, x, y, w, h, key):
     """
     Blit a buffer with transparency.
 
-    :param buf: Buffer to blit.  Must already be byte-swapped if necessary.
-    :type buf: memoryview
-    :param x: X-coordinate to blit to
-    :type x: int
-    :param y: Y-coordinate to blit to
-    :type y: int
-    :param w: Width of the buffer
-    :type w: int
-    :param h: Height of the buffer
-    :type h: int
-    :param key: Key value for transparency
-    :type key: int
+    Args:
+        buf (memoryview): Buffer to blit.
+        x (int): X-coordinate to blit to.
+        y (int): Y-coordinate to blit to.
+        w (int): Width of the area to blit.
+        h (int): Height of the area to blit.
+        key (int): Key value for transparency.
+
+    Returns:
+        Area: The bounding box of the blitted area.
     """
     BPP = canvas.color_depth // 8
     key_bytes = key.to_bytes(BPP, "little")
@@ -160,8 +191,20 @@ def blit_transparent(canvas, buf, x, y, w, h, key):
     return Area(x, y, w, h)
 
 def circle(canvas, x0, y0, r, c, f=False):
-    """Circle drawing function.  Will draw a circle with
-    center at x0, y0 and the specified r."""
+    """
+    Circle drawing function.  Will draw a single pixel wide circle
+    centered at x0, y0 and the specified r.
+
+    Args:
+        x0 (int): Center x coordinate
+        y0 (int): Center y coordinate
+        r (int): Radius
+        c (int): Color
+        f (bool): Fill the circle (default: False)
+
+    Returns:
+        Area: The bounding box of the circle.
+    """
     if f:
         return _fill_circle_helper(canvas, x0, y0, r, c, 0, 0)
 
@@ -169,9 +212,11 @@ def circle(canvas, x0, y0, r, c, f=False):
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
 
 def _circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
-    """Circle helper function.  Will draw the 4 quadrants of a circle
-    centered at x0, y0 and the specified r separated by the specified
-    x_offset and y_offset."""
+    """
+    Circle helper function.  Draws the 4 quadrants of a circle with center at x0, y0 and the specified r
+    separated by the specified x_offset and y_offset.  Draws a circle if offsets are 0.  Draws the 4 corners of
+    a round_rect if an offset is greater than 0.
+    """
     f = 1 - r
     ddF_x = 1
     ddF_y = -2 * r
@@ -199,8 +244,11 @@ def _circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
         pixel(canvas, x0 - offset_x, y0 - offset_y, c)  # 180 to 135
 
 def _fill_circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
-    """Filled circle drawing function.  Will draw the 4 quadrants of a filled circle with
-    center at x0, y0 and the specified r separated by the specified x_offset and y_offset."""
+    """
+    Fill circle helper function.  Draws the 4 quadrants of a filled circle with center at x0, y0 and the
+    specified r separated by the specified x_offset and y_offset.  Fills a circle if offsets are 0.  Fills the
+    4 corners of a filled round_rect if an offset is greater than 0.
+    """
     # vline(canvas, x0, y0 - r, 2 * r + 1, c)
     f = 1 - r
     ddF_x = 1
@@ -249,6 +297,9 @@ def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
         m (int): Bitmask to determine which quadrants to draw (default: 0b1111)
         w (int): Width of the ellipse (default: None)
         h (int): Height of the ellipse (default: None)
+
+    Returns:
+        Area: The bounding box of the ellipse.
     """
     if r1 < 1 or r2 < 1:
         return
@@ -337,13 +388,38 @@ def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
     )
 
 def fill(canvas, c):
-    """Fill the entire canvas with a color."""
-    return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
+    """
+    Fill the entire canvas with a color.  Uses the canvas's fill method if available,
+    otherwise calls the fill_rect function.
+    
+    Args:
+        c (int): color.
+
+    Returns:
+        Area: The bounding box of the filled area.
+    """
+    if hasattr(canvas, "fill_rect"):
+        canvas.fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
+        return Area(0, 0, canvas.width, canvas.height)
+    else:
+        return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
 
 def fill_rect(canvas, x, y, w, h, c):
-    """Filled rectangle drawing function.  Will draw a filled
-    rectangle starting in the upper left x0, y0 position and w, h
-    pixels in size."""
+    """
+    Filled rectangle drawing function.  Draws a filled rectangle starting at
+    x, y and extending w, h pixels.  Uses the canvas's fill_rect method if available,
+    otherwise calls the pixel function for each pixel.
+    
+    Args:
+        x (int): X-coordinate of the top-left corner of the rectangle.
+        y (int): Y-coordinate of the top-left corner of the rectangle.
+        w (int): Width of the rectangle.
+        h (int): Height of the rectangle.
+        c (int): color
+
+    Returns:
+        Area: The bounding box of the filled area.
+    """
     if y < -h or y > canvas.height or x < -w or x > canvas.width:
         return
     if hasattr(canvas, "fill_rect"):
@@ -367,6 +443,9 @@ def gradient_rect(canvas, x, y, w, h, c1, c2=None, vertical=True):
         c2 (int): 565 encoded color for the bottom or right edge.  If None or the same as c1,
                     fill_rect will be called instead.
         vertical (bool): If True, the gradient will be vertical.  If False, the gradient will be horizontal.
+
+    Returns:
+        Area: The bounding box of the filled area.
     """
     if c2 is None or c1 == c2:
         return fill_rect(canvas, x, y, w, h, c1)
@@ -389,15 +468,38 @@ def gradient_rect(canvas, x, y, w, h, c1, c2=None, vertical=True):
     return Area(x, y, w, h)
 
 def hline(canvas, x0, y0, w, c):
-    """Horizontal line drawing function.  Will draw a single pixel wide line."""
+    """
+    Horizontal line drawing function.  Will draw a single pixel wide line.
+    
+    Args:
+        x0 (int): X-coordinate of the start of the line.
+        y0 (int): Y-coordinate of the start of the line.
+        w (int): Width of the line.
+        c (int): color.
+
+    Returns:
+        Area: The bounding box of the line.
+    """
     if y0 < 0 or y0 > canvas.height or x0 < -w or x0 > canvas.width:
         return
     fill_rect(canvas, x0, y0, w, 1, c)
     return Area(x0, y0, w, 1)
 
 def line(canvas, x0, y0, x1, y1, c):
-    """Line drawing function.  Will draw a single pixel wide line starting at
-    x0, y0 and ending at x1, y1."""
+    """
+    Line drawing function.  Will draw a single pixel wide line starting at
+    x0, y0 and ending at x1, y1.
+    
+    Args:
+        x0 (int): X-coordinate of the start of the line.
+        y0 (int): Y-coordinate of the start of the line.
+        x1 (int): X-coordinate of the end of the line.
+        y1 (int): Y-coordinate of the end of the line.
+        c (int): color.
+
+    Returns:
+        Area: The bounding box of the line.
+    """
     if x0 == x1:
         return vline(canvas, x0, y0, abs(y1 - y0) + 1, c)
     if y0 == y1:
@@ -431,7 +533,18 @@ def line(canvas, x0, y0, x1, y1, c):
     return Area(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0))
 
 def pixel(canvas, x, y, c):
-    """A function to pass through in input pixel functionality."""
+    """
+    Draw a single pixel at the specified x, y location.  Uses the canvas's pixel method if available,
+    otherwise writes directly to the buffer.
+    
+    Args:
+        x (int): X-coordinate of the pixel.
+        y (int): Y-coordinate of the pixel.
+        c (int): color.
+
+    Returns:
+        Area: The bounding box of the pixel.
+    """
     if hasattr(canvas, "pixel"):
         canvas.pixel(x, y, c)
     else:
@@ -450,6 +563,16 @@ def poly(canvas, x, y, coords, c, f=False):
     list or tuple of points, e.g. [(x0, y0), (x1, y1), ... (xn, yn)].
 
     The optional f parameter can be set to True to fill the polygon. Otherwise, just a one-pixel outline is drawn.
+
+    Args:
+        x (int): X-coordinate of the polygon's position.
+        y (int): Y-coordinate of the polygon's position.
+        coords (list): List of coordinates.
+        c (int): color.
+        f (bool): Fill the polygon (default: False).
+
+    Returns:
+        Area: The bounding box of the polygon.
     """
 
     # Convert the coords to a list of x, y tuples if it is not already
@@ -521,19 +644,22 @@ def poly(canvas, x, y, coords, c, f=False):
 
 def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
     """
-    Draw a polygon on the display.
+    Draw a polygon on the canvas.
 
     Args:
         points (list): List of points to draw.
         x (int): X-coordinate of the polygon's position.
         y (int): Y-coordinate of the polygon's position.
-        color (int): 565 encoded color.
+        color (int): color.
         angle (float): Rotation angle in radians (default: 0).
         center_x (int): X-coordinate of the rotation center (default: 0).
         center_y (int): Y-coordinate of the rotation center (default: 0).
 
     Raises:
         ValueError: If the polygon has less than 3 points.
+
+    Returns:
+        Area: The bounding box of the polygon.
     """
     # MIT License
     # Copyright (c) 2024 Brad Barnett
@@ -566,9 +692,21 @@ def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
     return Area(left, top, right - left, bottom - top)
 
 def rect(canvas, x0, y0, w, h, c, f=False):
-    """Rectangle drawing function.  Will draw a single pixel wide rectangle
-    starting in the upper left x0, y0 position and w, h pixels in
-    size."""
+    """
+    Rectangle drawing function.  Will draw a single pixel wide rectangle starting at
+    x0, y0 and extending w, h pixels.
+
+    Args:
+        x0 (int): X-coordinate of the top-left corner of the rectangle.
+        y0 (int): Y-coordinate of the top-left corner of the rectangle.
+        w (int): Width of the rectangle.
+        h (int): Height of the rectangle.
+        c (int): color.
+        f (bool): Fill the rectangle (default: False).
+
+    Returns:
+        Area: The bounding box of the rectangle.
+    """
     if f:
         return fill_rect(canvas, x0, y0, w, h, c)
     if y0 < -h or y0 > canvas.height or x0 < -w or x0 > canvas.width:
@@ -580,9 +718,21 @@ def rect(canvas, x0, y0, w, h, c, f=False):
     return Area(x0, y0, w, h)
 
 def round_rect(canvas, x0, y0, w, h, r, c, f=False):
-    """Rectangle with rounded corners drawing function.
-    This works like a regular rect though! if r = 0
-    Will draw the outline of a rectangle with rounded corners with (x0,y0) at the top left
+    """
+    Rounded rectangle drawing function.  Will draw a single pixel wide rounded rectangle starting at
+    x0, y0 and extending w, h pixels with the specified radius.
+
+    Args:
+        x0 (int): X-coordinate of the top-left corner of the rectangle.
+        y0 (int): Y-coordinate of the top-left corner of the rectangle.
+        w (int): Width of the rectangle.
+        h (int): Height of the rectangle.
+        r (int): Radius of the corners.
+        c (int): color.
+        f (bool): Fill the rectangle (default: False).
+
+    Returns:
+        Area: The bounding box of the rectangle.
     """
     # If the radius is 0, just draw a rectangle
     if r == 0:
@@ -603,8 +753,10 @@ def round_rect(canvas, x0, y0, w, h, r, c, f=False):
     return Area(x0, y0, w, h)
 
 def _fill_round_rect(canvas, x0, y0, w, h, r, c):
-    """Filled circle drawing function.  Will draw a filled circle with
-    center at x0, y0 and the specified r."""
+    """
+    Filled rounded rectangle drawing function.  Will draw a filled rounded rectangle starting at
+    x0, y0 and extending w, h pixels with the specified radius.
+    """
 
     # ensure that the r will only ever be half of the shortest side or less
     r = int(min(r, w / 2, h / 2))
@@ -614,8 +766,23 @@ def _fill_round_rect(canvas, x0, y0, w, h, r, c):
 
 def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     # pylint: disable=too-many-arguments
-    """Triangle drawing function.  Will draw a single pixel wide triangle
-    around the points (x0, y0), (x1, y1), and (x2, y2)."""
+    """
+    Triangle drawing function.  Draws a single pixel wide triangle with vertices at
+    (x0, y0), (x1, y1), and (x2, y2).
+
+    Args:
+        x0 (int): X-coordinate of the first vertex.
+        y0 (int): Y-coordinate of the first vertex.
+        x1 (int): X-coordinate of the second vertex.
+        y1 (int): Y-coordinate of the second vertex.
+        x2 (int): X-coordinate of the third vertex.
+        y2 (int): Y-coordinate of the third vertex.
+        c (int): color.
+        f (bool): Fill the triangle (default: False).
+
+    Returns:
+        Area: The bounding box of the triangle.    
+    """
     if f:
         return _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c)
     line(canvas, x0, y0, x1, y1, c)
@@ -628,9 +795,11 @@ def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     return Area(left, top, right - left, bottom - top)
 
 def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
-    # pylint: disable=too-many-arguments, too-many-locals, too-many-statements, too-many-branches
-    """Filled triangle drawing function.  Will draw a filled triangle around
-    the points (x0, y0), (x1, y1), and (x2, y2)."""
+    # pylint: disable=too-many-arguments
+    """
+    Filled triangle drawing function.  Will draw a filled triangle with vertices at
+    (x0, y0), (x1, y1), and (x2, y2).
+    """
     if y0 > y1:
         y0, y1 = y1, y0
         x0, x1 = x1, x0
@@ -702,7 +871,18 @@ def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
     return Area(left, top, right - left, bottom - top)
 
 def vline(canvas, x0, y0, h, c):
-    """Vertical line drawing function.  Will draw a single pixel wide line."""
+    """
+    Horizontal line drawing function.  Will draw a single pixel wide line.
+
+    Args:
+        x0 (int): X-coordinate of the start of the line.
+        y0 (int): Y-coordinate of the start of the line.
+        h (int): Height of the line.
+        c (int): color.
+
+    Returns:
+        Area: The bounding box of the line.
+    """
     if y0 < -h or y0 > canvas.height or x0 < 0 or x0 > canvas.width:
         return
     fill_rect(canvas, x0, y0, 1, h, c)
@@ -712,6 +892,17 @@ def vline(canvas, x0, y0, h, c):
 class Draw:
     """
     A Draw class to draw shapes onto a specified canvas.
+
+    Args:
+        canvas (Canvas): The canvas to draw on.
+
+    Usage:
+    ```
+    # canvas is an instance of DisplayDriver, FrameBuffer, or other canvas-like object
+    draw = Draw(canvas)
+    draw.fill(0x0000)
+    draw.rect(10, 10, 100, 100, 0xFFFF)
+    ```
     """
 
     def __init__(self, canvas):
@@ -724,8 +915,6 @@ class Draw:
         return blit(self.canvas, source, x, y, key, palette)
 
     def blit_rect(self, buf, x, y, w, h):
-        if hasattr(self.canvas, "blit_rect"):
-            return self.canvas.blit_rect(buf, x, y, w, h)
         return blit_rect(self.canvas, buf, x, y, w, h)
 
     def blit_tranparent(self, buf, x, y, w, h, key=None):

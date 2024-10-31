@@ -1,6 +1,5 @@
 import png
 from board_config import display_drv
-from pygraphics.palettes.shades import ShadesPalette
 from pydevices.displaybuf import DisplayBuffer
 from collections import namedtuple
 from time import sleep
@@ -17,12 +16,12 @@ def png_files(directory):
                 yield os.path.join(root, file)
 
 png_path = "/home/brad/gh2/material-design-icons/png/"
-bg_color = 0x000F
+fg_color = 0xFFFF
+bg_color = 0x001F
 
 canvas = DisplayBuffer(display_drv)
 canvas.fill(bg_color)
 canvas.show()
-pal = ShadesPalette(rgb=(255, 255, 255))
 
 while True:
     for file_name in png_files(png_path):
@@ -36,12 +35,10 @@ while True:
         buf = memoryview(bytearray(p.width * p.height * 2))
         for y, row in enumerate(p.pixels):
             for x in range(0, p.width):
-                if row[x*planes+offset] != 0:
-                    buf[(y*p.width + x)*2:(y*p.width + x)*2+2] = pal[row[x*planes+offset]].to_bytes(2, 'little')
-                    # canvas.pixel(pos_x + x, pos_y + y, pal[row[x*planes+offset]])
+                if row[x*planes+offset] > 127:
+                    buf[(y*p.width + x)*2:(y*p.width + x)*2+2] = fg_color.to_bytes(2, 'little')
                 else:
                     buf[(y*p.width + x)*2:(y*p.width + x)*2+2] = bg_color.to_bytes(2, 'little')
-                    # canvas.pixel(pos_x + x, pos_y + y, bg_color)
         canvas.blit_rect(buf, pos_x, pos_y, p.width, p.height)
         lines = os.path.relpath(file_name, png_path).rpartition("/")
         canvas.text16(lines[0] + "/", 0, 0, 0xFFFF)

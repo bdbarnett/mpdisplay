@@ -49,29 +49,27 @@ def color888(r, g, b):
     """
     Convert RGB values to a 24-bit color value.
 
-    :param r: The red value.
-    :type r: int
-    :param g: The green value.
-    :type g: int
-    :param b: The blue value.
-    :type b: int
-    :return: The 24-bit color value.
-    :rtype: int
+    Args:
+        r (int): The red value.
+        g (int): The green value.
+        b (int): The blue value.
+
+    Returns:
+        int: The 24-bit color value.
     """
     return (r << 16) | (g << 8) | b
 
-def color565(r, g=0, b=0):
+def color565(r, g=None, b=None):
     """
     Convert RGB values to a 16-bit color value.
 
-    :param r: The red value.
-    :type r: int
-    :param g: The green value.
-    :type g: int
-    :param b: The blue value.
-    :type b: int
-    :return: The 16-bit color value.
-    :rtype: int
+    Args:
+        r (int, tuple or list): The red value or a tuple or list of RGB values.
+        g (int): The green value.
+        b (int): The blue value.
+
+    Returns:
+        int: The 16-bit color value
     """
     if isinstance(r, (tuple, list)):
         r, g, b = r[:3]
@@ -713,8 +711,8 @@ class DisplayDriver:
         """
         Helper function to set the rotation of the display.
 
-        :param value: The rotation of the display.
-        :type value: int
+        Args:
+            value (int): The rotation of the display in degrees.
         """
         # override this method in subclasses to handle rotation
         pass

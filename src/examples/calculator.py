@@ -7,7 +7,7 @@ from pydevices.touch_keypad import Keypad
 from time import sleep
 from pygraphics.framebuf_plus import FrameBuffer, RGB565
 from pydevices.keys import Keys
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 import asyncio
 
 

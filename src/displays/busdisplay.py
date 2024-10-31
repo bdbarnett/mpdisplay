@@ -548,8 +548,8 @@ class BusDisplay(DisplayDriver):
         excluding any delay byte. The third through final bytes are the remaining command
         parameters. The next byte will begin a new command definition.
 
-        :param init_sequence: The initialization sequence to send to the display.
-        :type init_sequence: bytearray
+        Args:
+            init_sequence (bytes): The initialization sequence to send to the display.
         """
         DELAY = 0x80
 
@@ -584,8 +584,8 @@ class BusDisplay(DisplayDriver):
             - The second element is the register value (data)
             - The third element is the delay in milliseconds after the register is set
 
-        :param init_sequence: The initialization sequence to send to the display.
-        :type init_sequence: list
+        Args:
+            init_sequence (list): The initialization sequence to send to the display
         """
         for line in init_sequence:
             self.send(line[0], line[1])

@@ -6,13 +6,13 @@ This module contains the Material Design color palette as a class object.
 
 
 Usage:
-    from pygraphics.palettes import get_palette
+    from pypalettes import get_palette
     palette = get_palette(name="material_design", color_depth=16, swapped=False)
     # OR
     palette = get_palette("material_design")
 
     # OR
-    from pygraphics.palettes.material_design import MDPalette
+    from pypalettes.material_design import MDPalette
     palette = MDPalette(size=5, color_depth=24)
 
     # to access the primary variant of a color family by name:
@@ -59,7 +59,7 @@ from . import MappedPalette as _Palette
 from ._material_design import COLORS, FAMILIES, LENGTHS
 
 
-class Accents(_Palette):
+class _Accents(_Palette):
     """
     A class to represent the accent colors.
     """
@@ -74,7 +74,7 @@ class Accents(_Palette):
             setattr(self, accent, self[i])
 
 
-class Family(_Palette):
+class _Family(_Palette):
     """
     A class to represent the color variants.
     """
@@ -100,7 +100,7 @@ class Family(_Palette):
             for i, shade in enumerate(self._shades):
                 setattr(self, shade, self[i - 5])
         if len(self) > 10:
-            self.accents = Accents(
+            self.accents = _Accents(
                 self._name + "_accents",
                 self._color_depth,
                 self._swapped,
@@ -143,7 +143,7 @@ class MDPalette(_Palette):
             setattr(
                 self,
                 name,
-                Family(
+                _Family(
                     name,
                     self._color_depth,
                     self._swapped,

@@ -1,6 +1,6 @@
 from board_config import display_drv, broker
 from pygraphics import Draw
-from pygraphics.palettes import get_palette
+from pypalettes import get_palette
 from random import getrandbits
 from pydevices.displaybuf import DisplayBuffer
 
