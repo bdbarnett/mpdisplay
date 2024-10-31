@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices keys
+`pydevices.keys`
+====================================================
 """
 
 from micropython import const as _const

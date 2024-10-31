@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
+`pypalettes.material_design`
+====================================================
 This module contains the Material Design color palette as a class object.
 
 

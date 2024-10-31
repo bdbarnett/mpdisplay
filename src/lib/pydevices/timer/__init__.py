@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices timer
+`pydevices.timer`
+====================================================
 
 Cross-platform Timer class for *Python.
 

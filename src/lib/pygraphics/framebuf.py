@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`framebuf`
+`pygraphics.framebuf`
 ====================================================
 
 *Python framebuf module, based on the micropython framebuf module.
@@ -379,7 +379,7 @@ class FrameBuffer(BasicShapes):
             c (int): The color of the rectangle.
 
         Returns:
-            tuple: A tuple containing the x, y, width, and height of the rectangle
+            (tuple): A tuple containing the x, y, width, and height of the rectangle
         """
         self._format.fill_rect(self, x, y, w, h, c)
         return (x, y, w, h)
@@ -394,7 +394,7 @@ class FrameBuffer(BasicShapes):
             c (int): The color of the pixel. If not given, the color of the pixel is returned.
 
         Returns:
-            int, tuple or None:  If c is not given, the color of the pixel is returned.
+            (int, tuple or None):  If c is not given, the color of the pixel is returned.
                 If c is given and x and y are within the bounds of the FrameBuffer,
                 the x, y, width, and height of the pixel are returned.
                 If x and y are not within the bounds of the FrameBuffer, None is returned.
@@ -414,7 +414,7 @@ class FrameBuffer(BasicShapes):
             c (int): The color to fill the FrameBuffer with.
 
         Returns:
-            tuple: A tuple containing the x, y, width, and height of the FrameBuffer.
+            (tuple): A tuple containing the x, y, width, and height of the FrameBuffer.
         """
         self._format.fill(self, c)
         return (0, 0, self._width, self._height)
@@ -430,9 +430,6 @@ class FrameBuffer(BasicShapes):
 
         Raises:
             ValueError: If the FrameBuffer format depth is not a multiple of 8
-
-        Returns:
-            None
         """
         # Check to make sure self._format.depth is a multiple of 8
         if self._format.depth % 8 != 0:

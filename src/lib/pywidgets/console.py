@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
-console.py
+`pywidgets.console.py`
+====================================================
 
 Adapted from https://github.com/boochow/FBConsole
 

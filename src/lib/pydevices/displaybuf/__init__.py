@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices displaybuf
+`pydevices.displaybuf`
+====================================================
 
 FrameBuffer wrapper for using framebuf based GUIs with PyDevices.
 Works with MicroPython Nano-GUI, Micro-GUI and MicroPython-Touch from Peter Hinch,
@@ -22,55 +23,26 @@ Usage:
         from color_setup import ssd
         <your code here>
 """
-
 import gc
 import sys
-from pydevices import Area
+from pydevices import color565, color565_swapped, color332
 
 try:
-    from .. import framebuf_plus as framebuf
+    from pygraphics import framebuf_plus as framebuf
 except ImportError:
-    import framebuf
+    import framebuf # type: ignore
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
 else:
-
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
             ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented for MicroPython."
         )
-
     _bounce4 = _bounce8
 
 
 gc.collect()
-
-def color565(r, g=None, b=None):
-    """
-    Convert RGB values to a 16-bit color value.
-
-    Args:
-        r (int, tuple, list): Red component (0-255) or a tuple or list of RGB values
-        g (int): Green component (0-255)
-        b (int): Blue component (0-255)
-    """
-    if isinstance(r, (tuple, list)):
-        r, g, b = r[:3]
-    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
-
-def color565_swapped(r, g=0, b=0):
-    # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
-    # ggbbbbbb rrrrrggg
-    if isinstance(r, (tuple, list)):
-        r, g, b = r[:3]
-    color = color565(r, g, b)
-    return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
-
-def color332(r, g, b):
-    # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
-    # rrrgggbb
-    return (r & 0xE0) | ((g >> 3) & 0x1C) | (b >> 6)
 
 def alloc_buffer(size):
     return memoryview(bytearray(size))
@@ -88,13 +60,12 @@ class DisplayBuffer(framebuf.FrameBuffer):
         DisplayBuffer.GS8
         DisplayBuffer.GS4_HMSB
     """
-
     rgb = None  # Function to convert r, g, b to a color value; used by Nano-GUI and Micro-GUI.
     colors_registered = 0  # For .color().  Not used in Nano-GUI or Micro-GUI.
 
     RGB565 = framebuf.RGB565
-    GS8 = framebuf.GS8 if hasattr(framebuf, "GS8") else None
-    GS4_HMSB = framebuf.GS4_HMSB if hasattr(framebuf, "GS4_HMSB") else None
+    GS8 = framebuf.GS8
+    GS4_HMSB = framebuf.GS4_HMSB
 
     def __init__(self, display_drv, format=framebuf.RGB565, stride=8):
         gc.collect()
@@ -103,8 +74,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
         self.vscsad = display_drv.vscsad
         height = display_drv.height
         width = display_drv.width
-        self._color_depth = display_drv.color_depth
-        BPP = self._color_depth // 8
+        BPP = display_drv.color_depth // 8
         self.palette = BoolPalette(
             format
         )  # a 2-value color palette for rendering monochrome glyphs
@@ -119,7 +89,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             self.needs_swap = False
 
         # Set the DisplayBuffer.rgb function to the appropriate one for the format and byte swapping
-        if format == DisplayBuffer.GS8 and DisplayBuffer.GS8 is not None:
+        if format == DisplayBuffer.GS8:
             DisplayBuffer.rgb = color332
         else:
             if self.needs_swap:
@@ -131,27 +101,27 @@ class DisplayBuffer(framebuf.FrameBuffer):
         # allocate the buffer.  Also create the line buffer and lut if needed.
         gc.collect()
         if format == DisplayBuffer.RGB565:
-            self._buffer_depth = 16
-            self._buffer = bytearray(width * height * BPP)
+            self.color_depth = 16
+            self.buffer = bytearray(width * height * BPP)
             self.show = self._show16
-        elif format == DisplayBuffer.GS8 and DisplayBuffer.GS8 is not None:
-            self._buffer_depth = 8
+        elif format == DisplayBuffer.GS8:
+            self.color_depth = 8
             self._stride = stride
             self._bounce_buf = alloc_buffer(width * self._stride * BPP)
-            self._buffer = bytearray(width * height)
+            self.buffer = bytearray(width * height)
             self.show = self._show8
-        elif format == DisplayBuffer.GS4_HMSB and DisplayBuffer.GS4_HMSB is not None:
-            self._buffer_depth = 4
+        elif format == DisplayBuffer.GS4_HMSB:
+            self.color_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
             self._bounce_buf = alloc_buffer(width * self._stride * BPP)
-            self._buffer = bytearray(width * height // 2)
+            self.buffer = bytearray(width * height // 2)
             self.show = self._show4
         else:
             raise ValueError(f"Unsupported format: {format}")
 
-        super().__init__(self._buffer, width, height, format)
-        self._mvb = memoryview(self._buffer)
+        super().__init__(self.buffer, width, height, format)
+        self._mvb = memoryview(self.buffer)
         self.show()  # Clear the display
         gc.collect()
 
@@ -164,11 +134,6 @@ class DisplayBuffer(framebuf.FrameBuffer):
         if name in _display_drv_set_attrs:
             return setattr(self.display_drv, name, value)
         super().__setattr__(name, value)
-
-
-    @property
-    def buffer(self):
-        return self._buffer
 
     @property
     def color_palette(self):
@@ -183,6 +148,50 @@ class DisplayBuffer(framebuf.FrameBuffer):
             r, g, b = color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF
             self.color(r, g, b, index)
 
+    @staticmethod
+    def color(r, g, b, idx=None):
+        """
+        Get an RGB565 or RGB332 value for a color and optionally register it in the display's LUT.
+        This is a convenience function for using this framework WITHOUT Nano-GUI or Micro-GUI.
+        Those packages have their own methods of registering colors.
+
+        Args:
+            r (int): Red component (0-255)
+            g (int): Green component (0-255)
+            b (int): Blue component (0-255)
+            idx (int): Optional index to register the color in the display's LUT (0-15);
+                ignored if the display doesn't use a LUT in its current format
+
+        Raises:
+            ValueError: If 16 colors have already been registered or if the index is out of range
+
+        Returns:
+            (int): RGB565 color value in RG565 format;
+                 RGB332 color value in GS8 format;
+                 the index of the registered color in the LUT in GS4_HMSB format
+        """
+        c = DisplayBuffer.rgb(r, g, b)  # Convert the color to RGB565 or RGB332
+        if not hasattr(
+            DisplayBuffer, "lut"
+        ):  # If the ssd doesn't use a LUT in its current format
+            return c  # Return the color as-is
+        if idx is None:  # If no index was provided
+            if (
+                DisplayBuffer.colors_registered < 16
+            ):  # If there are fewer than 16 colors registered
+                idx = DisplayBuffer.colors_registered  # Set the index to the next index
+                DisplayBuffer.colors_registered += (
+                    1  # Increment the number of colors registered
+                )
+            else:  # If there are already 16 colors registered
+                raise ValueError("16 colors have already been registered")
+        if not 0 <= idx <= 15:  # If the index is out of range
+            raise ValueError("Color numbers must be 0..15")
+        offset = idx << 1  # Multiply by 2 (2 bytes per 16-bit color)
+        DisplayBuffer.lut[offset] = c & 0xFF  # Set the lower 8 bits of the color
+        DisplayBuffer.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
+        return idx  # Return the index of the registered color
+
     def _show16(self, area=None):
         if area is not None:
             x, y, w, h = area
@@ -190,10 +199,10 @@ class DisplayBuffer(framebuf.FrameBuffer):
                 buffer_begin = (row * self.width + x) * 2
                 buffer_end = buffer_begin + w * 2
                 self.display_drv.blit_rect(
-                    self._buffer[buffer_begin:buffer_end], x, row, w, 1
+                    self.buffer[buffer_begin:buffer_end], x, row, w, 1
                 )
         else:
-            self.display_drv.blit_rect(self._buffer, 0, 0, self.width, self.height)
+            self.display_drv.blit_rect(self.buffer, 0, 0, self.width, self.height)
 
     def _show8(self, area=None):
         # Note:  area is ignored for now in _show8
@@ -236,68 +245,6 @@ class DisplayBuffer(framebuf.FrameBuffer):
             start = chunks * stride
             _bounce4(bb, buf[start:], remainder * wd // 2, clut)
             self.display_drv.blit_rect(bb, 0, chunks * lines, wd, remainder)
-
-    def blit_rect(self, buf, x, y, w, h):
-        if self.needs_swap:
-            # swap_bytes(buf, w * h)
-            pass
-
-        BPP = self._color_depth // 8
-        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
-            raise ValueError("The provided x, y, w, h values are out of range")
-        if len(buf) != w * h * BPP:
-            raise ValueError("The source buffer is not the correct size")
-        for row in range(h):
-            source_begin = row * w * BPP
-            source_end = source_begin + w * BPP
-            dest_begin = ((y + row) * self.width + x) * BPP
-            dest_end = dest_begin + w * BPP
-            self._mvb[dest_begin:dest_end] = buf[source_begin:source_end]
-        return Area(x, y, w, h)
-
-    @staticmethod
-    def color(r, g, b, idx=None):
-        """
-        Get an RGB565 or RGB332 value for a color and optionally register it in the display's LUT.
-        This is a convenience function for using this framework WITHOUT Nano-GUI or Micro-GUI.
-        Those packages have their own methods of registering colors.
-
-        Args:
-            r (int): Red component (0-255)
-            g (int): Green component (0-255)
-            b (int): Blue component (0-255)
-            idx (int): Optional index to register the color in the display's LUT (0-15);
-                ignored if the display doesn't use a LUT in its current format
-
-        Raises:
-            ValueError: If 16 colors have already been registered or if the index is out of range
-
-        Returns:
-            int: RGB565 color value in RG565 format;
-                 RGB332 color value in GS8 format;
-                 the index of the registered color in the LUT in GS4_HMSB format
-        """
-        c = DisplayBuffer.rgb(r, g, b)  # Convert the color to RGB565 or RGB332
-        if not hasattr(
-            DisplayBuffer, "lut"
-        ):  # If the ssd doesn't use a LUT in its current format
-            return c  # Return the color as-is
-        if idx is None:  # If no index was provided
-            if (
-                DisplayBuffer.colors_registered < 16
-            ):  # If there are fewer than 16 colors registered
-                idx = DisplayBuffer.colors_registered  # Set the index to the next index
-                DisplayBuffer.colors_registered += (
-                    1  # Increment the number of colors registered
-                )
-            else:  # If there are already 16 colors registered
-                raise ValueError("16 colors have already been registered")
-        if not 0 <= idx <= 15:  # If the index is out of range
-            raise ValueError("Color numbers must be 0..15")
-        offset = idx << 1  # Multiply by 2 (2 bytes per 16-bit color)
-        DisplayBuffer.lut[offset] = c & 0xFF  # Set the lower 8 bits of the color
-        DisplayBuffer.lut[offset + 1] = c >> 8  # Set the upper 8 bits of the color
-        return idx  # Return the index of the registered color
 
 
 class BoolPalette(framebuf.FrameBuffer):

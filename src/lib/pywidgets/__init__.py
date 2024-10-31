@@ -2,7 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyWidgets provides a collection of widgets for creating graphical user interfaces on embedded systems.
+`pywidgets`
+====================================================
+Provides a collection of widgets for creating graphical user interfaces on embedded systems.
 It includes base classes for widgets, as well as specific widgets such as buttons, labels, sliders, and more.
 
 Classes:

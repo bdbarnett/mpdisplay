@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyGraphics.binfont
+`pygraphics.binfont`
+====================================================
 
 A module to draw text to a canvas using fonts from
 https://github.com/spacerace/romfont
@@ -235,7 +236,7 @@ class BinFont:
             inverted (bool): If True, draw the character inverted.  Default is False.
 
         Returns:
-            Area: The area that was drawn to.
+            (Area): The area that was drawn to.
         """
         scale = max(scale, 1)
         # Don't draw the character if it will be clipped off the visible area.
@@ -282,7 +283,7 @@ class BinFont:
             inverted (bool): If True, draw the text inverted.  Default is False.
 
         Returns:
-            Area: The area that was drawn to.
+            (Area): The area that was drawn to.
         """
         if inverted:
             string = "".join(reversed(string))

@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
+`pypalettes.cube`
+====================================================
 Makes a color cube palette.
 
 Usage:

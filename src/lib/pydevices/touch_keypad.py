@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyDevices touch_keypad
+`pydevices.touch_keypad`
+====================================================
 
 Matrix keypad helper for touch displays on PyDevices
 

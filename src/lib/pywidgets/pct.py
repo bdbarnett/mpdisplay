@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
+`pywidgets.pct`
+====================================================
 Classes that dynamically calculate the percentage of the width and height of a Widget
 """
 
@@ -18,7 +20,7 @@ class Height:
         AttributeError: If the widget has no attribute 'area'
 
     Returns:
-        int: The calculated percentage of the height of the widget
+        (int): The calculated percentage of the height of the widget
 
     Usage:
         import pywidgets as pw
@@ -86,7 +88,7 @@ class Width:
         AttributeError: If the widget has no attribute 'area'
 
     Returns:
-        int: The calculated percentage of the width of the widget
+        (int): The calculated percentage of the width of the widget
 
     Usage:
         import pywidgets as pw

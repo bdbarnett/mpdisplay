@@ -1,11 +1,12 @@
-site_name: PyDevices Graphics
+site_name: PyDevices
 repo_url: https://github.com/bdbarnett/mpdisplay/
 copyright: "Copyright 2024, Brad Barnett"
 docs_dir: docs
 site_dir: site
 
 theme:
-  name: "material"
+#  name: "material"
+  name: "readthedocs"
   palette:
     scheme: slate
     primary: indigo

@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyGraphics.framebuf_plus
+`pygraphics.framebuf_plus`
+====================================================
 
 A subclass of FrameBuffer that adds some useful methods for drawing shapes and text.
 Each method returns a bounding box (x, y, w, h) of the drawn shape to indicate
@@ -46,10 +47,7 @@ import struct
 
 
 class ExtendedShapes:
-    """
-    All the methods from pygraphics except for
-    those implemented in framebuf.FrameBuffer.
-    """
+    # All the methods from pygraphics except for those implemented in framebuf.FrameBuffer.
 
     arc = pygraphics.arc
     blit_rect = pygraphics.blit_rect
@@ -65,7 +63,7 @@ class ExtendedShapes:
     text16 = pygraphics.text16
 
 
-class FrameBuffer(_FrameBuffer, ExtendedShapes):
+class FrameBuffer(_FrameBuffer):
     """
     A subclass of framebuf.FrameBuffer that adds some useful methods for drawing shapes and text.
 
@@ -137,7 +135,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             c (int): color
 
         Returns:
-            Area: Bounding box of the filled rectangle
+            (Area): Bounding box of the filled rectangle
         """
         super().fill_rect(x, y, w, h, c)
         return Area(x, y, w, h)
@@ -152,7 +150,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             c (int): color (default: None)
 
         Returns:
-            Area: Bounding box of the pixel
+            (Area): Bounding box of the pixel
         """
         if c is None:
             return super().pixel(x, y)
@@ -167,7 +165,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             c (int): color
 
         Returns:
-            Area: Bounding box of the filled buffer
+            (Area): Bounding box of the filled buffer
         """
         super().fill(c)
         return Area(0, 0, self.width, self.height)
@@ -186,7 +184,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             m (int): Bitmask to determine which quadrants to draw (default: 0b1111)
 
         Returns:
-            Area: Bounding box of the ellipse
+            (Area): Bounding box of the ellipse
         """
         super().ellipse(x, y, rx, ry, c, f, m)
         return Area(x - rx, y - ry, 2 * rx, 2 * ry)
@@ -202,7 +200,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             c (int): color
 
         Returns:
-            Area: Bounding box of the horizontal line
+            (Area): Bounding box of the horizontal line
         """
         super().hline(x, y, w, c)
         return Area(x, y, w, 1)
@@ -219,7 +217,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             c (int): color
 
         Returns:
-            Area: Bounding box of the line
+            (Area): Bounding box of the line
         """
         super().line(x1, y1, x2, y2, c)
         return Area(min(x1, x2), min(y1, y2), abs(x2 - x1) + 1, abs(y2 - y1) + 1)
@@ -236,7 +234,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             f (bool): Fill the polygon (default: False)
 
         Returns:
-            Area: Bounding box of the polygon
+            (Area): Bounding box of the polygon
         """
         super().poly(x, y, coords, c, f)
         # Calculate the bounding box of the polygon
@@ -270,7 +268,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             f (bool): Fill the rectangle (default: False)
 
         Returns:
-            Area: Bounding box of the rectangle
+            (Area): Bounding box of the rectangle
         """
         super().rect(x, y, w, h, c, f)
         return Area(x, y, w, h)
@@ -286,7 +284,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             c (int): color
 
         Returns:
-            Area: Bounding box of the vertical line
+            (Area): Bounding box of the vertical line
         """
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
@@ -306,7 +304,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             height (int): Font height in pixels (default: 8)
 
         Returns:
-            Area: Bounding box of the text
+            (Area): Bounding box of the text
         """
         return pygraphics.text(self, s, x, y, c, scale, inverted, font_file, height=height)
 
@@ -322,7 +320,7 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             palette (list): Palette (default: None)
 
         Returns:
-            Area: Bounding box of the blitted buffer
+            (Area): Bounding box of the blitted buffer
         """
         super().blit(buf, x, y, key, palette)
         return
@@ -417,6 +415,215 @@ class FrameBuffer(_FrameBuffer, ExtendedShapes):
             return bmp_to_framebuffer(filename)
         else:
             raise ValueError(f"Unsupported file type {header}")
+
+    def arc(self, *args, **kwargs):
+        """
+        Arc drawing function.  Will draw a single pixel wide arc with a radius r
+        centered at x, y from a0 to a1.
+        
+        Args:
+            x (int): X-coordinate of the arc's center.
+            y (int): Y-coordinate of the arc's center.
+            r (int): Radius of the arc.
+            a0 (float): Starting angle in degrees.
+            a1 (float): Ending angle in degrees.
+            c (int): color.
+
+        Returns:
+            (Area): The bounding box of the arc.
+        """
+        return pygraphics.arc(self, *args, **kwargs)
+    
+    def blit_rect(self, *args, **kwargs):
+        """
+        Blit a rectangular area from a buffer to the canvas.  Uses the canvas's blit_rect method if available,
+        otherwise writes directly to the buffer.
+
+        Args:
+            buf (memoryview): Buffer to blit. Must already be byte-swapped if necessary.
+            x (int): X-coordinate to blit to.
+            y (int): Y-coordinate to blit to.
+            w (int): Width of the area to blit.
+            h (int): Height of the area to blit.
+
+        Returns:
+            (Area): The bounding box of the blitted area.
+        """
+        return pygraphics.blit_rect(self, *args, **kwargs)
+
+    def blit_transparent(self, *args, **kwargs):
+        """
+        Blit a buffer with transparency.
+
+        Args:
+            buf (memoryview): Buffer to blit.
+            x (int): X-coordinate to blit to.
+            y (int): Y-coordinate to blit to.
+            w (int): Width of the area to blit.
+            h (int): Height of the area to blit.
+            key (int): Key value for transparency.
+
+        Returns:
+            (Area): The bounding box of the blitted area.
+        """
+        return pygraphics.blit_transparent(self, *args, **kwargs)
+    
+    def circle(self, *args, **kwargs):
+        """
+        Circle drawing function.  Will draw a single pixel wide circle
+        centered at x0, y0 and the specified r.
+
+        Args:
+            x0 (int): Center x coordinate
+            y0 (int): Center y coordinate
+            r (int): Radius
+            c (int): Color
+            f (bool): Fill the circle (default: False)
+
+        Returns:
+            (Area): The bounding box of the circle.
+        """
+        return pygraphics.circle(self, *args, **kwargs)
+    
+    def gradient_rect(self, *args, **kwargs):
+        """
+        Fill a rectangle with a gradient.
+
+        Args:
+            x (int): X-coordinate of the top-left corner of the rectangle.
+            y (int): Y-coordinate of the top-left corner of the rectangle.
+            w (int): Width of the rectangle.
+            h (int): Height of the rectangle.
+            c1 (int): 565 encoded color for the top or left edge.
+            c2 (int): 565 encoded color for the bottom or right edge.  If None or the same as c1,
+                        fill_rect will be called instead.
+            vertical (bool): If True, the gradient will be vertical.  If False, the gradient will be horizontal.
+
+        Returns:
+            (Area): The bounding box of the filled area.
+        """
+        return pygraphics.gradient_rect(self, *args, **kwargs)
+    
+    def polygon(self, *args, **kwargs):
+        """
+        Draw a polygon on the canvas.
+
+        Args:
+            points (list): List of points to draw.
+            x (int): X-coordinate of the polygon's position.
+            y (int): Y-coordinate of the polygon's position.
+            color (int): color.
+            angle (float): Rotation angle in radians (default: 0).
+            center_x (int): X-coordinate of the rotation center (default: 0).
+            center_y (int): Y-coordinate of the rotation center (default: 0).
+
+        Raises:
+            ValueError: If the polygon has less than 3 points.
+
+        Returns:
+            (Area): The bounding box of the polygon.
+        """
+        return pygraphics.polygon(self, *args, **kwargs)
+    
+    def round_rect(self, *args, **kwargs):
+        """
+        Rounded rectangle drawing function.  Will draw a single pixel wide rounded rectangle starting at
+        x0, y0 and extending w, h pixels with the specified radius.
+
+        Args:
+            x0 (int): X-coordinate of the top-left corner of the rectangle.
+            y0 (int): Y-coordinate of the top-left corner of the rectangle.
+            w (int): Width of the rectangle.
+            h (int): Height of the rectangle.
+            r (int): Radius of the corners.
+            c (int): color.
+            f (bool): Fill the rectangle (default: False).
+
+        Returns:
+            (Area): The bounding box of the rectangle.
+        """
+        return pygraphics.round_rect(self, *args, **kwargs)
+    
+    def triangle(self, *args, **kwargs):
+        """
+        Triangle drawing function.  Draws a single pixel wide triangle with vertices at
+        (x0, y0), (x1, y1), and (x2, y2).
+
+        Args:
+            x0 (int): X-coordinate of the first vertex.
+            y0 (int): Y-coordinate of the first vertex.
+            x1 (int): X-coordinate of the second vertex.
+            y1 (int): Y-coordinate of the second vertex.
+            x2 (int): X-coordinate of the third vertex.
+            y2 (int): Y-coordinate of the third vertex.
+            c (int): color.
+            f (bool): Fill the triangle (default: False).
+
+        Returns:
+            (Area): The bounding box of the triangle.    
+        """
+        return pygraphics.triangle(self, *args, **kwargs)
+
+    def text8(self, *args, **kwargs):
+        """
+        Place text on the canvas with an 8 pixel high font.
+        Breaks on \n to next line.  Does not break on line going off canvas.
+
+        Args:
+            canvas (Canvas): The DisplayDriver, FrameBuffer, or other canvas-like object to draw on.
+            s (str): The text to draw.
+            x (int): The x position to start drawing the text.
+            y (int): The y position to start drawing the text.
+            c (int): The color to draw the text in.  Default is 1.
+            scale (int): The scale factor to draw the text at.  Default is 1.
+            inverted (bool): If True, draw the text inverted.  Default is False.
+            font_file (str): The path to the font file to use.  Default is None.
+
+        Returns:
+            Area: The area that was drawn to.
+        """
+        return pygraphics.text8(self, *args, **kwargs)
+
+    def text14(self, *args, **kwargs):
+        """
+        Place text on the canvas with a 14 pixel high font.
+        Breaks on \n to next line.  Does not break on line going off canvas.
+
+        Args:
+            canvas (Canvas): The DisplayDriver, FrameBuffer, or other canvas-like object to draw on.
+            s (str): The text to draw.
+            x (int): The x position to start drawing the text.
+            y (int): The y position to start drawing the text.
+            c (int): The color to draw the text in.  Default is 1.
+            scale (int): The scale factor to draw the text at.  Default is 1.
+            inverted (bool): If True, draw the text inverted.  Default is False.
+            font_file (str): The path to the font file to use.  Default is None.
+
+        Returns:
+            Area: The area that was drawn to.
+        """
+        return pygraphics.text14(self, *args, **kwargs)
+
+    def text16(self, *args, **kwargs):
+        """
+        Place text on the canvas with a 16 pixel high font.
+        Breaks on \n to next line.  Does not break on line going off canvas.
+
+        Args:
+            canvas (Canvas): The DisplayDriver, FrameBuffer, or other canvas-like object to draw on.
+            s (str): The text to draw.
+            x (int): The x position to start drawing the text.
+            y (int): The y position to start drawing the text.
+            c (int): The color to draw the text in.  Default is 1.
+            scale (int): The scale factor to draw the text at.  Default is 1.
+            inverted (bool): If True, draw the text inverted.  Default is False.
+            font_file (str): The path to the font file to use.  Default is None.
+
+        Returns:
+            Area: The area that was drawn to.
+        """
+        return pygraphics.text16(self, *args, **kwargs)
+
 
 def pbm_to_framebuffer(filename):
     """

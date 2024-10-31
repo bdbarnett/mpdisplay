@@ -3,7 +3,13 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices basedisplay
+`pydevices`
+====================================================
+
+A collection of classes and functions for working with displays and input devices
+in *Python.  The goal is to provide a common API for working with displays and
+input devices across different platforms including MicroPython, CircuitPython and
+CPython.  It works on microcontrollers, desktops, web browsers and Jupyter notebooks.
 """
 
 import gc
@@ -55,7 +61,7 @@ def color888(r, g, b):
         b (int): The blue value.
 
     Returns:
-        int: The 24-bit color value.
+        (int): The 24-bit color value.
     """
     return (r << 16) | (g << 8) | b
 
@@ -69,7 +75,7 @@ def color565(r, g=None, b=None):
         b (int): The blue value.
 
     Returns:
-        int: The 16-bit color value
+        (int): The 16-bit color value
     """
     if isinstance(r, (tuple, list)):
         r, g, b = r[:3]
@@ -134,7 +140,7 @@ class Area:
             y (int): The y-coordinate of the point to check.
 
         Returns:
-            bool: True if the point is contained within the area, False otherwise.
+            (bool): True if the point is contained within the area, False otherwise.
         """
         if isinstance(x, tuple):
             x, y = x
@@ -148,7 +154,7 @@ class Area:
             other (Area): The other area to check.
 
         Returns:
-            bool: True if the other area is contained within the area, False otherwise.
+            (bool): True if the other area is contained within the area, False otherwise.
         """
         return (
             self.x <= other.x
@@ -165,7 +171,7 @@ class Area:
             other (Area): The other Area object to check for overlap.
 
         Returns:
-            bool: True if the two Area objects intersect, False otherwise.
+            (bool): True if the two Area objects intersect, False otherwise.
         """
         if self.x + self.w <= other.x or other.x + other.w <= self.x:
             return False
@@ -181,7 +187,7 @@ class Area:
             other (Area): The other Area object to check for overlap or touch.
 
         Returns:
-            bool: True if the two Area objects touch or intersect, False otherwise.
+            (bool): True if the two Area objects touch or intersect, False otherwise.
         """
         if self.x + self.w < other.x or other.x + other.w < self.x:
             return False
@@ -198,7 +204,7 @@ class Area:
             dy (int | float): The amount to shift the area in the y direction.
 
         Returns:
-            Area: A new Area object shift by the specified amount in the x and y directions.
+            (Area): A new Area object shift by the specified amount in the x and y directions.
         """
         return Area(self.x + dx, self.y + dy, self.w, self.h)
 
@@ -210,7 +216,7 @@ class Area:
             other (Area): The other Area object to clip to.
 
         Returns:
-            Area: A new Area object representing the clipped area.
+            (Area): A new Area object representing the clipped area.
         """
         x = max(self.x, other.x)
         y = max(self.y, other.y)
@@ -234,7 +240,7 @@ class Area:
             d4 (int | float): The offset in the bottom direction.
 
         Returns:
-            Area: A new Area object offset by the specified amount(s).
+            (Area): A new Area object offset by the specified amount(s).
         """
         if d2 is None:
             d2 = d3 = d4 = d1
@@ -261,7 +267,7 @@ class Area:
             d4 (int | float): The inset in the bottom direction.
 
         Returns:
-            Area: A new Area object inset by the specified amount(s).
+            (Area): A new Area object inset by the specified amount(s).
         """
         if d2 is None:
             d2 = d3 = d4 = d1
@@ -280,7 +286,7 @@ class Area:
             other (Area): The other Area object to compare with.
 
         Returns:
-            bool: True if the two Area objects are equal, False otherwise.
+            (bool): True if the two Area objects are equal, False otherwise.
         """
         return (
             self.x == other.x
@@ -297,7 +303,7 @@ class Area:
             other (Area): The other Area object to compare with.
 
         Returns:
-            bool: True if the two Area objects are not equal, False otherwise.
+            (bool): True if the two Area objects are not equal, False otherwise.
         """
         return not self.__eq__(other)
 
@@ -309,7 +315,7 @@ class Area:
             other (Area): The other Area object to compute the union with.
 
         Returns:
-            Area: A new Area object representing the union of the two areas.
+            (Area): A new Area object representing the union of the two areas.
         """
         return Area(
             min(self.x, other.x),
@@ -323,7 +329,7 @@ class Area:
         Returns an iterator over the elements of the Area object.
 
         Returns:
-            iterator: An iterator over the elements of the Area object.
+            (iterator): An iterator over the elements of the Area object.
         """
         return iter((self.x, self.y, self.w, self.h))
 
@@ -332,7 +338,7 @@ class Area:
         Returns a string representation of the Area object.
 
         Returns:
-            str: A string representation of the Area object.
+            (str): A string representation of the Area object.
         """
         return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
 
@@ -341,7 +347,7 @@ class Area:
         Returns a string representation of the Area object.
 
         Returns:
-            str: A string representation of the Area object.
+            (str): A string representation of the Area object.
         """
         return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
 
@@ -442,7 +448,7 @@ class DisplayDriver:
             color (int): The color to fill the display with.
 
         Returns:
-            Area: The area that was filled.
+            (Area): The area that was filled.
         """
         self.fill_rect(0, 0, self.width, self.height, color)
         return Area(0, 0, self.width, self.height)
@@ -484,7 +490,7 @@ class DisplayDriver:
             value (bool): Whether to disable byte swapping.
 
         Returns:
-            bool: Whether byte swapping was disabled successfully.
+            (bool): Whether byte swapping was disabled successfully.
 
         """
         if self._requires_byte_swap:
@@ -518,7 +524,7 @@ class DisplayDriver:
             key (int): The color key to use for transparency.
 
         Returns:
-            Area: The area that was blitted.
+            (Area): The area that was blitted.
         """
         BPP = self.color_depth // 8
         key_bytes = key.to_bytes(BPP, "little")
@@ -557,7 +563,7 @@ class DisplayDriver:
         The vertical scroll position relative to the top fixed area.
 
         Returns:
-            int: The vertical scroll position.
+            (int): The vertical scroll position.
         """
         return self.vscsad() - self._tfa
 
@@ -588,7 +594,7 @@ class DisplayDriver:
         The top fixed area set by set_vscroll or vscrdef.
 
         Returns:
-            int: The top fixed area.
+            (int): The top fixed area.
         """
         return self._tfa
     
@@ -598,7 +604,7 @@ class DisplayDriver:
         The vertical scroll area set by set_vscroll or vscrdef.
 
         Returns:
-            int: The vertical scroll area.
+            (int): The vertical scroll area.
         """
         return self._vsa
     
@@ -608,7 +614,7 @@ class DisplayDriver:
         The bottom fixed area set by set_vscroll or vscrdef.
 
         Returns:
-            int: The bottom fixed area.
+            (int): The bottom fixed area.
         """
         return self._bfa
 
@@ -622,7 +628,7 @@ class DisplayDriver:
             point (tuple): The x and y coordinates to translate.
 
         Returns:
-            tuple: The translated x and y coordinates.
+            (tuple): The translated x and y coordinates.
         """
         x, y = point
         if self.vscsad() and self.tfa < y < self.height - self.bfa:
@@ -643,7 +649,7 @@ class DisplayDriver:
         The top fixed area as an Area object.
 
         Returns:
-            Area: The top fixed area.
+            (Area): The top fixed area.
         """
         return Area(0, 0, self.width, self.tfa)
     
@@ -653,7 +659,7 @@ class DisplayDriver:
         The vertical scroll area as an Area object.
 
         Returns:
-            Area: The vertical scroll area.
+            (Area): The vertical scroll area.
         """
         return Area(0, self.tfa, self.width, self.vsa)
     
@@ -663,7 +669,7 @@ class DisplayDriver:
         The bottom fixed area as an Area object.
 
         Returns:
-            Area: The bottom fixed area.
+            (Area): The bottom fixed area.
         """
         return Area(0, self.tfa + self.vsa, self.width, self.bfa)
     
@@ -697,7 +703,7 @@ class DisplayDriver:
             vssa (int): The vertical scroll start address.
 
         Returns:
-            int: The vertical scroll start address.
+            (int): The vertical scroll start address.
         """
         if vssa is not None:
             while vssa < 0:

@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices devices
+`pydevices.devices`
+====================================================
 
 Device classes for PyDevices's Event System.  May also be used
 with other applications.  Devices are objects that poll for events

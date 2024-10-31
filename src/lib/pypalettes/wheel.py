@@ -1,4 +1,6 @@
 """
+`pypalette.wheel`
+====================================================
 This module contains the cool wheel color palette as a class object.
 
 

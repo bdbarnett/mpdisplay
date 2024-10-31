@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-PyGraphics
+`pygraphics`
 ====================================================
 Graphics primitives for drawing on a canvas.
 
@@ -38,7 +38,7 @@ def arc(canvas, x, y, r, a0, a1, c):
         c (int): color.
 
     Returns:
-        Area: The bounding box of the arc.
+        (Area): The bounding box of the arc.
     """
     resolution = 60
     a0 = math.radians(a0)
@@ -77,7 +77,7 @@ def blit(canvas, source, x, y, key=-1, palette=None):
         palette (Palette): Palette object for color translation (default: None).
 
     Returns:
-        Area: The bounding box of the blitted area.
+        (Area): The bounding box of the blitted area.
     """
     if (
         (-x >= source.width)
@@ -121,7 +121,7 @@ def blit_rect(canvas, buf, x, y, w, h):
         h (int): Height of the area to blit.
 
     Returns:
-        Area: The bounding box of the blitted area.
+        (Area): The bounding box of the blitted area.
     """
     if hasattr(canvas, "blit_rect"):
         return canvas.blit_rect(buf, x, y, w, h)
@@ -156,7 +156,7 @@ def blit_transparent(canvas, buf, x, y, w, h, key):
         key (int): Key value for transparency.
 
     Returns:
-        Area: The bounding box of the blitted area.
+        (Area): The bounding box of the blitted area.
     """
     BPP = canvas.color_depth // 8
     key_bytes = key.to_bytes(BPP, "little")
@@ -203,7 +203,7 @@ def circle(canvas, x0, y0, r, c, f=False):
         f (bool): Fill the circle (default: False)
 
     Returns:
-        Area: The bounding box of the circle.
+        (Area): The bounding box of the circle.
     """
     if f:
         return _fill_circle_helper(canvas, x0, y0, r, c, 0, 0)
@@ -299,7 +299,7 @@ def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
         h (int): Height of the ellipse (default: None)
 
     Returns:
-        Area: The bounding box of the ellipse.
+        (Area): The bounding box of the ellipse.
     """
     if r1 < 1 or r2 < 1:
         return
@@ -396,7 +396,7 @@ def fill(canvas, c):
         c (int): color.
 
     Returns:
-        Area: The bounding box of the filled area.
+        (Area): The bounding box of the filled area.
     """
     if hasattr(canvas, "fill_rect"):
         canvas.fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
@@ -418,7 +418,7 @@ def fill_rect(canvas, x, y, w, h, c):
         c (int): color
 
     Returns:
-        Area: The bounding box of the filled area.
+        (Area): The bounding box of the filled area.
     """
     if y < -h or y > canvas.height or x < -w or x > canvas.width:
         return
@@ -445,7 +445,7 @@ def gradient_rect(canvas, x, y, w, h, c1, c2=None, vertical=True):
         vertical (bool): If True, the gradient will be vertical.  If False, the gradient will be horizontal.
 
     Returns:
-        Area: The bounding box of the filled area.
+        (Area): The bounding box of the filled area.
     """
     if c2 is None or c1 == c2:
         return fill_rect(canvas, x, y, w, h, c1)
@@ -478,7 +478,7 @@ def hline(canvas, x0, y0, w, c):
         c (int): color.
 
     Returns:
-        Area: The bounding box of the line.
+        (Area): The bounding box of the line.
     """
     if y0 < 0 or y0 > canvas.height or x0 < -w or x0 > canvas.width:
         return
@@ -498,7 +498,7 @@ def line(canvas, x0, y0, x1, y1, c):
         c (int): color.
 
     Returns:
-        Area: The bounding box of the line.
+        (Area): The bounding box of the line.
     """
     if x0 == x1:
         return vline(canvas, x0, y0, abs(y1 - y0) + 1, c)
@@ -543,7 +543,7 @@ def pixel(canvas, x, y, c):
         c (int): color.
 
     Returns:
-        Area: The bounding box of the pixel.
+        (Area): The bounding box of the pixel.
     """
     if hasattr(canvas, "pixel"):
         canvas.pixel(x, y, c)
@@ -572,7 +572,7 @@ def poly(canvas, x, y, coords, c, f=False):
         f (bool): Fill the polygon (default: False).
 
     Returns:
-        Area: The bounding box of the polygon.
+        (Area): The bounding box of the polygon.
     """
 
     # Convert the coords to a list of x, y tuples if it is not already
@@ -659,7 +659,7 @@ def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
         ValueError: If the polygon has less than 3 points.
 
     Returns:
-        Area: The bounding box of the polygon.
+        (Area): The bounding box of the polygon.
     """
     # MIT License
     # Copyright (c) 2024 Brad Barnett
@@ -705,7 +705,7 @@ def rect(canvas, x0, y0, w, h, c, f=False):
         f (bool): Fill the rectangle (default: False).
 
     Returns:
-        Area: The bounding box of the rectangle.
+        (Area): The bounding box of the rectangle.
     """
     if f:
         return fill_rect(canvas, x0, y0, w, h, c)
@@ -732,7 +732,7 @@ def round_rect(canvas, x0, y0, w, h, r, c, f=False):
         f (bool): Fill the rectangle (default: False).
 
     Returns:
-        Area: The bounding box of the rectangle.
+        (Area): The bounding box of the rectangle.
     """
     # If the radius is 0, just draw a rectangle
     if r == 0:
@@ -781,7 +781,7 @@ def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
         f (bool): Fill the triangle (default: False).
 
     Returns:
-        Area: The bounding box of the triangle.    
+        (Area): The bounding box of the triangle.    
     """
     if f:
         return _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c)
@@ -881,7 +881,7 @@ def vline(canvas, x0, y0, h, c):
         c (int): color.
 
     Returns:
-        Area: The bounding box of the line.
+        (Area): The bounding box of the line.
     """
     if y0 < -h or y0 > canvas.height or x0 < 0 or x0 > canvas.width:
         return
