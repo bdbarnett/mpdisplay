@@ -23,7 +23,7 @@ you need to use the returned Areas so your code will be transferable.
 import pygraphics
 
 try:
-    from ulab import numpy as np 
+    from ulab import numpy as np  # type: ignore
 except ImportError:
     try:
         import numpy as np 
@@ -49,28 +49,11 @@ _FONT_HEIGHT = 8
 _FONT_SCALE = 1
 
 
-class BasicShapes:
-    # Inherited from the FrameBuffer class
-    # Do not include fill, fill_rect or pixel because they need to be
-    # specific to the class format that uses them
-    blit = pygraphics.blit
-    ellipse = pygraphics.ellipse
-    hline = pygraphics.hline
-    line = pygraphics.line
-    poly = pygraphics.poly
-    rect = pygraphics.rect
-    vline = pygraphics.vline
-    text = pygraphics.text
-
-
 class MVLSBFormat:
-    """MVLSBFormat"""
-
     depth = 1
 
     @staticmethod
     def set_pixel(framebuf, x, y, color):
-        """Set a given pixel to a color."""
         index = (y >> 3) * framebuf._stride + x
         offset = y & 0x07
         framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
@@ -79,14 +62,12 @@ class MVLSBFormat:
 
     @staticmethod
     def get_pixel(framebuf, x, y):
-        """Get the color of a given pixel"""
         index = (y >> 3) * framebuf._stride + x
         offset = y & 0x07
         return (framebuf._buffer[index] >> offset) & 0x01
 
     @staticmethod
     def fill(framebuf, color):
-        """completely fill/clear the buffer with a color"""
         if color:
             fill = 0xFF
         else:
@@ -96,9 +77,6 @@ class MVLSBFormat:
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
-        """Draw a rectangle at the given location, size and color. The ``fill_rect`` method draws
-        both the outline and interior."""
-        # pylint: disable=too-many-arguments
         while height > 0:
             index = (y >> 3) * framebuf._stride + x
             offset = y & 0x07
@@ -115,23 +93,18 @@ class MHLSBFormat:
 
     @staticmethod
     def set_pixel(framebuf, x, y, color):
-        """Set a given pixel to a color."""
         index = (y * framebuf._stride + x) >> 3 
         offset = 7 - (x & 0x07)
         framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | ((color != 0) << offset)
 
     @staticmethod
     def get_pixel(framebuf, x, y):
-        """Get the color of a given pixel"""
         index = (x + y * framebuf._stride) >> 3
         offset = 7 - (x & 0x07)
         return (framebuf._buffer[index] >> offset) & 0x01
     
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
-        """Draw a rectangle at the given location, size and color. The ``fill_rect`` method draws
-        both the outline and interior."""
-        # pylint: disable=too-many-arguments
         for _x in range(x, x + width):
             offset = 7 - _x & 0x07
             for _y in range(y, y + height):
@@ -142,7 +115,6 @@ class MHLSBFormat:
 
     @staticmethod
     def fill(framebuf, color):
-        """completely fill/clear the buffer with a color"""
         if color:
             fill = 0xFF
         else:
@@ -152,13 +124,10 @@ class MHLSBFormat:
 
 
 class MHMSBFormat:
-    """MHMSBFormat"""
-
     depth = 1
 
     @staticmethod
     def set_pixel(framebuf, x, y, color):
-        """Set a given pixel to a color."""
         index = (y * framebuf._stride + x) >> 3
         offset = x & 0x07
         framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
@@ -167,14 +136,12 @@ class MHMSBFormat:
 
     @staticmethod
     def get_pixel(framebuf, x, y):
-        """Get the color of a given pixel"""
         index = (y * framebuf._stride + x) // 8
         offset = 7 - x & 0x07
         return (framebuf._buffer[index] >> offset) & 0x01
 
     @staticmethod
     def fill(framebuf, color):
-        """completely fill/clear the buffer with a color"""
         if color:
             fill = 0xFF
         else:
@@ -184,9 +151,6 @@ class MHMSBFormat:
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
-        """Draw a rectangle at the given location, size and color. The ``fill_rect`` method draws
-        both the outline and interior."""
-        # pylint: disable=too-many-arguments
         for _x in range(x, x + width):
             offset = 7 - _x & 0x07
             for _y in range(y, y + height):
@@ -196,69 +160,11 @@ class MHMSBFormat:
                 ) | ((color != 0) << offset)
 
 
-class RGB565Format:
-    """
-    This class implements the RGB565 format
-    It assumes a little-endian byte order in the frame buffer
-    """
-
-    depth = 16
-
-    @staticmethod
-    def set_pixel(framebuf, x, y, color):
-        """Set a given pixel to a color."""
-        index = (y * framebuf._stride + x) * 2
-        framebuf._buffer[index : index + 2] = (color & 0xFFFF).to_bytes(2, "little")
-
-    @staticmethod
-    def get_pixel(framebuf, x, y):
-        """Get the color of a given pixel"""
-        index = (y * framebuf._stride + x) * 2
-        color = framebuf._buffer[index : index + 2]
-        color = int.from_bytes(color, "little")
-        return color
-
-    @staticmethod
-    def fill(framebuf, color):
-        """completely fill/clear the buffer with a color"""
-        rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
-        if np:
-            rgb565_color_int = int.from_bytes(rgb565_color, "little")
-            arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
-            arr[:] = rgb565_color_int
-        else:
-            for i in range(0, len(framebuf._buffer), 2):
-                framebuf._buffer[i : i + 2] = rgb565_color
-
-    @staticmethod
-    def fill_rect(framebuf, x, y, width, height, color):
-        """Draw a rectangle at the given location, size and color. The ``fill_rect`` method draws
-        both the outline and interior."""
-        # pylint: disable=too-many-arguments
-        rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
-        if np:
-            rgb565_color_int = int.from_bytes(rgb565_color, "little")
-            arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
-            for _y in range(y, y + height):
-                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = (
-                    rgb565_color_int
-                )
-        else:
-            for _y in range(2 * y, 2 * (y + height), 2):
-                offset2 = _y * framebuf._stride
-                for _x in range(2 * x, 2 * (x + width), 2):
-                    index = offset2 + _x
-                    framebuf._buffer[index : index + 2] = rgb565_color
-
-
 class GS2HMSBFormat:
-    """GS2HMSBFormat"""
-
     depth = 2
 
     @staticmethod
     def set_pixel(framebuf, x, y, color):
-        """Set a given pixel to a color."""
         index = (y * framebuf._stride + x) >> 2
         pixel = framebuf._buffer[index]
 
@@ -270,7 +176,6 @@ class GS2HMSBFormat:
 
     @staticmethod
     def get_pixel(framebuf, x, y):
-        """Get the color of a given pixel"""
         index = (y * framebuf._stride + x) >> 2
         pixel = framebuf._buffer[index]
 
@@ -279,7 +184,6 @@ class GS2HMSBFormat:
 
     @staticmethod
     def fill(framebuf, color):
-        """completely fill/clear the buffer with a color"""
         if color:
             bits = color & 0b11
             fill = (bits << 6) | (bits << 4) | (bits << 2) | (bits << 0)
@@ -300,12 +204,95 @@ class GS2HMSBFormat:
 class GS4HMSBFormat:
     depth = 4
 
+    @staticmethod
+    def set_pixel(framebuf, x, y, color):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_pixel(framebuf, x, y):
+        raise NotImplementedError
+
+    @staticmethod
+    def fill(framebuf, color):
+        raise NotImplementedError
+
+    @staticmethod
+    def fill_rect(framebuf, x, y, width, height, color):
+        raise NotImplementedError
+
 
 class GS8Format:
     depth = 8
 
+    @staticmethod
+    def set_pixel(framebuf, x, y, color):
+        index = y * framebuf._stride + x
+        framebuf._buffer[index] = color.to_bytes(1, "little")
 
-class FrameBuffer(BasicShapes):
+    @staticmethod
+    def get_pixel(framebuf, x, y):
+        index = y * framebuf._stride + x
+        return int.from_bytes(framebuf._buffer[index : index + 1], "little")
+
+    @staticmethod
+    def fill(framebuf, color):
+        framebuf._buffer = color.to_bytes(1, "little") * len(framebuf._buffer)
+
+    @staticmethod
+    def fill_rect(framebuf, x, y, width, height, color):
+        color = color.to_bytes(1, "little")
+        for _y in range(y, y + height):
+            offset = _y * framebuf._stride
+            for _x in range(x, x + width):
+                index = offset + _x
+                framebuf._buffer[index] = color
+
+
+class RGB565Format:
+    depth = 16
+
+    @staticmethod
+    def set_pixel(framebuf, x, y, color):
+        index = (y * framebuf._stride + x) * 2
+        framebuf._buffer[index : index + 2] = (color & 0xFFFF).to_bytes(2, "little")
+
+    @staticmethod
+    def get_pixel(framebuf, x, y):
+        index = (y * framebuf._stride + x) * 2
+        color = framebuf._buffer[index : index + 2]
+        color = int.from_bytes(color, "little")
+        return color
+
+    @staticmethod
+    def fill(framebuf, color):
+        rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
+        if np:
+            rgb565_color_int = int.from_bytes(rgb565_color, "little")
+            arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
+            arr[:] = rgb565_color_int
+        else:
+            for i in range(0, len(framebuf._buffer), 2):
+                framebuf._buffer[i : i + 2] = rgb565_color
+
+    @staticmethod
+    def fill_rect(framebuf, x, y, width, height, color):
+        rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
+        if np:
+            rgb565_color_int = int.from_bytes(rgb565_color, "little")
+            arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
+            for _y in range(y, y + height):
+                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = (
+                    rgb565_color_int
+                )
+        else:
+            for _y in range(2 * y, 2 * (y + height), 2):
+                offset2 = _y * framebuf._stride
+                for _x in range(2 * x, 2 * (x + width), 2):
+                    index = offset2 + _x
+                    framebuf._buffer[index : index + 2] = rgb565_color
+
+
+class FrameBuffer:
     """
     FrameBuffer object.
 
@@ -481,6 +468,133 @@ class FrameBuffer(BasicShapes):
                 self._buffer[new_offset : new_offset + bytes_per_row] = self._buffer[
                     offset : offset + bytes_per_row
                 ]
+
+    def blit(self, *args, **kwargs):
+        """
+        Blit a source to the canvas at the specified x, y location.
+
+        Args:
+            source (FrameBuffer): Source FrameBuffer object.
+            x (int): X-coordinate to blit to.
+            y (int): Y-coordinate to blit to.
+            key (int): Key value for transparency (default: -1).
+            palette (Palette): Palette object for color translation (default: None).
+        """
+        pygraphics.blit(self, *args, **kwargs)
+
+    def ellipse(self, *args, **kwargs):
+        """
+        Midpoint ellipse algorithm
+        Draw an ellipse at the given location. Radii r1 and r2 define the geometry; equal values cause a
+        circle to be drawn. The c parameter defines the color.
+
+        The optional f parameter can be set to True to fill the ellipse. Otherwise just a one pixel outline
+        is drawn.
+
+        The optional m parameter enables drawing to be restricted to certain quadrants of the ellipse.
+        The LS four bits determine which quadrants are to be drawn, with bit 0 specifying Q1, b1 Q2,
+        b2 Q3 and b3 Q4. Quadrants are numbered counterclockwise with Q1 being top right.
+
+        Args:
+            x0 (int): Center x coordinate
+            y0 (int): Center y coordinate
+            r1 (int): x radius
+            r2 (int): y radius
+            c (int): color
+            f (bool): Fill the ellipse (default: False)
+            m (int): Bitmask to determine which quadrants to draw (default: 0b1111)
+            w (int): Width of the ellipse (default: None)
+            h (int): Height of the ellipse (default: None)
+        """
+        pygraphics.ellipse(self, *args, **kwargs)
+
+    def hline(self, *args, **kwargs):
+        """
+        Horizontal line drawing function.  Will draw a single pixel wide line.
+        
+        Args:
+            x0 (int): X-coordinate of the start of the line.
+            y0 (int): Y-coordinate of the start of the line.
+            w (int): Width of the line.
+            c (int): color.
+        """
+        pygraphics.hline(self, *args, **kwargs)
+
+    def line(self, *args, **kwargs):
+        """
+        Line drawing function.  Will draw a single pixel wide line starting at
+        x0, y0 and ending at x1, y1.
+        
+        Args:
+            x0 (int): X-coordinate of the start of the line.
+            y0 (int): Y-coordinate of the start of the line.
+            x1 (int): X-coordinate of the end of the line.
+            y1 (int): Y-coordinate of the end of the line.
+            c (int): color.
+        """
+        pygraphics.line(self, *args, **kwargs)
+
+    def poly(self, *args, **kwargs):
+        """
+        Given a list of coordinates, draw an arbitrary (convex or concave) closed polygon at the given x, y location
+        using the given color.
+
+        The coords must be specified as an array of integers, e.g. array('h', [x0, y0, x1, y1, ... xn, yn]) or a
+        list or tuple of points, e.g. [(x0, y0), (x1, y1), ... (xn, yn)].
+
+        The optional f parameter can be set to True to fill the polygon. Otherwise, just a one-pixel outline is drawn.
+
+        Args:
+            x (int): X-coordinate of the polygon's position.
+            y (int): Y-coordinate of the polygon's position.
+            coords (list): List of coordinates.
+            c (int): color.
+            f (bool): Fill the polygon (default: False).
+        """
+        pygraphics.poly(self, *args, **kwargs)
+
+    def rect(self, *args, **kwargs):
+        """
+        Rectangle drawing function.  Will draw a single pixel wide rectangle starting at
+        x0, y0 and extending w, h pixels.
+
+        Args:
+            x0 (int): X-coordinate of the top-left corner of the rectangle.
+            y0 (int): Y-coordinate of the top-left corner of the rectangle.
+            w (int): Width of the rectangle.
+            h (int): Height of the rectangle.
+            c (int): color.
+            f (bool): Fill the rectangle (default: False).
+        """
+        pygraphics.rect(self, *args, **kwargs)
+
+    def vline(self, *args, **kwargs):
+        """
+        Horizontal line drawing function.  Will draw a single pixel wide line.
+
+        Args:
+            x0 (int): X-coordinate of the start of the line.
+            y0 (int): Y-coordinate of the start of the line.
+            h (int): Height of the line.
+            c (int): color.
+        """
+        pygraphics.vline(self, *args, **kwargs)
+
+    def text(self, *args, **kwargs):
+        """
+        Place text on the canvas with an 8 pixel high font.
+        Breaks on \n to next line.  Does not break on line going off canvas.
+
+        Args:
+            s (str): The text to draw.
+            x (int): The x position to start drawing the text.
+            y (int): The y position to start drawing the text.
+            c (int): The color to draw the text in.  Default is 1.
+            scale (int): The scale factor to draw the text at.  Default is 1.
+            inverted (bool): If True, draw the text inverted.  Default is False.
+            font_file (str): The path to the font file to use.  Default is None.
+        """
+        pygraphics.text(self, *args, **kwargs)
 
 
 def FrameBuffer1(buffer, width, height, format, stride=None):
