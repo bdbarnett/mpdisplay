@@ -42,6 +42,7 @@ packages = [
     ("extras", "extras"),
     ("pydevices", "lib"),
     ("pygraphics", "lib"),
+    ("pypalettes", "lib"),
     ("pywidgets", "lib"),
 ]
 
