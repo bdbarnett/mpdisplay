@@ -165,9 +165,9 @@ class BusDisplay(DisplayDriver):
         self._data_as_commands = data_as_commands  # not implemented
         self._single_byte_bounds = single_byte_bounds  # not implemented
 
-        if hasattr(display_bus, "tx_color"):
-            self.send_color = self.display_bus.tx_color
-            self.send = self.display_bus.tx_param
+        self.send = display_bus.send
+        # self.send_color = display_bus.send_color if hasattr(display_bus, "send_color") else display_bus.send
+        self.send_color = display_bus.send
 
         self.rotation_table = (
             _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
@@ -272,7 +272,7 @@ class BusDisplay(DisplayDriver):
         y2 = y1 + h - 1
 
         self._set_window(x1, y1, x2, y2)
-        self.send_color(self._write_ram_command, buf, x1, x2, y1, y2)
+        self.send_color(self._write_ram_command, buf)
         return Area(x1, y1, w, h)
 
     def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
@@ -294,15 +294,15 @@ class BusDisplay(DisplayDriver):
         Returns:
             Area: The area of the display that was updated.
         """
-        c = c & 0xFFFF  # Ensure color is 16-bit for circuitpython
+        color_bytes = (c & 0xFFFF).to_bytes(2, "little")  # Ensure color is 16-bit for circuitpython
         if h > w:
-            raw_data = struct.pack("<H", c) * h
+            buf = memoryview(bytearray(color_bytes * h))
             for col in range(x, x + w):
-                self.blit_rect(memoryview(raw_data[:]), col, y, 1, h)
+                self.blit_rect(buf, col, y, 1, h)
         else:
-            raw_data = struct.pack("<H", c) * w
+            buf = memoryview(bytearray(color_bytes * w))
             for row in range(y, y + h):
-                self.blit_rect(memoryview(raw_data[:]), x, row, w, 1)
+                self.blit_rect(buf, x, row, w, 1)
         return Area(x, y, w, h)
 
     def pixel(self, x: int, y: int, c: int) -> Area:
@@ -497,26 +497,6 @@ class BusDisplay(DisplayDriver):
         self.send(_SLPIN if value else _SLPOUT)
 
     ############### Class Specific Methods ##############
-
-    def send(self, command: int, data: bytes = None) -> None:
-        """
-        Send command and data to the display.
-
-        Args:
-            command (int): The command to send.
-            data (bytes): The data to send.
-        """
-        self.display_bus.send(command, data)
-
-    def send_color(self, command: int, data: memoryview, *_) -> None:
-        """
-        Send color data to the display.
-
-        Args:
-            command (int): The command to send.
-            data (memoryview): The color data to send.
-        """
-        self.display_bus.send(command, data)
 
     def _set_window(self, x1, y1, x2, y2):
         # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
