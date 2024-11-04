@@ -9,7 +9,7 @@ from pydevices.devices import DeviceTypes, Broker
 
 display_bus = SPIBus(
     id=1,
-    baudrate=60_000_000,
+    baudrate=40_000_000,
     sck=36,
     mosi=35,
     miso=37,
