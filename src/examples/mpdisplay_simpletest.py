@@ -1,5 +1,6 @@
 """ mpdisplay_simpletest.py """
-from board_config import display_drv
+from board_config import display_drv, display_bus
+from micropython import schedule
 import random
 import time
 import gc
@@ -13,8 +14,11 @@ if display_drv.requires_byte_swap:
 else:
     needs_swap = False
 
+def test():
+    raise Exception("Test exception")
 
 def main():
+    display_bus.register_callback(test)
     block_size = 32
     blocks = []
 
