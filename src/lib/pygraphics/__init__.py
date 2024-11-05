@@ -399,7 +399,7 @@ def fill(canvas, c):
         (Area): The bounding box of the filled area.
     """
     if hasattr(canvas, "fill_rect"):
-        canvas.fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
+        canvas.fill_rect(0, 0, canvas.width, canvas.height, c)
         return Area(0, 0, canvas.width, canvas.height)
     else:
         return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
