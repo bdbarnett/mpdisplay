@@ -1,7 +1,7 @@
 """ mpdisplay_simpletest.py """
 from board_config import display_drv
 from random import randint, getrandbits
-from time import sleep
+import time
 import gc
 
 
@@ -15,22 +15,24 @@ else:
 
 
 def main():
-    block_width = 64
-    block_height = 64
+    block_size = 32
 
-    max_x = display_drv.width - block_width - 1
-    max_y = display_drv.height - block_height - 1
+    max_x = display_drv.width - block_size - 1
+    max_y = display_drv.height - block_size - 1
 
     print("Drawing blocks on display")
-    # main loop
+    count = 0
+    start_time = time.time()
     while True:
-        gc.collect()
         display_drv.fill_rect(
-            randint(0, max_x),  # x position
-            randint(0, max_y),  # y position
-            block_width,  # width
-            block_height,  # height
-            getrandbits(16),  # color
+            randint(0, max_x),
+            randint(0, max_y),
+            block_size,
+            block_size,
+            getrandbits(16),
         )
+        count += 1
+        if count % 1000 == 0:
+            print("blocks/sec:", count / (time.time() - start_time))
 
 main()

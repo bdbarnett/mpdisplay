@@ -4,6 +4,7 @@ import random
 import time
 import gc
 
+
 gc.collect()
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
 # disable it and set a flag so we can swap the color bytes as they are created.
@@ -12,10 +13,10 @@ if display_drv.requires_byte_swap:
 else:
     needs_swap = False
 
+
 def main():
     block_size = 32
     blocks = []
-    blocks_per_screen = (display_drv.width * display_drv.height) // (block_size * block_size)
 
     max_x = display_drv.width - block_size - 1
     max_y = display_drv.height - block_size - 1
