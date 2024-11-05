@@ -295,15 +295,23 @@ class BusDisplay(DisplayDriver):
         Returns:
             Area: The area of the display that was updated.
         """
-        color_bytes = (c & 0xFFFF).to_bytes(2, "little")  # Ensure color is 16-bit for circuitpython
+        color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
+        x1 = x + self.colstart
+        x2 = x1 + w - 1
+        y1 = y + self.rowstart
+        y2 = y1 + h - 1
+
         if h > w:
             buf = memoryview(bytearray(color_bytes * h))
-            for col in range(x, x + w):
-                self.blit_rect(buf, col, y, 1, h)
+            passes = w
         else:
             buf = memoryview(bytearray(color_bytes * w))
-            for row in range(y, y + h):
-                self.blit_rect(buf, x, row, w, 1)
+            passes = h
+
+        self._set_window(x1, y1, x2, y2)
+        self.send(_RAMWR)
+        for _ in range(passes):
+            self.send_color(_RAMCONT, buf)
         return Area(x, y, w, h)
 
     def pixel(self, x: int, y: int, c: int) -> Area:
@@ -318,7 +326,13 @@ class BusDisplay(DisplayDriver):
         Returns:
             Area: The area of the display that was updated.
         """
-        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
+        color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
+        if self._auto_byte_swap_enabled:
+            c = c >> 8 | c << 8
+        xpos = x + self.colstart
+        ypos = y + self.rowstart
+        self._set_window(xpos, ypos, xpos, ypos)
+        self.send(_RAMWR, color_bytes)
         return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
