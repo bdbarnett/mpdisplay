@@ -20,7 +20,7 @@ packages = [
     ["displays", [], []],
     ["examples", [], []],
     ["extras", [], []],
-    ["lib/pydevices", [], ["adafruit_ticks.py", "micropython.py", "path.py"]],
+    ["lib/pydevices", [], []],
     ["lib/pygraphics", [], []],
     ["lib/pypalettes", [], []],
     ["lib/pywidgets", [], []],
