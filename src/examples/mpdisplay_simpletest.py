@@ -18,7 +18,7 @@ def test():
     raise Exception("Test exception")
 
 def main():
-    display_bus.register_callback(test)
+    # display_bus.register_callback(test)
     block_size = 32
     blocks = []
 

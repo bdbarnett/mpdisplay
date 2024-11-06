@@ -18,7 +18,7 @@ except ImportError:
 
 # _I80BaseBus will work with either Pin class, but I80Bus will only work with GPIO_Pin
 try:
-    from .gpio_pin import GPIO_Pin as Pin
+    from gpio_pin import GPIO_Pin as Pin
 except ImportError:
     from machine import Pin 
 
