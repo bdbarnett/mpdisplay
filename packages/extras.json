@@ -1,6 +1,10 @@
 {
   "urls": [
     [
+      "adafruit_ticks.py",
+      "github:bdbarnett/mpdisplay/src/extras/adafruit_ticks.py"
+    ],
+    [
       "bmp565.py",
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
@@ -15,6 +19,10 @@
     [
       "keypins.py",
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
+    ],
+    [
+      "micropython.py",
+      "github:bdbarnett/mpdisplay/src/extras/micropython.py"
     ],
     [
       "pbm.py",

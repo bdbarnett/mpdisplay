@@ -1,18 +1,6 @@
 {
   "urls": [
     [
-      "adafruit_ticks.py",
-      "github:bdbarnett/mpdisplay/src/lib/adafruit_ticks.py"
-    ],
-    [
-      "micropython.py",
-      "github:bdbarnett/mpdisplay/src/lib/micropython.py"
-    ],
-    [
-      "path.py",
-      "github:bdbarnett/mpdisplay/src/lib/path.py"
-    ],
-    [
       "pydevices/__init__.py",
       "github:bdbarnett/mpdisplay/src/lib/pydevices/__init__.py"
     ],

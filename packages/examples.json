@@ -113,6 +113,10 @@
       "github:bdbarnett/mpdisplay/src/examples/md_to_pbm.py"
     ],
     [
+      "mpdisplay_blocktest.py",
+      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_blocktest.py"
+    ],
+    [
       "mpdisplay_encoder_test.py",
       "github:bdbarnett/mpdisplay/src/examples/mpdisplay_encoder_test.py"
     ],
@@ -257,6 +261,18 @@
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/noto_fonts.py"
     ],
     [
+      "apollo_dsky/Apollo_DSKY_interface.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
+    ],
+    [
+      "apollo_dsky/Apollo_DSKY_interface.svg",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
+    ],
+    [
+      "apollo_dsky/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
+    ],
+    [
       "assets/longstreet.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/longstreet.bmp"
     ],
@@ -275,38 +291,6 @@
     [
       "assets/warrior.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
-    ],
-    [
-      "apollo_dsky/Apollo_DSKY_interface.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
-    ],
-    [
-      "apollo_dsky/Apollo_DSKY_interface.svg",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
-    ],
-    [
-      "apollo_dsky/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
-    ],
-    [
-      "chango/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
-    ],
-    [
-      "chango/chango.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
-    ],
-    [
-      "chango/chango_16.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
-    ],
-    [
-      "chango/chango_32.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
-    ],
-    [
-      "chango/chango_64.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ],
     [
       "proverbs/__init__.py",
@@ -367,6 +351,26 @@
     [
       "tiny_toasters/tiny_toasters_bitmaps.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
+    ],
+    [
+      "chango/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
+    ],
+    [
+      "chango/chango.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
+    ],
+    [
+      "chango/chango_16.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
+    ],
+    [
+      "chango/chango_32.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
+    ],
+    [
+      "chango/chango_64.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ]
   ],
   "deps": [],

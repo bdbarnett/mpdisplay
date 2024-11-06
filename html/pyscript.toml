@@ -17,10 +17,12 @@
 "../src/displays/sdldisplay/_sdl2_lib/_cpython.py" = "/displays/sdldisplay/_sdl2_lib/"
 "../src/displays/sdldisplay/_sdl2_lib/_micropython.py" = "/displays/sdldisplay/_sdl2_lib/"
 
+"../src/extras/adafruit_ticks.py" = "/extras/"
 "../src/extras/bmp565.py" = "/extras/"
 "../src/extras/console.py" = "/extras/"
 "../src/extras/ezfont.py" = "/extras/"
 "../src/extras/keypins.py" = "/extras/"
+"../src/extras/micropython.py" = "/extras/"
 "../src/extras/pbm.py" = "/extras/"
 "../src/extras/png.py" = "/extras/"
 "../src/extras/romfont.py" = "/extras/"
@@ -45,9 +47,6 @@
 "../src/extras/tft_text/fonts/vga2_bold_16x16.py" = "/extras/tft_text/fonts/"
 "../src/extras/tft_text/fonts/vga2_bold_16x32.py" = "/extras/tft_text/fonts/"
 
-"../src/lib/adafruit_ticks.py" = "/lib/"
-"../src/lib/micropython.py" = "/lib/"
-"../src/lib/path.py" = "/lib/"
 "../src/lib/pydevices/__init__.py" = "/lib/pydevices/"
 "../src/lib/pydevices/_numpy.py" = "/lib/pydevices/"
 "../src/lib/pydevices/_viper.py" = "/lib/pydevices/"

@@ -65,6 +65,10 @@
       "github:bdbarnett/mpdisplay/src/displays/sdldisplay/_sdl2_lib/_micropython.py"
     ],
     [
+      "extras/adafruit_ticks.py",
+      "github:bdbarnett/mpdisplay/src/extras/adafruit_ticks.py"
+    ],
+    [
       "extras/bmp565.py",
       "github:bdbarnett/mpdisplay/src/extras/bmp565.py"
     ],
@@ -79,6 +83,10 @@
     [
       "extras/keypins.py",
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
+    ],
+    [
+      "extras/micropython.py",
+      "github:bdbarnett/mpdisplay/src/extras/micropython.py"
     ],
     [
       "extras/pbm.py",
@@ -171,18 +179,6 @@
     [
       "extras/tft_text/fonts/vga2_bold_16x32.py",
       "github:bdbarnett/mpdisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
-    ],
-    [
-      "lib/adafruit_ticks.py",
-      "github:bdbarnett/mpdisplay/src/lib/adafruit_ticks.py"
-    ],
-    [
-      "lib/micropython.py",
-      "github:bdbarnett/mpdisplay/src/lib/micropython.py"
-    ],
-    [
-      "lib/path.py",
-      "github:bdbarnett/mpdisplay/src/lib/path.py"
     ],
     [
       "lib/pydevices/__init__.py",
