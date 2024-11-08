@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pygraphics._area`
+`graphics._area`
 ====================================================
 Area class for defining rectangular areas.
 """

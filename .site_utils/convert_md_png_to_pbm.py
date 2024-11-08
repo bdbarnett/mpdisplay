@@ -1,7 +1,7 @@
 import os
 import lib.path  # noqa: E402, F401
 from png import Reader  # noqa: E402
-from pygraphics import FrameBuffer, MONO_HLSB
+from graphics import FrameBuffer, MONO_HLSB
 
 
 # Source path is in the format:

@@ -33,8 +33,7 @@ Functions:
     init_timer: Initializes the timer to call the tick function at regular intervals.
 """
 
-from pygraphics import FrameBuffer, RGB565
-from pygraphics import Area
+from graphics import Area, FrameBuffer, RGB565
 from pydevices import Events
 from sys import exit
 from time import localtime  # for DigitalClock
@@ -70,7 +69,7 @@ def init_timer(period=10):
         period (int): The period in milliseconds to call the tick function.
     """
     if Display.timer is None:
-        from pytimer import get_timer
+        from timer import get_timer
         Display.timer = get_timer(tick, period)
 
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to", "translate_point"}

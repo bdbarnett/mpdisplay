@@ -6,7 +6,7 @@ from rgbframebuffer import RGBFrameBuffer # type: ignore
 # from pca9554 import PCA9554 # type: ignore
 # from ft6x36 import FT6x36 # type: ignore
 # from fbdisplay import FBDisplay
-# from pydevices.devices import DeviceTypes, Broker
+# import pydevices.device as device
 
 
 # def send_init_sequence(init_sequence, mosi, sck, cs):
@@ -80,10 +80,10 @@ fb = RGBFrameBuffer(**tft_pins, **tft_timings)
 # 
 # touch_rotation_table=(0, 0, 0, 0)
 # 
-# broker = Broker()
+# broker = device.Broker()
 # 
 # touch_dev = broker.create_device(
-#     type=DeviceTypes.TOUCH,
+#     type=device.Types.TOUCH,
 #     read=touch_read_func,
 #     data=display_drv,
 #     data2=touch_rotation_table,

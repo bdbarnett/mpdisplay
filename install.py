@@ -40,10 +40,11 @@ packages = [
     ("displays", "displays"),
     ("examples", "examples"),
     ("extras", "extras"),
+    ("displaybuf", "lib"),
+    ("graphics", "lib"),
+    ("palettes", "lib"),
     ("pydevices", "lib"),
-    ("pygraphics", "lib"),
-    ("pypalettes", "lib"),
-    ("pywidgets", "lib"),
+    ("timer", "lib"),
 ]
 
 # Install each package

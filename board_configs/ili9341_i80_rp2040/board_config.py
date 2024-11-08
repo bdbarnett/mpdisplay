@@ -4,7 +4,7 @@ from i80bus import I80Bus
 from ili9341 import ILI9341
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-from pydevices.devices import DeviceTypes, Broker
+import pydevices.device as device
 
 
 reset=Pin(12, Pin.OUT, value=1)
@@ -42,10 +42,10 @@ touch_drv = FT6x36(i2c)
 touch_read_func=touch_drv.get_positions
 touch_rotation_table=None
 
-broker = Broker()
+broker = device.Broker()
 
 touch_dev = broker.create_device(
-    type=DeviceTypes.TOUCH,
+    type=device.Types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

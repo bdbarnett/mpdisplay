@@ -1,13 +1,13 @@
 """
-Simple calculator example to demonstrate the use of pygraphics.FrameBuffer
+Simple calculator example to demonstrate the use of graphics.FrameBuffer
 """
 
 from board_config import display_drv, broker
 from touch_keypad import Keypad
 from time import sleep
-from pygraphics import FrameBuffer, RGB565
+from graphics import FrameBuffer, RGB565
 from pydevices.keys import Keys
-from pypalettes import get_palette
+from palettes import get_palette
 import asyncio
 
 

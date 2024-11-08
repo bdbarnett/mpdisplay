@@ -1,5 +1,5 @@
 ::: src.lib.pydevices
-::: src.lib.pygraphics
-::: src.lib.pypalettes
+::: src.lib.graphics
+::: src.lib.palettes
 ::: src.lib.pywidgets
 

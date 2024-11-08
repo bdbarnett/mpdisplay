@@ -31,10 +31,10 @@ SOFTWARE.
 
 import io
 import gc
-from pytimer import Timer
+from timer import Timer
 
 try:
-    import pygraphics as framebuf
+    import graphics as framebuf
 except ImportError:
     import framebuf # type: ignore
 

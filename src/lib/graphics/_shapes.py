@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pygraphics._shapes`
+`graphics._shapes`
 ====================================================
 Graphics primitives for drawing on a canvas.
 

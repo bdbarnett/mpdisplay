@@ -25,7 +25,7 @@ while True:
 
 from . import Events
 try:
-    from pygraphics import Area
+    from graphics import Area
 except ImportError:
     print("area module not found.  Keypad.areas attribut will not be available.")
     Area = None

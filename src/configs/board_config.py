@@ -20,30 +20,30 @@ except ImportError:
 
 if _ps:
     from psdisplay import PSDisplay, PSDevices
-    from pydevices.devices import DeviceTypes, Broker
+    import pydevices.device as device
 
 
     display_drv = PSDisplay("display_canvas", width, height)
 
-    broker = Broker()
+    broker = device.Broker()
 
     touch_drv = PSDevices("display_canvas")
 
     touch_dev = broker.create_device(
-        type=DeviceTypes.TOUCH,
+        type=device.Types.TOUCH,
         read=touch_drv.get_mouse_pos,
         data=display_drv,
     )
 elif _jn:
     from jndisplay import JNDisplay
-    from pydevices.devices import Broker
+    import pydevices.device as device
 
-    broker = Broker()
+    broker = device.Broker()
     
     display_drv = JNDisplay(width, height)
 else:
     from dtdisplay import DTDisplay, poll
-    from pydevices.devices import DeviceTypes, Broker
+    import pydevices.device as device
     import sys
 
 
@@ -56,10 +56,10 @@ else:
         scale=scale,
     )
 
-    broker = Broker()
+    broker = device.Broker()
 
     events_dev = broker.create_device(
-        type=DeviceTypes.QUEUE,
+        type=device.Types.QUEUE,
         read=poll,
         data=display_drv,
         # data2=Events.filter,

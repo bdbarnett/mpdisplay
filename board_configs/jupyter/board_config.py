@@ -3,9 +3,9 @@ Board configuration for Jupyter Notebook.
 
 """
 from jndisplay import JNDisplay
-from pydevices.devices import Broker
+import pydevices.device as device
 
 
-broker = Broker()
+broker = device.Broker()
 
 display_drv = JNDisplay(480, 320)

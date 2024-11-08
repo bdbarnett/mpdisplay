@@ -33,7 +33,7 @@ https://github.com/devbis/st7789py_mpy.
 
 """
 
-from pygraphics import Area
+from graphics import Area
 
 
 def bitmap(canvas, bitmap, x, y, index=0):

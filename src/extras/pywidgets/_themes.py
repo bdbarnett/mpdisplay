@@ -5,7 +5,7 @@
 Themes used by the PyWidgets library.  The IconTheme class is used to manage icons and the ColorTheme class is used to manage colors.
 """
 from ._constants import ICON_SIZE
-from pypalettes import get_palette  # noqa: F401
+from palettes import get_palette  # noqa: F401
 try:
     from os import sep  # PyScript doesn't have os.sep
 except ImportError:
@@ -66,7 +66,7 @@ class ColorTheme:
     A class to manage color themes.  The color theme is based on the Material Design color palette.
 
     Args:
-        pal (Palette): A palette object from the pygraphics library.
+        pal (Palette): A palette object from the graphics library.
     """
     def __init__(self, pal):
         self.background = pal.white[0]

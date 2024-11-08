@@ -7,10 +7,10 @@ Then it prints the touch_rotation_table that should be set in board_config.py.
 
 from board_config import display_drv, broker
 from pydevices import Events
-from pygraphics import round_rect, text16
+from graphics import round_rect, text16
 
 if hasattr(display_drv, "set_device_data"):
-    from pydevices.devices import Device_types
+    import pydevices.device as device
 
     demo = False
 else:
@@ -33,7 +33,7 @@ REVERSE_Y = 0b100
 
 def set_rotation_table(table):
     for device in display_drv._devices:
-        if device.type == Device_types.TOUCH:
+        if device.type == device.Types.TOUCH:
             display_drv.set_device_data(device.id, table)
 
 

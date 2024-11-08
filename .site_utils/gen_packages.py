@@ -20,11 +20,11 @@ packages = [
     ["displays", [], []],
     ["examples", [], []],
     ["extras", [], []],
+    ["lib/displaybuf", [], []],
+    ["lib/graphics", [], []],
+    ["lib/palettes", [], []],
     ["lib/pydevices", [], []],
-    ["lib/pygraphics", [], []],
-    ["lib/pypalettes", [], []],
-    ["lib/pytimer", [], []],
-    ["lib/pywidgets", [], []],
+    ["lib/timer", [], []],
     ]
 
 master_exclude = ["examples"]

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pypalettes`
+`palettes`
 ====================================================
 """
 

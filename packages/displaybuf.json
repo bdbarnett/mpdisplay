@@ -1,0 +1,14 @@
+{
+  "urls": [
+    [
+      "displaybuf/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/displaybuf/__init__.py"
+    ],
+    [
+      "displaybuf/_viper.py",
+      "github:bdbarnett/mpdisplay/src/lib/displaybuf/_viper.py"
+    ]
+  ],
+  "deps": [],
+  "version": "0.1"
+}

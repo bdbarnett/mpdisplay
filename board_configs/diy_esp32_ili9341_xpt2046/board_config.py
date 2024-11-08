@@ -4,7 +4,7 @@ from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, SPI
 from xpt2046 import Touch
-from pydevices.devices import DeviceTypes, Broker
+import pydevices.device as device
 
 
 display_bus = SPIBus(
@@ -59,10 +59,10 @@ touch_drv.calibrate(
 touch_read_func=touch_drv.get_touch,
 touch_rotation_table = (0b000, 0b000, 0b000, 0b100)
 
-broker = Broker()
+broker = device.Broker()
 
 touch_dev = broker.create_device(
-    type=DeviceTypes.TOUCH,
+    type=device.Types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

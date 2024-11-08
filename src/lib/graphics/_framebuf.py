@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pygraphics._framebuf`
+`graphics._framebuf`
 ====================================================
 
 *Python framebuf module, based on the micropython framebuf module.

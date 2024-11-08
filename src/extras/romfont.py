@@ -2,8 +2,7 @@
 Read a raw binary font file and creates a Framebuffer font object.
 """
 
-from pygraphics import FrameBuffer, MONO_HLSB, RGB565
-from pygraphics import Area
+from graphics import Area, FrameBuffer, MONO_HLSB, RGB565
 
 
 class ROMFont:

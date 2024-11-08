@@ -120,10 +120,10 @@ class DisplayDriver:
         print(f"{self.__class__.__name__} initialized.")
         if auto_refresh:
             try:
-                from pytimer import get_timer
+                from timer import get_timer
                 self._timer = get_timer(self.show)
             except ImportError:
-                raise ImportError("pytimer is required for auto_refresh")
+                raise ImportError("timer is required for auto_refresh")
         else:
             self._timer = None
         self.init()
@@ -601,10 +601,9 @@ class Events:
         """
         Create new event types and classes for the Events class.
 
-        For example, to create the events and device class for the keypad device:
+        For example, to create the events for the keypad device:
         ```
         from pydevices import Events
-        from pydevices.devices import DeviceTypes
 
         types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
         classes = {

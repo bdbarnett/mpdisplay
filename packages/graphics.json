@@ -1,0 +1,50 @@
+{
+  "urls": [
+    [
+      "graphics/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/__init__.py"
+    ],
+    [
+      "graphics/_area.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_area.py"
+    ],
+    [
+      "graphics/_draw.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_draw.py"
+    ],
+    [
+      "graphics/_files.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_files.py"
+    ],
+    [
+      "graphics/_font.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_font.py"
+    ],
+    [
+      "graphics/_framebuf.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_framebuf.py"
+    ],
+    [
+      "graphics/_framebuf_plus.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_framebuf_plus.py"
+    ],
+    [
+      "graphics/_shapes.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/_shapes.py"
+    ],
+    [
+      "graphics/font_8x14.bin",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x14.bin"
+    ],
+    [
+      "graphics/font_8x16.bin",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x16.bin"
+    ],
+    [
+      "graphics/font_8x8.bin",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x8.bin"
+    ]
+  ],
+  "deps": [],
+  "version": "0.1"
+}

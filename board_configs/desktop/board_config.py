@@ -6,7 +6,7 @@ Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
 from dtdisplay import DTDisplay, poll
-from pydevices.devices import DeviceTypes, Broker
+import pydevices.device as device
 import sys
 
 
@@ -19,10 +19,10 @@ display_drv = DTDisplay(
     scale=1.0,
 )
 
-broker = Broker()
+broker = device.Broker()
 
 events_dev = broker.create_device(
-    type=DeviceTypes.QUEUE,
+    type=device.Types.QUEUE,
     read=poll,
     data=display_drv,
     # data2=Events.filter,

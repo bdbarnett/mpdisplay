@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pygraphics._draw`
+`graphics._draw`
 ====================================================
 Graphics Draw class
 """

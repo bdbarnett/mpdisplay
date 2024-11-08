@@ -3,8 +3,7 @@ Convert material design icons from png to pbm format
 """
 from board_config import display_drv
 from displaybuf import DisplayBuffer
-from pygraphics import FrameBuffer, MONO_HLSB, RGB565
-from pygraphics import Area
+from graphics import Area, FrameBuffer, MONO_HLSB, RGB565
 import png
 import os
 

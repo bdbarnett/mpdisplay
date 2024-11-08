@@ -1,6 +1,6 @@
 from board_config import display_drv
-from pypalettes import get_palette
-from pygraphics import Draw
+from palettes import get_palette
+from graphics import Draw
 import tft_text
 import sys
 import os
@@ -20,7 +20,7 @@ BUFFERED = False
 
 if BUFFERED:
     from displaybuf import DisplayBuffer
-    from pytimer import Timer
+    from timer import Timer
 
 
 font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"

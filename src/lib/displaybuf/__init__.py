@@ -28,7 +28,7 @@ import sys
 from pydevices import color565, color565_swapped, color332
 
 try:
-    import pygraphics as framebuf
+    import graphics as framebuf
 except ImportError:
     import framebuf # type: ignore
 
