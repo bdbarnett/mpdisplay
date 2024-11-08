@@ -259,6 +259,9 @@ class BusDisplay(DisplayDriver):
             y (int): The y-coordinate of the top-left corner of the rectangle.
             w (int): The width of the rectangle in pixels.
             h (int): The height of the rectangle in pixels.
+
+        Returns:
+            (tuple): A tuple containing the x, y, width, and height of the rectangle.
         """
         if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
@@ -270,6 +273,7 @@ class BusDisplay(DisplayDriver):
 
         self._set_window(x1, y1, x2, y2)
         self.send_color(self._write_ram_command, buf)
+        return (x, y, w, h)
 
     def fill_rect(self, x: int, y: int, w: int, h: int, c: int):
         """
@@ -286,6 +290,9 @@ class BusDisplay(DisplayDriver):
             w (int): The width of the rectangle in pixels.
             h (int): The height of the rectangle in pixels.
             c (int): The color of the rectangle.
+
+        Returns:
+            (tuple): A tuple containing the x, y, width, and height of the rectangle.
         """
         color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
         x1 = x + self.colstart
@@ -304,6 +311,7 @@ class BusDisplay(DisplayDriver):
         self.send(_RAMWR)
         for _ in range(passes):
             self.send_color(_RAMCONT, buf)
+        return (x, y, w, h)
 
     def pixel(self, x: int, y: int, c: int):
         """
@@ -313,6 +321,9 @@ class BusDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color of the pixel.
+
+        Returns:
+            (tuple): A tuple containing the x, y, width, and height of the pixel.
         """
         color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
         if self._auto_byte_swap_enabled:
@@ -321,6 +332,7 @@ class BusDisplay(DisplayDriver):
         ypos = y + self.rowstart
         self._set_window(xpos, ypos, xpos, ypos)
         self.send(_RAMWR, color_bytes)
+        return (x, y, 1, 1)
 
     ############### API Method Overrides ################
 

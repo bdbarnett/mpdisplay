@@ -101,26 +101,23 @@ class DisplayBuffer(framebuf.FrameBuffer):
         # allocate the buffer.  Also create the line buffer and lut if needed.
         gc.collect()
         if format == DisplayBuffer.RGB565:
-            self.color_depth = 16
-            self.buffer = bytearray(width * height * BPP)
+            buffer = bytearray(width * height * BPP)
             self.show = self._show16
         elif format == DisplayBuffer.GS8:
-            self.color_depth = 8
             self._stride = stride
             self._bounce_buf = alloc_buffer(width * self._stride * BPP)
-            self.buffer = bytearray(width * height)
+            buffer = bytearray(width * height)
             self.show = self._show8
         elif format == DisplayBuffer.GS4_HMSB:
-            self.color_depth = 4
             DisplayBuffer.lut = bytearray(0x00 for _ in range(32))
             self._stride = stride
             self._bounce_buf = alloc_buffer(width * self._stride * BPP)
-            self.buffer = bytearray(width * height // 2)
+            buffer = bytearray(width * height // 2)
             self.show = self._show4
         else:
             raise ValueError(f"Unsupported format: {format}")
 
-        super().__init__(self.buffer, width, height, format)
+        super().__init__(buffer, width, height, format)
         self._mvb = memoryview(self.buffer)
         self.show()  # Clear the display
         gc.collect()

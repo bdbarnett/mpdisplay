@@ -57,6 +57,9 @@ class JNDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color to fill the rectangle with.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values
         """
         color = c & 0xFFFF
         r, g, b = color_rgb(color)
@@ -67,6 +70,7 @@ class JNDisplay(DisplayDriver):
         bottom = max(y, y2)
         right = max(x, x2)
         self._draw.rectangle([(left, top), (right, bottom)], fill=(r, g, b))
+        return (x, y, w, h)
 
     def blit_rect(self, buf, x, y, w, h):
         """
@@ -78,6 +82,9 @@ class JNDisplay(DisplayDriver):
             y (int): The y-coordinate of the top-left corner of the buffer.
             w (int): The width of the buffer.
             h (int): The height of the buffer.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values.
         """
 
         BPP = self.color_depth // 8
@@ -90,6 +97,7 @@ class JNDisplay(DisplayDriver):
             for i in range(w):
                 color = buf[(j * w + i) * BPP : (j * w + i) * BPP + BPP]
                 self.pixel(x + i, y + j, color)
+        return (x, y, w, h)
 
     def pixel(self, x, y, c):
         """
@@ -100,9 +108,12 @@ class JNDisplay(DisplayDriver):
             y (int): The y-coordinate of the pixel.
             c (int): The color to set the pixel to.
 
+        Returns:
+            (tuple): A tuple containing the x, y, w and h values.
         """
         r, g, b = color_rgb(c)
         self._draw.point((x, y), fill=(r, g, b))
+        return (x, y, 1, 1)
 
     ############### Optional API Methods ################
 

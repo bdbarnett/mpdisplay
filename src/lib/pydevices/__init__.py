@@ -208,7 +208,7 @@ class DisplayDriver:
         Args:
             color (int): The color to fill the display with.
         """
-        self.fill_rect(0, 0, self.width, self.height, color)
+        return self.fill_rect(0, 0, self.width, self.height, color)
 
     def scroll(self, dx, dy) -> None:
         """
@@ -279,6 +279,9 @@ class DisplayDriver:
             w (int): The width to blit.
             h (int): The height to blit.
             key (int): The color key to use for transparency.
+
+        Returns:
+            (tuple): The x, y, w, h coordinates of the blitted area.
         """
         BPP = self.color_depth // 8
         key_bytes = key.to_bytes(BPP, "little")
@@ -309,6 +312,7 @@ class DisplayDriver:
                     colstart = colend
                 else:
                     colstart += BPP
+        return (x, y, w, h)
 
     @property
     def vscroll(self) -> int:

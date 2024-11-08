@@ -65,4 +65,4 @@ else:
         # data2=Events.filter,
     )
 
-display_drv.fill(0xACED)  # Something other than white or black to show display is working
+display_drv.fill(0)

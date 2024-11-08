@@ -53,6 +53,9 @@ class FBDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color to fill the rectangle with.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values
         """
         BPP = self.color_depth // 8
         if self._auto_byte_swap_enabled:
@@ -64,6 +67,7 @@ class FBDisplay(DisplayDriver):
             begin = (_y * self.width + x) * BPP
             end = begin + w * BPP
             self._buffer[begin:end] = color_bytes * w
+        return (x, y, w, h)
 
     def blit_rect(self, buf, x, y, w, h):
         """
@@ -75,6 +79,9 @@ class FBDisplay(DisplayDriver):
             y (int): The y-coordinate of the buffer.
             w (int): The width of the buffer.
             h (int): The height of the buffer.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values.
         """
         if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
@@ -90,6 +97,7 @@ class FBDisplay(DisplayDriver):
             dest_begin = ((y + row) * self.width + x) * BPP
             dest_end = dest_begin + w * BPP
             self._buffer[dest_begin:dest_end] = buf[source_begin:source_end]
+        return (x, y, w, h)
 
     def pixel(self, x, y, c):
         """
@@ -99,6 +107,9 @@ class FBDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color of the pixel.
+
+        Returns:
+            (tuple): A tuple containing the x, y values.
         """
         return self.fill_rect(x, y, 1, 1, c)
 

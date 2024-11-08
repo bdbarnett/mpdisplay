@@ -268,6 +268,7 @@ class Broker(Device):
 
     type = Types.BROKER
     responses = Events.filter
+    Events = Events
 
     def __init__(self):
         super().__init__()

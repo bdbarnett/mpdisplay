@@ -316,7 +316,7 @@ class FrameBuffer(_FrameBuffer):
         """
         return _shapes.arc(self, *args, **kwargs)
     
-    def blit_rect(self, *args, **kwargs):
+    def blit_rect(self, buf, x, y, w, h):
         """
         Blit a rectangular area from a buffer to the canvas.  Uses the canvas's blit_rect method if available,
         otherwise writes directly to the buffer.
@@ -331,7 +331,22 @@ class FrameBuffer(_FrameBuffer):
         Returns:
             (Area): The bounding box of the blitted area.
         """
-        return _shapes.blit_rect(self, *args, **kwargs)
+        BPP = 2
+
+        if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
+            raise ValueError("The provided x, y, w, h values are out of range")
+
+        if len(buf) != w * h * BPP:
+            print(f"len(buf)={len(buf)} w={w} h={h} self.color_depth={self.color_depth}")
+            raise ValueError("The source buffer is not the correct size")
+
+        for row in range(h):
+            source_begin = row * w * BPP
+            source_end = source_begin + w * BPP
+            dest_begin = ((y + row) * self.width + x) * BPP
+            dest_end = dest_begin + w * BPP
+            self.buffer[dest_begin:dest_end] = buf[source_begin:source_end]
+        return Area(x, y, w, h)
 
     def blit_transparent(self, *args, **kwargs):
         """

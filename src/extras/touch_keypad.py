@@ -23,7 +23,7 @@ while True:
         print(key)
 """
 
-from . import Events
+from pydevices import Events
 try:
     from graphics import Area
 except ImportError:
@@ -45,7 +45,7 @@ class Keypad:
         self.key_height = kh = h / rows
         self._translate = translate or (lambda point: point)
         if Area:
-            self.areas = [Area(x + kw * i, y + kh * j, kw, kh) for j in range(rows) for i in range(cols)]
+            self.areas = [Area(int(x + kw * i), int(y + kh * j), int(kw), int(kh)) for j in range(rows) for i in range(cols)]
 
 
     def read(self):

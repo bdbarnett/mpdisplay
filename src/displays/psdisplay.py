@@ -125,10 +125,14 @@ class PSDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color to fill the rectangle with.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values
         """
         r, g, b = color_rgb(c)
         self._ctx.fillStyle = f"rgb({r},{g},{b})"
         self._ctx.fillRect(x, y, w, h)
+        return (x, y, w, h)
 
     def blit_rect(self, buf, x, y, w, h):
         """
@@ -140,6 +144,9 @@ class PSDisplay(DisplayDriver):
             y (int): The y-coordinate of the top-left corner of the buffer.
             w (int): The width of the buffer.
             h (int): The height of the buffer.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values
         """
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
@@ -155,6 +162,7 @@ class PSDisplay(DisplayDriver):
             img_data.data[j + 2] = b
             img_data.data[j + 3] = 255
         self._ctx.putImageData(img_data, x, y)
+        return (x, y, w, h)
 
     def pixel(self, x, y, c):
         """
@@ -164,5 +172,8 @@ class PSDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color to set the pixel to.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w & h values.
         """
-        self.fill_rect(x, y, 1, 1, c)
+        return self.fill_rect(x, y, 1, 1, c)

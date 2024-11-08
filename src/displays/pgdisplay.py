@@ -112,6 +112,9 @@ class PGDisplay(DisplayDriver):
             y (int): The y-coordinate of the buffer.
             w (int): The width to blit.
             h (int): The height to blit.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values.
         """
 
         blitRect = pg.Rect(x, y, w, h)
@@ -123,6 +126,7 @@ class PGDisplay(DisplayDriver):
                 )
                 self._buffer.set_at((x + j, y + i), color)
         self.render(blitRect)
+        return (x, y, w, h)
 
     def fill_rect(self, x: int, y: int, w: int, h: int, c: int):
         """
@@ -137,10 +141,14 @@ class PGDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color of the rectangle.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w, h values.
         """
         fillRect = pg.Rect(x, y, w, h)
         self._buffer.fill(color_rgb(c), fillRect)
         self.render(fillRect)
+        return (x, y, w, h)
 
     def pixel(self, x: int, y: int, c: int):
         """
@@ -150,8 +158,11 @@ class PGDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color of the pixel.
+
+        Returns:
+            (tuple): A tuple containing the x, y, w & h values.
         """
-        self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
+        return self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
 
     ############### API Method Overrides ################
 

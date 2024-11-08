@@ -1,6 +1,5 @@
 """ mpdisplay_simpletest.py """
-from board_config import display_drv, display_bus
-from micropython import schedule
+from board_config import display_drv
 import random
 import time
 import gc

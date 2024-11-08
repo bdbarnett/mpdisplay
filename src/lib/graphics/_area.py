@@ -34,16 +34,21 @@ class Area:
         __str__(): Returns a string representation of the Area object.
     """
 
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y=None, w=None, h=None):
         """
         Initializes a new instance of the Area class.
 
         Args:
-            x (int | float): The x-coordinate of the top-left corner of the area.
+            x (int | float | tuple): The x-coordinate of the top-left corner of the area or
+                a tuple containing the x, y, w, and h coordinates of the area.
             y (int | float): The y-coordinate of the top-left corner of the area.
             w (int | float): The width of the area.
             h (int | float): The height of the area.
         """
+        if isinstance(x, tuple):
+            x, y, w, h = x
+        if y is None or w is None or h is None:
+            raise ValueError("Invalid arguments")
         self.x = x
         self.y = y
         self.w = w
@@ -63,6 +68,7 @@ class Area:
         """
         if isinstance(x, tuple):
             x, y = x
+        print(f"x: {x}, y: {y}, self.x: {self.x}, self.y: {self.y}, self.w: {self.w}, self.h: {self.h}")
         return self.x <= x < self.x + self.w and self.y <= y < self.y + self.h
 
     def contains_area(self, other):

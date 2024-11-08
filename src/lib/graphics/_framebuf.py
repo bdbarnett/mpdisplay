@@ -21,6 +21,7 @@ you need to use the returned Areas so your code will be transferable.
 """
 
 from . import _shapes
+from . import _font
 
 try:
     from ulab import numpy as np  # type: ignore
@@ -586,7 +587,7 @@ class FrameBuffer:
             inverted (bool): If True, draw the text inverted.  Default is False.
             font_file (str): The path to the font file to use.  Default is None.
         """
-        _shapes.text(self, *args, **kwargs)
+        _font.text(self, *args, **kwargs)
 
 
 def FrameBuffer1(buffer, width, height, format, stride=None):

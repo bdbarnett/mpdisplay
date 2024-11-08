@@ -9,6 +9,7 @@ Graphics Draw class
 """
 
 from . import _shapes
+from . import _font
 
 class Draw:
     """
@@ -84,14 +85,14 @@ class Draw:
         return _shapes.vline(self.canvas, x, y, h, c)
 
     def text(self, *args, **kwargs):
-        return _shapes.text(self.canvas, *args, **kwargs)
+        return _font.text(self.canvas, *args, **kwargs)
 
     def text8(self, *args, **kwargs):
-        return _shapes.text8(self.canvas, *args, **kwargs)
+        return _font.text8(self.canvas, *args, **kwargs)
 
     def text14(self, *args, **kwargs):
-        return _shapes.text14(self.canvas, *args, **kwargs)
+        return _font.text14(self.canvas, *args, **kwargs)
 
     def text16(self, *args, **kwargs):
-        return _shapes.text16(self.canvas, *args, **kwargs)
+        return _font.text16(self.canvas, *args, **kwargs)
 

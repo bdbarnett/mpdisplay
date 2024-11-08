@@ -1,7 +1,8 @@
 from board_config import display_drv, broker
 from random import getrandbits
+from graphics import Area
 
-button_area = display_drv.fill_rect(10, 10, 100, 100, 0xF800)
+button_area = Area(display_drv.fill_rect(10, 10, 100, 100, 0xF800))
 while True:
     if evt := broker.poll():
         if evt.type == broker.Events.MOUSEBUTTONDOWN:
