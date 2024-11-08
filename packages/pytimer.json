@@ -1,0 +1,22 @@
+{
+  "urls": [
+    [
+      "pytimer/__init__.py",
+      "github:bdbarnett/mpdisplay/src/lib/pytimer/__init__.py"
+    ],
+    [
+      "pytimer/_librt.py",
+      "github:bdbarnett/mpdisplay/src/lib/pytimer/_librt.py"
+    ],
+    [
+      "pytimer/_sdl2.py",
+      "github:bdbarnett/mpdisplay/src/lib/pytimer/_sdl2.py"
+    ],
+    [
+      "pytimer/_timerbase.py",
+      "github:bdbarnett/mpdisplay/src/lib/pytimer/_timerbase.py"
+    ]
+  ],
+  "deps": [],
+  "version": "0.1"
+}

@@ -23,6 +23,7 @@ packages = [
     ["lib/pydevices", [], []],
     ["lib/pygraphics", [], []],
     ["lib/pypalettes", [], []],
+    ["lib/pytimer", [], []],
     ["lib/pywidgets", [], []],
     ]
 

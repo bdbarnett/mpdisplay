@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pydevices.touch_keypad`
+`touch_keypad`
 ====================================================
 
 Matrix keypad helper for touch displays on PyDevices
@@ -25,7 +25,7 @@ while True:
 
 from . import Events
 try:
-    from pydevices import Area
+    from pygraphics import Area
 except ImportError:
     print("area module not found.  Keypad.areas attribut will not be available.")
     Area = None

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pygraphics.framebuf`
+`pygraphics._framebuf`
 ====================================================
 
 *Python framebuf module, based on the micropython framebuf module.
@@ -20,7 +20,7 @@ you need to use the returned Areas so your code will be transferable.
 
 """
 
-import pygraphics
+from . import _shapes
 
 try:
     from ulab import numpy as np  # type: ignore
@@ -32,21 +32,13 @@ except ImportError:
 
 
 # Framebuf format constants:
-MVLSB = 0  # Single bit displays (like SSD1306 OLED)
-MONO_VLSB = 0  # Single bit displays (like SSD1306 OLED)
-MONO_HLSB = 3  # Single bit files like PBM (Portable BitMap)
-MONO_HMSB = 4  # Single bit displays where the bits in a byte are horizontally mapped. Each byte occupies 8 horizontal pixels with bit 0 being the leftmost.
-RGB565 = 1  # 16-bit color displays
-GS2_HMSB = 5  # 2-bit color displays like the HT16K33 8x8 Matrix
-GS4_HMSB = 2  # Unimplemented!
-GS8 = 6  # Unimplemented!
-
-# Font file constants:
-# To maintain compatibility with MicroPython framebuf, the font should be 8x8, scale 1.
-_FONT_FILE = None  # Use the default font
-_FONT_WIDTH = 8
-_FONT_HEIGHT = 8
-_FONT_SCALE = 1
+MONO_VLSB = 0
+MONO_HLSB = 3
+MONO_HMSB = 4
+RGB565 = 1
+GS2_HMSB = 5
+GS4_HMSB = 2
+GS8 = 6
 
 
 class MVLSBFormat:
@@ -480,7 +472,7 @@ class FrameBuffer:
             key (int): Key value for transparency (default: -1).
             palette (Palette): Palette object for color translation (default: None).
         """
-        pygraphics.blit(self, *args, **kwargs)
+        _shapes.blit(self, *args, **kwargs)
 
     def ellipse(self, *args, **kwargs):
         """
@@ -506,7 +498,7 @@ class FrameBuffer:
             w (int): Width of the ellipse (default: None)
             h (int): Height of the ellipse (default: None)
         """
-        pygraphics.ellipse(self, *args, **kwargs)
+        _shapes.ellipse(self, *args, **kwargs)
 
     def hline(self, *args, **kwargs):
         """
@@ -518,7 +510,7 @@ class FrameBuffer:
             w (int): Width of the line.
             c (int): color.
         """
-        pygraphics.hline(self, *args, **kwargs)
+        _shapes.hline(self, *args, **kwargs)
 
     def line(self, *args, **kwargs):
         """
@@ -532,7 +524,7 @@ class FrameBuffer:
             y1 (int): Y-coordinate of the end of the line.
             c (int): color.
         """
-        pygraphics.line(self, *args, **kwargs)
+        _shapes.line(self, *args, **kwargs)
 
     def poly(self, *args, **kwargs):
         """
@@ -551,7 +543,7 @@ class FrameBuffer:
             c (int): color.
             f (bool): Fill the polygon (default: False).
         """
-        pygraphics.poly(self, *args, **kwargs)
+        _shapes.poly(self, *args, **kwargs)
 
     def rect(self, *args, **kwargs):
         """
@@ -566,7 +558,7 @@ class FrameBuffer:
             c (int): color.
             f (bool): Fill the rectangle (default: False).
         """
-        pygraphics.rect(self, *args, **kwargs)
+        _shapes.rect(self, *args, **kwargs)
 
     def vline(self, *args, **kwargs):
         """
@@ -578,7 +570,7 @@ class FrameBuffer:
             h (int): Height of the line.
             c (int): color.
         """
-        pygraphics.vline(self, *args, **kwargs)
+        _shapes.vline(self, *args, **kwargs)
 
     def text(self, *args, **kwargs):
         """
@@ -594,7 +586,7 @@ class FrameBuffer:
             inverted (bool): If True, draw the text inverted.  Default is False.
             font_file (str): The path to the font file to use.  Default is None.
         """
-        pygraphics.text(self, *args, **kwargs)
+        _shapes.text(self, *args, **kwargs)
 
 
 def FrameBuffer1(buffer, width, height, format, stride=None):

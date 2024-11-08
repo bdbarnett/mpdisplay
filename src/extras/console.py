@@ -30,9 +30,13 @@ SOFTWARE.
 """
 
 import io
-import framebuf
 import gc
-from pydevices.timer import Timer
+from pytimer import Timer
+
+try:
+    import pygraphics as framebuf
+except ImportError:
+    import framebuf # type: ignore
 
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 

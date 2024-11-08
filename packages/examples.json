@@ -5,22 +5,6 @@
       "github:bdbarnett/mpdisplay/src/examples/apollo.py"
     ],
     [
-      "binfont_list.py",
-      "github:bdbarnett/mpdisplay/src/examples/binfont_list.py"
-    ],
-    [
-      "binfont_simpletest.py",
-      "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest.py"
-    ],
-    [
-      "binfont_simpletest2.py",
-      "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest2.py"
-    ],
-    [
-      "binfont_simpletest3.py",
-      "github:bdbarnett/mpdisplay/src/examples/binfont_simpletest3.py"
-    ],
-    [
       "bmp565_blit.py",
       "github:bdbarnett/mpdisplay/src/examples/bmp565_blit.py"
     ],
@@ -85,16 +69,28 @@
       "github:bdbarnett/mpdisplay/src/examples/first_test.py"
     ],
     [
+      "font_list.py",
+      "github:bdbarnett/mpdisplay/src/examples/font_list.py"
+    ],
+    [
+      "font_simpletest.py",
+      "github:bdbarnett/mpdisplay/src/examples/font_simpletest.py"
+    ],
+    [
+      "font_simpletest2.py",
+      "github:bdbarnett/mpdisplay/src/examples/font_simpletest2.py"
+    ],
+    [
+      "font_simpletest3.py",
+      "github:bdbarnett/mpdisplay/src/examples/font_simpletest3.py"
+    ],
+    [
       "fonts.py",
       "github:bdbarnett/mpdisplay/src/examples/fonts.py"
     ],
     [
       "framebuf_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/framebuf_simpletest.py"
-    ],
-    [
-      "gui_test.py",
-      "github:bdbarnett/mpdisplay/src/examples/gui_test.py"
     ],
     [
       "hello.py",

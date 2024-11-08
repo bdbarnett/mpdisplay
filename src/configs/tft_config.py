@@ -19,8 +19,8 @@ if sys.implementation.name == "esp32":
 BUFFERED = False
 
 if BUFFERED:
-    from pydevices.displaybuf import DisplayBuffer
-    from pydevices.timer import Timer
+    from displaybuf import DisplayBuffer
+    from pytimer import Timer
 
 
 font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"

@@ -136,6 +136,7 @@ def timer_settime(tid, period_ms, periodic):
 
 
 class Timer(_TimerBase):
+    """ librt Timer class """
     def _start(self):
         self.id = (
             self.id if self.id != -1 else 0xF

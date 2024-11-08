@@ -3,14 +3,14 @@
 # SPDX-License-Identifier: MIT
 """
 This script gathers font files from a specified directory and displays them on a display driver.
-It uses the BinFont library to load and render the fonts.
+It uses the Font class to load and render the fonts.
 The font files should have a naming convention of "fontname_WxH.bin", where W is the width and H is the height of the font.
 The script iterates through the font files, creates a framebuffer, and renders the font on it.
 The rendered font is then displayed on the display driver.
 """
 from board_config import display_drv
-from pygraphics.binfont import BinFont
-from framebuf import FrameBuffer, RGB565
+from pygraphics import Font
+from pygraphics import FrameBuffer, RGB565
 import os
 
 display_drv.fill(0)
@@ -25,7 +25,7 @@ def main():
         cwd += "/"
 
     # Specify the directory containing the .bin files
-    directory = f"{cwd}lib/pygraphics/binfont"
+    directory = f"{cwd}lib/pygraphics"
 
     def gather_font_files(directory):
         font_files = []
@@ -43,12 +43,11 @@ def main():
 
     for font_file in font_files:
         try:
-            font = BinFont(font_file)
+            font = Font(font_file)
         except RuntimeError as e:
             print(e)
             continue
 
-        width = font.width
         height = font.height
         font_name = font.font_name
 

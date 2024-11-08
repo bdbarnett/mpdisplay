@@ -1,6 +1,6 @@
 import png
 from board_config import display_drv
-from pydevices.displaybuf import DisplayBuffer
+from displaybuf import DisplayBuffer
 from collections import namedtuple
 from time import sleep
 import os

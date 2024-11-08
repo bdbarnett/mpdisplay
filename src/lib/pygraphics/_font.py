@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pygraphics.binfont`
+`pygraphics._font`
 ====================================================
 
 A module to draw text to a canvas using fonts from
@@ -12,7 +12,7 @@ https://github.com/spacerace/romfont
 
 import os
 import struct
-from pydevices import Area
+from ._area import Area
 
 
 if hasattr(os, "sep"):
@@ -27,9 +27,9 @@ font_dir = sep.join(font_dir) + sep
 # Default font file to use if none is specified.
 # Should be 8 pixels wide to keep framebuf.py compatible with MicroPython framebuf module
 _FONTS = {
-    8: f"{font_dir}binfont_8x8.bin",
-    14: f"{font_dir}binfont_8x14.bin",
-    16: f"{font_dir}binfont_8x16.bin",
+    8: f"{font_dir}font_8x8.bin",
+    14: f"{font_dir}font_8x14.bin",
+    16: f"{font_dir}font_8x16.bin",
 }
 _DEFAULT_FONT = _FONTS[8]
 
@@ -49,7 +49,6 @@ def text(*args, height=8, **kwargs):
     if height == 16:
         return text16(*args, **kwargs)
     raise ValueError("Unsupported font height: %d" % height)
-
 
 def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """
@@ -71,15 +70,14 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """
     height=8
     if (
-        not hasattr(BinFont, "_text8font")
-        or (font_file is not None and BinFont._text8font.font_file != font_file)
-        or (height is not None and BinFont._text8font.height != height)
+        not hasattr(Font, "_text8font")
+        or (font_file is not None and Font._text8font.font_file != font_file)
+        or (height is not None and Font._text8font.height != height)
     ):
         # load the font!
-        BinFont._text8font = BinFont(font_file, height)
+        Font._text8font = Font(font_file, height)
 
-    return BinFont._text8font.text(canvas, s, x, y, c, scale, inverted)
-
+    return Font._text8font.text(canvas, s, x, y, c, scale, inverted)
 
 def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """
@@ -101,15 +99,14 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """
     height=14
     if (
-        not hasattr(BinFont, "_text14font")
-        or (font_file is not None and BinFont._text14font.font_file != font_file)
-        or (height is not None and BinFont._text14font.height != height)
+        not hasattr(Font, "_text14font")
+        or (font_file is not None and Font._text14font.font_file != font_file)
+        or (height is not None and Font._text14font.height != height)
     ):
         # load the font!
-        BinFont._text14font = BinFont(font_file, height)
+        Font._text14font = Font(font_file, height)
 
-    return BinFont._text14font.text(canvas, s, x, y, c, scale, inverted)
-
+    return Font._text14font.text(canvas, s, x, y, c, scale, inverted)
 
 def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """
@@ -131,17 +128,17 @@ def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     """
     height = 16
     if (
-        not hasattr(BinFont, "_text16font")
-        or (font_file is not None and BinFont._text16font.font_file != font_file)
-        or (height is not None and BinFont._text16font.height != height)
+        not hasattr(Font, "_text16font")
+        or (font_file is not None and Font._text16font.font_file != font_file)
+        or (height is not None and Font._text16font.height != height)
     ):
         # load the font!
-        BinFont._text16font = BinFont(font_file, height)
+        Font._text16font = Font(font_file, height)
 
-    return BinFont._text16font.text(canvas, s, x, y, c, scale, inverted)
+    return Font._text16font.text(canvas, s, x, y, c, scale, inverted)
 
 
-class BinFont:
+class Font:
     """
     A class to read binary fonts like those found at https://github.com/spacerace/romfont
     and draw text to a canvas.
@@ -155,13 +152,13 @@ class BinFont:
 
     def __init__(self, font_file=None, height=None, cached=True):
         # Optionally specify font_file to override the font file to use (default
-        # is binfont_8x8.bin).  The font format is a binary file with the following
+        # is font_8x8.bin).  The font format is a binary file with the following
         # format:
         # - bytes: font data, in ASCII order covering all 256 characters.
         #          Each character should have a byte for each pixel row of
         #          data (i.e. an 8x14 font has 14 bytes per character).
         # If height is not specified, the height of the font will be determined
-        # from the font file name.  For example a font file named binfont_8x14.bin
+        # from the font file name.  For example a font file named font_8x14.bin
         # will have a height of 14 pixels.  If height is specified it will override
         # the height in the font file name.
         self.font_file = font_file or _FONTS.get(height, _DEFAULT_FONT)

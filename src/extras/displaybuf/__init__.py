@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pydevices.displaybuf`
+`displaybuf`
 ====================================================
 
 FrameBuffer wrapper for using framebuf based GUIs with PyDevices.
@@ -12,7 +12,7 @@ but may also be used without them.
 
 Usage:
     'color_setup.py'
-        from pydevices.displaybuf import DisplayBuffer as SSD
+        from displaybuf import DisplayBuffer as SSD
         from board_config import display_drv
 
         format = SSD.RGB565  # or .GS8 or .GS4_HMSB
@@ -28,7 +28,7 @@ import sys
 from pydevices import color565, color565_swapped, color332
 
 try:
-    from pygraphics import framebuf_plus as framebuf
+    import pygraphics as framebuf
 except ImportError:
     import framebuf # type: ignore
 

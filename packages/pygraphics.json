@@ -5,28 +5,44 @@
       "github:bdbarnett/mpdisplay/src/lib/pygraphics/__init__.py"
     ],
     [
-      "pygraphics/binfont.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/binfont.py"
+      "pygraphics/_area.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_area.py"
     ],
     [
-      "pygraphics/binfont_8x14.bin",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/binfont_8x14.bin"
+      "pygraphics/_draw.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_draw.py"
     ],
     [
-      "pygraphics/binfont_8x16.bin",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/binfont_8x16.bin"
+      "pygraphics/_files.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_files.py"
     ],
     [
-      "pygraphics/binfont_8x8.bin",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/binfont_8x8.bin"
+      "pygraphics/_font.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_font.py"
     ],
     [
-      "pygraphics/framebuf.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/framebuf.py"
+      "pygraphics/_framebuf.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_framebuf.py"
     ],
     [
-      "pygraphics/framebuf_plus.py",
-      "github:bdbarnett/mpdisplay/src/lib/pygraphics/framebuf_plus.py"
+      "pygraphics/_framebuf_plus.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_framebuf_plus.py"
+    ],
+    [
+      "pygraphics/_shapes.py",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/_shapes.py"
+    ],
+    [
+      "pygraphics/font_8x14.bin",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/font_8x14.bin"
+    ],
+    [
+      "pygraphics/font_8x16.bin",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/font_8x16.bin"
+    ],
+    [
+      "pygraphics/font_8x8.bin",
+      "github:bdbarnett/mpdisplay/src/lib/pygraphics/font_8x8.bin"
     ]
   ],
   "deps": [],

@@ -23,4 +23,6 @@ else:
     include("$(PORT_DIR)/boards/manifest.py") # type: ignore  # noqa: F821
 
 package("pydevices", files=None, base_path="./src/lib", opt=None) # type: ignore  # noqa: F821
+package("displaybuf", files=None, base_path="./src/extras", opt=None) # type: ignore  # noqa: F821
+module("touch_keypad.py", base_path="./src/extras") # type: ignore  # noqa: F821
 module("wifi.py", base_path="./src/extras") # type: ignore  # noqa: F821

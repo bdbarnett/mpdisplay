@@ -17,6 +17,10 @@
       "github:bdbarnett/mpdisplay/src/extras/ezfont.py"
     ],
     [
+      "framebuf.py",
+      "github:bdbarnett/mpdisplay/src/extras/framebuf.py"
+    ],
+    [
       "keypins.py",
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
     ],
@@ -45,8 +49,20 @@
       "github:bdbarnett/mpdisplay/src/extras/tft_write.py"
     ],
     [
+      "touch_keypad.py",
+      "github:bdbarnett/mpdisplay/src/extras/touch_keypad.py"
+    ],
+    [
       "wifi.py",
       "github:bdbarnett/mpdisplay/src/extras/wifi.py"
+    ],
+    [
+      "displaybuf/__init__.py",
+      "github:bdbarnett/mpdisplay/src/extras/displaybuf/__init__.py"
+    ],
+    [
+      "displaybuf/_viper.py",
+      "github:bdbarnett/mpdisplay/src/extras/displaybuf/_viper.py"
     ],
     [
       "tft_text/__init__.py",

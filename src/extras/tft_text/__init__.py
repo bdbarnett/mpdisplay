@@ -35,7 +35,7 @@ https://github.com/devbis/st7789py_mpy.
 
 from micropython import const
 from sys import implementation
-from pydevices import Area
+from pygraphics import Area
 
 if implementation.name == "micropython":
     try:

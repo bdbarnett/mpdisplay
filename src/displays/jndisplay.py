@@ -6,7 +6,7 @@
 PyDevices jndisplay
 """
 
-from pydevices import DisplayDriver, Area, color_rgb
+from pydevices import DisplayDriver, color_rgb
 from IPython.display import display, update_display 
 from PIL import Image, ImageDraw 
 
@@ -47,7 +47,7 @@ class JNDisplay(DisplayDriver):
         """
         display(self._buffer, display_id=self._display_id)
 
-    def fill_rect(self, x, y, w, h, c) -> Area:
+    def fill_rect(self, x, y, w, h, c):
         """
         Fills a rectangle with the given color.
 
@@ -57,9 +57,6 @@ class JNDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color to fill the rectangle with.
-
-        Returns:
-            Area: The Area object representing the filled rectangle.
         """
         color = c & 0xFFFF
         r, g, b = color_rgb(color)
@@ -70,9 +67,8 @@ class JNDisplay(DisplayDriver):
         bottom = max(y, y2)
         right = max(x, x2)
         self._draw.rectangle([(left, top), (right, bottom)], fill=(r, g, b))
-        return Area(left, top, right - left, bottom - top)
 
-    def blit_rect(self, buf, x, y, w, h) -> Area:
+    def blit_rect(self, buf, x, y, w, h):
         """
         Blits a buffer to the display at the given coordinates.
 
@@ -82,9 +78,6 @@ class JNDisplay(DisplayDriver):
             y (int): The y-coordinate of the top-left corner of the buffer.
             w (int): The width of the buffer.
             h (int): The height of the buffer.
-
-        Returns:
-            Area: The Area object representing the blitted buffer.
         """
 
         BPP = self.color_depth // 8
@@ -98,9 +91,7 @@ class JNDisplay(DisplayDriver):
                 color = buf[(j * w + i) * BPP : (j * w + i) * BPP + BPP]
                 self.pixel(x + i, y + j, color)
 
-        return Area(x, y, w, h)
-
-    def pixel(self, x, y, c) -> Area:
+    def pixel(self, x, y, c):
         """
         Sets a pixel to the given color.
 
@@ -109,12 +100,9 @@ class JNDisplay(DisplayDriver):
             y (int): The y-coordinate of the pixel.
             c (int): The color to set the pixel to.
 
-        Returns:
-            Area: The Area object representing the set pixel.
         """
         r, g, b = color_rgb(c)
         self._draw.point((x, y), fill=(r, g, b))
-        return Area(x, y, 1, 1)
 
     ############### Optional API Methods ################
 

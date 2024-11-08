@@ -19,34 +19,6 @@
     [
       "pydevices/keys.py",
       "github:bdbarnett/mpdisplay/src/lib/pydevices/keys.py"
-    ],
-    [
-      "pydevices/touch_keypad.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/touch_keypad.py"
-    ],
-    [
-      "pydevices/timer/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/timer/__init__.py"
-    ],
-    [
-      "pydevices/timer/_librt.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/timer/_librt.py"
-    ],
-    [
-      "pydevices/timer/_sdl2.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/timer/_sdl2.py"
-    ],
-    [
-      "pydevices/timer/_timerbase.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/timer/_timerbase.py"
-    ],
-    [
-      "pydevices/displaybuf/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/displaybuf/__init__.py"
-    ],
-    [
-      "pydevices/displaybuf/_viper.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/displaybuf/_viper.py"
     ]
   ],
   "deps": [],

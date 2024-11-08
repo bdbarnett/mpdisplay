@@ -4,7 +4,7 @@ This is a simple test script that tests the basic functionality of the timer cla
 It creates a periodic timer in a class instance and a one-shot timer that stops the periodic timer.
 """
 
-from pydevices.timer import Timer
+from pytimer import Timer
 from sys import platform
 
 class TimerTest:

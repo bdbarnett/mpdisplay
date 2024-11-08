@@ -6,10 +6,7 @@
 PyDevices fbdisplay
 """
 
-from pydevices import DisplayDriver, Area, np, swap_bytes
-
-if not np:
-    raise ImportError("This module depends on the numpy module. Please install it.")
+from pydevices import DisplayDriver, swap_bytes
 
 
 class FBDisplay(DisplayDriver):
@@ -46,7 +43,7 @@ class FBDisplay(DisplayDriver):
         """
         pass
 
-    def fill_rect(self, x, y, w, h, c) -> Area:
+    def fill_rect(self, x, y, w, h, c):
         """
         Fills a rectangle with the given color.
 
@@ -56,28 +53,19 @@ class FBDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color to fill the rectangle with.
-
-        Returns:
-            Area: The Area object representing the filled rectangle.
         """
+        BPP = self.color_depth // 8
         if self._auto_byte_swap_enabled:
-            c = ((c & 0xFF00) >> 8) | ((c & 0x00FF) << 8)
+            color_bytes = (c & 0xFFFF).to_bytes(2, "big")
+        else:
+            color_bytes = (c & 0xFFFF).to_bytes(2, "little")
 
-        x2 = x + w
-        y2 = y + h
-        top = min(y, y2)
-        left = min(x, x2)
-        bottom = max(y, y2)
-        right = max(x, x2)
-        color = c & 0xFFFF
-        arr = np.frombuffer(self._buffer, dtype=np.uint16)
         for _y in range(y, y + h):
-            begin = _y * self.width + left
-            end = begin + w
-            arr[begin:end] = color
-        return Area(left, top, right - left, bottom - top)
+            begin = (_y * self.width + x) * BPP
+            end = begin + w * BPP
+            self._buffer[begin:end] = color_bytes * w
 
-    def blit_rect(self, buf, x, y, w, h) -> Area:
+    def blit_rect(self, buf, x, y, w, h):
         """
         Blits a buffer to the display at the given coordinates.
 
@@ -87,9 +75,6 @@ class FBDisplay(DisplayDriver):
             y (int): The y-coordinate of the buffer.
             w (int): The width of the buffer.
             h (int): The height of the buffer.
-
-        Returns:
-            Area: The Area object representing the blitted buffer.
         """
         if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
@@ -99,16 +84,14 @@ class FBDisplay(DisplayDriver):
             raise ValueError("The provided x, y, w, h values are out of range")
         if len(buf) != w * h * BPP:
             raise ValueError("The source buffer is not the correct size")
-        arr = np.frombuffer(self._buffer, dtype=np.uint8)
         for row in range(h):
             source_begin = row * w * BPP
             source_end = source_begin + w * BPP
             dest_begin = ((y + row) * self.width + x) * BPP
             dest_end = dest_begin + w * BPP
-            arr[dest_begin:dest_end] = buf[source_begin:source_end]
-        return Area(x, y, w, h)
+            self._buffer[dest_begin:dest_end] = buf[source_begin:source_end]
 
-    def pixel(self, x, y, c) -> Area:
+    def pixel(self, x, y, c):
         """
         Sets the color of the pixel at the given coordinates.
 
@@ -116,9 +99,6 @@ class FBDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color of the pixel.
-
-        Returns:
-            Area: The Area object representing the pixel.
         """
         return self.fill_rect(x, y, 1, 1, c)
 

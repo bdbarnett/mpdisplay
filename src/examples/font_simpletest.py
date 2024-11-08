@@ -1,15 +1,17 @@
 """
-binfont_simpletest.py -- Simple test of the BinFont class.
+font_simpletest.py -- Simple test of the Font class.
 inspired by Russ Hughes's hello.py
 
-Draws directly to the display without using a framebuffer.
+Draws on a framebuffer and blits it to the display.
 """
 
 from board_config import display_drv
-from pygraphics.binfont import BinFont
+from pygraphics import Font
 import random
+from pygraphics import FrameBuffer, RGB565
 from pypalettes import get_palette
 import os
+
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel
 
@@ -18,7 +20,13 @@ def write(font, string, x, y, fg_color, bg_color, scale):
     """
     Write text to the display.
     """
-    font.text(display_drv, string, x, y, fg_color, scale)
+    buffer_width = font.width * scale * len(string)
+    buffer_height = font.height * scale
+    buffer = bytearray(buffer_width * buffer_height * BPP)
+    fb = FrameBuffer(buffer, buffer_width, buffer_height, RGB565)
+    fb.fill(bg_color)
+    font.text(fb, string, 0, 0, fg_color, scale)
+    display_drv.blit_rect(buffer, x, y, buffer_width, buffer_height)
 
 
 def main():
@@ -29,15 +37,15 @@ def main():
 
     write_text = "Hello!"
     text_len = len(write_text)
-    iterations = 32
+    iterations = 96
 
     cwd = os.getcwd()
     if cwd[-1] != "/":
         cwd += "/"
 
-    font1 = BinFont(f"{cwd}lib/pygraphics/binfont_8x8.bin")
-    font2 = BinFont(f"{cwd}lib/pygraphics/binfont_8x14.bin")
-    font3 = BinFont(f"{cwd}lib/pygraphics/binfont_8x16.bin")
+    font1 = Font(f"{cwd}lib/pygraphics/font_8x8.bin")
+    font2 = Font(f"{cwd}lib/pygraphics/font_8x14.bin")
+    font3 = Font(f"{cwd}lib/pygraphics/font_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.width for font in fonts])

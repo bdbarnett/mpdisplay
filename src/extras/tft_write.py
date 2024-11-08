@@ -34,7 +34,7 @@ https://github.com/devbis/st7789py_mpy.
 """
 
 from micropython import const
-from pydevices import Area
+from pygraphics import Area
 
 
 WHITE = const(0xFFFF)

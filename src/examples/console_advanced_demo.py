@@ -6,7 +6,7 @@ from board_config import display_drv
 from pypalettes import get_palette
 from console import Console
 from sys import implementation, platform
-from pygraphics.binfont import text16
+from pygraphics import text16
 
 SSID = "<ssid>"
 PASSPHRASE = "<passphrase>"

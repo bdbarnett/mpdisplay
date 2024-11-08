@@ -6,7 +6,7 @@
 PyDevices busdisplay
 """
 
-from pydevices import DisplayDriver, Area, swap_bytes
+from pydevices import DisplayDriver, swap_bytes
 from micropython import const 
 import struct
 import sys
@@ -244,7 +244,7 @@ class BusDisplay(DisplayDriver):
         # Set the display inversion mode
         self.invert_colors(self._invert)
 
-    def blit_rect(self, buf: memoryview, x: int, y: int, w: int, h: int) -> Area:
+    def blit_rect(self, buf: memoryview, x: int, y: int, w: int, h: int):
         """
         Blit a buffer to the display.
 
@@ -259,9 +259,6 @@ class BusDisplay(DisplayDriver):
             y (int): The y-coordinate of the top-left corner of the rectangle.
             w (int): The width of the rectangle in pixels.
             h (int): The height of the rectangle in pixels.
-
-        Returns:
-            Area: The area of the display that was updated.
         """
         if self._auto_byte_swap_enabled:
             swap_bytes(buf, w * h)
@@ -273,9 +270,8 @@ class BusDisplay(DisplayDriver):
 
         self._set_window(x1, y1, x2, y2)
         self.send_color(self._write_ram_command, buf)
-        return Area(x1, y1, w, h)
 
-    def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
+    def fill_rect(self, x: int, y: int, w: int, h: int, c: int):
         """
         Draw a rectangle at the given location, size and filled with color.
 
@@ -290,9 +286,6 @@ class BusDisplay(DisplayDriver):
             w (int): The width of the rectangle in pixels.
             h (int): The height of the rectangle in pixels.
             c (int): The color of the rectangle.
-
-        Returns:
-            Area: The area of the display that was updated.
         """
         color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
         x1 = x + self.colstart
@@ -311,9 +304,8 @@ class BusDisplay(DisplayDriver):
         self.send(_RAMWR)
         for _ in range(passes):
             self.send_color(_RAMCONT, buf)
-        return Area(x, y, w, h)
 
-    def pixel(self, x: int, y: int, c: int) -> Area:
+    def pixel(self, x: int, y: int, c: int):
         """
         Set a pixel on the display.
 
@@ -321,9 +313,6 @@ class BusDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color of the pixel.
-
-        Returns:
-            Area: The area of the display that was updated.
         """
         color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
         if self._auto_byte_swap_enabled:
@@ -332,7 +321,6 @@ class BusDisplay(DisplayDriver):
         ypos = y + self.rowstart
         self._set_window(xpos, ypos, xpos, ypos)
         self.send(_RAMWR, color_bytes)
-        return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 

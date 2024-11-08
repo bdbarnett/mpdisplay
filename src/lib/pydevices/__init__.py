@@ -24,7 +24,7 @@ except ImportError:
 
 np = False
 try:
-    import ulab.numpy as np 
+    import ulab.numpy as np  # type: ignore
 except ImportError:
     try:
         import numpy as np 
@@ -110,248 +110,6 @@ def color_rgb(color):
     return (r, g, b)
 
 
-class Area:
-    """
-    Represents a rectangular area defined by its position and dimensions.
-    """
-
-    def __init__(self, x, y, w, h):
-        """
-        Initializes a new instance of the Area class.
-
-        Args:
-            x (int | float): The x-coordinate of the top-left corner of the area.
-            y (int | float): The y-coordinate of the top-left corner of the area.
-            w (int | float): The width of the area.
-            h (int | float): The height of the area.
-        """
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-
-    def contains(self, x, y=None):
-        """
-        Checks if the specified point is contained within the area.
-
-        Args:
-            x (int | tuple): The x-coordinate of the point to check
-                or a tuple containing the x and y coordinates of the point.
-            y (int): The y-coordinate of the point to check.
-
-        Returns:
-            (bool): True if the point is contained within the area, False otherwise.
-        """
-        if isinstance(x, tuple):
-            x, y = x
-        return self.x <= x < self.x + self.w and self.y <= y < self.y + self.h
-
-    def contains_area(self, other):
-        """
-        Checks if the specified area is contained within the area.
-
-        Args:
-            other (Area): The other area to check.
-
-        Returns:
-            (bool): True if the other area is contained within the area, False otherwise.
-        """
-        return (
-            self.x <= other.x
-            and self.y <= other.y
-            and self.x + self.w >= other.x + other.w
-            and self.y + self.h >= other.y + other.h
-        )
-
-    def intersects(self, other):
-        """
-        Checks if the current Area object intersects with another Area object.
-
-        Args:
-            other (Area): The other Area object to check for overlap.
-
-        Returns:
-            (bool): True if the two Area objects intersect, False otherwise.
-        """
-        if self.x + self.w <= other.x or other.x + other.w <= self.x:
-            return False
-        if self.y + self.h <= other.y or other.y + other.h <= self.y:
-            return False
-        return True
-    
-    def touches_or_intersects(self, other):
-        """
-        Checks if the current Area object touches or intersects with another Area object.
-
-        Args:
-            other (Area): The other Area object to check for overlap or touch.
-
-        Returns:
-            (bool): True if the two Area objects touch or intersect, False otherwise.
-        """
-        if self.x + self.w < other.x or other.x + other.w < self.x:
-            return False
-        if self.y + self.h < other.y or other.y + other.h < self.y:
-            return False
-        return True
-
-    def shift(self, dx=0, dy=0):
-        """
-        Returns a new Area shifted by the specified amount in the x and y directions.
-
-        Args:
-            dx (int | float): The amount to shift the area in the x direction.
-            dy (int | float): The amount to shift the area in the y direction.
-
-        Returns:
-            (Area): A new Area object shift by the specified amount in the x and y directions.
-        """
-        return Area(self.x + dx, self.y + dy, self.w, self.h)
-
-    def clip(self, other):
-        """
-        Clips the current Area object to the specified Area object.
-
-        Args:
-            other (Area): The other Area object to clip to.
-
-        Returns:
-            (Area): A new Area object representing the clipped area.
-        """
-        x = max(self.x, other.x)
-        y = max(self.y, other.y)
-        w = min(self.x + self.w, other.x + other.w) - x
-        h = min(self.y + self.h, other.y + other.h) - y
-        return Area(x, y, w, h)
-    
-    def offset(self, d1, d2=None, d3=None, d4=None):
-        """
-        Returns a new Area offset by the specified amount(s).
-
-        If only one argument is provided, it is used as the offset in all 4 directions.
-        If two arguments are provided, the first is used as the offset in the x direction and the second as the offset in the y direction.
-        If three arguments are provided, they are used as the offsets in the left, top/bottom, and right directions, respectively.
-        If four arguments are provided, they are used as the offsets in the left, top, right, and bottom directions, respectively.
-
-        Args:
-            d1 (int | float): The offset in the x direction or the offset in all 4 directions.
-            d2 (int | float): The offset in the y direction or the offset in the top/bottom direction.
-            d3 (int | float): The offset in the right direction.
-            d4 (int | float): The offset in the bottom direction.
-
-        Returns:
-            (Area): A new Area object offset by the specified amount(s).
-        """
-        if d2 is None:
-            d2 = d3 = d4 = d1
-        elif d3 is None:
-            d3 = d1
-            d4 = d2
-        elif d4 is None:
-            d4 = d2
-        return Area(self.x - d1, self.y - d2, self.w + d1 + d3, self.h + d2 + d4)
-    
-    def inset(self, d1, d2=None, d3=None, d4=None):
-        """
-        Returns a new Area inset by the specified amount(s).
-
-        If only one argument is provided, it is used as the inset in all 4 directions.
-        If two arguments are provided, the first is used as the inset in the x direction and the second as the inset in the y direction.
-        If three arguments are provided, they are used as the insets in the left, top/bottom, and right directions, respectively.
-        If four arguments are provided, they are used as the insets in the left, top, right, and bottom directions, respectively.
-
-        Args:
-            d1 (int | float): The inset in the x direction or the inset in all 4 directions.
-            d2 (int | float): The inset in the y direction or the inset in the top/bottom direction.
-            d3 (int | float): The inset in the right direction.
-            d4 (int | float): The inset in the bottom direction.
-
-        Returns:
-            (Area): A new Area object inset by the specified amount(s).
-        """
-        if d2 is None:
-            d2 = d3 = d4 = d1
-        elif d3 is None:
-            d3 = d1
-            d4 = d2
-        elif d4 is None:
-            d4 = d2
-        return Area(self.x + d1, self.y + d2, self.w - d1 - d3, self.h - d2 - d4)
-
-    def __eq__(self, other):
-        """
-        Checks if the current Area object is equal to another Area object.
-
-        Args:
-            other (Area): The other Area object to compare with.
-
-        Returns:
-            (bool): True if the two Area objects are equal, False otherwise.
-        """
-        return (
-            self.x == other.x
-            and self.y == other.y
-            and self.w == other.w
-            and self.h == other.h
-        )
-
-    def __ne__(self, other):
-        """
-        Checks if the current Area object is not equal to another Area object.
-
-        Args:
-            other (Area): The other Area object to compare with.
-
-        Returns:
-            (bool): True if the two Area objects are not equal, False otherwise.
-        """
-        return not self.__eq__(other)
-
-    def __add__(self, other):
-        """
-        Computes the union of the current Area object and another Area object.
-
-        Args:
-            other (Area): The other Area object to compute the union with.
-
-        Returns:
-            (Area): A new Area object representing the union of the two areas.
-        """
-        return Area(
-            min(self.x, other.x),
-            min(self.y, other.y),
-            max(self.x + self.w, other.x + other.w) - min(self.x, other.x),
-            max(self.y + self.h, other.y + other.h) - min(self.y, other.y),
-        )
-
-    def __iter__(self):
-        """
-        Returns an iterator over the elements of the Area object.
-
-        Returns:
-            (iterator): An iterator over the elements of the Area object.
-        """
-        return iter((self.x, self.y, self.w, self.h))
-
-    def __repr__(self):
-        """
-        Returns a string representation of the Area object.
-
-        Returns:
-            (str): A string representation of the Area object.
-        """
-        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
-
-    def __str__(self):
-        """
-        Returns a string representation of the Area object.
-
-        Returns:
-            (str): A string representation of the Area object.
-        """
-        return f"Area({self.x}, {self.y}, {self.w}, {self.h})"
-
-
 class DisplayDriver:
     def __init__(self, auto_refresh=False):
         gc.collect()
@@ -361,8 +119,11 @@ class DisplayDriver:
         self._touch_device = None
         print(f"{self.__class__.__name__} initialized.")
         if auto_refresh:
-            from .timer import get_timer
-            self._timer = get_timer(self.show)
+            try:
+                from pytimer import get_timer
+                self._timer = get_timer(self.show)
+            except ImportError:
+                raise ImportError("pytimer is required for auto_refresh")
         else:
             self._timer = None
         self.init()
@@ -440,18 +201,14 @@ class DisplayDriver:
             raise ValueError("touch_device must have a rotation attribute")
         self._touch_device.rotation = self.rotation
 
-    def fill(self, color) -> Area:
+    def fill(self, color):
         """
         Fill the display with a color.
 
         Args:
             color (int): The color to fill the display with.
-
-        Returns:
-            (Area): The area that was filled.
         """
         self.fill_rect(0, 0, self.width, self.height, color)
-        return Area(0, 0, self.width, self.height)
 
     def scroll(self, dx, dy) -> None:
         """
@@ -511,7 +268,7 @@ class DisplayDriver:
 
     def blit_transparent(
         self, buf: memoryview, x: int, y: int, w: int, h: int, key: int
-    ) -> Area:
+    ):
         """
         Blit a buffer with transparency.
 
@@ -522,9 +279,6 @@ class DisplayDriver:
             w (int): The width to blit.
             h (int): The height to blit.
             key (int): The color key to use for transparency.
-
-        Returns:
-            (Area): The area that was blitted.
         """
         BPP = self.color_depth // 8
         key_bytes = key.to_bytes(BPP, "little")
@@ -555,7 +309,6 @@ class DisplayDriver:
                     colstart = colend
                 else:
                     colstart += BPP
-        return Area(x, y, w, h)
 
     @property
     def vscroll(self) -> int:
@@ -644,34 +397,34 @@ class DisplayDriver:
         self.vscroll = value
 
     @property
-    def tfa_area(self) -> Area:
+    def tfa_area(self):
         """
         The top fixed area as an Area object.
 
         Returns:
-            (Area): The top fixed area.
+            (tuple): The top fixed area.
         """
-        return Area(0, 0, self.width, self.tfa)
+        return (0, 0, self.width, self.tfa)
     
     @property
-    def vsa_area(self) -> Area:
+    def vsa_area(self):
         """
         The vertical scroll area as an Area object.
 
         Returns:
-            (Area): The vertical scroll area.
+            (tuple): The vertical scroll area.
         """
-        return Area(0, self.tfa, self.width, self.vsa)
-    
+        return (0, self.tfa, self.width, self.vsa)
+ 
     @property
-    def bfa_area(self) -> Area:
+    def bfa_area(self):
         """
         The bottom fixed area as an Area object.
 
         Returns:
-            (Area): The bottom fixed area.
+            (tuple): The bottom fixed area.
         """
-        return Area(0, self.tfa + self.vsa, self.width, self.bfa)
+        return (0, self.tfa + self.vsa, self.width, self.bfa)
     
 
     ############### Common API Methods, sometimes overridden ################

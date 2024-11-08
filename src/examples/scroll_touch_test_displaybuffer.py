@@ -2,7 +2,7 @@ from board_config import display_drv, broker
 from pygraphics import Draw
 from pypalettes import get_palette
 from random import getrandbits
-from pydevices.displaybuf import DisplayBuffer
+from displaybuf import DisplayBuffer
 
 
 canvas = DisplayBuffer(display_drv)

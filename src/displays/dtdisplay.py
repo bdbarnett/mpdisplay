@@ -2,7 +2,7 @@
 PyDevices dtdisplay
 """
 
-from pydevices import DisplayDriver, Area, color_rgb  # noqa: F401
+from pydevices import DisplayDriver, color_rgb  # noqa: F401
 
 _poller = None
 

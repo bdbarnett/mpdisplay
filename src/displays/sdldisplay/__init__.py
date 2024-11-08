@@ -6,7 +6,7 @@
 PyDevices dtdisplay.sdldisplay
 """
 
-from pydevices import DisplayDriver, Area, color_rgb, Events
+from pydevices import DisplayDriver, color_rgb, Events
 from sys import implementation
 from ._sdl2_lib import (
     SDL_Init,
@@ -243,7 +243,7 @@ class SDLDisplay(DisplayDriver):
         )  # Set the vertical scroll definition without calling .render()
         self.vscsad(False)  # Scroll offset; set to False to disable scrolling
 
-    def blit_rect(self, buffer: memoryview, x: int, y: int, w: int, h: int) -> Area:
+    def blit_rect(self, buffer: memoryview, x: int, y: int, w: int, h: int):
         """
         Blits a buffer to the display.
 
@@ -253,9 +253,6 @@ class SDLDisplay(DisplayDriver):
             y (int): The y-coordinate of the buffer.
             w (int): The width to blit.
             h (int): The height to blit.
-
-        Returns:
-            Area: The area of the buffer that was blitted.
         """
         pitch = int(w * self.color_depth // 8)
         if len(buffer) != pitch * h:
@@ -277,9 +274,8 @@ class SDLDisplay(DisplayDriver):
         else:
             retcheck(SDL_UpdateTexture(self._buffer, blitRect, buffer, pitch))
         self.render(blitRect)
-        return Area(x, y, w, h)
 
-    def fill_rect(self, x: int, y: int, w: int, h: int, c: int) -> Area:
+    def fill_rect(self, x: int, y: int, w: int, h: int, c: int):
         """
         Fill a rectangle with a color.
 
@@ -292,9 +288,6 @@ class SDLDisplay(DisplayDriver):
             w (int): The width of the rectangle.
             h (int): The height of the rectangle.
             c (int): The color of the rectangle.
-
-        Returns:
-            Area: The area of the rectangle that was filled.
         """
         fillRect = SDL_Rect(x, y, w, h)
         r, g, b = color_rgb(c)
@@ -312,9 +305,8 @@ class SDLDisplay(DisplayDriver):
             SDL_SetRenderTarget(self._renderer, None)
         )  # Reset the render target back to the window
         self.render(fillRect)
-        return Area(x, y, w, h)
 
-    def pixel(self, x: int, y: int, c: int) -> Area:
+    def pixel(self, x: int, y: int, c: int):
         """
         Set a pixel on the display.
 
@@ -322,12 +314,8 @@ class SDLDisplay(DisplayDriver):
             x (int): The x-coordinate of the pixel.
             y (int): The y-coordinate of the pixel.
             c (int): The color of the pixel.
-
-        Returns:
-            Area: The area of the pixel that was set.
         """
         self.blit_rect(bytearray(c.to_bytes(2, "little")), x, y, 1, 1)
-        return Area(x, y, 1, 1)
 
     ############### API Method Overrides ################
 

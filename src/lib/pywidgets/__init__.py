@@ -33,8 +33,9 @@ Functions:
     init_timer: Initializes the timer to call the tick function at regular intervals.
 """
 
-from pygraphics.framebuf_plus import FrameBuffer, RGB565
-from pydevices import Events, Area
+from pygraphics import FrameBuffer, RGB565
+from pygraphics import Area
+from pydevices import Events
 from sys import exit
 from time import localtime  # for DigitalClock
 from random import getrandbits  # for MARK_UPDATES
@@ -69,7 +70,7 @@ def init_timer(period=10):
         period (int): The period in milliseconds to call the tick function.
     """
     if Display.timer is None:
-        from pydevices.timer import get_timer
+        from pytimer import get_timer
         Display.timer = get_timer(tick, period)
 
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "tfa_area", "bfa_area", "vsa_area", "scroll_by", "scroll_to", "translate_point"}
@@ -662,9 +663,9 @@ class Screen(Widget):
         self.partitioned = self.display.tfa > 0 or self.display.bfa > 0
 
         if self.partitioned:
-            self.top = Widget(self, *self.display.tfa_area, fg=parent.color_theme.on_primary, bg=parent.color_theme.primary)
-            self.main = Widget(self, *self.display.vsa_area)
-            self.bottom = Widget(self, *self.display.bfa_area, fg=parent.color_theme.on_primary, bg=parent.color_theme.primary)
+            self.top = Widget(self, *Area(self.display.tfa_area), fg=parent.color_theme.on_primary, bg=parent.color_theme.primary)
+            self.main = Widget(self, *Area(self.display.vsa_area))
+            self.bottom = Widget(self, *Area(self.display.bfa_area), fg=parent.color_theme.on_primary, bg=parent.color_theme.primary)
 
 
 class Button(Widget):
