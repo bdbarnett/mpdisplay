@@ -407,6 +407,10 @@
     [
       "lib/timer/_timerbase.py",
       "github:bdbarnett/mpdisplay/src/lib/timer/_timerbase.py"
+    ],
+    [
+      "path.py",
+      "github:bdbarnett/mpdisplay/src/path.py"
     ]
   ],
   "version": "0.1"

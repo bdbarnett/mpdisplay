@@ -109,3 +109,4 @@
 "../src/lib/timer/_sdl2.py" = "/lib/timer/"
 "../src/lib/timer/_timerbase.py" = "/lib/timer/"
 
+"../src/path.py" = "/"

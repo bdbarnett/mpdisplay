@@ -34,7 +34,7 @@ master_exclude = ["examples"]
 package_dicts = dict()
 master_package =  {"urls": [], "version": package_ver}
 master_toml = ["[files]"]
-extra_files_added_to_master = []
+extra_files_added_to_master = ["path.py"]
 
 # Iterate over the packages and create the package files
 for package_path, deps, extra_files in packages:
@@ -96,6 +96,18 @@ for package_path, deps, extra_files in packages:
     # Add a blank line to the master toml to make it easier to read
     if package_name not in master_exclude:
         master_toml.append("")
+
+# add extra files to the master package and toml
+for extra_file in extra_files_added_to_master:
+    src_file = repo_url + src_dir + extra_file
+    master_dest_file = os.path.relpath(extra_file, repo_dir)
+    master_package["urls"].append([master_dest_file, src_file])
+
+    toml_dest_dir = "/" + "/".join(master_dest_file.split("/")[:-1]) + "/"
+    if toml_dest_dir == "//":
+        toml_dest_dir = "/"
+    toml_src_file = src_dir + master_dest_file
+    master_toml.append(f'"../{toml_src_file}" = "{toml_dest_dir}"')
 
 # Add the master package to the package dictionaries
 package_dicts[master_package_name] = master_package
