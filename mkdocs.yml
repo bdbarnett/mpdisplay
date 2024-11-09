@@ -35,7 +35,8 @@ plugins:
           separate_signature: true
           show_category_heading: true
           # heading_level: 1
-
+- mkdocs-pyscript:
+    pyscript_version: "unstable"
 
 nav:
 # rest of the navigation...
