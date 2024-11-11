@@ -27,7 +27,7 @@ from pydevices import Events
 try:
     from graphics import Area
 except ImportError:
-    print("area module not found.  Keypad.areas attribut will not be available.")
+    print("touch_keypad:  graphics module not found.  Keypad.areas attribute will not be available.")
     Area = None
 
 
