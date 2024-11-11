@@ -636,7 +636,7 @@ class Display(Widget):
     def __getattr__(self, name):
         if name in _display_drv_get_attrs:
             return getattr(self.display_drv, name)
-        raise AttributeError(f"{self.__class__.__name__} object has no attribute '{name}'")
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
     def __setattr__(self, name, value):
         if name in _display_drv_set_attrs:
