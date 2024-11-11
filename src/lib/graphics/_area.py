@@ -68,7 +68,6 @@ class Area:
         """
         if isinstance(x, tuple):
             x, y = x
-        print(f"x: {x}, y: {y}, self.x: {self.x}, self.y: {self.y}, self.w: {self.w}, self.h: {self.h}")
         return self.x <= x < self.x + self.w and self.y <= y < self.y + self.h
 
     def contains_area(self, other):
