@@ -33,16 +33,16 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/_shapes.py"
     ],
     [
-      "graphics/font_8x14.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x14.bin"
+      "graphics/font_8x14.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x14.py"
     ],
     [
-      "graphics/font_8x16.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x16.bin"
+      "graphics/font_8x16.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x16.py"
     ],
     [
-      "graphics/font_8x8.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x8.bin"
+      "graphics/font_8x8.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x8.py"
     ]
   ],
   "deps": [],

@@ -265,6 +265,18 @@
       "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
     ],
     [
+      "assets/font_8x14.bin",
+      "github:bdbarnett/mpdisplay/src/examples/assets/font_8x14.bin"
+    ],
+    [
+      "assets/font_8x16.bin",
+      "github:bdbarnett/mpdisplay/src/examples/assets/font_8x16.bin"
+    ],
+    [
+      "assets/font_8x8.bin",
+      "github:bdbarnett/mpdisplay/src/examples/assets/font_8x8.bin"
+    ],
+    [
       "assets/longstreet.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/longstreet.bmp"
     ],

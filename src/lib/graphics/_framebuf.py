@@ -585,7 +585,7 @@ class FrameBuffer:
             c (int): The color to draw the text in.  Default is 1.
             scale (int): The scale factor to draw the text at.  Default is 1.
             inverted (bool): If True, draw the text inverted.  Default is False.
-            font_file (str): The path to the font file to use.  Default is None.
+            font_data (str): The path to the font file to use.  Default is None.
         """
         _font.text(self, *args, **kwargs)
 

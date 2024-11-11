@@ -263,7 +263,7 @@ class FrameBuffer(_FrameBuffer):
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
 
-    def text(self, s, x, y, c=1, scale=1, inverted=False, font_file=None, height=8):
+    def text(self, s, x, y, c=1, scale=1, inverted=False, font_data=None, height=8):
         """
         Draw text at the given location, using the given font and color.
 
@@ -274,13 +274,13 @@ class FrameBuffer(_FrameBuffer):
             c (int): color
             scale (int): Scale factor (default: 1)
             inverted (bool): Invert the text (default: False)
-            font_file (str): Path to the font file (default: None)
+            font_data (str): Path to the font file (default: None)
             height (int): Height of the font (default: 8)
 
         Returns:
             (Area): Bounding box of the text
         """
-        _font.text(self, s, x, y, c, scale=scale, inverted=inverted, font_file=font_file, height=height)
+        _font.text(self, s, x, y, c, scale=scale, inverted=inverted, font_data=font_data, height=height)
 
     def blit(self, buf, x, y, key=-1, palette=None):
         """
@@ -477,7 +477,7 @@ class FrameBuffer(_FrameBuffer):
             c (int): The color to draw the text in.  Default is 1.
             scale (int): The scale factor to draw the text at.  Default is 1.
             inverted (bool): If True, draw the text inverted.  Default is False.
-            font_file (str): The path to the font file to use.  Default is None.
+            font_data (str): The path to the font file to use.  Default is None.
 
         Returns:
             Area: The area that was drawn to.
@@ -497,7 +497,7 @@ class FrameBuffer(_FrameBuffer):
             c (int): The color to draw the text in.  Default is 1.
             scale (int): The scale factor to draw the text at.  Default is 1.
             inverted (bool): If True, draw the text inverted.  Default is False.
-            font_file (str): The path to the font file to use.  Default is None.
+            font_data (str): The path to the font file to use.  Default is None.
 
         Returns:
             Area: The area that was drawn to.
@@ -517,7 +517,7 @@ class FrameBuffer(_FrameBuffer):
             c (int): The color to draw the text in.  Default is 1.
             scale (int): The scale factor to draw the text at.  Default is 1.
             inverted (bool): If True, draw the text inverted.  Default is False.
-            font_file (str): The path to the font file to use.  Default is None.
+            font_data (str): The path to the font file to use.  Default is None.
 
         Returns:
             Area: The area that was drawn to.

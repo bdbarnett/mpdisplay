@@ -325,16 +325,16 @@
       "github:bdbarnett/mpdisplay/src/lib/graphics/_shapes.py"
     ],
     [
-      "lib/graphics/font_8x14.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x14.bin"
+      "lib/graphics/font_8x14.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x14.py"
     ],
     [
-      "lib/graphics/font_8x16.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x16.bin"
+      "lib/graphics/font_8x16.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x16.py"
     ],
     [
-      "lib/graphics/font_8x8.bin",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x8.bin"
+      "lib/graphics/font_8x8.py",
+      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x8.py"
     ],
     [
       "lib/palettes/__init__.py",

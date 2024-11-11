@@ -12,6 +12,9 @@ from board_config import display_drv
 from graphics import Font, FrameBuffer, RGB565
 import os
 
+
+EXPORT = False  # Set to True to export the font to a .py file
+
 display_drv.fill(0)
 y_pos = 0
 
@@ -19,12 +22,8 @@ y_pos = 0
 def main():
     global y_pos
 
-    cwd = os.getcwd()
-    if cwd[-1] != "/":
-        cwd += "/"
-
     # Specify the directory containing the .bin files
-    directory = f"{cwd}lib/graphics"
+    directory = "examples/assets/"
 
     def gather_font_files(directory):
         font_files = []
@@ -46,6 +45,9 @@ def main():
         except RuntimeError as e:
             print(e)
             continue
+
+        if EXPORT:
+            font.export(font.font_data.replace(".bin", ".py"))
 
         height = font.height
         font_name = font.font_name

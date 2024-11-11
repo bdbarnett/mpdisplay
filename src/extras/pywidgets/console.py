@@ -38,13 +38,13 @@ from . import Widget, TEXT_SIZE, TEXT_WIDTH
 class Console(io.IOBase, Widget):
 
     def __init__(self, parent, fg=None, bg=None, visible=True, value=None, by_char=False,
-                 margin=1, text_height=TEXT_SIZE.LARGE, scale=1, font_file=None):
+                 margin=1, text_height=TEXT_SIZE.LARGE, scale=1, font_data=None):
         self.margin = margin
         if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
         self.text_height = text_height
         self.scale = scale
-        self.font_file = font_file
+        self.font_data = font_data
         self._char_width = TEXT_WIDTH * scale
         self._char_height = text_height * scale
         self._read_obj = None
@@ -111,7 +111,7 @@ class Console(io.IOBase, Widget):
             if bg is not None:
                 self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos, self._char_width, self._char_height, bg)
             self.dirty_areas.append(self.display.framebuf.text(c, self._x_pos, self._cursor_y_pos, fg, height=self.text_height,
-                                       scale=self.scale, font_file=self.font_file))
+                                       scale=self.scale, font_data=self.font_data))
             if self.by_char:
                 self.draw()
             self.cursor_col += 1

@@ -9,17 +9,15 @@ from board_config import display_drv
 from graphics import Font
 import random
 from palettes import get_palette
-import os
+
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel
-
 
 def write(font, string, x, y, fg_color, bg_color, scale):
     """
     Write text to the display.
     """
     font.text(display_drv, string, x, y, fg_color, scale)
-
 
 def main():
     """
@@ -31,13 +29,10 @@ def main():
     text_len = len(write_text)
     iterations = 32
 
-    cwd = os.getcwd()
-    if cwd[-1] != "/":
-        cwd += "/"
-
-    font1 = Font(f"{cwd}lib/graphics/font_8x8.bin")
-    font2 = Font(f"{cwd}lib/graphics/font_8x14.bin")
-    font3 = Font(f"{cwd}lib/graphics/font_8x16.bin")
+    directory = "examples/assets/"
+    font1 = Font(f"{directory}font_8x8.bin")
+    font2 = Font(f"{directory}font_8x14.bin")
+    font3 = Font(f"{directory}font_8x16.bin")
     fonts = [font1, font2, font3]
 
     max_width = max([font.width for font in fonts])

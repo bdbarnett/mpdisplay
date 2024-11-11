@@ -20,17 +20,27 @@ if hasattr(os, "sep"):
 else:
     sep = "/"
 
-# get the path this module is in
-font_dir = __file__.split(sep)[0:-1]
-font_dir = sep.join(font_dir) + sep
-
-# Default font file to use if none is specified.
+# Default font files or memoryviews to use if none is specified.
 # Should be 8 pixels wide to keep framebuf.py compatible with MicroPython framebuf module
-_FONTS = {
-    8: f"{font_dir}font_8x8.bin",
-    14: f"{font_dir}font_8x14.bin",
-    16: f"{font_dir}font_8x16.bin",
-}
+# Try to import the font data from .py files in the same directory as this module.
+# If that fails, use the .bin files in the same directory.
+try:
+    from . import font_8x8
+    from . import font_8x14
+    from . import font_8x16
+    _FONTS = {
+        8: font_8x8.FONT,
+        14: font_8x14.FONT,
+        16: font_8x16.FONT,
+    }
+except ImportError:
+    font_dir = __file__.split(sep)[0:-1]  # get the path this module is in
+    _FONTS = {
+        8: f"{font_dir + sep}font_8x8.bin",
+        14: f"{font_dir + sep}font_8x14.bin",
+        16: f"{font_dir + sep}font_8x16.bin",
+    }
+
 _DEFAULT_FONT = _FONTS[8]
 
 
@@ -50,7 +60,7 @@ def text(*args, height=8, **kwargs):
         return text16(*args, **kwargs)
     raise ValueError("Unsupported font height: %d" % height)
 
-def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
+def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     """
     Place text on the canvas with an 8 pixel high font.
     Breaks on \n to next line.  Does not break on line going off canvas.
@@ -63,7 +73,7 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
         c (int): The color to draw the text in.  Default is 1.
         scale (int): The scale factor to draw the text at.  Default is 1.
         inverted (bool): If True, draw the text inverted.  Default is False.
-        font_file (str): The path to the font file to use.  Default is None.
+        font_data (str | byterray): The path to the font .bin file or memoryview.  Default is None.
 
     Returns:
         Area: The area that was drawn to.
@@ -71,15 +81,15 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     height=8
     if (
         not hasattr(Font, "_text8font")
-        or (font_file is not None and Font._text8font.font_file != font_file)
+        or (font_data is not None and Font._text8font.font_data != font_data)
         or (height is not None and Font._text8font.height != height)
     ):
         # load the font!
-        Font._text8font = Font(font_file, height)
+        Font._text8font = Font(font_data, height)
 
     return Font._text8font.text(canvas, s, x, y, c, scale, inverted)
 
-def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
+def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     """
     Place text on the canvas with a 14 pixel high font.
     Breaks on \n to next line.  Does not break on line going off canvas.
@@ -92,7 +102,7 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
         c (int): The color to draw the text in.  Default is 1.
         scale (int): The scale factor to draw the text at.  Default is 1.
         inverted (bool): If True, draw the text inverted.  Default is False.
-        font_file (str): The path to the font file to use.  Default is None.
+        font_data (str | byterray): The path to the font .bin file or memoryview.  Default is None.
 
     Returns:
         Area: The area that was drawn to.
@@ -100,15 +110,15 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     height=14
     if (
         not hasattr(Font, "_text14font")
-        or (font_file is not None and Font._text14font.font_file != font_file)
+        or (font_data is not None and Font._text14font.font_data != font_data)
         or (height is not None and Font._text14font.height != height)
     ):
         # load the font!
-        Font._text14font = Font(font_file, height)
+        Font._text14font = Font(font_data, height)
 
     return Font._text14font.text(canvas, s, x, y, c, scale, inverted)
 
-def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
+def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     """
     Place text on the canvas with a 16 pixel high font.
     Breaks on \n to next line.  Does not break on line going off canvas.
@@ -121,7 +131,7 @@ def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
         c (int): The color to draw the text in.  Default is 1.
         scale (int): The scale factor to draw the text at.  Default is 1.
         inverted (bool): If True, draw the text inverted.  Default is False.
-        font_file (str): The path to the font file to use.  Default is None.
+        font_data (str | byterray): The path to the font .bin file or memoryview.  Default is None.
 
     Returns:
         Area: The area that was drawn to.
@@ -129,11 +139,11 @@ def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_file=None):
     height = 16
     if (
         not hasattr(Font, "_text16font")
-        or (font_file is not None and Font._text16font.font_file != font_file)
+        or (font_data is not None and Font._text16font.font_data != font_data)
         or (height is not None and Font._text16font.height != height)
     ):
         # load the font!
-        Font._text16font = Font(font_file, height)
+        Font._text16font = Font(font_data, height)
 
     return Font._text16font.text(canvas, s, x, y, c, scale, inverted)
 
@@ -144,33 +154,41 @@ class Font:
     and draw text to a canvas.
 
     Args:
-        font_file (str): The path to the font file to use.  Default is None.
+        font_data (str | byterray): The path to the font .bin file or memoryview.  Default is None.
         height (int): The height of the font.  Default is None.
         cached (bool): If True, the font file will be read into memory on init.
             If False, the font file will be read from disk each time it is needed.
     """
 
-    def __init__(self, font_file=None, height=None, cached=True):
-        # Optionally specify font_file to override the font file to use (default
-        # is font_8x8.bin).  The font format is a binary file with the following
+    def __init__(self, font_data=None, height=None, cached=True):
+        # Optionally specify font_data to override the font data to use (default
+        # is font_8x8.FONT).  font_data may be a memoryview or a string path to a
+        # font file.  The font format is a binary file with the following
         # format:
         # - bytes: font data, in ASCII order covering all 256 characters.
         #          Each character should have a byte for each pixel row of
         #          data (i.e. an 8x14 font has 14 bytes per character).
-        # If height is not specified, the height of the font will be determined
-        # from the font file name.  For example a font file named font_8x14.bin
+        # If height is not specified, the height of the font will be determined from
+        # the memoryview or font file name.  For example a font file named font_8x14.bin
         # will have a height of 14 pixels.  If height is specified it will override
         # the height in the font file name.
-        self.font_file = font_file or _FONTS.get(height, _DEFAULT_FONT)
+        self.font_data = font_data or _FONTS.get(height, _DEFAULT_FONT)
 
-        self.font_name = self.font_file.split(sep)[-1].split(".")[0]
-        self._font_height = height or int(self.font_name.split("x")[-1])
         # Note that only fonts up to 8 pixels wide are currently supported.
         self._font_width = 8
+        if isinstance(self.font_data, memoryview):
+            self.font_name = "memoryview"
+            self._font_height = len(self.font_data) // 256
+            self._cache = self.font_data
+            return
+        
+        # font_data is a string, so it should be a path to a font file.
+        self.font_name = self.font_data.split(sep)[-1].split(".")[0]
+        self._font_height = height or int(self.font_name.split("x")[-1])
 
         # Open the font file.
         try:
-            font_path = self.font_file
+            font_path = self.font_data
             self._font = open(font_path, "rb")
             # simple font file validation check based on expected file size
             filesize = os.stat(font_path)[6]
@@ -179,10 +197,10 @@ class Font:
                 and filesize != 128 * self.height
             ):
                 raise RuntimeError(
-                    f"Invalid font file: {self.font_file} is {filesize} bytes, expected {256 * self.height}"
+                    f"Invalid font file: {self.font_data} is {filesize} bytes, expected {256 * self.height}"
                 )
         except OSError:
-            print("Could not find font file", self.font_file)
+            print("Could not find font file", self.font_data)
             raise
         except OverflowError:
             # os.stat can throw this on boards without long int support
@@ -330,3 +348,25 @@ class Font:
             return struct.unpack("B", self._font.read(1))[0]
         except RuntimeError:  # maybe character isnt there? go to next
             return None
+
+    def export(self, filename):
+        """
+        Export the font data in self._cache to a .py file that can be imported.
+        The format is a single bytes object named _FONT.  There are 256 lines, one for each character.
+        The last line is `FONT = memoryview(_FONT)`.
+
+        Args:
+            filename (str): The path to save the file to.
+        """
+        if not self._cache:
+            raise RuntimeError("Font data not cached, cannot export")
+        mv = memoryview(self._cache)
+        with open(filename, "w") as f:
+            f.write("_FONT =\\\n")
+            for i in range(256):
+                f.write("b'")
+                for j in range(self.height):
+                    f.write(f"\\x{mv[(i * self.height) + j]:02x}")
+                f.write("'\\\n")
+            f.write("\nFONT = memoryview(_FONT)\n")
+        print(f"Font data saved to {filename}")

@@ -746,7 +746,7 @@ class Button(Widget):
 class Label(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
                  fg=None, bg=None, visible=True, value=None, padding=None,
-                 text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
+                 text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_data=None):
         """
         Initialize a Label widget to display text.
 
@@ -766,7 +766,7 @@ class Label(Widget):
             text_height (int): The height of the text (default is TEXT_SIZE.LARGE).
             scale (int): The scale of the text (default is 1).
             inverted (bool): The inversion of the text (default is False).
-            font_file (str): The font file to use for the text.
+            font_data (str): The font file to use for the text.
         """
         if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
@@ -778,7 +778,7 @@ class Label(Widget):
         self.text_height = text_height
         self.scale = scale
         self._inverted = inverted
-        self._font_file = font_file
+        self._font_data = font_data
         bg = bg if bg is not None else parent.color_theme.transparent
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
 
@@ -790,7 +790,7 @@ class Label(Widget):
         if self.bg is not self.parent.color_theme.transparent:
             self.display.framebuf.fill_rect(*self.padded_area, self.bg)  # Draw background if bg is specified
         x, y, _, _ = self.padded_area
-        self.display.framebuf.text(self.value, x, y, self.fg, height=self.text_height, scale=self.scale, inverted=self._inverted, font_file=self._font_file)
+        self.display.framebuf.text(self.value, x, y, self.fg, height=self.text_height, scale=self.scale, inverted=self._inverted, font_data=self._font_data)
 
     @property
     def char_width(self):
@@ -804,7 +804,7 @@ class Label(Widget):
 class TextBox(Widget):
     def __init__(self, parent: Widget, x=0, y=0, w=None, h=None, align=None, align_to=None,
                  fg=None, bg=None, visible=True, value=None, padding=None,
-                 format="", text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_file=None):
+                 format="", text_height=TEXT_SIZE.LARGE, scale=1, inverted=False, font_data=None):
         """
         Initialize a TextBox widget to display formatted text.
 
@@ -825,7 +825,7 @@ class TextBox(Widget):
             text_height (int): The height of the text (default is TEXT_SIZE.LARGE).
             scale (int): The scale of the text (default is 1).
             inverted (bool): The inversion of the text (default is False).
-            font_file (str): The font file to use for the text.
+            font_data (str): The font file to use for the text.
 
         Usage:
             text_box = TextBox(screen, value="Hello, world!", format="{:>20}", text_height=TEXT_SIZE.LARGE)
@@ -840,7 +840,7 @@ class TextBox(Widget):
         self.text_height = text_height
         self.scale = scale
         self._inverted = inverted
-        self._font_file = font_file
+        self._font_data = font_data
         super().__init__(parent, x, y, w, h, align, align_to, fg, bg, visible, value, padding)
 
     def draw(self, _=None):
@@ -851,7 +851,7 @@ class TextBox(Widget):
         self.display.framebuf.fill_rect(*pa, self.bg)
         y = pa.y + (pa.h - self.text_height * self.scale) // 2
         self.display.framebuf.text(f"{self.value:{self.format}}", pa.x + PAD, y, self.fg, height=self.text_height,
-                                   scale=self.scale, inverted=self._inverted, font_file=self._font_file)
+                                   scale=self.scale, inverted=self._inverted, font_data=self._font_data)
 
     @property
     def char_width(self):
