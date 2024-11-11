@@ -24,8 +24,8 @@ status = pw.TextBox(bottom, y=-8, w=clock_toggle.x, align=pw.ALIGN.BOTTOM_LEFT, 
 clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value))
 
 
-box = pw.Widget(main, align=pw.ALIGN.CENTER, w=100, h=100, bg=display.theme.primary)
-button = pw.Button(box, align=pw.ALIGN.CENTER, w=pct.Width(50, box), h=pct.Height(50, box), bg=display.theme.secondary)
+box = pw.Widget(main, align=pw.ALIGN.CENTER, w=100, h=100, bg=display.color_theme.primary)
+button = pw.Button(box, align=pw.ALIGN.CENTER, w=pct.Width(50, box), h=pct.Height(50, box), bg=display.color_theme.secondary)
 def inflate_box():
     box.set_position(w=box.width+10, h=box.height+10)
 button.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: inflate_box())

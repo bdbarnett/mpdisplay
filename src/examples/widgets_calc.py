@@ -16,7 +16,7 @@ button_labels = [["CE", "C", "BS", "/"],
 pw.init_timer(10)  # Remove this line to use polled mode in a while loop
 
 display = pw.Display(board_config.display_drv, board_config.broker)
-theme = display.theme
+theme = display.color_theme
 screen = pw.Screen(display, visible=False)
 top_box = pw.Widget(screen, h=60, bg=theme.secondary)
 readout = pw.Widget(top_box, fg=theme.on_background, bg=theme.background, w=top_box.width-6, h=top_box.height-6, align=pw.ALIGN.CENTER)
