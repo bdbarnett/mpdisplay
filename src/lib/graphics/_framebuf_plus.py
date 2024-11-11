@@ -263,7 +263,7 @@ class FrameBuffer(_FrameBuffer):
         super().vline(x, y, h, c)
         return Area(x, y, 1, h)
 
-    def text(self, s, x, y, c=1):
+    def text(self, s, x, y, c=1, scale=1, inverted=False, font_file=None, height=8):
         """
         Draw text at the given location, using the given font and color.
 
@@ -272,12 +272,15 @@ class FrameBuffer(_FrameBuffer):
             x (int): x coordinate
             y (int): y coordinate
             c (int): color
+            scale (int): Scale factor (default: 1)
+            inverted (bool): Invert the text (default: False)
+            font_file (str): Path to the font file (default: None)
+            height (int): Height of the font (default: 8)
 
         Returns:
             (Area): Bounding box of the text
         """
-        super().text(self, s, x, y, c)
-        return Area(x, y, len(s) * 8, 8)
+        _font.text(self, s, x, y, c, scale=scale, inverted=inverted, font_file=font_file, height=height)
 
     def blit(self, buf, x, y, key=-1, palette=None):
         """
