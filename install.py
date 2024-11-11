@@ -4,6 +4,16 @@ Uses 'mip' to download directly to a MicroPython device or
 uses 'mpremote' to download to an attached microcontroller
 from Python.
 
+To download this file to your device, run the following command:
+```MicroPython
+import mip
+mip.install("github:bdbarnett/mpdisplay/install.py")
+```
+or
+```bash
+wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.py
+```
+
 Comment out the packages you don't want to install and 
 change the target directories if needed.
 
@@ -45,6 +55,7 @@ packages = [
     ("palettes", "lib"),
     ("pydevices", "lib"),
     ("timer", "lib"),
+    ("path.py", ""),
 ]
 
 # Install each package

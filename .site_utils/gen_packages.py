@@ -34,7 +34,7 @@ master_exclude = ["examples"]
 package_dicts = dict()
 master_package =  {"urls": [], "version": package_ver}
 master_toml = ["[files]"]
-extra_files_added_to_master = ["path.py"]
+extra_files_added_to_master = ["path.py", "jupyter_notebook.ipynb"]
 
 # Iterate over the packages and create the package files
 for package_path, deps, extra_files in packages:

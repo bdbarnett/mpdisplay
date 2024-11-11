@@ -411,6 +411,10 @@
     [
       "path.py",
       "github:bdbarnett/mpdisplay/src/path.py"
+    ],
+    [
+      "jupyter_notebook.ipynb",
+      "github:bdbarnett/mpdisplay/src/jupyter_notebook.ipynb"
     ]
   ],
   "version": "0.1"

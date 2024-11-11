@@ -110,3 +110,4 @@
 "../src/lib/timer/_timerbase.py" = "/lib/timer/"
 
 "../src/path.py" = "/"
+"../src/jupyter_notebook.ipynb" = "/"
