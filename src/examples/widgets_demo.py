@@ -20,7 +20,7 @@ else:
 color_wheel = pw.get_palette(name="wheel", swapped=display.needs_swap, length=display.vsa, saturation=1.0)
 if screen.partitioned:
     def main_area_draw(area=None):
-        area = area or display.vsa_area
+        area = area or pw.Area(display.vsa_area)
         # print(f"draw_bg: {area}")
         for i in range(area.y, area.y+area.h):
             display.framebuf.fill_rect(area.x, i, area.w, 1, color_wheel[i-display.tfa])
