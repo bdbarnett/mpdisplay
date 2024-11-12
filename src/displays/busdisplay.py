@@ -6,7 +6,7 @@
 PyDevices busdisplay
 """
 
-from pydevices import DisplayDriver, swap_bytes
+from pydevices import DisplayDriver
 from micropython import const 
 import struct
 import sys
@@ -158,7 +158,6 @@ class BusDisplay(DisplayDriver):
         self.bgr = bgr
         self._invert = invert
         self._requires_byte_swap = reverse_bytes_in_word
-        self._auto_byte_swap_enabled = self._requires_byte_swap
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
@@ -210,6 +209,9 @@ class BusDisplay(DisplayDriver):
         super().__init__()
         if not self._initialized:
             raise RuntimeError("Display driver init() must call super().init()")
+
+        if hasattr(self.display_bus, "swap_bytes"):
+            self.swap_bytes = self.display_bus.swap_bytes
 
         # Set COLMOD (color mode) based on color_depth
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
@@ -264,7 +266,7 @@ class BusDisplay(DisplayDriver):
             (tuple): A tuple containing the x, y, width, and height of the rectangle.
         """
         if self._auto_byte_swap_enabled:
-            swap_bytes(buf, w * h)
+            self.swap_bytes(buf, w * h)
 
         x1 = x + self.colstart
         x2 = x1 + w - 1

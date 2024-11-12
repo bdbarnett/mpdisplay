@@ -113,11 +113,11 @@ def color_rgb(color):
 class DisplayDriver:
     def __init__(self, auto_refresh=False):
         gc.collect()
+
+        self.swap_bytes = swap_bytes
         self._vssa = False  # False means no vertical scroll
-        self._requires_byte_swap = False
         self._auto_byte_swap_enabled = self._requires_byte_swap
         self._touch_device = None
-        print(f"{self.__class__.__name__} initialized.")
         if auto_refresh:
             try:
                 from timer import get_timer
@@ -128,6 +128,8 @@ class DisplayDriver:
             self._timer = None
         self.init()
         gc.collect()
+        print(f"{self.__class__.__name__} initialized.")
+        print(f"{self.__class__.__name__} requires_byte_swap = {self.requires_byte_swap}")
 
     def __del__(self):
         self.deinit()

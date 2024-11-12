@@ -84,7 +84,7 @@ class FBDisplay(DisplayDriver):
             (tuple): A tuple containing the x, y, w, h values.
         """
         if self._auto_byte_swap_enabled:
-            swap_bytes(buf, w * h)
+            self.swap_bytes(buf, w * h)
 
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
