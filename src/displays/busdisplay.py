@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-mpdisplay busdisplay
+pydisplay busdisplay
 """
 
 from displaycore import DisplayDriver

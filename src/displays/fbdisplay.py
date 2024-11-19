@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-mpdisplay fbdisplay
+pydisplay fbdisplay
 """
 
 from displaycore import DisplayDriver

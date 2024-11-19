@@ -1,5 +1,5 @@
 """
-A simple test of an encoder in mpdisplay.
+A simple test of an encoder in pydisplay.
 """
 
 from board_config import display_drv, broker

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-mpdisplay i80bus
+pydisplay i80bus
 """
 
 from array import array

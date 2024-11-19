@@ -1,4 +1,4 @@
-"""Example boot.py for usb_video on mpdisplay"""
+"""Example boot.py for usb_video on pydisplay"""
 
 import usb_video
 

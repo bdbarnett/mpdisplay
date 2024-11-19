@@ -2,47 +2,47 @@
   "urls": [
     [
       "graphics/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/__init__.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/__init__.py"
     ],
     [
       "graphics/_area.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_area.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_area.py"
     ],
     [
       "graphics/_draw.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_draw.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_draw.py"
     ],
     [
       "graphics/_files.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_files.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_files.py"
     ],
     [
       "graphics/_font.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_font.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_font.py"
     ],
     [
       "graphics/_framebuf.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_framebuf.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_framebuf.py"
     ],
     [
       "graphics/_framebuf_plus.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_framebuf_plus.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_framebuf_plus.py"
     ],
     [
       "graphics/_shapes.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/_shapes.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/_shapes.py"
     ],
     [
       "graphics/font_8x14.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x14.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/font_8x14.py"
     ],
     [
       "graphics/font_8x16.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x16.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/font_8x16.py"
     ],
     [
       "graphics/font_8x8.py",
-      "github:bdbarnett/mpdisplay/src/lib/graphics/font_8x8.py"
+      "github:PyDevices/pydisplay/src/lib/graphics/font_8x8.py"
     ]
   ],
   "deps": [],

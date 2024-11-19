@@ -1,5 +1,5 @@
 """
-Install script for mpdisplay with control over each package.
+Install script for pydisplay with control over each package.
 Uses 'mip' to download directly to a MicroPython device or
 uses 'mpremote' to download to an attached microcontroller
 from Python.
@@ -7,11 +7,11 @@ from Python.
 To download this file to your device, run the following command:
 ```MicroPython
 import mip
-mip.install("github:PyDevices/mpdisplay/install.py")
+mip.install("github:PyDevices/pydisplay/install.py")
 ```
 or
 ```bash
-wget https://raw.githubusercontent.com/PyDevices/mpdisplay/main/install.py
+wget https://raw.githubusercontent.com/PyDevices/pydisplay/main/install.py
 ```
 
 Comment out the packages you don't want to install and
@@ -26,8 +26,8 @@ to your working directory / microcontroller.
 Also equivalent to running the following commands in the REPL:
 ```
 import mip
-mip.install("github:PyDevices/mpdisplay", target=".")  # Does not include examples
-mip.install("github:PyDevices/mpdisplay/packages/examples.json", target="examples")
+mip.install("github:PyDevices/pydisplay", target=".")  # Does not include examples
+mip.install("github:PyDevices/pydisplay/packages/examples.json", target="examples")
 ```
 """
 
@@ -45,7 +45,7 @@ else:
         os.system(f"mpremote mip install --target {target} {package}")
 
 
-src_base = "github:PyDevices/mpdisplay/packages/"
+src_base = "github:PyDevices/pydisplay/packages/"
 dest_base = "./"
 
 # List of package, target pairs

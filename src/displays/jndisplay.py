@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-mpdisplay jndisplay
+pydisplay jndisplay
 """
 
 from displaycore import DisplayDriver, color_rgb

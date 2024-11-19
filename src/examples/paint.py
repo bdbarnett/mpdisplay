@@ -1,5 +1,5 @@
 """
-A simple paint application demonstrating the use of mpdisplay.
+A simple paint application demonstrating the use of pydisplay.
 """
 
 from board_config import display_drv, broker

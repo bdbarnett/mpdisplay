@@ -6,7 +6,7 @@
 `displaybuf`
 ====================================================
 
-FrameBuffer wrapper for using framebuf based GUIs with mpdisplay.
+FrameBuffer wrapper for using framebuf based GUIs with pydisplay.
 Works with MicroPython Nano-GUI, Micro-GUI and MicroPython-Touch from Peter Hinch,
 but may also be used without them.
 
@@ -58,7 +58,7 @@ _display_drv_set_attrs = {"vscroll"}
 
 class DisplayBuffer(framebuf.FrameBuffer):
     """
-    DisplayBuffer: A class to wrap an mpdisplay driver and provide a framebuf
+    DisplayBuffer: A class to wrap an pydisplay driver and provide a framebuf
     compatible interface to it.  It provides a show() method to copy the framebuf
     to the display.  The show() method is optimized for the format.
     The format must be one of the following:

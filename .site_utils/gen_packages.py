@@ -6,8 +6,8 @@ import json
 
 # Define constants
 package_ver = "0.1"
-repo_url = "github:bdbarnett/mpdisplay/"
-repo_dir = "/home/brad/gh/mpdisplay/"
+repo_url = "github:PyDevices/pydisplay/"
+repo_dir = os.getcwd() + "/"
 src_dir = "src/"
 output_dir = repo_dir
 packages_dir = "packages/"

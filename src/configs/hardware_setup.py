@@ -1,5 +1,5 @@
 """
-hardware_setup.py - hardware setup for MicroPython-Touch using DisplayBuffer on mpdisplay
+hardware_setup.py - hardware setup for MicroPython-Touch using DisplayBuffer on pydisplay
 See:  https://github.com/peterhinch/micropython-touch
 
 Usage:

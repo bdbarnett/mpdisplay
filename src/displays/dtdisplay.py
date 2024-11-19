@@ -1,5 +1,5 @@
 """
-mpdisplay dtdisplay
+pydisplay dtdisplay
 """
 
 from displaycore import DisplayDriver, color_rgb  # noqa: F401

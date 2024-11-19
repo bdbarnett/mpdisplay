@@ -1,7 +1,7 @@
 {
     "urls": [
-      ["board_config.py", "github:PyDevices/mpdisplay/board_configs/pyscript/board_config.py"],
-      ["psdisplay.py", "github:PyDevices/mpdisplay/src/displays/psdisplay.py"]
+      ["board_config.py", "github:PyDevices/pydisplay/board_configs/pyscript/board_config.py"],
+      ["psdisplay.py", "github:PyDevices/pydisplay/src/displays/psdisplay.py"]
     ],
     "version": "0.1"
   }

@@ -9,7 +9,7 @@ from graphics import FrameBuffer, MONO_HLSB
 # f"{source}/{category}/{short_name}/{family}/{size}/{scale}"
 
 source = "/home/brad/gh2/material-design-icons/png"
-dest = "/home/brad/gh/mpdisplay/icons"
+dest = "/home/brad/gh/pydisplay/icons"
 scale = "1x"
 threshold = 160
 

@@ -2,15 +2,15 @@
   "urls": [
     [
       "eventsys/__init__.py",
-      "github:PyDevices/mpdisplay/src/lib/eventsys/__init__.py"
+      "github:PyDevices/pydisplay/src/lib/eventsys/__init__.py"
     ],
     [
       "eventsys/device.py",
-      "github:PyDevices/mpdisplay/src/lib/eventsys/device.py"
+      "github:PyDevices/pydisplay/src/lib/eventsys/device.py"
     ],
     [
       "eventsys/keys.py",
-      "github:PyDevices/mpdisplay/src/lib/eventsys/keys.py"
+      "github:PyDevices/pydisplay/src/lib/eventsys/keys.py"
     ]
   ],
   "deps": [],

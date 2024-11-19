@@ -1,5 +1,5 @@
-site_name: mpdisplay
-repo_url: https://github.com/PyDevices/mpdisplay/
+site_name: pydisplay
+repo_url: https://github.com/PyDevices/pydisplay/
 copyright: "Copyright 2024, Brad Barnett"
 docs_dir: docs
 site_dir: site

@@ -1,4 +1,4 @@
-""" mpdisplay_simpletest.py """
+""" pydisplay_simpletest.py """
 from board_config import display_drv
 import random
 import time

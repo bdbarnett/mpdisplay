@@ -5,7 +5,7 @@
 `touch_keypad`
 ====================================================
 
-Matrix keypad helper for touch displays on mpdisplay
+Matrix keypad helper for touch displays on pydisplay
 
 Divides the display into a grid of rows and columns.
 Returns the key number of the associated cell pressed.

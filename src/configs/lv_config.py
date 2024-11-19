@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-lv_config.py - LVGL driver configuration for mpdisplay
+lv_config.py - LVGL driver configuration for pydisplay
 """
 
 from board_config import display_drv, broker
