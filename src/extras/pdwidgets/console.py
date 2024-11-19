@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pywidgets.console.py`
+`pdwidgets.console.py`
 ====================================================
 
 Adapted from https://github.com/boochow/FBConsole
@@ -36,9 +36,19 @@ from . import Widget, TEXT_SIZE, TEXT_WIDTH
 
 
 class Console(io.IOBase, Widget):
-
-    def __init__(self, parent, fg=None, bg=None, visible=True, value=None, by_char=False,
-                 margin=1, text_height=TEXT_SIZE.LARGE, scale=1, font_data=None):
+    def __init__(
+        self,
+        parent,
+        fg=None,
+        bg=None,
+        visible=True,
+        value=None,
+        by_char=False,
+        margin=1,
+        text_height=TEXT_SIZE.LARGE,
+        scale=1,
+        font_data=None,
+    ):
         self.margin = margin
         if text_height not in TEXT_SIZE:
             raise ValueError("Text height must be 8, 14 or 16 pixels.")
@@ -53,7 +63,9 @@ class Console(io.IOBase, Widget):
         self.dirty_areas = []
         self.by_char = by_char
         Widget.__init__(self, parent, *parent.display.vsa_area, fg, bg, visible, value)
-        self.columns = (self.width - 2 * margin) // self._char_width  # Number of characters per line
+        self.columns = (
+            self.width - 2 * margin
+        ) // self._char_width  # Number of characters per line
         self.rows = self.height // self._char_height  # Number of lines
         self._reset_cursor()
 
@@ -109,9 +121,20 @@ class Console(io.IOBase, Widget):
             self._backspace()
         elif c >= " ":
             if bg is not None:
-                self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos, self._char_width, self._char_height, bg)
-            self.dirty_areas.append(self.display.framebuf.text(c, self._x_pos, self._cursor_y_pos, fg, height=self.text_height,
-                                       scale=self.scale, font_data=self.font_data))
+                self.display.framebuf.fill_rect(
+                    self._x_pos, self._cursor_y_pos, self._char_width, self._char_height, bg
+                )
+            self.dirty_areas.append(
+                self.display.framebuf.text(
+                    c,
+                    self._x_pos,
+                    self._cursor_y_pos,
+                    fg,
+                    height=self.text_height,
+                    scale=self.scale,
+                    font_data=self.font_data,
+                )
+            )
             if self.by_char:
                 self.draw()
             self.cursor_col += 1
@@ -130,9 +153,13 @@ class Console(io.IOBase, Widget):
     def _newline(self):
         self.cursor_col = 0
         self.cursor_row += 1
-        if self._cursor_y_rel  > self.display.vsa - self._char_height:
+        if self._cursor_y_rel > self.display.vsa - self._char_height:
             self.display.vscroll = (self._cursor_y_rel + self._char_height) % self.display.vsa
-            self.dirty_areas.append(self.display.framebuf.fill_rect(0, self._cursor_y_pos, self.width, self._char_height, 0))
+            self.dirty_areas.append(
+                self.display.framebuf.fill_rect(
+                    0, self._cursor_y_pos, self.width, self._char_height, 0
+                )
+            )
         self.cursor_max_row = self.cursor_row
 
     def _backspace(self):
@@ -144,7 +171,11 @@ class Console(io.IOBase, Widget):
             self.cursor_col -= 1
 
     def _draw_cursor(self, color):
-        self.dirty_areas.append(self.display.framebuf.fill_rect(self._x_pos, self._cursor_y_pos + self._char_height - 2, self._char_width, 1, color))
+        self.dirty_areas.append(
+            self.display.framebuf.fill_rect(
+                self._x_pos, self._cursor_y_pos + self._char_height - 2, self._char_width, 1, color
+            )
+        )
 
     def _clear_cursor_eol(self):
         self.dirty_areas.append(
@@ -157,7 +188,11 @@ class Console(io.IOBase, Widget):
             )
         )
         for line in range(self.cursor_row + 1, self.cursor_max_row + 1):
-            self.dirty_areas.append(self.display.framebuf.fill_rect(0, line * self._char_height, self.width, self._char_height, self.bg))
+            self.dirty_areas.append(
+                self.display.framebuf.fill_rect(
+                    0, line * self._char_height, self.width, self._char_height, self.bg
+                )
+            )
         self.cursor_max_row = self.cursor_row
 
     @property
@@ -167,7 +202,7 @@ class Console(io.IOBase, Widget):
     @property
     def _cursor_y_rel(self):
         return self.cursor_row * self._char_height
-    
+
     @property
     def _cursor_y_pos(self):
         return (self._cursor_y_rel % self.display.vsa) + self.display.tfa

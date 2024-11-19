@@ -1,0 +1,18 @@
+{
+  "urls": [
+    [
+      "displaycore/__init__.py",
+      "github:PyDevices/mpdisplay/src/lib/displaycore/__init__.py"
+    ],
+    [
+      "displaycore/_byteswap.py",
+      "github:PyDevices/mpdisplay/src/lib/displaycore/_byteswap.py"
+    ],
+    [
+      "displaycore/_byteswap_viper.py",
+      "github:PyDevices/mpdisplay/src/lib/displaycore/_byteswap_viper.py"
+    ]
+  ],
+  "deps": [],
+  "version": "0.1"
+}

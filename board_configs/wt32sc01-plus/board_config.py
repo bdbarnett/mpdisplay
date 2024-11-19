@@ -1,18 +1,18 @@
-""" WT32-SC01 Plus 320x480 ST7796 display """
+"""WT32-SC01 Plus 320x480 ST7796 display"""
 
 from i80bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-import pydevices.device as device
+import eventsys.device as device
 
 
 # The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both
 # tied to pin 4.  Controlling this pin with the display driver can lead to an
-# unresponsive touchscreen.  This case is uncommon.  If they aren't tied 
+# unresponsive touchscreen.  This case is uncommon.  If they aren't tied
 # together on your board, define reset in ST7796 instead, like:
 #    ST7796(reset=4)
-reset=Pin(4, Pin.OUT, value=1)
+reset = Pin(4, Pin.OUT, value=1)
 
 display_bus = I80Bus(
     dc=0,
@@ -44,8 +44,8 @@ display_drv = ST7796(
 
 i2c = I2C(0, sda=Pin(6), scl=Pin(5), freq=100000)
 touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=None
+touch_read_func = touch_drv.get_positions
+touch_rotation_table = None
 
 broker = device.Broker()
 

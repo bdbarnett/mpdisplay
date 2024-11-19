@@ -5,7 +5,7 @@ Testris game implemented in MicroPython by Brad Barnett.
 # For the display & optional touch drivers
 from board_config import display_drv, broker
 from touch_keypad import Keypad
-from pydevices.keys import Keys
+from eventsys.keys import Keys
 from random import choice  # For random piece selection
 from json import load, dump  # For saving the high score
 from sys import exit  # For exiting the game
@@ -53,8 +53,8 @@ def main():
 
     # If byte swapping is required and the display bus is capable of having byte swapping disabled,
     # disable it and set a flag so we can swap the color bytes as they are created.
-    if display_drv.requires_byte_swap:
-        needs_swap = display_drv.disable_auto_byte_swap(True)
+    if display_drv.requires_byteswap:
+        needs_swap = display_drv.disable_auto_byteswap(True)
     else:
         needs_swap = False
 

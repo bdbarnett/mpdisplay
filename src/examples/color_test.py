@@ -41,7 +41,7 @@ def interpolate(value1, value2, position, total_range):
         total_range (float): Total range of positions.
 
     Returns:
-        float: Interpolated value.
+        (float): Interpolated value.
     """
     return value1 + (value2 - value1) * position / total_range
 

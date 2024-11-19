@@ -2,8 +2,9 @@
 Board configuration for Jupyter Notebook.
 
 """
+
 from jndisplay import JNDisplay
-import pydevices.device as device
+import eventsys.device as device
 
 
 broker = device.Broker()

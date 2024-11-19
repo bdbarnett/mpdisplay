@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pydevices`
+`displaycore`
 ====================================================
 
 A collection of classes and functions for working with displays and input devices
@@ -13,40 +13,8 @@ CPython.  It works on microcontrollers, desktops, web browsers and Jupyter noteb
 """
 
 import gc
-from sys import implementation
-from micropython import const
-from collections import namedtuple
+from ._byteswap import byteswap
 
-try:
-    from typing import Optional
-except ImportError:
-    pass
-
-np = False
-try:
-    import ulab.numpy as np  # type: ignore
-except ImportError:
-    try:
-        import numpy as np 
-    except ImportError:
-        pass
-
-viper = False
-if implementation.name == "micropython":
-    try:
-        from ._viper import swap_bytes
-
-        viper = True
-    except Exception as e:
-        print(f"Skipping viper:  {e}")
-
-if not viper:
-    if np:
-        from ._numpy import swap_bytes
-    else:
-
-        def swap_bytes(buf, buf_size_pix):
-            buf[::2], buf[1::2] = buf[1::2], buf[::2]
 
 gc.collect()
 
@@ -65,6 +33,7 @@ def color888(r, g, b):
     """
     return (r << 16) | (g << 8) | b
 
+
 def color565(r, g=None, b=None):
     """
     Convert RGB values to a 16-bit color value.
@@ -81,6 +50,7 @@ def color565(r, g=None, b=None):
         r, g, b = r[:3]
     return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 
+
 def color565_swapped(r, g=0, b=0):
     # Convert r, g, b in range 0-255 to a 16 bit color value RGB565
     # ggbbbbbb rrrrrggg
@@ -89,10 +59,12 @@ def color565_swapped(r, g=0, b=0):
     color = color565(r, g, b)
     return (color & 0xFF) << 8 | (color & 0xFF00) >> 8
 
+
 def color332(r, g, b):
     # Convert r, g, b in range 0-255 to an 8 bit color value RGB332
     # rrrgggbb
     return (r & 0xE0) | ((g >> 3) & 0x1C) | (b >> 6)
+
 
 def color_rgb(color):
     """
@@ -112,15 +84,17 @@ def color_rgb(color):
 
 class DisplayDriver:
     def __init__(self, auto_refresh=False):
+        print(f"Initializing {self.__class__.__name__}...")
         gc.collect()
 
-        self.swap_bytes = swap_bytes
+        self.byteswap = byteswap
         self._vssa = False  # False means no vertical scroll
-        self._auto_byte_swap_enabled = self._requires_byte_swap
+        self._auto_byteswap = self.requires_byteswap
         self._touch_device = None
         if auto_refresh:
             try:
                 from timer import get_timer
+
                 self._timer = get_timer(self.show)
             except ImportError:
                 raise ImportError("timer is required for auto_refresh")
@@ -129,7 +103,8 @@ class DisplayDriver:
         self.init()
         gc.collect()
         print(f"{self.__class__.__name__} initialized.")
-        print(f"{self.__class__.__name__} requires_byte_swap = {self.requires_byte_swap}")
+        print(f"{self.__class__.__name__} requires_byteswap = {self.requires_byteswap}")
+        print(f"Free Memory: {gc.mem_free()}")
 
     def __del__(self):
         self.deinit()
@@ -228,19 +203,19 @@ class DisplayDriver:
         if dx != 0:
             raise NotImplementedError("Horizontal scrolling not supported")
 
-    def disable_auto_byte_swap(self, value: bool) -> bool:
+    def disable_auto_byteswap(self, value: bool) -> bool:
         """
         Disable byte swapping in the display driver.
 
-        If self.requires_byte_swap and the guest application is capable of byte swapping color data
+        If self.requires_byteswap and the guest application is capable of byte swapping color data
         check to see if byte swapping can be disabled.  If so, disable it.
 
         Usage:
             ```
             # If byte swapping is required and the display driver is capable of having byte swapping disabled,
             # disable it and set a flag so we can swap the color bytes as they are created.
-            if display_drv.requires_byte_swap:
-                needs_swap = display_drv.disable_auto_byte_swap(True)
+            if display_drv.requires_byteswap:
+                needs_swap = display_drv.disable_auto_byteswap(True)
             else:
                 needs_swap = False
             ```
@@ -252,25 +227,21 @@ class DisplayDriver:
             (bool): Whether byte swapping was disabled successfully.
 
         """
-        if self._requires_byte_swap:
-            self._auto_byte_swap_enabled = not value
+        if self._requires_byteswap:
+            self._auto_byteswap = not value
         else:
-            self._auto_byte_swap_enabled = False
-        print(
-            f"{self.__class__.__name__}:  auto byte swapping = {self._auto_byte_swap_enabled}"
-        )
-        return not self._auto_byte_swap_enabled
+            self._auto_byteswap = False
+        print(f"{self.__class__.__name__}:  auto byte swapping = {self._auto_byteswap}")
+        return not self._auto_byteswap
 
     @property
-    def requires_byte_swap(self) -> bool:
+    def requires_byteswap(self) -> bool:
         """
         Whether the display requires byte swapping.
         """
-        return self._requires_byte_swap
+        return self._requires_byteswap
 
-    def blit_transparent(
-        self, buf: memoryview, x: int, y: int, w: int, h: int, key: int
-    ):
+    def blit_transparent(self, buf: memoryview, x: int, y: int, w: int, h: int, key: int):
         """
         Blit a buffer with transparency.
 
@@ -356,7 +327,7 @@ class DisplayDriver:
             (int): The top fixed area.
         """
         return self._tfa
-    
+
     @property
     def vsa(self) -> int:
         """
@@ -366,7 +337,7 @@ class DisplayDriver:
             (int): The vertical scroll area.
         """
         return self._vsa
-    
+
     @property
     def bfa(self) -> int:
         """
@@ -411,7 +382,7 @@ class DisplayDriver:
             (tuple): The top fixed area.
         """
         return (0, 0, self.width, self.tfa)
-    
+
     @property
     def vsa_area(self):
         """
@@ -421,7 +392,7 @@ class DisplayDriver:
             (tuple): The vertical scroll area.
         """
         return (0, self.tfa, self.width, self.vsa)
- 
+
     @property
     def bfa_area(self):
         """
@@ -431,7 +402,6 @@ class DisplayDriver:
             (tuple): The bottom fixed area.
         """
         return (0, self.tfa + self.vsa, self.width, self.bfa)
-    
 
     ############### Common API Methods, sometimes overridden ################
 
@@ -446,14 +416,12 @@ class DisplayDriver:
             bfa (int): The bottom fixed area.
         """
         if tfa + vsa + bfa != self.height:
-            raise ValueError(
-                "Sum of top, scroll and bottom areas must equal screen height"
-            )
+            raise ValueError("Sum of top, scroll and bottom areas must equal screen height")
         self._tfa = tfa
         self._vsa = vsa
         self._bfa = bfa
 
-    def vscsad(self, vssa: Optional[int] = None) -> int:
+    def vscsad(self, vssa: int | None = None) -> int:
         """
         Set or get the vertical scroll start address.  Should be overridden by the
         subclass and called as super().vscsad(y).
@@ -562,98 +530,3 @@ class DisplayDriver:
         Show the display.  Base class method does nothing.  May be overridden by subclasses.
         """
         return
-
-
-class Events:
-    """
-    A container for event types and classes.  Similar to a C enum and struct.
-    """
-    # Event types (from SDL2 / PyGame, not complete)
-    QUIT = const(0x100)  # User clicked the window close button
-    KEYDOWN = const(0x300)  # Key pressed
-    KEYUP = const(0x301)  # Key released
-    MOUSEMOTION = const(0x400)  # Mouse moved
-    MOUSEBUTTONDOWN = const(0x401)  # Mouse button pressed
-    MOUSEBUTTONUP = const(0x402)  # Mouse button released
-    MOUSEWHEEL = const(0x403)  # Mouse wheel motion
-    JOYAXISMOTION = const(0x600)  # Joystick axis motion
-    JOYBALLMOTION = const(0x601)  # Joystick trackball motion
-    JOYHATMOTION = const(0x602)  # Joystick hat position change
-    JOYBUTTONDOWN = const(0x603)  # Joystick button pressed
-    JOYBUTTONUP = const(0x604)  # Joystick button released
-    _USER_TYPE_BASE = 0x8000
-
-    filter = [
-        QUIT,
-        KEYDOWN,
-        KEYUP,
-        MOUSEMOTION,
-        MOUSEBUTTONDOWN,
-        MOUSEBUTTONUP,
-        MOUSEWHEEL,
-    ]
-
-    # Event classes from PyGame
-    Unknown = namedtuple("Common", "type")
-    Motion = namedtuple("Motion", "type pos rel buttons touch window")
-    Button = namedtuple("Button", "type pos button touch window")
-    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple("Key", "type name key mod scancode window")
-    Quit = namedtuple("Quit", "type")
-    Any = namedtuple("Any", "type")
-
-    @staticmethod
-    def new(types: list[str | tuple[str, int]] = [], classes: dict[str, str] = {}):
-        """
-        Create new event types and classes for the Events class.
-
-        For example, to create the events for the keypad device:
-        ```
-        from pydevices import Events
-
-        types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
-        classes = {
-            "Key": "type name key mod scancode window",
-        }
-        Events.new_types(types, classes)
-
-        # Optionally update the filter
-        Events.filter += [Events.KEYDOWN, Events.KEYUP]
-        ```
-
-        Args:
-            types (list[str | tuple[str, int]]): List of event types or tuples of event type and value.
-                If a value is not provided, the next available value will be used.
-            classes (dict[str, str]): Dictionary of event classes and fields.
-        """
-        for type_name in types:
-            if isinstance(type_name, tuple):
-                type_name, value = type_name
-            else:
-                value = None
-            type_name = type_name.upper()
-            if hasattr(Events, type_name):
-                raise ValueError(
-                    f"Event type {type_name} already exists in Events class."
-                )
-            else:
-                setattr(Events, type_name, value if value else Events._USER_TYPE_BASE)
-                if not value:
-                    Events._USER_TYPE_BASE += 1
-
-        for event_class_name, event_class_fields in classes.items():
-            event_class_name = (
-                event_class_name[0].upper() + event_class_name[1:].lower()
-            )
-            if hasattr(Events, event_class_name):
-                raise ValueError(
-                    f"Event class {event_class_name} already exists in Events class."
-                )
-            else:
-                event_class_fields = event_class_fields.lower()
-                setattr(
-                    Events,
-                    event_class_name,
-                    namedtuple(event_class_name, event_class_fields),
-                )
-

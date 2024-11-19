@@ -7,6 +7,7 @@
 Area class for defining rectangular areas.
 """
 
+
 class Area:
     """
     Represents a rectangular area defined by its position and dimensions.
@@ -102,7 +103,7 @@ class Area:
         if self.y + self.h <= other.y or other.y + other.h <= self.y:
             return False
         return True
-    
+
     def touches_or_intersects(self, other):
         """
         Checks if the current Area object touches or intersects with another Area object.
@@ -147,7 +148,7 @@ class Area:
         w = min(self.x + self.w, other.x + other.w) - x
         h = min(self.y + self.h, other.y + other.h) - y
         return Area(x, y, w, h)
-    
+
     def offset(self, d1, d2=None, d3=None, d4=None):
         """
         Returns a new Area offset by the specified amount(s).
@@ -174,7 +175,7 @@ class Area:
         elif d4 is None:
             d4 = d2
         return Area(self.x - d1, self.y - d2, self.w + d1 + d3, self.h + d2 + d4)
-    
+
     def inset(self, d1, d2=None, d3=None, d4=None):
         """
         Returns a new Area inset by the specified amount(s).
@@ -212,12 +213,7 @@ class Area:
         Returns:
             (bool): True if the two Area objects are equal, False otherwise.
         """
-        return (
-            self.x == other.x
-            and self.y == other.y
-            and self.w == other.w
-            and self.h == other.h
-        )
+        return self.x == other.x and self.y == other.y and self.w == other.w and self.h == other.h
 
     def __ne__(self, other):
         """

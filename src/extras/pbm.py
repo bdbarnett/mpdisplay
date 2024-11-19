@@ -30,7 +30,6 @@ Example:
 
 """
 
-from array import array
 from framebuf import FrameBuffer, MONO_HLSB, RGB565
 import os
 
@@ -42,7 +41,9 @@ else:
 
 
 class PBM(FrameBuffer):
-    def __init__(self, filename=None, fg=0xFFFF, bg=0x0000, format=RGB565, width=None, height=None):
+    def __init__(
+        self, filename=None, fg=0xFFFF, bg=0x0000, format=RGB565, width=None, height=None
+    ):
         self._palette = FrameBuffer(memoryview(bytearray(2 * 2)), 2, 1, format)
         self.bg = bg
         self.fg = fg
@@ -70,10 +71,12 @@ class PBM(FrameBuffer):
                 print("ASCII")
                 raise NotImplementedError("ASCII PBM files are not supported yet")
             elif header == b"P4":
-                data = f.read()  # Read the rest as binary, since MicroPython can't do readline here
+                data = (
+                    f.read()
+                )  # Read the rest as binary, since MicroPython can't do readline here
                 while data[0] == 35:  # Ignore comment lines starting with b'#'
-                    data = data.split(b'\n', 1)[1]
-                dims, data = data.split(b'\n', 1)  # Assumes no comments after dimensions
+                    data = data.split(b"\n", 1)[1]
+                dims, data = data.split(b"\n", 1)  # Assumes no comments after dimensions
                 self._width, self._height = map(int, dims.split())
                 self._buffer = memoryview(bytearray((self._width + 7) // 8 * self._height))
                 self._buffer[:] = data
@@ -94,27 +97,27 @@ class PBM(FrameBuffer):
     @property
     def width(self):
         return self._width
-    
+
     @property
     def height(self):
         return self._height
-    
+
     @property
     def buffer(self):
         return self._buffer
-    
+
     @property
     def fg(self):
         return self._palette.pixel(1, 0)
-    
+
     @fg.setter
     def fg(self, color):
         self._palette.pixel(1, 0, color)
-    
+
     @property
     def bg(self):
         return self._palette.pixel(0, 0)
-    
+
     @bg.setter
     def bg(self, color):
         self._palette.pixel(0, 0, color)
@@ -137,7 +140,7 @@ class PBM(FrameBuffer):
 
     def __str__(self):
         return f"PBM({self._filename}, {self.fg}, {self.bg})"
-    
+
     def __repr__(self):
         return f"PBM({self._filename}, {self.fg}, {self.bg})"
 
@@ -150,11 +153,11 @@ class PBM(FrameBuffer):
     def export(self):
         """
         Export the PBM file as a Python file with the bitmap data
-        
+
         EXPERIMENTAL - Not complete.  Haven't found a use for it yet.
         """
         src_filename_ext = self._filename.split(sep)[-1]
-        directory = "" # self._filename.replace(src_filename_ext, "")
+        directory = ""  # self._filename.replace(src_filename_ext, "")
         filename = src_filename_ext.replace(".pbm", "")
         out = []
 

@@ -1,4 +1,4 @@
-""" Qualia S3 RGB-666 with TL040HDS20 4.0" 720x720 Square Display """
+"""Qualia S3 RGB-666 with TL040HDS20 4.0" 720x720 Square Display"""
 # Similar configs may be available for RGBMatrix, is31fl3741 and picodvi
 
 import dotclockframebuffer
@@ -9,7 +9,7 @@ import board
 
 from fbdisplay import FBDisplay
 import adafruit_focaltouch
-import pydevices.device as device
+import eventsys.device as device
 
 
 # This first part is particular to CircuitPython-based framebuffer-based displays
@@ -38,7 +38,7 @@ init_sequence_tl040hds20 = bytes()
 board.I2C().deinit()
 i2c = busio.I2C(board.SCL, board.SDA)
 tft_io_expander = dict(board.TFT_IO_EXPANDER)
-#tft_io_expander['i2c_address'] = 0x38 # uncomment for rev B
+# tft_io_expander['i2c_address'] = 0x38 # uncomment for rev B
 dotclockframebuffer.ioexpander_send_init_sequence(i2c, init_sequence_tl040hds20, **tft_io_expander)
 
 release_displays()
@@ -53,13 +53,15 @@ display_drv = FBDisplay(fb)
 
 touch_drv = adafruit_focaltouch.Adafruit_FocalTouch(i2c, address=0x48)
 
+
 def touch_read_func():
     touches = touch_drv.touches
     if len(touches):
-        return touches[0]['x'], touches[0]['y']
+        return touches[0]["x"], touches[0]["y"]
     return None
 
-touch_rotation_table=(0, 0, 0, 0)
+
+touch_rotation_table = (0, 0, 0, 0)
 
 broker = device.Broker()
 

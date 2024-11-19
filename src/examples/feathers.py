@@ -23,7 +23,6 @@ Smoothly scrolls mirrored rainbow colored random curves across the display.
 
 import random
 import math
-import time
 
 import tft_config
 from palettes.wheel import WheelPalette
@@ -46,8 +45,8 @@ def main():
 
     # If byte swapping is required and the display bus is capable of having byte swapping disabled,
     # disable it and set a flag so we can swap the color bytes as they are created.
-    if tft.requires_byte_swap:
-        needs_swap = tft.disable_auto_byte_swap(True)
+    if tft.requires_byteswap:
+        needs_swap = tft.disable_auto_byteswap(True)
     else:
         needs_swap = False
 

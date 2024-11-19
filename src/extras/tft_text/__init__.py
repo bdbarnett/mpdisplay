@@ -43,7 +43,7 @@ if implementation.name == "micropython":
     except Exception:
         from ._python import _pack8, _pack16
 else:
-        from ._python import _pack8, _pack16
+    from ._python import _pack8, _pack16
 
 
 WHITE = const(0xFFFF)
@@ -67,6 +67,7 @@ def text(canvas, font, text, x0, y0, color=WHITE, background=BLACK):
         return _text8(canvas, font, text, x0, y0, color, background)
     else:
         return _text16(canvas, font, text, x0, y0, color, background)
+
 
 def _text8(canvas, font, text, x0, y0, fg_color=WHITE, bg_color=BLACK):
     """
@@ -106,6 +107,7 @@ def _text8(canvas, font, text, x0, y0, fg_color=WHITE, bg_color=BLACK):
 
             x_pos += 8
     return Area(x0, y0, x_pos - x0, font.HEIGHT)
+
 
 def _text16(canvas, font, text, x0, y0, fg_color=WHITE, bg_color=BLACK):
     """

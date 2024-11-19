@@ -48,7 +48,7 @@ def write(canvas, font, string, x, y, fg=WHITE, bg=BLACK):
 
     Args:
         font (font): The module containing the converted true-type font
-        s (string): The string to write
+        string (str): The string to write
         x (int): column to start writing
         y (int): row to start writing
         fg (int): foreground color, optional, defaults to WHITE
@@ -90,15 +90,14 @@ def write(canvas, font, string, x, y, fg=WHITE, bg=BLACK):
             to_col = x_pos + char_width - 1
             to_row = y + font.HEIGHT - 1
             if canvas.width > to_col and canvas.height > to_row:
-                canvas.blit_rect(
-                    buffer[:buffer_needed], x_pos, y, char_width, font.HEIGHT
-                )
+                canvas.blit_rect(buffer[:buffer_needed], x_pos, y, char_width, font.HEIGHT)
 
             x_pos += char_width
 
         except ValueError:
             pass
     return Area(x, y, x_pos - x, font.HEIGHT)
+
 
 def write_width(font, string):
     """
@@ -110,7 +109,7 @@ def write_width(font, string):
         string (string): The string to measure
 
     Returns:
-        int: The width of the string in pixels
+        (int): The width of the string in pixels
 
     """
     width = 0

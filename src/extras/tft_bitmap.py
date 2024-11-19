@@ -81,6 +81,7 @@ def bitmap(canvas, bitmap, x, y, index=0):
     canvas.blit_rect(buffer, x, y, width, height)
     return Area(x, y, width, height)
 
+
 def pbitmap(canvas, bitmap, x, y, index=0):
     """
     Draw a bitmap on display at the specified column and row one row at a time
@@ -107,9 +108,7 @@ def pbitmap(canvas, bitmap, x, y, index=0):
             color_index = 0
             for _ in range(bpp):
                 color_index <<= 1
-                color_index |= (
-                    bitmap.BITMAP[bs_bit // 8] & 1 << (7 - (bs_bit % 8))
-                ) > 0
+                color_index |= (bitmap.BITMAP[bs_bit // 8] & 1 << (7 - (bs_bit % 8))) > 0
                 bs_bit += 1
             color = palette[color_index]
             if needs_swap:

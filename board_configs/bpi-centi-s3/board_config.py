@@ -1,10 +1,10 @@
-""" BPI-Centi-S3 170x320 ST7789 display """
+"""BPI-Centi-S3 170x320 ST7789 display"""
 
 from i80bus import I80Bus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_rd_pin = Pin(7, Pin.OUT, value=1)
@@ -40,7 +40,11 @@ display_drv = ST7789(
 encoder_drv = RotaryIRQ(37, 47, pull_up=True, half_step=True)
 encoder_read_func = encoder_drv.value
 encoder_button = Pin(35, Pin.IN, Pin.PULL_UP)
-encoder_button_func = lambda : not encoder_button.value()
+
+
+def encoder_button_func():
+    return not encoder_button.value()
+
 
 broker = device.Broker()
 

@@ -19,18 +19,23 @@ Available functions:
     include(manifest_path)  #  include another manifest file
     metadata(description=None, version=None, license=None, author=None)
 
- """
+"""
+# This file is to be given as 
+#     make FROZEN_MANIFEST=../../../../../../mpdisplay/manifest.py
+
 
 import os
-if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
-    include("$(BOARD_DIR)/manifest.py") # type: ignore  # noqa: F821
-else:
-    include("$(PORT_DIR)/boards/manifest.py") # type: ignore  # noqa: F821
 
-package("pydevices", files=None, base_path="./src/lib", opt=None) # type: ignore  # noqa: F821
-package("displaybuf", files=None, base_path="./src/lib", opt=None) # type: ignore  # noqa: F821
-package("graphics", files=None, base_path="./src/lib", opt=None) # type: ignore  # noqa: F821
-package("palettes", files=None, base_path="./src/lib", opt=None) # type: ignore  # noqa: F821
-package("timer", files=None, base_path="./src/lib", opt=None) # type: ignore  # noqa: F821
-module("touch_keypad.py", base_path="./src/extras") # type: ignore  # noqa: F821
-module("wifi.py", base_path="./src/extras") # type: ignore  # noqa: F821
+if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
+    include("$(BOARD_DIR)/manifest.py")  # type: ignore  # noqa: F821
+else:
+    include("$(PORT_DIR)/boards/manifest.py")  # type: ignore  # noqa: F821
+
+package("displaycore", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+package("eventsys", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+package("displaybuf", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+package("graphics", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+package("palettes", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+package("timer", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+module("touch_keypad.py", base_path="./src/extras")  # type: ignore  # noqa: F821
+module("wifi.py", base_path="./src/extras")  # type: ignore  # noqa: F821

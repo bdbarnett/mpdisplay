@@ -1,4 +1,4 @@
-""" T-Display-S3 Pro 222x480 ST7796 display - contributed by @tdhoward
+"""T-Display-S3 Pro 222x480 ST7796 display - contributed by @tdhoward
 https://github.com/Xinyuan-LilyGO/T-Display-S3-Pro/blob/master/schematic/T-Display-Pro.pdf
 """
 
@@ -6,7 +6,7 @@ from spibus import SPIBus
 from st7796 import ST7796
 from machine import Pin, I2C
 from cst226 import CST226
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_bus = SPIBus(
@@ -24,7 +24,7 @@ display_drv = ST7796(
     width=222,
     height=480,
     colstart=49,
-    rowstart=0,  
+    rowstart=0,
     rotation=0,
     mirrored=False,
     color_depth=16,

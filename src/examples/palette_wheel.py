@@ -3,8 +3,8 @@ from palettes import get_palette
 
 # If byte swapping is required and the display bus is capable of having byte swapping disabled,
 # disable it and set a flag so we can swap the color bytes as they are created.
-if display_drv.requires_byte_swap:
-    needs_swap = display_drv.disable_auto_byte_swap(True)
+if display_drv.requires_byteswap:
+    needs_swap = display_drv.disable_auto_byteswap(True)
 else:
     needs_swap = False
 

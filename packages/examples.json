@@ -105,30 +105,6 @@
       "github:bdbarnett/mpdisplay/src/examples/lv_touch_test.py"
     ],
     [
-      "mpdisplay_blocktest.py",
-      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_blocktest.py"
-    ],
-    [
-      "mpdisplay_encoder_test.py",
-      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_encoder_test.py"
-    ],
-    [
-      "mpdisplay_event_test.py",
-      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_event_test.py"
-    ],
-    [
-      "mpdisplay_logo.py",
-      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_logo.py"
-    ],
-    [
-      "mpdisplay_simpletest.py",
-      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_simpletest.py"
-    ],
-    [
-      "mpdisplay_touch_test.py",
-      "github:bdbarnett/mpdisplay/src/examples/mpdisplay_touch_test.py"
-    ],
-    [
       "nano_gui_simpletest.py",
       "github:bdbarnett/mpdisplay/src/examples/nano_gui_simpletest.py"
     ],
@@ -163,6 +139,30 @@
     [
       "pngtest.py",
       "github:bdbarnett/mpdisplay/src/examples/pngtest.py"
+    ],
+    [
+      "pydisplay_blocktest.py",
+      "github:bdbarnett/mpdisplay/src/examples/pydisplay_blocktest.py"
+    ],
+    [
+      "pydisplay_encoder_test.py",
+      "github:bdbarnett/mpdisplay/src/examples/pydisplay_encoder_test.py"
+    ],
+    [
+      "pydisplay_event_test.py",
+      "github:bdbarnett/mpdisplay/src/examples/pydisplay_event_test.py"
+    ],
+    [
+      "pydisplay_logo.py",
+      "github:bdbarnett/mpdisplay/src/examples/pydisplay_logo.py"
+    ],
+    [
+      "pydisplay_simpletest.py",
+      "github:bdbarnett/mpdisplay/src/examples/pydisplay_simpletest.py"
+    ],
+    [
+      "pydisplay_touch_test.py",
+      "github:bdbarnett/mpdisplay/src/examples/pydisplay_touch_test.py"
     ],
     [
       "rotations.py",
@@ -253,18 +253,6 @@
       "github:bdbarnett/mpdisplay/src/examples/noto_fonts/noto_fonts.py"
     ],
     [
-      "apollo_dsky/Apollo_DSKY_interface.bmp",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
-    ],
-    [
-      "apollo_dsky/Apollo_DSKY_interface.svg",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
-    ],
-    [
-      "apollo_dsky/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
-    ],
-    [
       "assets/font_8x14.bin",
       "github:bdbarnett/mpdisplay/src/examples/assets/font_8x14.bin"
     ],
@@ -295,6 +283,38 @@
     [
       "assets/warrior.bmp",
       "github:bdbarnett/mpdisplay/src/examples/assets/warrior.bmp"
+    ],
+    [
+      "apollo_dsky/Apollo_DSKY_interface.bmp",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
+    ],
+    [
+      "apollo_dsky/Apollo_DSKY_interface.svg",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
+    ],
+    [
+      "apollo_dsky/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/apollo_dsky/__init__.py"
+    ],
+    [
+      "chango/__init__.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
+    ],
+    [
+      "chango/chango.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
+    ],
+    [
+      "chango/chango_16.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
+    ],
+    [
+      "chango/chango_32.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
+    ],
+    [
+      "chango/chango_64.py",
+      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ],
     [
       "proverbs/__init__.py",
@@ -355,26 +375,6 @@
     [
       "tiny_toasters/tiny_toasters_bitmaps.py",
       "github:bdbarnett/mpdisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
-    ],
-    [
-      "chango/__init__.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/__init__.py"
-    ],
-    [
-      "chango/chango.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango.py"
-    ],
-    [
-      "chango/chango_16.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_16.py"
-    ],
-    [
-      "chango/chango_32.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_32.py"
-    ],
-    [
-      "chango/chango_64.py",
-      "github:bdbarnett/mpdisplay/src/examples/chango/chango_64.py"
     ]
   ],
   "deps": [],

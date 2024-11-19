@@ -18,14 +18,16 @@ object has these methods.
 .pixel() and .blit_rect() assume 16-bit color depth.
 
 """
+
 import math
 from ._area import Area
+
 
 def arc(canvas, x, y, r, a0, a1, c):
     """
     Arc drawing function.  Will draw a single pixel wide arc with a radius r
     centered at x, y from a0 to a1.
-    
+
     Args:
         x (int): X-coordinate of the arc's center.
         y (int): Y-coordinate of the arc's center.
@@ -61,6 +63,7 @@ def arc(canvas, x, y, r, a0, a1, c):
         x0 = x1
         y0 = y1
     return Area(x_min, y_min, x_max - x_min, y_max - y_min)
+
 
 def blit(canvas, source, x, y, key=-1, palette=None):
     """
@@ -105,6 +108,7 @@ def blit(canvas, source, x, y, key=-1, palette=None):
         y1 += 1
     return Area(x0, y0, x0end - x0, y0end - y0)
 
+
 def blit_rect(canvas, buf, x, y, w, h):
     """
     Blit a rectangular area from a buffer to the canvas.  Uses the canvas's blit_rect method if available,
@@ -139,6 +143,7 @@ def blit_rect(canvas, buf, x, y, w, h):
             dest_end = dest_begin + w * BPP
             canvas.buffer[dest_begin:dest_end] = buf[source_begin:source_end]
     return Area(x, y, w, h)
+
 
 def blit_transparent(canvas, buf, x, y, w, h, key):
     """
@@ -187,6 +192,7 @@ def blit_transparent(canvas, buf, x, y, w, h, key):
                 colstart += BPP
     return Area(x, y, w, h)
 
+
 def circle(canvas, x0, y0, r, c, f=False):
     """
     Circle drawing function.  Will draw a single pixel wide circle
@@ -207,6 +213,7 @@ def circle(canvas, x0, y0, r, c, f=False):
 
     _circle_helper(canvas, x0, y0, r, c, 0, 0)
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
+
 
 def _circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
     """
@@ -240,6 +247,7 @@ def _circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
         pixel(canvas, x0 + offset_x - 1, y0 - offset_y, c)  # 0 to 45
         pixel(canvas, x0 - offset_x, y0 - offset_y, c)  # 180 to 135
 
+
 def _fill_circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
     """
     Fill circle helper function.  Draws the 4 quadrants of a filled circle with center at x0, y0 and the
@@ -270,6 +278,7 @@ def _fill_circle_helper(canvas, x0, y0, r, c, x_offset, y_offset):
         vline(canvas, x0 + offset_x - 1, y0 - offset_y, 2 * offset_y, c)
 
     return Area(x0 - r, y0 - r, 2 * r, 2 * r)
+
 
 def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
     """
@@ -380,15 +389,14 @@ def ellipse(canvas, x0, y0, r1, r2, c, f=False, m=0b1111, w=None, h=None):
             y1 -= 1
         sigma += b2 * ((4 * x1) + 6)
         x1 += 1
-    return Area(
-        x0 - r1 - x_offset, y0 - r2 - y_offset, 2 * (r1 + x_offset), 2 * (r2 + y_offset)
-    )
+    return Area(x0 - r1 - x_offset, y0 - r2 - y_offset, 2 * (r1 + x_offset), 2 * (r2 + y_offset))
+
 
 def fill(canvas, c):
     """
     Fill the entire canvas with a color.  Uses the canvas's fill method if available,
     otherwise calls the fill_rect function.
-    
+
     Args:
         c (int): color.
 
@@ -401,12 +409,13 @@ def fill(canvas, c):
     else:
         return fill_rect(canvas, 0, 0, canvas.width, canvas.height, c)
 
+
 def fill_rect(canvas, x, y, w, h, c):
     """
     Filled rectangle drawing function.  Draws a filled rectangle starting at
     x, y and extending w, h pixels.  Uses the canvas's fill_rect method if available,
     otherwise calls the pixel function for each pixel.
-    
+
     Args:
         x (int): X-coordinate of the top-left corner of the rectangle.
         y (int): Y-coordinate of the top-left corner of the rectangle.
@@ -426,6 +435,7 @@ def fill_rect(canvas, x, y, w, h, c):
             for i in range(x, x + w):
                 pixel(canvas, i, j, c)
     return Area(x, y, w, h)
+
 
 def gradient_rect(canvas, x, y, w, h, c1, c2=None, vertical=True):
     """
@@ -464,10 +474,11 @@ def gradient_rect(canvas, x, y, w, h, c1, c2=None, vertical=True):
             fill_rect(canvas, x + i, y, 1, h, c)
     return Area(x, y, w, h)
 
+
 def hline(canvas, x0, y0, w, c):
     """
     Horizontal line drawing function.  Will draw a single pixel wide line.
-    
+
     Args:
         x0 (int): X-coordinate of the start of the line.
         y0 (int): Y-coordinate of the start of the line.
@@ -482,11 +493,12 @@ def hline(canvas, x0, y0, w, c):
     fill_rect(canvas, x0, y0, w, 1, c)
     return Area(x0, y0, w, 1)
 
+
 def line(canvas, x0, y0, x1, y1, c):
     """
     Line drawing function.  Will draw a single pixel wide line starting at
     x0, y0 and ending at x1, y1.
-    
+
     Args:
         x0 (int): X-coordinate of the start of the line.
         y0 (int): Y-coordinate of the start of the line.
@@ -529,11 +541,12 @@ def line(canvas, x0, y0, x1, y1, c):
         x0 += 1
     return Area(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0))
 
+
 def pixel(canvas, x, y, c):
     """
     Draw a single pixel at the specified x, y location.  Uses the canvas's pixel method if available,
     otherwise writes directly to the buffer.
-    
+
     Args:
         x (int): X-coordinate of the pixel.
         y (int): Y-coordinate of the pixel.
@@ -546,10 +559,9 @@ def pixel(canvas, x, y, c):
         canvas.pixel(x, y, c)
     else:
         rgb565_color = (c & 0xFFFF).to_bytes(2, "little")
-        canvas.buffer[(y * canvas.width + x) * 2 : (y * canvas.width + x) * 2 + 2] = (
-            rgb565_color
-        )
+        canvas.buffer[(y * canvas.width + x) * 2 : (y * canvas.width + x) * 2 + 2] = rgb565_color
     return Area(x, y, 1, 1)
+
 
 def poly(canvas, x, y, coords, c, f=False):
     """
@@ -639,6 +651,7 @@ def poly(canvas, x, y, coords, c, f=False):
             )
     return Area(left, top, right - left, bottom - top)
 
+
 def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
     """
     Draw a polygon on the canvas.
@@ -688,6 +701,7 @@ def polygon(canvas, points, x, y, color, angle=0, center_x=0, center_y=0):
     # fmt: on
     return Area(left, top, right - left, bottom - top)
 
+
 def rect(canvas, x0, y0, w, h, c, f=False):
     """
     Rectangle drawing function.  Will draw a single pixel wide rectangle starting at
@@ -713,6 +727,7 @@ def rect(canvas, x0, y0, w, h, c, f=False):
     vline(canvas, x0, y0, h, c)
     vline(canvas, x0 + w - 1, y0, h, c)
     return Area(x0, y0, w, h)
+
 
 def round_rect(canvas, x0, y0, w, h, r, c, f=False):
     """
@@ -746,8 +761,9 @@ def round_rect(canvas, x0, y0, w, h, r, c, f=False):
     hline(canvas, x0 + r, y0 + h - 1, w - 2 * r, c)  # bottom
     vline(canvas, x0, y0 + r, h - 2 * r, c)  # left
     vline(canvas, x0 + w - 1, y0 + r, h - 2 * r, c)  # right
-    _circle_helper(canvas, x0 + w//2, y0 + h//2, r, c, w//2 - r, h//2 - r)
+    _circle_helper(canvas, x0 + w // 2, y0 + h // 2, r, c, w // 2 - r, h // 2 - r)
     return Area(x0, y0, w, h)
+
 
 def _fill_round_rect(canvas, x0, y0, w, h, r, c):
     """
@@ -758,8 +774,9 @@ def _fill_round_rect(canvas, x0, y0, w, h, r, c):
     # ensure that the r will only ever be half of the shortest side or less
     r = int(min(r, w / 2, h / 2))
     fill_rect(canvas, x0 + r, y0, w - 2 * r, h, c)  # center
-    _fill_circle_helper(canvas, x0 + w//2, y0 + h//2, r, c, w//2 - r, h//2 - r)
+    _fill_circle_helper(canvas, x0 + w // 2, y0 + h // 2, r, c, w // 2 - r, h // 2 - r)
     return Area(x0, y0, w, h)
+
 
 def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     # pylint: disable=too-many-arguments
@@ -778,7 +795,7 @@ def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
         f (bool): Fill the triangle (default: False).
 
     Returns:
-        (Area): The bounding box of the triangle.    
+        (Area): The bounding box of the triangle.
     """
     if f:
         return _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c)
@@ -790,6 +807,7 @@ def triangle(canvas, x0, y0, x1, y1, x2, y2, c, f=False):
     right = max(x0, x1, x2)
     bottom = max(y0, y1, y2)
     return Area(left, top, right - left, bottom - top)
+
 
 def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
     # pylint: disable=too-many-arguments
@@ -866,6 +884,7 @@ def _fill_triangle(canvas, x0, y0, x1, y1, x2, y2, c):
     right = max(x0, x1, x2)
     bottom = max(y0, y1, y2)
     return Area(left, top, right - left, bottom - top)
+
 
 def vline(canvas, x0, y0, h, c):
     """

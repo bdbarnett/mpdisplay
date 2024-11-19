@@ -1,4 +1,4 @@
-""" Wokwi ESP32S3 and ILI9341 Display """
+"""Wokwi ESP32S3 and ILI9341 Display"""
 
 from spibus import SPIBus
 from ili9341 import ILI9341

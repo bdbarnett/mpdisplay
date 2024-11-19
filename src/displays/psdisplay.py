@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices psdisplay
+mpdisplay psdisplay
 """
 
-from pydevices import DisplayDriver, color_rgb
+from displaycore import DisplayDriver, color_rgb
 from pyscript.ffi import create_proxy  # type: ignore
 from js import document, console  # type: ignore
 
@@ -98,8 +98,7 @@ class PSDisplay(DisplayDriver):
         self._ctx = self._canvas.getContext("2d")
         self._width = width or self._canvas.width
         self._height = height or self._canvas.height
-        self._requires_byte_swap = False
-        self._auto_byte_swap_enabled = self._requires_byte_swap
+        self._requires_byteswap = False
         self._rotation = 0
         self.color_depth = 16
         self._draw = self._ctx

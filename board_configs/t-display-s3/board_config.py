@@ -1,4 +1,4 @@
-""" T-Display-S3 170x320 ST7789 display  """
+"""T-Display-S3 170x320 ST7789 display"""
 
 from i80bus import I80Bus
 from st7789 import ST7789
@@ -6,9 +6,9 @@ from machine import Pin
 from time import sleep_ms
 
 
-display_power_pin=Pin(15, Pin.OUT, value=1)
+display_power_pin = Pin(15, Pin.OUT, value=1)
 display_rd_pin = Pin(9, Pin.OUT, value=1)
-display_reset_pin=Pin(5, Pin.OUT, value=1)
+display_reset_pin = Pin(5, Pin.OUT, value=1)
 sleep_ms(100)
 display_reset_pin.value(0)
 sleep_ms(100)

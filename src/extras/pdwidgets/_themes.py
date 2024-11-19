@@ -2,10 +2,12 @@
 #
 # SPDX-License-Identifier: MIT
 """
-Themes used by the PyWidgets library.  The IconTheme class is used to manage icons and the ColorTheme class is used to manage colors.
+Themes used by the pdwidgets library.  The IconTheme class is used to manage icons and the ColorTheme class is used to manage colors.
 """
+
 from ._constants import ICON_SIZE
 from palettes import get_palette  # noqa: F401
+
 try:
     from os import sep  # PyScript doesn't have os.sep
 except ImportError:
@@ -36,7 +38,7 @@ class IconTheme:
             path (str): The path to the directory containing the icon files.
 
         Usage:
-            from pywidgets import IconTheme, ICON_SIZE
+            from pdwidgets import IconTheme, ICON_SIZE
             icon_theme = IconTheme("/path/to/icons/")
             ...
             icon_button = IconButton(screen, icon_file=icon_theme.home(ICON_SIZE.LARGE), ...)
@@ -52,12 +54,14 @@ class IconTheme:
     def _icon(self, name, size):
         if size not in ICON_SIZE:
             raise ValueError("Invalid icon size.")
-        return f"{self._path}{getattr(self, "_" + name)}{size}{self._suffix}"
-    
+        return f"{self._path}{getattr(self, '_' + name)}{size}{self._suffix}"
+
     def __getattr__(self, name):
         if name.startswith("_"):
             return super().__getattr__(name)
         return lambda size: self._icon(name, size)
+
+
 icon_theme = IconTheme(sep.join(__file__.split(sep)[0:-1]) + sep + "icons" + sep)
 
 
@@ -68,6 +72,7 @@ class ColorTheme:
     Args:
         pal (Palette): A palette object from the graphics library.
     """
+
     def __init__(self, pal):
         self.background = pal.white[0]
         self.on_background = pal.black[0]

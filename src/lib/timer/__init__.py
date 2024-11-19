@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`pydevices.timer`
+`timer`
 ====================================================
 
 Cross-platform Timer class for *Python.
@@ -23,11 +23,12 @@ Usage:
     ....
     tim.deinit()
 """
+
 import sys
+
 try:
     from machine import Timer  # MicroPython on microcontrollers
 except ImportError:
-
     if sys.implementation.name == "micropython":  # MicroPython on Unix
         from ._librt import Timer
     elif sys.implementation.name == "cpython":  # Big Python
@@ -36,6 +37,8 @@ except ImportError:
         Timer = None
 
 _next_timer_id = 1
+
+
 def get_timer(callback, period=33):
     """
     Creates and returns a timer to periodically call the callback function
@@ -54,4 +57,3 @@ def get_timer(callback, period=33):
     t.init(mode=Timer.PERIODIC, period=period, callback=lambda t: callback())
     print(f"Timer:  timer started ({id=}, {period=})")
     return t
-

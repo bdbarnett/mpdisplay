@@ -1,10 +1,10 @@
-""" DIY ESP32 psram with and ILI9341 2.8" display and XPT2046 touch controller"""
+"""DIY ESP32 psram with and ILI9341 2.8" display and XPT2046 touch controller"""
 
 from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, SPI
 from xpt2046 import Touch
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_bus = SPIBus(
@@ -45,7 +45,7 @@ touch_drv = Touch(
     int_pin=Pin(21),
 )
 
-#Display rotation 270 degrees, invert Y axis 0b100
+# Display rotation 270 degrees, invert Y axis 0b100
 touch_drv.calibrate(
     xmin=107,
     xmax=2000,
@@ -56,7 +56,7 @@ touch_drv.calibrate(
     orientation=3,
 )
 
-touch_read_func=touch_drv.get_touch,
+touch_read_func = (touch_drv.get_touch,)
 touch_rotation_table = (0b000, 0b000, 0b000, 0b100)
 
 broker = device.Broker()

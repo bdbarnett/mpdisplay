@@ -1,13 +1,13 @@
-""" QTPy ESP32 Pico with EyeSPI and ILI9341 2.8" display """
+"""QTPy ESP32 Pico with EyeSPI and ILI9341 2.8" display"""
 
 from displayio import release_displays
-release_displays()
-
 from fourwire import FourWire
 from ili9341 import ILI9341
 import board
 from adafruit_focaltouch import Adafruit_FocalTouch
-import pydevices.device as device
+import eventsys.device as device
+
+release_displays()
 
 
 display_bus = FourWire(
@@ -41,13 +41,15 @@ display_drv = ILI9341(
 i2c = board.I2C()
 touch_drv = Adafruit_FocalTouch(i2c)
 
+
 def touch_read_func():
     touches = touch_drv.touches
     if len(touches):
-        return touches[0]['x'], touches[0]['y']
+        return touches[0]["x"], touches[0]["y"]
     return None
 
-touch_rotation_table=(6, 3, 0, 5)
+
+touch_rotation_table = (6, 3, 0, 5)
 
 broker = device.Broker()
 

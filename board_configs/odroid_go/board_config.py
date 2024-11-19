@@ -1,4 +1,4 @@
-""" ODROID GO with ILI9341 2.4" display """
+"""ODROID GO with ILI9341 2.4" display"""
 
 from spibus import SPIBus
 from ili9341 import ILI9341

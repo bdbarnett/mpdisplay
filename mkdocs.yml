@@ -1,5 +1,5 @@
-site_name: PyDevices
-repo_url: https://github.com/bdbarnett/mpdisplay/
+site_name: mpdisplay
+repo_url: https://github.com/PyDevices/mpdisplay/
 copyright: "Copyright 2024, Brad Barnett"
 docs_dir: docs
 site_dir: site
@@ -29,14 +29,14 @@ plugins:
           show_source: false
           show_bases: false
           inherited_members: true
-          paths: [src/lib, src/lib/displays, src/lib/buses]
+          paths: [src]
           docstring_style: google
           docstring_section_style: table
           separate_signature: true
           show_category_heading: true
           # heading_level: 1
-- mkdocs-pyscript:
-    pyscript_version: "unstable"
+# - mkdocs-pyscript:
+#     pyscript_version: "unstable"
 
 nav:
 # rest of the navigation...

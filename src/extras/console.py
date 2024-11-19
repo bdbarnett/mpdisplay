@@ -36,7 +36,7 @@ from timer import Timer
 try:
     import graphics as framebuf
 except ImportError:
-    import framebuf # type: ignore
+    import framebuf  # type: ignore
 
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 
@@ -104,9 +104,7 @@ class Console(io.IOBase):
         if char_writer:  # If a custom character writer is provided
             self._char_writer = char_writer  # Override the default character writer
         else:  # Otherwise, use the default character writer
-            if hasattr(
-                self.display_drv, "bpp"
-            ):  # If the display driver has a bpp attribute
+            if hasattr(self.display_drv, "bpp"):  # If the display driver has a bpp attribute
                 if self.display_drv.bpp == 16:
                     format = framebuf.RGB565
                 elif self.display_drv.bpp == 8:
@@ -151,9 +149,7 @@ class Console(io.IOBase):
                 self._write_label(pos, params[0], params[1], params[2])
 
         if self._timer:
-            self._timer.init(
-                mode=Timer.PERIODIC, period=self._timer_period, callback=self._tick
-            )
+            self._timer.init(mode=Timer.PERIODIC, period=self._timer_period, callback=self._tick)
 
         self.cls()
 
@@ -179,19 +175,29 @@ class Console(io.IOBase):
     def _write_label(self, pos, text, fg, bg):
         if pos == Console.TITLE:
             self._draw_title_bar_bg(bg)
-            self._write_str(
-                text, (self.w - len(text)) // 2, self._tfa - self._lheight, fg, bg
-            )
+            self._write_str(text, (self.w - len(text)) // 2, self._tfa - self._lheight, fg, bg)
         elif pos == Console.LEFT:
-            self.display_drv.fill_rect(0, self._tfa + self._vsa, self.width // 3, self._lheight, bg)
+            self.display_drv.fill_rect(
+                0, self._tfa + self._vsa, self.width // 3, self._lheight, bg
+            )
             self._write_str(text, 1, self._tfa + self._vsa, fg, bg)
         elif pos == Console.MIDDLE:
-            self.display_drv.fill_rect(self.display_drv.width // 3, self._tfa + self._vsa, self.width // 3, self._lheight, bg)
-            self._write_str(
-                text, (self.w - len(text)) // 2, self._tfa + self._vsa, fg, bg
+            self.display_drv.fill_rect(
+                self.display_drv.width // 3,
+                self._tfa + self._vsa,
+                self.width // 3,
+                self._lheight,
+                bg,
             )
+            self._write_str(text, (self.w - len(text)) // 2, self._tfa + self._vsa, fg, bg)
         elif pos == Console.RIGHT:
-            self.display_drv.fill_rect(self.display_drv.width * 2 // 3, self._tfa + self._vsa, self.width // 3, self._lheight, bg)
+            self.display_drv.fill_rect(
+                self.display_drv.width * 2 // 3,
+                self._tfa + self._vsa,
+                self.width // 3,
+                self._lheight,
+                bg,
+            )
             self._write_str(text, self.w - len(text) - 1, self._tfa + self._vsa, fg, bg)
 
     def _write_str(self, text, x, y, fg, bg):
@@ -199,14 +205,10 @@ class Console(io.IOBase):
             self._char_writer(char, (x + i) * self._cwidth, y, fg, bg)
 
     def _draw_title_bar_bg(self, color=-1):
-        self.display_drv.fill_rect(
-            0, self._tfa - self._lheight, self.width, self._lheight, color
-        )
+        self.display_drv.fill_rect(0, self._tfa - self._lheight, self.width, self._lheight, color)
 
     def _draw_status_bar_bg(self, color=-1):
-        self.display_drv.fill_rect(
-            0, self._tfa + self._vsa, self.width, self._lheight, color
-        )
+        self.display_drv.fill_rect(0, self._tfa + self._vsa, self.width, self._lheight, color)
 
     def _tick(self, timer):
         gc.collect()

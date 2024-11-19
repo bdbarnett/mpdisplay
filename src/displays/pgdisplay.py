@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices dtdisplay.pgdisplay
+mpdisplay dtdisplay.pgdisplay
 """
 
-from pydevices import DisplayDriver, color_rgb
-import pygame as pg 
+from displaycore import DisplayDriver, color_rgb
+import pygame as pg
 
 try:
     from typing import Optional
@@ -36,7 +36,7 @@ class PGDisplay(DisplayDriver):
         height (int, optional): The height of the display. Defaults to 240.
         rotation (int, optional): The rotation of the display. Defaults to 0.
         color_depth (int, optional): The color depth of the display. Defaults to 16.
-        title (str, optional): The title of the display window. Defaults to "PyDevices".
+        title (str, optional): The title of the display window. Defaults to "mpdisplay".
         scale (float, optional): The scale of the display. Defaults to 1.0.
         window_flags (int, optional): The flags for creating the display window. Defaults to pg.SHOWN
 
@@ -51,7 +51,7 @@ class PGDisplay(DisplayDriver):
         height=240,
         rotation=0,
         color_depth=16,
-        title="PyDevices",
+        title="mpdisplay",
         scale=1.0,
         window_flags=pg.SHOWN,
     ):
@@ -64,6 +64,7 @@ class PGDisplay(DisplayDriver):
         self._scale = scale
         self.touch_scale = scale
         self._buffer = None
+        self._requires_byteswap = False
 
         self._bytes_per_pixel = color_depth // 8
 
@@ -75,9 +76,7 @@ class PGDisplay(DisplayDriver):
 
         pg.init()
 
-        self._buffer = pg.Surface(
-            size=(self._width, self._height), depth=self.color_depth
-        )
+        self._buffer = pg.Surface(size=(self._width, self._height), depth=self.color_depth)
         self._buffer.fill((0, 0, 0))
 
         super().__init__(auto_refresh=True)
@@ -121,9 +120,7 @@ class PGDisplay(DisplayDriver):
         for i in range(h):
             for j in range(w):
                 pixel_index = (i * w + j) * self._bytes_per_pixel
-                color = color_rgb(
-                    buffer[pixel_index : pixel_index + self._bytes_per_pixel]
-                )
+                color = color_rgb(buffer[pixel_index : pixel_index + self._bytes_per_pixel])
                 self._buffer.set_at((x + j, y + i), color)
         self.render(blitRect)
         return (x, y, w, h)

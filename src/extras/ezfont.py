@@ -3,11 +3,11 @@ A wrapper for ezFBfont that allows rendering to non-framebuffer objects.
 
 See ezFBfont at https://github.com/easytarget/microPyEZfonts
 """
+
 from ezFBfont import ezFBfont, framebuf
 
 
 class EZFont(ezFBfont):
-
     def _put_char(self, char, x, y, fg, bg, tkey):
         # fetch the glyph
         glyph, char_height, char_width = self._font.get_ch(char)
@@ -16,10 +16,10 @@ class EZFont(ezFBfont):
         charbuf = framebuf.FrameBuffer(glyph, char_width, char_height, self._font_format)
 
         if (
-            (-x >= char_width) or
-            (-y >= char_height) or
-            (x >= self._device.width) or
-            (y >= self._device.height)
+            (-x >= char_width)
+            or (-y >= char_height)
+            or (x >= self._device.width)
+            or (y >= self._device.height)
         ):
             # Out of bounds, no-op.
             return

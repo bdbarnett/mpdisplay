@@ -6,7 +6,7 @@ A class to make keypad keys appear as pins on a microcontroller.
 
 Usage:
     from board_config import display_drv, broker
-    from keypins import KeyPins, Keys, Events
+    from keypins import KeyPins, Keys
 
 
     buttons = KeyPins(
@@ -17,7 +17,7 @@ Usage:
         fire=Keys.K_SPACE,
     )
 
-    broker.subscribe(buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
+    broker.subscribe(buttons, event_types=[broker.Events.KEYDOWN, broker.Events.KEYUP])
 
     while True:
         _ = broker.poll()
@@ -26,8 +26,8 @@ Usage:
                 print(f"{button.name} ({button.keyname}) pressed")
 """
 
-from pydevices import Events
-from pydevices.keys import Keys
+from eventsys import Events
+from eventsys.keys import Keys
 
 
 class KeyPins:
@@ -40,9 +40,7 @@ class KeyPins:
 
     def __call__(self, event):
         if event.key in self._keypins.values():
-            button = [name for name, key in self._keypins.items() if key == event.key][
-                0
-            ]
+            button = [name for name, key in self._keypins.items() if key == event.key][0]
             if event.type == Events.KEYDOWN:
                 getattr(self, button).value(True)
             elif event.type == Events.KEYUP:

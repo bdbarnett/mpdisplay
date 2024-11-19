@@ -1,9 +1,9 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/pico-lcd-1.8/board_config.py"],
-      ["busdisplay.py", "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"],
-      ["spibus.py", "github:bdbarnett/mpdisplay/drivers/bus/spibus.py"],
-      ["st7735r.py", "github:bdbarnett/mpdisplay/drivers/display/st7735r_1.py"]
+      ["board_config.py", "github:PyDevices/mpdisplay/board_configs/pico-lcd-1.8/board_config.py"],
+      ["busdisplay.py", "github:PyDevices/mpdisplay/src/displays/busdisplay.py"],
+      ["spibus.py", "github:PyDevices/mpdisplay/drivers/bus/spibus.py"],
+      ["st7735r.py", "github:PyDevices/mpdisplay/drivers/display/st7735r_1.py"]
     ],
     "version": "0.1"
   }

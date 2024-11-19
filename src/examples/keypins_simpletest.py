@@ -1,5 +1,5 @@
 from board_config import broker
-from keypins import KeyPins, Keys, Events
+from keypins import KeyPins, Keys
 
 
 buttons = KeyPins(
@@ -28,7 +28,7 @@ print(f"{buttons.fire.keyname=}\n")
 
 # Subscribe the to the display driver so _KeyPin states are updated
 # on KEYDOWN and KEYUP events when broker.poll() is called.
-broker.subscribe(buttons, event_types=[Events.KEYDOWN, Events.KEYUP])
+broker.subscribe(buttons, event_types=[broker.Events.KEYDOWN, broker.Events.KEYUP])
 
 print(f"Press any of these keys:  {[button.keyname for button in buttons]}")
 while True:

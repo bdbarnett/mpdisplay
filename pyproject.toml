@@ -1,0 +1,22 @@
+[tool.ruff]
+# Exclude some code from linting and formatting
+exclude = [
+  "drivers/**",
+  "icons/**",
+  "src/examples/**",
+  "**.bin",
+]
+line-length = 99
+target-version = "py37"
+
+[tool.ruff.lint]
+ignore = [
+  "E401",
+  "E402",
+  "E722",
+  "E731",
+  "E741",
+  "F401",
+  "F403",
+  "F405",
+]

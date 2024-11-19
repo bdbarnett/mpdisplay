@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices jndisplay
+mpdisplay jndisplay
 """
 
-from pydevices import DisplayDriver, color_rgb
-from IPython.display import display, update_display 
-from PIL import Image, ImageDraw 
+from displaycore import DisplayDriver, color_rgb
+from IPython.display import display, update_display
+from PIL import Image, ImageDraw
 
 
 class JNDisplay(DisplayDriver):
@@ -30,8 +30,7 @@ class JNDisplay(DisplayDriver):
         JNDisplay._next_display_id += 1
         self._width = width
         self._height = height
-        self._requires_byte_swap = False
-        self._auto_byte_swap_enabled = self._requires_byte_swap
+        self._requires_byteswap = False
         self._rotation = 0
         self.color_depth = 16
         self._buffer = Image.new("RGB", (self.width, self.height))

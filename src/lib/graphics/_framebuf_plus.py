@@ -1,11 +1,10 @@
-
 from ._area import Area
 from . import _shapes
 from . import _files
 from . import _font
 
 try:  # Try to import framebuf from MicroPython
-    from framebuf import ( # type: ignore
+    from framebuf import (  # type: ignore
         MONO_VLSB,
         MONO_HLSB,
         MONO_HMSB,
@@ -26,6 +25,7 @@ except ImportError:  # If framebuf is not available, import from _framebuf.py
         RGB565,
         FrameBuffer as _FrameBuffer,
     )
+
 
 class FrameBuffer(_FrameBuffer):
     """
@@ -54,6 +54,7 @@ class FrameBuffer(_FrameBuffer):
         format (int): Framebuffer format
         color_depth (int): Color depth
     """
+
     def __init__(self, buffer, width, height, format, *args, **kwargs):
         super().__init__(buffer, width, height, format, *args, **kwargs)
         self._width = width
@@ -92,7 +93,7 @@ class FrameBuffer(_FrameBuffer):
     @property
     def buffer(self):
         return self._buffer
-    
+
     @property
     def format(self):
         return self._fb_format
@@ -280,7 +281,9 @@ class FrameBuffer(_FrameBuffer):
         Returns:
             (Area): Bounding box of the text
         """
-        _font.text(self, s, x, y, c, scale=scale, inverted=inverted, font_data=font_data, height=height)
+        _font.text(
+            self, s, x, y, c, scale=scale, inverted=inverted, font_data=font_data, height=height
+        )
 
     def blit(self, buf, x, y, key=-1, palette=None):
         """
@@ -299,13 +302,13 @@ class FrameBuffer(_FrameBuffer):
         super().blit(buf, x, y, key, palette)
         return
 
-########### Additional methods
+    ########### Additional methods
 
     def arc(self, *args, **kwargs):
         """
         Arc drawing function.  Will draw a single pixel wide arc with a radius r
         centered at x, y from a0 to a1.
-        
+
         Args:
             x (int): X-coordinate of the arc's center.
             y (int): Y-coordinate of the arc's center.
@@ -318,7 +321,7 @@ class FrameBuffer(_FrameBuffer):
             (Area): The bounding box of the arc.
         """
         return _shapes.arc(self, *args, **kwargs)
-    
+
     def blit_rect(self, buf, x, y, w, h):
         """
         Blit a rectangular area from a buffer to the canvas.  Uses the canvas's blit_rect method if available,
@@ -367,7 +370,7 @@ class FrameBuffer(_FrameBuffer):
             (Area): The bounding box of the blitted area.
         """
         return _shapes.blit_transparent(self, *args, **kwargs)
-    
+
     def circle(self, *args, **kwargs):
         """
         Circle drawing function.  Will draw a single pixel wide circle
@@ -384,7 +387,7 @@ class FrameBuffer(_FrameBuffer):
             (Area): The bounding box of the circle.
         """
         return _shapes.circle(self, *args, **kwargs)
-    
+
     def gradient_rect(self, *args, **kwargs):
         """
         Fill a rectangle with a gradient.
@@ -403,7 +406,7 @@ class FrameBuffer(_FrameBuffer):
             (Area): The bounding box of the filled area.
         """
         return _shapes.gradient_rect(self, *args, **kwargs)
-  
+
     def polygon(self, *args, **kwargs):
         """
         Draw a polygon on the canvas.
@@ -424,7 +427,7 @@ class FrameBuffer(_FrameBuffer):
             (Area): The bounding box of the polygon.
         """
         return _shapes.polygon(self, *args, **kwargs)
-    
+
     def round_rect(self, *args, **kwargs):
         """
         Rounded rectangle drawing function.  Will draw a single pixel wide rounded rectangle starting at
@@ -443,7 +446,7 @@ class FrameBuffer(_FrameBuffer):
             (Area): The bounding box of the rectangle.
         """
         return _shapes.round_rect(self, *args, **kwargs)
-    
+
     def triangle(self, *args, **kwargs):
         """
         Triangle drawing function.  Draws a single pixel wide triangle with vertices at
@@ -460,7 +463,7 @@ class FrameBuffer(_FrameBuffer):
             f (bool): Fill the triangle (default: False).
 
         Returns:
-            (Area): The bounding box of the triangle.    
+            (Area): The bounding box of the triangle.
         """
         return _shapes.triangle(self, *args, **kwargs)
 
@@ -584,12 +587,20 @@ class FrameBuffer(_FrameBuffer):
                 f.write(b"\x10\x00")  # Offset 28: Bits per pixel
                 f.write(b"\x00\x00\x00\x00")  # Offset 30: Compression
                 f.write(len(self.buffer).to_bytes(4, "little"))  # Offset 34: Image size
-                f.write(b"\x00\x00\x00\x00\x00\x00\x00\x00")  # Offset 38: Horizontal and vertical resolution
+                f.write(
+                    b"\x00\x00\x00\x00\x00\x00\x00\x00"
+                )  # Offset 38: Horizontal and vertical resolution
                 f.write(b"\x00\x00\x00\x00")  # Offset 46: Colors in palette
                 f.write(b"\x00\x00\x00\x00")  # Offset 50: Important colors
                 # The order of the lines is reversed.  We need to reverse them back.
                 for i in range(self.height):
-                    f.write(self.buffer[(self.height - i - 1) * self.width * 2 : (self.height - i) * self.width * 2])
+                    f.write(
+                        self.buffer[
+                            (self.height - i - 1) * self.width * 2 : (self.height - i)
+                            * self.width
+                            * 2
+                        ]
+                    )
         else:
             raise ValueError(f"Save method not implemented for format {self.format}")
 
@@ -614,4 +625,3 @@ class FrameBuffer(_FrameBuffer):
             return _files.bmp_to_framebuffer(filename)
         else:
             raise ValueError(f"Unsupported file type {header}")
-

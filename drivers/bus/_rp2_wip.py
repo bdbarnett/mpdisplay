@@ -11,6 +11,21 @@ import struct
 from machine import Pin
 import micropython
 
+# workaround Ruff errors for PIO statements
+if 0:
+    wrap_target = 0
+    pull = 0
+    block = 0
+    out = 0
+    pins = 0
+    not_osre = 0
+    irq = 0
+    wrap = 0
+    rel = 0
+    ifempty = 0
+    label = 0
+    jmp = 0
+
 
 class I80Bus(_I80Bus):
     """
@@ -83,7 +98,6 @@ class I80Bus(_I80Bus):
             pass
 
         self.trans_done = False
-        self.swap_bytes(data, len(data) // 2)
 
         self.cs(self._cs_active)
 

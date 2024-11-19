@@ -6,7 +6,7 @@ from board_config import display_drv, broker
 from touch_keypad import Keypad
 from time import sleep
 from graphics import FrameBuffer, RGB565
-from pydevices.keys import Keys
+from eventsys.keys import Keys
 from palettes import get_palette
 import asyncio
 

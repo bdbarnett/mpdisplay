@@ -1,10 +1,10 @@
-""" QT Py RP2040 with EyeSPI and ILI9341 2.8" display """
+"""QT Py RP2040 with EyeSPI and ILI9341 2.8" display"""
 
 from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-import pydevices.device as device
+import eventsys.device as device
 import gc
 
 
@@ -15,7 +15,7 @@ display_bus = SPIBus(
     baudrate=60_000_000,
     sck=6,
     mosi=3,
-    miso=4, 
+    miso=4,
     dc=5,
     cs=20,
 )
@@ -47,8 +47,8 @@ gc.collect()
 
 i2c = I2C(0, sda=Pin(24), scl=Pin(25), freq=100000)
 touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=(6, 3, 0, 5)
+touch_read_func = touch_drv.get_positions
+touch_rotation_table = (6, 3, 0, 5)
 
 gc.collect()
 

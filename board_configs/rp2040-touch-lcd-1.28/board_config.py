@@ -1,10 +1,10 @@
-""" Waveshare RP2040-Touch-LCD-1.28 GC9A01 240x240 """
+"""Waveshare RP2040-Touch-LCD-1.28 GC9A01 240x240"""
 
 from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from cst8xx import CST8XX
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_bus = SPIBus(

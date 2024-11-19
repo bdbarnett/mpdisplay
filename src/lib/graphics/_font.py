@@ -28,6 +28,7 @@ try:
     from . import font_8x8
     from . import font_8x14
     from . import font_8x16
+
     _FONTS = {
         8: font_8x8.FONT,
         14: font_8x14.FONT,
@@ -48,7 +49,7 @@ def text(*args, height=8, **kwargs):
     """
     Selector to call the correct text function based on the height of the font.
     See text8, text14, and text16 for more information.
-    
+
     Args:
         height (int): The height of the font to use.  Default is 8.
     """
@@ -59,6 +60,7 @@ def text(*args, height=8, **kwargs):
     if height == 16:
         return text16(*args, **kwargs)
     raise ValueError("Unsupported font height: %d" % height)
+
 
 def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     """
@@ -78,7 +80,7 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     Returns:
         Area: The area that was drawn to.
     """
-    height=8
+    height = 8
     if (
         not hasattr(Font, "_text8font")
         or (font_data is not None and Font._text8font.font_data != font_data)
@@ -88,6 +90,7 @@ def text8(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
         Font._text8font = Font(font_data, height)
 
     return Font._text8font.text(canvas, s, x, y, c, scale, inverted)
+
 
 def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     """
@@ -107,7 +110,7 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     Returns:
         Area: The area that was drawn to.
     """
-    height=14
+    height = 14
     if (
         not hasattr(Font, "_text14font")
         or (font_data is not None and Font._text14font.font_data != font_data)
@@ -117,6 +120,7 @@ def text14(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
         Font._text14font = Font(font_data, height)
 
     return Font._text14font.text(canvas, s, x, y, c, scale, inverted)
+
 
 def text16(canvas, s, x, y, c=1, scale=1, inverted=False, font_data=None):
     """
@@ -181,7 +185,7 @@ class Font:
             self._font_height = len(self.font_data) // 256
             self._cache = self.font_data
             return
-        
+
         # font_data is a string, so it should be a path to a font file.
         self.font_name = self.font_data.split(sep)[-1].split(".")[0]
         self._font_height = height or int(self.font_name.split("x")[-1])
@@ -192,10 +196,7 @@ class Font:
             self._font = open(font_path, "rb")
             # simple font file validation check based on expected file size
             filesize = os.stat(font_path)[6]
-            if (
-                filesize != 256 * self.height
-                and filesize != 128 * self.height
-            ):
+            if filesize != 256 * self.height and filesize != 128 * self.height:
                 raise RuntimeError(
                     f"Invalid font file: {self.font_data} is {filesize} bytes, expected {256 * self.height}"
                 )

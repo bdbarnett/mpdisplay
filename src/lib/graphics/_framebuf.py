@@ -27,7 +27,7 @@ try:
     from ulab import numpy as np  # type: ignore
 except ImportError:
     try:
-        import numpy as np 
+        import numpy as np
     except ImportError:
         np = None
 
@@ -86,25 +86,27 @@ class MHLSBFormat:
 
     @staticmethod
     def set_pixel(framebuf, x, y, color):
-        index = (y * framebuf._stride + x) >> 3 
+        index = (y * framebuf._stride + x) >> 3
         offset = 7 - (x & 0x07)
-        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | ((color != 0) << offset)
+        framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
+            (color != 0) << offset
+        )
 
     @staticmethod
     def get_pixel(framebuf, x, y):
         index = (x + y * framebuf._stride) >> 3
         offset = 7 - (x & 0x07)
         return (framebuf._buffer[index] >> offset) & 0x01
-    
+
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
         for _x in range(x, x + width):
             offset = 7 - _x & 0x07
             for _y in range(y, y + height):
                 index = (_y * framebuf._stride + _x) >> 3
-                framebuf._buffer[index] = (
-                    framebuf._buffer[index] & ~(0x01 << offset)
-                ) | ((color != 0) << offset)
+                framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
+                    (color != 0) << offset
+                )
 
     @staticmethod
     def fill(framebuf, color):
@@ -148,9 +150,9 @@ class MHMSBFormat:
             offset = 7 - _x & 0x07
             for _y in range(y, y + height):
                 index = (_y * framebuf._stride + _x) // 8
-                framebuf._buffer[index] = (
-                    framebuf._buffer[index] & ~(0x01 << offset)
-                ) | ((color != 0) << offset)
+                framebuf._buffer[index] = (framebuf._buffer[index] & ~(0x01 << offset)) | (
+                    (color != 0) << offset
+                )
 
 
 class GS2HMSBFormat:
@@ -259,7 +261,7 @@ class RGB565Format:
     @staticmethod
     def fill(framebuf, color):
         rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
-        if np:
+        if False:
             rgb565_color_int = int.from_bytes(rgb565_color, "little")
             arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
             arr[:] = rgb565_color_int
@@ -269,20 +271,29 @@ class RGB565Format:
 
     @staticmethod
     def fill_rect(framebuf, x, y, width, height, color):
+        # make sure x, y, width, height are within the bounds of the framebuf
+        if x < 0:
+            width += x
+            x = 0
+        if y < 0:
+            height += y
+            y = 0
+        if x + width > framebuf.width:
+            width = framebuf.width - x
+        if y + height > framebuf.height:
+            height = framebuf.height - y
         rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
         if np:
             rgb565_color_int = int.from_bytes(rgb565_color, "little")
             arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
             for _y in range(y, y + height):
-                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = (
-                    rgb565_color_int
-                )
+                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = rgb565_color_int
         else:
-            for _y in range(2 * y, 2 * (y + height), 2):
-                offset2 = _y * framebuf._stride
-                for _x in range(2 * x, 2 * (x + width), 2):
-                    index = offset2 + _x
-                    framebuf._buffer[index : index + 2] = rgb565_color
+            for _y in range(y, y + height):
+                offset = _y * framebuf._stride
+                for _x in range(x, x + width):
+                    index = (offset + _x) * 2
+                    framebuf.buffer[index : index + 2] = rgb565_color
 
 
 class FrameBuffer:
@@ -389,7 +400,7 @@ class FrameBuffer:
     def fill(self, c):
         """
         Fill the entire FrameBuffer with the specified color.
-        
+
         Args:
             c (int): The color to fill the FrameBuffer with.
 
@@ -413,9 +424,7 @@ class FrameBuffer:
         """
         # Check to make sure self._format.depth is a multiple of 8
         if self._format.depth % 8 != 0:
-            raise ValueError(
-                "Scrolling is only implemented for depths that are multiples of 8"
-            )
+            raise ValueError("Scrolling is only implemented for depths that are multiples of 8")
 
         BPP = self._format.depth // 8  # Bytes per pixel
 
@@ -448,14 +457,10 @@ class FrameBuffer:
             # Iterate over each column in the appropriate order (right to left for xstep > 0, left to right for xstep < 0)
             if xstep > 0:
                 for i in range(bytes_per_row - 1, (xstep * BPP) - 1, -1):
-                    self._buffer[new_offset + i] = self._buffer[
-                        offset + i - (xstep * BPP)
-                    ]
+                    self._buffer[new_offset + i] = self._buffer[offset + i - (xstep * BPP)]
             elif xstep < 0:
                 for i in range(-xstep * BPP, bytes_per_row):
-                    self._buffer[new_offset + i] = self._buffer[
-                        offset + i + (xstep * BPP)
-                    ]
+                    self._buffer[new_offset + i] = self._buffer[offset + i + (xstep * BPP)]
             else:
                 # If there is no x shift, copy the row as is
                 self._buffer[new_offset : new_offset + bytes_per_row] = self._buffer[
@@ -504,7 +509,7 @@ class FrameBuffer:
     def hline(self, *args, **kwargs):
         """
         Horizontal line drawing function.  Will draw a single pixel wide line.
-        
+
         Args:
             x0 (int): X-coordinate of the start of the line.
             y0 (int): Y-coordinate of the start of the line.
@@ -517,7 +522,7 @@ class FrameBuffer:
         """
         Line drawing function.  Will draw a single pixel wide line starting at
         x0, y0 and ending at x1, y1.
-        
+
         Args:
             x0 (int): X-coordinate of the start of the line.
             y0 (int): Y-coordinate of the start of the line.

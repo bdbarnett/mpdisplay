@@ -13,6 +13,7 @@ _BIT2 = micropython.const(0x04)
 _BIT1 = micropython.const(0x02)
 _BIT0 = micropython.const(0x01)
 
+
 @micropython.viper
 def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821
     buffer = bytearray(128)
@@ -32,6 +33,7 @@ def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821
         idx += 1
 
     return buffer
+
 
 @micropython.viper
 def _pack16(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821

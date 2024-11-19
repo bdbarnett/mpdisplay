@@ -1,9 +1,8 @@
 """
-A simple test of an encoder in PyDevices.
+A simple test of an encoder in mpdisplay.
 """
 
 from board_config import display_drv, broker
-from pydevices import Events
 
 color_byte = 1
 bg_color = 0xFF00
@@ -27,7 +26,7 @@ draw_line()
 while True:
     if not (e := broker.poll()):
         continue
-    if e.type == Events.MOUSEWHEEL:
+    if e.type == broker.Events.MOUSEWHEEL:
         if e.y != 0:
             direction = factor if e.y > 0 else -factor
             delta = e.y * e.y * direction  # Quadratic acceleration
@@ -38,7 +37,7 @@ while True:
             delta = e.x * e.x * direction
             x_pos = (x_pos + delta) % w
             draw_line()
-    elif e.type == Events.MOUSEBUTTONDOWN:
+    elif e.type == broker.Events.MOUSEBUTTONDOWN:
         if e.button == 2:
             color_byte = color_byte << 1 & 0xFF
             if color_byte == 0:

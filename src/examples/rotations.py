@@ -42,7 +42,8 @@ def clear_screen(display, color):
     and working towards the edges.
 
     Args:
-        display: The display object to clear.
+        display (tft): The display object to clear.
+        color (int): The color to use for the rectangles.
     """
     width = display.width
     height = display.height

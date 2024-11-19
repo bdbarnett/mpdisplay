@@ -1,4 +1,3 @@
-
 # SPDX-FileCopyrightText: 2024 Brad Barnett
 #
 # SPDX-License-Identifier: MIT
@@ -10,6 +9,7 @@ Graphics Draw class
 
 from . import _shapes
 from . import _font
+
 
 class Draw:
     """
@@ -95,4 +95,3 @@ class Draw:
 
     def text16(self, *args, **kwargs):
         return _font.text16(self.canvas, *args, **kwargs)
-

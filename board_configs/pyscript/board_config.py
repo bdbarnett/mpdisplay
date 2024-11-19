@@ -1,7 +1,7 @@
-""" board_config.py - board configuration for PyScript """
+"""board_config.py - board configuration for PyScript"""
 
 from psdisplay import PSDisplay, PSDevices
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_drv = PSDisplay("display_canvas", 480, 320)

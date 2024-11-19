@@ -1,5 +1,4 @@
 from board_config import broker
-from pydevices import Events
 import asyncio
 
 
@@ -8,7 +7,7 @@ async def main():
         e = broker.poll()
         if e:
             print(e)
-            if e == Events.QUIT:
+            if e == broker.Events.QUIT:
                 break
         await asyncio.sleep(0.001)
 

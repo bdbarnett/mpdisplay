@@ -28,7 +28,7 @@ from fbdisplay import FBDisplay
 
 
 release_displays()
-display=FramebufferDisplay(USBFramebuffer(), auto_refresh=True)
+display = FramebufferDisplay(USBFramebuffer(), auto_refresh=True)
 fb = display.framebuffer
 display.root_group = None
 

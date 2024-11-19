@@ -5,8 +5,9 @@ Tested with CPython on Linux, Windows and ChromeOS.
 Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
+
 from dtdisplay import DTDisplay, poll
-import pydevices.device as device
+import eventsys.device as device
 import sys
 
 

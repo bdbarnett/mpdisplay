@@ -6,7 +6,7 @@
 `displaybuf`
 ====================================================
 
-FrameBuffer wrapper for using framebuf based GUIs with PyDevices.
+FrameBuffer wrapper for using framebuf based GUIs with mpdisplay.
 Works with MicroPython Nano-GUI, Micro-GUI and MicroPython-Touch from Peter Hinch,
 but may also be used without them.
 
@@ -23,36 +23,42 @@ Usage:
         from color_setup import ssd
         <your code here>
 """
+
 import gc
 import sys
-from pydevices import color565, color565_swapped, color332
+from displaycore import color565, color565_swapped, color332
 
 try:
     import graphics as framebuf
 except ImportError:
-    import framebuf # type: ignore
+    import framebuf  # type: ignore
 
 if sys.implementation.name == "micropython":
     from ._viper import _bounce8, _bounce4
 else:
+
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
             ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented for MicroPython."
         )
+
     _bounce4 = _bounce8
 
 
 gc.collect()
 
+
 def alloc_buffer(size):
     return memoryview(bytearray(size))
+
 
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "translate_point"}
 _display_drv_set_attrs = {"vscroll"}
 
+
 class DisplayBuffer(framebuf.FrameBuffer):
     """
-    DisplayBuffer: A class to wrap an PyDevices driver and provide a framebuf
+    DisplayBuffer: A class to wrap an mpdisplay driver and provide a framebuf
     compatible interface to it.  It provides a show() method to copy the framebuf
     to the display.  The show() method is optimized for the format.
     The format must be one of the following:
@@ -60,6 +66,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
         DisplayBuffer.GS8
         DisplayBuffer.GS4_HMSB
     """
+
     rgb = None  # Function to convert r, g, b to a color value; used by Nano-GUI and Micro-GUI.
     colors_registered = 0  # For .color().  Not used in Nano-GUI or Micro-GUI.
 
@@ -82,9 +89,9 @@ class DisplayBuffer(framebuf.FrameBuffer):
 
         # If byte swapping is required and the display bus is capable of having byte swapping disabled,
         # disable it and set a flag so we can swap the color bytes as they are created.
-        if self.display_drv.requires_byte_swap:
-            # self.display_drv.disable_auto_byte_swap(True) returns True if it was successful, False if not.
-            self.needs_swap = self.display_drv.disable_auto_byte_swap(True)
+        if self.display_drv.requires_byteswap:
+            # self.display_drv.disable_auto_byteswap(True) returns True if it was successful, False if not.
+            self.needs_swap = self.display_drv.disable_auto_byteswap(True)
         else:
             self.needs_swap = False
 
@@ -168,18 +175,14 @@ class DisplayBuffer(framebuf.FrameBuffer):
                  the index of the registered color in the LUT in GS4_HMSB format
         """
         c = DisplayBuffer.rgb(r, g, b)  # Convert the color to RGB565 or RGB332
-        if not hasattr(
-            DisplayBuffer, "lut"
-        ):  # If the ssd doesn't use a LUT in its current format
+        if not hasattr(DisplayBuffer, "lut"):  # If the ssd doesn't use a LUT in its current format
             return c  # Return the color as-is
         if idx is None:  # If no index was provided
             if (
                 DisplayBuffer.colors_registered < 16
             ):  # If there are fewer than 16 colors registered
                 idx = DisplayBuffer.colors_registered  # Set the index to the next index
-                DisplayBuffer.colors_registered += (
-                    1  # Increment the number of colors registered
-                )
+                DisplayBuffer.colors_registered += 1  # Increment the number of colors registered
             else:  # If there are already 16 colors registered
                 raise ValueError("16 colors have already been registered")
         if not 0 <= idx <= 15:  # If the index is out of range
@@ -195,9 +198,7 @@ class DisplayBuffer(framebuf.FrameBuffer):
             for row in range(y, y + h):
                 buffer_begin = (row * self.width + x) * 2
                 buffer_end = buffer_begin + w * 2
-                self.display_drv.blit_rect(
-                    self.buffer[buffer_begin:buffer_end], x, row, w, 1
-                )
+                self.display_drv.blit_rect(self.buffer[buffer_begin:buffer_end], x, row, w, 1)
         else:
             self.display_drv.blit_rect(self.buffer, 0, 0, self.width, self.height)
 

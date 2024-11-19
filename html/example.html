@@ -18,7 +18,7 @@
             from js import document
             script_name_element = document.querySelector('p[name="scriptName"]')
             script_name = script_name_element.textContent
-            mip.install("github:bdbarnett/mpdisplay/src/examples/" + script_name + ".py")
+            mip.install("github:PyDevices/mpdisplay/src/examples/" + script_name + ".py")
 
             import path
             exec(f"import {script_name}")

@@ -33,7 +33,8 @@ SDL_TimerCallback = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_uint32, ctypes.c_
 
 
 class Timer(_TimerBase):
-    """ SDL2 Timer class """
+    """SDL2 Timer class"""
+
     def _start(self):
         SDL_Init(SDL_INIT_TIMER)
         self._handler_ref = self._handler

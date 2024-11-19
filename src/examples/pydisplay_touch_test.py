@@ -6,19 +6,11 @@ Then it prints the touch_rotation_table that should be set in board_config.py.
 """
 
 from board_config import display_drv, broker
-from pydevices import Events
+from eventsys.device import Types
 from graphics import round_rect, text16
 
-if hasattr(display_drv, "set_device_data"):
-    import pydevices.device as device
 
-    demo = False
-else:
-    demo = True
-    print(
-        "\nThis display driver does not need touch rotations\n",
-        "   but you can still use this app for testing purposes.",
-    )
+demo = False
 
 FG_COLOR = -1  # white
 BG_COLOR = 0  # black
@@ -32,9 +24,9 @@ REVERSE_Y = 0b100
 
 
 def set_rotation_table(table):
-    for device in display_drv._devices:
-        if device.type == device.Types.TOUCH:
-            display_drv.set_device_data(device.id, table)
+    if display_drv.touch_device is not None:
+        if display_drv.touch_device.type == Types.TOUCH:
+            display_drv.touch_device.rotation_table = table
 
 
 def loop():
@@ -77,7 +69,7 @@ def loop():
                     event = broker.poll()
                     if (
                         event
-                        and event.type == Events.MOUSEBUTTONDOWN
+                        and event.type == broker.Events.MOUSEBUTTONDOWN
                         and event.button == 1
                     ):
                         touched_point = event.pos

@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices fbdisplay
+mpdisplay fbdisplay
 """
 
-from pydevices import DisplayDriver, swap_bytes
+from displaycore import DisplayDriver
 
 
 class FBDisplay(DisplayDriver):
@@ -28,8 +28,7 @@ class FBDisplay(DisplayDriver):
         self._buffer = memoryview(buffer)
         self._width = width if width else buffer.width
         self._height = height if height else buffer.height
-        self._requires_byte_swap = reverse_bytes_in_word
-        self._auto_byte_swap_enabled = self._requires_byte_swap
+        self._requires_byteswap = reverse_bytes_in_word
         self._rotation = 0
         self.color_depth = 16
 
@@ -58,7 +57,7 @@ class FBDisplay(DisplayDriver):
             (tuple): A tuple containing the x, y, w, h values
         """
         BPP = self.color_depth // 8
-        if self._auto_byte_swap_enabled:
+        if self._auto_byteswap:
             color_bytes = (c & 0xFFFF).to_bytes(2, "big")
         else:
             color_bytes = (c & 0xFFFF).to_bytes(2, "little")
@@ -83,8 +82,8 @@ class FBDisplay(DisplayDriver):
         Returns:
             (tuple): A tuple containing the x, y, w, h values.
         """
-        if self._auto_byte_swap_enabled:
-            self.swap_bytes(buf, w * h)
+        if self._auto_byteswap:
+            self.byteswap(buf)
 
         BPP = self.color_depth // 8
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:

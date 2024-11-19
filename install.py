@@ -1,5 +1,5 @@
 """
-Install script for PyDevices with control over each package.
+Install script for mpdisplay with control over each package.
 Uses 'mip' to download directly to a MicroPython device or
 uses 'mpremote' to download to an attached microcontroller
 from Python.
@@ -7,14 +7,14 @@ from Python.
 To download this file to your device, run the following command:
 ```MicroPython
 import mip
-mip.install("github:bdbarnett/mpdisplay/install.py")
+mip.install("github:PyDevices/mpdisplay/install.py")
 ```
 or
 ```bash
-wget https://raw.githubusercontent.com/bdbarnett/mpdisplay/main/install.py
+wget https://raw.githubusercontent.com/PyDevices/mpdisplay/main/install.py
 ```
 
-Comment out the packages you don't want to install and 
+Comment out the packages you don't want to install and
 change the target directories if needed.
 
 Usage (MicroPython or CPython):
@@ -26,22 +26,26 @@ to your working directory / microcontroller.
 Also equivalent to running the following commands in the REPL:
 ```
 import mip
-mip.install("github:bdbarnett/mpdisplay", target=".")  # Does not include examples
-mip.install("github:bdbarnett/mpdisplay/packages/examples.json", target="examples")
+mip.install("github:PyDevices/mpdisplay", target=".")  # Does not include examples
+mip.install("github:PyDevices/mpdisplay/packages/examples.json", target="examples")
 ```
 """
+
 from sys import implementation
+
 if implementation.name == "micropython":
     import mip
+
     def install(package, target):
         mip.install(package, target=target)
 else:
     import os
+
     def install(package, target):
         os.system(f"mpremote mip install --target {target} {package}")
 
 
-src_base = "github:bdbarnett/mpdisplay/packages/"
+src_base = "github:PyDevices/mpdisplay/packages/"
 dest_base = "./"
 
 # List of package, target pairs
@@ -51,9 +55,10 @@ packages = [
     ("examples", "examples"),
     ("extras", "extras"),
     ("displaybuf", "lib"),
+    ("displaycore", "lib"),
+    ("eventsys", "lib"),
     ("graphics", "lib"),
     ("palettes", "lib"),
-    ("pydevices", "lib"),
     ("timer", "lib"),
     ("path.py", ""),
 ]

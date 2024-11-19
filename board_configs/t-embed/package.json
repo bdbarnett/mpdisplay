@@ -1,9 +1,9 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-embed/board_config.py"],
-      ["busdisplay.py", "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"],
-      ["spibus.py", "github:bdbarnett/mpdisplay/drivers/bus/spibus.py"],
-      ["st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"],
+      ["board_config.py", "github:PyDevices/mpdisplay/board_configs/t-embed/board_config.py"],
+      ["busdisplay.py", "github:PyDevices/mpdisplay/src/displays/busdisplay.py"],
+      ["spibus.py", "github:PyDevices/mpdisplay/drivers/bus/spibus.py"],
+      ["st7789.py", "github:PyDevices/mpdisplay/drivers/display/st7789.py"],
       ["rotary.py", "github:miketeachman/micropython-rotary/rotary.py"],
       ["rotary_irq_esp.py", "github:miketeachman/micropython-rotary/rotary_irq_esp.py"]
       ],

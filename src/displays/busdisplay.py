@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices busdisplay
+mpdisplay busdisplay
 """
 
-from pydevices import DisplayDriver
-from micropython import const 
+from displaycore import DisplayDriver
+from micropython import const
 import struct
 import sys
 import gc
@@ -18,13 +18,13 @@ except ImportError:
     pass
 
 if sys.implementation.name == "micropython":
-    from machine import Pin 
+    from machine import Pin
     from time import sleep_ms
-    from micropython import alloc_emergency_exception_buf 
+    from micropython import alloc_emergency_exception_buf
 
     alloc_emergency_exception_buf(256)
 elif sys.implementation.name == "circuitpython":
-    import digitalio 
+    import digitalio
     from time import sleep
 
     def sleep_ms(ms):
@@ -147,6 +147,7 @@ class BusDisplay(DisplayDriver):
         data_as_commands=False,  # For color OLEDs
         single_byte_bounds=False,  # For color OLEDs
     ):
+        print(f"Started BusDisplay")
         gc.collect()
         self.display_bus = display_bus
         self._width = width
@@ -157,7 +158,7 @@ class BusDisplay(DisplayDriver):
         self.color_depth = color_depth
         self.bgr = bgr
         self._invert = invert
-        self._requires_byte_swap = reverse_bytes_in_word
+        self._requires_byteswap = reverse_bytes_in_word
         self._set_column_command = set_column_command
         self._set_row_command = set_row_command
         self._write_ram_command = write_ram_command
@@ -166,11 +167,11 @@ class BusDisplay(DisplayDriver):
         self._single_byte_bounds = single_byte_bounds  # not implemented
 
         self.send = display_bus.send
-        self.send_color = display_bus.send if not hasattr(display_bus, "send_color") else display_bus.send_color
-
-        self.rotation_table = (
-            _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
+        self.send_color = (
+            display_bus.send # if not hasattr(display_bus, "send_color") else display_bus.send_color
         )
+
+        self.rotation_table = _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
 
         self._param_buf = bytearray(4)
         self._param_mv = memoryview(self._param_buf)
@@ -181,14 +182,12 @@ class BusDisplay(DisplayDriver):
         self._power_pin = self._config_output_pin(power_pin, value=power_on_high)
         self._power_on_high = power_on_high
 
-        self._backlight_pin = self._config_output_pin(
-            backlight_pin, value=backlight_on_high
-        )
+        self._backlight_pin = self._config_output_pin(backlight_pin, value=backlight_on_high)
         self._backlight_on_high = backlight_on_high
 
         if self._backlight_pin is not None:
             try:
-                from machine import PWM 
+                from machine import PWM
 
                 self._backlight_pin = PWM(self._backlight_pin, freq=1000, duty_u16=0)
                 self._backlight_is_pwm = True
@@ -210,9 +209,6 @@ class BusDisplay(DisplayDriver):
         if not self._initialized:
             raise RuntimeError("Display driver init() must call super().init()")
 
-        if hasattr(self.display_bus, "swap_bytes"):
-            self.swap_bytes = self.display_bus.swap_bytes
-
         # Set COLMOD (color mode) based on color_depth
         pixel_formats = {3: 0x11, 8: 0x22, 12: 0x33, 16: 0x55, 18: 0x66, 24: 0x77}
         self._param_buf[0] = pixel_formats[self.color_depth]
@@ -220,9 +216,8 @@ class BusDisplay(DisplayDriver):
 
         self.brightness = brightness
 
-        self.fill(0)  # Clear the display
-
         gc.collect()
+        print(f"Finished BusDisplay")
 
     ############### Required API Methods ################
 
@@ -265,8 +260,8 @@ class BusDisplay(DisplayDriver):
         Returns:
             (tuple): A tuple containing the x, y, width, and height of the rectangle.
         """
-        if self._auto_byte_swap_enabled:
-            self.swap_bytes(buf, w * h)
+        if self._auto_byteswap:
+            self.byteswap(buf)
 
         x1 = x + self.colstart
         x2 = x1 + w - 1
@@ -296,7 +291,11 @@ class BusDisplay(DisplayDriver):
         Returns:
             (tuple): A tuple containing the x, y, width, and height of the rectangle.
         """
-        color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
+        color_bytes = (
+            (c & 0xFFFF).to_bytes(2, "big")
+            if self._auto_byteswap
+            else (c & 0xFFFF).to_bytes(2, "little")
+        )
         x1 = x + self.colstart
         x2 = x1 + w - 1
         y1 = y + self.rowstart
@@ -327,8 +326,12 @@ class BusDisplay(DisplayDriver):
         Returns:
             (tuple): A tuple containing the x, y, width, and height of the pixel.
         """
-        color_bytes = (c & 0xFFFF).to_bytes(2, "big") if self._auto_byte_swap_enabled else (c & 0xFFFF).to_bytes(2, "little")
-        if self._auto_byte_swap_enabled:
+        color_bytes = (
+            (c & 0xFFFF).to_bytes(2, "big")
+            if self._auto_byteswap
+            else (c & 0xFFFF).to_bytes(2, "little")
+        )
+        if self._auto_byteswap:
             c = c >> 8 | c << 8
         xpos = x + self.colstart
         ypos = y + self.rowstart
@@ -392,7 +395,7 @@ class BusDisplay(DisplayDriver):
         if rot == 0 or rot == 180:
             return self._rowstart
         return self._colstart
-    
+
     @property
     def power(self) -> bool:
         """

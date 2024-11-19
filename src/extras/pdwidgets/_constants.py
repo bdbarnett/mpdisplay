@@ -2,8 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 """
-Constants used by the PyWidgets library.
+Constants used by the pdwidgets library.
 """
+
 from micropython import const
 
 
@@ -27,11 +28,11 @@ class _Constants:
         print(value)
     ```
     """
-    
+
     @classmethod
     def __contains__(cls, item):
         return item in cls.__dict__.values()
-    
+
     @classmethod
     def __iter__(cls):
         return iter(cls.__dict__.values())
@@ -42,6 +43,8 @@ class _IconSize(_Constants):
     MEDIUM = 24
     LARGE = 36
     XLARGE = 48
+
+
 ICON_SIZE = _IconSize()
 
 
@@ -49,6 +52,8 @@ class _TextSize(_Constants):
     SMALL = 8
     MEDIUM = 14
     LARGE = 16
+
+
 TEXT_SIZE = _TextSize()
 
 
@@ -58,6 +63,8 @@ class _Position(_Constants):
     TOP = 1 << 2
     BOTTOM = 1 << 3
     OUTER = 1 << 4
+
+
 POSITION = _Position()
 
 
@@ -79,4 +86,6 @@ class _Align(_Constants):
     OUTER_BOTTOM_LEFT = POSITION.BOTTOM | POSITION.LEFT | POSITION.OUTER  # 25
     OUTER_BOTTOM = POSITION.BOTTOM | POSITION.OUTER  # 24
     OUTER_BOTTOM_RIGHT = POSITION.BOTTOM | POSITION.RIGHT | POSITION.OUTER  # 26
+
+
 ALIGN = _Align()

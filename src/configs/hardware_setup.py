@@ -1,14 +1,14 @@
-'''
-hardware_setup.py - hardware setup for MicroPython-Touch using DisplayBuffer on PyDevices
+"""
+hardware_setup.py - hardware setup for MicroPython-Touch using DisplayBuffer on mpdisplay
 See:  https://github.com/peterhinch/micropython-touch
 
 Usage:
     from hardware_setup import display
     <your code here>
-'''
+"""
+
 from displaybuf import DisplayBuffer as SSD
 from board_config import display_drv, broker
-from pydevices import Events
 
 # format = SSD.GS4_HMSB  # 4-bit (16 item) lookup table of 16-bit RGB565 colors; w*h/2 buffer
 # format = SSD.GS8  # 256 8-bit RGB332 colors; w*h buffer
@@ -19,10 +19,13 @@ ssd = SSD(display_drv, format)
 
 # enable screenshot functionality
 def screenshot(event):
-    if event.type == Events.MOUSEBUTTONDOWN and event.button == 3:
+    if event.type == broker.Events.MOUSEBUTTONDOWN and event.button == 3:
         ssd.screenshot()
-broker.subscribe(screenshot, event_types=[Events.MOUSEBUTTONDOWN])
+
+
+broker.subscribe(screenshot, event_types=[broker.Events.MOUSEBUTTONDOWN])
 # End screenshot functionality
+
 
 class Poller:
     def __init__(self, poll_func):
@@ -36,18 +39,21 @@ class Poller:
         return True if self._touched else False
 
     def callback(self, event):
-        if event.type == Events.MOUSEMOTION and event.buttons[0] == 1:
+        if event.type == broker.Events.MOUSEMOTION and event.buttons[0] == 1:
             self.col, self.row = event.pos
             self._touched = True
-        elif event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
+        elif event.type == broker.Events.MOUSEBUTTONDOWN and event.button == 1:
             self.col, self.row = event.pos
             self._touched = True
-        elif event.type == Events.MOUSEBUTTONUP and event.button == 1:
+        elif event.type == broker.Events.MOUSEBUTTONUP and event.button == 1:
             self._touched = False
 
 
 tpad = Poller(broker.poll)
-broker.subscribe(tpad.callback, event_types=[Events.MOUSEMOTION, Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP])
+broker.subscribe(
+    tpad.callback, event_types=[broker.Events.MOUSEMOTION, broker.Events.MOUSEBUTTONDOWN, broker.Events.MOUSEBUTTONUP]
+)
 
 from gui.core.tgui import Display  # noqa: E402
+
 display = Display(ssd, tpad)

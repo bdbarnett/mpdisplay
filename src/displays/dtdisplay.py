@@ -1,8 +1,8 @@
 """
-PyDevices dtdisplay
+mpdisplay dtdisplay
 """
 
-from pydevices import DisplayDriver, color_rgb  # noqa: F401
+from displaycore import DisplayDriver, color_rgb  # noqa: F401
 
 _poller = None
 

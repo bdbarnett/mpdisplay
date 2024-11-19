@@ -1,13 +1,13 @@
-""" DIY Raspberry Pi Pico with ILI9341 2.8" display """
+"""DIY Raspberry Pi Pico with ILI9341 2.8" display"""
 
 from i80bus import I80Bus
 from ili9341 import ILI9341
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
-import pydevices.device as device
+import eventsys.device as device
 
 
-reset=Pin(12, Pin.OUT, value=1)
+reset = Pin(12, Pin.OUT, value=1)
 
 display_bus = I80Bus(
     dc=14,
@@ -37,10 +37,10 @@ display_drv = ILI9341(
     power_on_high=True,
 )
 
-i2c = I2C(0, sda=Pin(16), scl=Pin(17), freq=100000)  #IRQ = 11
+i2c = I2C(0, sda=Pin(16), scl=Pin(17), freq=100000)  # IRQ = 11
 touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=None
+touch_read_func = touch_drv.get_positions
+touch_rotation_table = None
 
 broker = device.Broker()
 

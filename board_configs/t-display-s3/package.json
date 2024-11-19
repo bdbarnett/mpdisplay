@@ -1,10 +1,10 @@
 {
     "urls": [
-      ["board_config.py", "github:bdbarnett/mpdisplay/board_configs/t-display-s3/board_config.py"],
-      ["busdisplay.py", "github:bdbarnett/mpdisplay/src/displays/busdisplay.py"],
-      ["i80bus.py", "github:bdbarnett/mpdisplay/drivers/bus/i80bus.py"],
-      ["gpio_pin.py", "github:bdbarnett/mpdisplay/drivers/bus/gpio_pin.py"],
-      ["st7789.py", "github:bdbarnett/mpdisplay/drivers/display/st7789.py"]
+      ["board_config.py", "github:PyDevices/mpdisplay/board_configs/t-display-s3/board_config.py"],
+      ["busdisplay.py", "github:PyDevices/mpdisplay/src/displays/busdisplay.py"],
+      ["i80bus.py", "github:PyDevices/mpdisplay/drivers/bus/i80bus.py"],
+      ["gpio_pin.py", "github:PyDevices/mpdisplay/drivers/bus/gpio_pin.py"],
+      ["st7789.py", "github:PyDevices/mpdisplay/drivers/display/st7789.py"]
     ],
     "version": "0.1"
   }

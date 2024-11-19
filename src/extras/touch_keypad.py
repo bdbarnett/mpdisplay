@@ -5,7 +5,7 @@
 `touch_keypad`
 ====================================================
 
-Matrix keypad helper for touch displays on PyDevices
+Matrix keypad helper for touch displays on mpdisplay
 
 Divides the display into a grid of rows and columns.
 Returns the key number of the associated cell pressed.
@@ -23,11 +23,14 @@ while True:
         print(key)
 """
 
-from pydevices import Events
+from eventsys import Events
+
 try:
     from graphics import Area
 except ImportError:
-    print("touch_keypad:  graphics module not found.  Keypad.areas attribute will not be available.")
+    print(
+        "touch_keypad:  graphics module not found.  Keypad.areas attribute will not be available."
+    )
     Area = None
 
 
@@ -45,8 +48,11 @@ class Keypad:
         self.key_height = kh = h / rows
         self._translate = translate or (lambda point: point)
         if Area:
-            self.areas = [Area(int(x + kw * i), int(y + kh * j), int(kw), int(kh)) for j in range(rows) for i in range(cols)]
-
+            self.areas = [
+                Area(int(x + kw * i), int(y + kh * j), int(kw), int(kh))
+                for j in range(rows)
+                for i in range(cols)
+            ]
 
     def read(self):
         event = self._poll()

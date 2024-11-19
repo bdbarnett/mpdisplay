@@ -1,26 +1,5 @@
 {
-  "urls": [
-    [
-      "pydevices/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/__init__.py"
-    ],
-    [
-      "pydevices/_numpy.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/_numpy.py"
-    ],
-    [
-      "pydevices/_viper.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/_viper.py"
-    ],
-    [
-      "pydevices/device.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/device.py"
-    ],
-    [
-      "pydevices/keys.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/keys.py"
-    ]
-  ],
+  "urls": [],
   "deps": [],
   "version": "0.1"
 }

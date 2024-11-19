@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pydevices.keys`
+`eventsys.keys`
 ====================================================
 """
 
@@ -14,6 +14,7 @@ class Keys:
     """
     A container for key codes and names.  Similar to a C enum and struct.
     """
+
     def keyname(x):
         return Keys._keytable.get(x, "Unknown")
 

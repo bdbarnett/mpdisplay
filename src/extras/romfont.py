@@ -37,12 +37,14 @@ class ROMFont:
             pal (FrameBuffer): The palette to use.
 
         Returns:
-            Area: The area of the canvas that was drawn on.
+            (Area): The area of the canvas that was drawn on.
         """
         # create a memoryview of the character in the font
         offset = ord(c) * self.char_height
-        char_view = self.buffer[offset:offset + self.char_height]
-        canvas.blit(FrameBuffer(char_view, self.char_width, self.char_height, MONO_HLSB), x, y, key, pal)
+        char_view = self.buffer[offset : offset + self.char_height]
+        canvas.blit(
+            FrameBuffer(char_view, self.char_width, self.char_height, MONO_HLSB), x, y, key, pal
+        )
         return Area(x, y, self.char_width, self.char_height)
 
     def text(self, canvas, s, x, y, fg, bg=None):

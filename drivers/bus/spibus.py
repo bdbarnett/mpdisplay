@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 """
-PyDevices spibus
+mpdisplay spibus
 """
 
 from machine import Pin, SPI 

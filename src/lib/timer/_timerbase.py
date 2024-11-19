@@ -105,7 +105,7 @@ class _TimerBase:
     def _start(self):
         """
         Starts the timer. Must be implemented by subclasses.
-        
+
         Raises:
             NotImplementedError: If not implemented by subclass.
         """
@@ -114,7 +114,7 @@ class _TimerBase:
     def _stop(self):
         """
         Stops the timer. Must be implemented by subclasses.
-        
+
         Raises:
             NotImplementedError: If not implemented by subclass.
         """

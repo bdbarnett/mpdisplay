@@ -1,4 +1,4 @@
-""" Waveshare Pico-LCD-1.8 128x160 ST7735S display """
+"""Waveshare Pico-LCD-1.8 128x160 ST7735S display"""
 
 from spibus import SPIBus
 from st7735r_1 import ST7735R

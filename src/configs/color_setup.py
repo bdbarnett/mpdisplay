@@ -1,9 +1,10 @@
-'''
-color_setup.py - color setup for DisplayBuffer with PyDevices
+"""
+color_setup.py - color setup for DisplayBuffer with mpdisplay
 Usage:
     from color_setup import ssd
     <your code here>
-'''
+"""
+
 from displaybuf import DisplayBuffer as SSD
 from board_config import display_drv
 import sys

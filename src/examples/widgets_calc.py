@@ -1,8 +1,8 @@
 
 import board_config
-import pywidgets as pw
+import pdwidgets as pd
 
-pw.DEBUG = False
+pd.DEBUG = False
 
 
 digits = "0123456789."
@@ -13,21 +13,21 @@ button_labels = [["CE", "C", "BS", "/"],
                  ["1", "2", "3", "+"],
                  ["+/-", "0", ".", "="]]
 
-pw.init_timer(10)  # Remove this line to use polled mode in a while loop
+pd.init_timer(10)  # Remove this line to use polled mode in a while loop
 
-display = pw.Display(board_config.display_drv, board_config.broker)
+display = pd.Display(board_config.display_drv, board_config.broker)
 theme = display.color_theme
-screen = pw.Screen(display, visible=False)
-top_box = pw.Widget(screen, h=60, bg=theme.secondary)
-readout = pw.Widget(top_box, fg=theme.on_background, bg=theme.background, w=top_box.width-6, h=top_box.height-6, align=pw.ALIGN.CENTER)
-clock = pw.DigitalClock(readout, align=pw.ALIGN.CENTER, scale=3, visible=False)
-clock_toggle = pw.ToggleButton(readout, size=18, value=False)
-history = pw.TextBox(readout, w=readout.width-clock_toggle.width, h=clock_toggle.height, align=pw.ALIGN.OUTER_TOP_RIGHT, align_to=clock_toggle, scale=1, visible=False)
+screen = pd.Screen(display, visible=False)
+top_box = pd.Widget(screen, h=60, bg=theme.secondary)
+readout = pd.Widget(top_box, fg=theme.on_background, bg=theme.background, w=top_box.width-6, h=top_box.height-6, align=pd.ALIGN.CENTER)
+clock = pd.DigitalClock(readout, align=pd.ALIGN.CENTER, scale=3, visible=False)
+clock_toggle = pd.ToggleButton(readout, size=18, value=False)
+history = pd.TextBox(readout, w=readout.width-clock_toggle.width, h=clock_toggle.height, align=pd.ALIGN.OUTER_TOP_RIGHT, align_to=clock_toggle, scale=1, visible=False)
 history.set_position(y=history.height)
 history.visible = True
 max_history_chars = (history.width // history.char_width) - 1
 history.format = f">{max_history_chars}"
-entry = pw.TextBox(readout, align=pw.ALIGN.BOTTOM, scale=2)
+entry = pd.TextBox(readout, align=pd.ALIGN.BOTTOM, scale=2)
 max_entry_chars = (entry.width // entry.char_width) - 1
 entry.format = f">{max_entry_chars+1}"
 
@@ -35,13 +35,13 @@ def clock_toggle_callback(sender, event):
     clock.hide(not sender.value)
     history.hide(sender.value)
     entry.hide(sender.value)
-clock_toggle.add_event_cb(pw.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
+clock_toggle.add_event_cb(pd.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
 
-button_box = pw.Widget(screen, h=display.height-top_box.height, align=pw.ALIGN.BOTTOM)
+button_box = pd.Widget(screen, h=display.height-top_box.height, align=pd.ALIGN.BOTTOM)
 cols, rows = len(button_labels[0]), len(button_labels)
 column_width = button_box.width // cols
 row_height = button_box.height // rows
-buttons = [[pw.Button(button_box, label=button_labels[j][i], value=button_labels[j][i], radius=4,
+buttons = [[pd.Button(button_box, label=button_labels[j][i], value=button_labels[j][i], radius=4,
     x=column_width*i, y=row_height*j, w=column_width, h=row_height) for i in range(cols)] for j in range(rows)]
 
 
@@ -127,9 +127,9 @@ clear_everything()
 
 for row in buttons:
     for button in row:
-        button.add_event_cb(pw.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value))
+        button.add_event_cb(pd.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value))
 
-screen.add_event_cb(pw.Events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
+screen.add_event_cb(pd.Events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
 
 screen.visible = True
 
@@ -137,4 +137,4 @@ if not display.timer:
     print("Starting main loop")
     running = True
     while running:
-        pw.tick()
+        pd.tick()

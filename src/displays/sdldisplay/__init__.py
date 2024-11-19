@@ -3,10 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 """
-PyDevices dtdisplay.sdldisplay
+mpdisplay sdldisplay
 """
 
-from pydevices import DisplayDriver, color_rgb, Events
+from displaycore import DisplayDriver, color_rgb
+from eventsys import Events
 from sys import implementation
 from ._sdl2_lib import (
     SDL_Init,
@@ -184,6 +185,7 @@ class SDLDisplay(DisplayDriver):
         self._window_flags = window_flags
         self._scale = scale
         self._buffer = None
+        self._requires_byteswap = False
 
         # Determine the pixel format
         if color_depth == 32:
@@ -263,9 +265,7 @@ class SDLDisplay(DisplayDriver):
         blitRect = SDL_Rect(x, y, w, h)
         if is_cpython:
             if isinstance(buffer, memoryview):
-                buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(
-                    buffer.obj
-                )
+                buffer_array = (ctypes.c_ubyte * len(buffer.obj)).from_buffer(buffer.obj)
             elif type(buffer) is bytearray:
                 buffer_array = (ctypes.c_ubyte * len(buffer)).from_buffer(buffer)
             else:
@@ -305,9 +305,7 @@ class SDLDisplay(DisplayDriver):
         retcheck(
             SDL_SetRenderDrawColor(self._renderer, r, g, b, 255)
         )  # Set the color to fill the rectangle
-        retcheck(
-            SDL_RenderFillRect(self._renderer, fillRect)
-        )  # Fill the rectangle on the texture
+        retcheck(SDL_RenderFillRect(self._renderer, fillRect))  # Fill the rectangle on the texture
         retcheck(
             SDL_SetRenderTarget(self._renderer, None)
         )  # Reset the render target back to the window
@@ -390,9 +388,7 @@ class SDLDisplay(DisplayDriver):
                 else:
                     dstrect = None
                 retcheck(
-                    SDL_RenderCopyEx(
-                        self._renderer, self._buffer, None, dstrect, angle, None, 0
-                    )
+                    SDL_RenderCopyEx(self._renderer, self._buffer, None, dstrect, angle, None, 0)
                 )
                 retcheck(SDL_SetRenderTarget(self._renderer, None))
                 retcheck(SDL_DestroyTexture(self._buffer))
@@ -422,9 +418,7 @@ class SDLDisplay(DisplayDriver):
         # if (y_start := self.vscsad()) == False:
         if False:
             # The following line is not working on Chromebooks, Ubuntu and Raspberry Pi OS
-            retcheck(
-                SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect)
-            )
+            retcheck(SDL_RenderCopy(self._renderer, self._buffer, renderRect, renderRect))
         else:
             # Ignore renderRect and render the entire texture to the window in four steps
             y_start = self.vscsad()
@@ -435,22 +429,12 @@ class SDLDisplay(DisplayDriver):
             vsaTopHeight = self._vsa + self._tfa - y_start
             vsaTopSrcRect = SDL_Rect(0, y_start, self.width, vsaTopHeight)
             vsaTopDestRect = SDL_Rect(0, self._tfa, self.width, vsaTopHeight)
-            retcheck(
-                SDL_RenderCopy(
-                    self._renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect
-                )
-            )
+            retcheck(SDL_RenderCopy(self._renderer, self._buffer, vsaTopSrcRect, vsaTopDestRect))
 
             vsaBtmHeight = self._vsa - vsaTopHeight
             vsaBtmSrcRect = SDL_Rect(0, self._tfa, self.width, vsaBtmHeight)
-            vsaBtmDestRect = SDL_Rect(
-                0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight
-            )
-            retcheck(
-                SDL_RenderCopy(
-                    self._renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect
-                )
-            )
+            vsaBtmDestRect = SDL_Rect(0, self._tfa + vsaTopHeight, self.width, vsaBtmHeight)
+            retcheck(SDL_RenderCopy(self._renderer, self._buffer, vsaBtmSrcRect, vsaBtmDestRect))
 
             if self._bfa > 0:
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)

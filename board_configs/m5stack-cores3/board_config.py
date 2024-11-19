@@ -1,10 +1,10 @@
-""" M5Stack CoreS3 with ILI9342 320x240 display """
+"""M5Stack CoreS3 with ILI9342 320x240 display"""
 
 from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import I2C, Pin
 from ft6x36 import FT6x36
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_bus = SPIBus(
@@ -39,8 +39,8 @@ display_drv = ILI9341(
 
 i2c = I2C(0, sda=Pin(12), scl=Pin(11), freq=100000)
 touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=None
+touch_read_func = touch_drv.get_positions
+touch_rotation_table = None
 
 broker = device.Broker()
 

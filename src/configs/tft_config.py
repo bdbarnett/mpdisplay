@@ -42,6 +42,7 @@ FEATHERS = TALL  # orientation for feathers.py
 
 palette = get_palette()
 
+
 def deinit(display_drv, display_off=False):
     display_drv.deinit()
     if display_off:

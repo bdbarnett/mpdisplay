@@ -1,10 +1,10 @@
-""" Seeed Studio Round Display for XIAO GC9A01 240x240 display on Adafruit QT Py ESP32-S3"""
+"""Seeed Studio Round Display for XIAO GC9A01 240x240 display on Adafruit QT Py ESP32-S3"""
 
 from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_bus = SPIBus(
@@ -40,8 +40,8 @@ display_drv = GC9A01(
 
 i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=400000)
 touch_drv = CHSC6X(i2c, irq_pin=16)
-touch_read_func=touch_drv.touch_read
-touch_rotation_table=(0, 5, 6, 3)
+touch_read_func = touch_drv.touch_read
+touch_rotation_table = (0, 5, 6, 3)
 
 broker = device.Broker()
 

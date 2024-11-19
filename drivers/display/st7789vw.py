@@ -1,9 +1,8 @@
-""" st7789vw driver
-Aapted from: https://files.waveshare.com/upload/8/8d/LCD_Module_RPI_code.zip
-
-LCD_Module_RPI_code.zip\LCD_Module_RPI_code\RaspberryPi\python\lib
 """
-
+ST7789VW Driver
+Adapted from LCD_Module_RPI_code.zip/LCD_Module_RPI_code/RaspberryPi/python/lib
+at https://files.waveshare.com/upload/8/8d/LCD_Module_RPI_code.zip
+"""
 from busdisplay import BusDisplay
 
 

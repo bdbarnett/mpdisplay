@@ -3,10 +3,10 @@ path.py
 To run this command when you launch *Python, type the following, substituting 'python' with the name
 of your *Python executable, such as 'python3' or 'micropython':
 
-    python -i lib/path.py
+    python -i path.py
 
 On microcontrollers, you may include it in your boot.py, main.py or code.py, whichever is appropriate:
-    
+
     import path
 
 Edit the 'directories' tuple to include the directories you want to add to the path.
@@ -19,8 +19,8 @@ directories = ["lib", "extras", "examples", "displays", "configs"]
 # Set to True to use relative paths instead of absolute paths.
 RELPATH = True
 
-def update():
 
+def update():
     import sys
     import os
 
@@ -51,5 +51,6 @@ def update():
 def add(directory):
     directories.append(directory)
     update()
+
 
 update()

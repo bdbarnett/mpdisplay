@@ -1,10 +1,10 @@
-""" Wokwi ESP32S3 and ILI9341 Touchscreen Display """
+"""Wokwi ESP32S3 and ILI9341 Touchscreen Display"""
 
-from spibus import SPIBus 
-from ili9341 import ILI9341 
-from machine import Pin, I2C 
-from ft6x36 import FT6x36 
-import pydevices.device as device
+from spibus import SPIBus
+from ili9341 import ILI9341
+from machine import Pin, I2C
+from ft6x36 import FT6x36
+import eventsys.device as device
 
 
 display_bus = SPIBus(
@@ -40,8 +40,8 @@ display_drv = ILI9341(
 
 i2c = I2C(0, sda=Pin(7), scl=Pin(6), freq=100000)
 touch_drv = FT6x36(i2c)
-touch_read_func=touch_drv.get_positions
-touch_rotation_table=(6, 3, 0, 5)
+touch_read_func = touch_drv.get_positions
+touch_rotation_table = (6, 3, 0, 5)
 
 broker = device.Broker()
 

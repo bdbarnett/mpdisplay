@@ -1,10 +1,10 @@
-""" T-Embed ST7789 display with encoder"""
+"""T-Embed ST7789 display with encoder"""
 
 from spibus import SPIBus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-import pydevices.device as device
+import eventsys.device as device
 
 
 display_bus = SPIBus(
@@ -41,7 +41,11 @@ display_drv = ST7789(
 encoder_drv = RotaryIRQ(1, 2, pull_up=True, half_step=True)
 encoder_read_func = encoder_drv.value
 encoder_button = Pin(0, Pin.IN, Pin.PULL_UP)
-encoder_button_func = lambda : not encoder_button.value()
+
+
+def encoder_button_func():
+    return not encoder_button.value()
+
 
 broker = device.Broker()
 

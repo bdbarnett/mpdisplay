@@ -1,5 +1,5 @@
 import os
-import lib.path  # noqa: E402, F401
+import path  # noqa: E402, F401
 from png import Reader  # noqa: E402
 from graphics import FrameBuffer, MONO_HLSB
 

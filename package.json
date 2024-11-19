@@ -89,6 +89,10 @@
       "github:bdbarnett/mpdisplay/src/extras/keypins.py"
     ],
     [
+      "extras/lv_utils.py",
+      "github:bdbarnett/mpdisplay/src/extras/lv_utils.py"
+    ],
+    [
       "extras/micropython.py",
       "github:bdbarnett/mpdisplay/src/extras/micropython.py"
     ],
@@ -121,100 +125,100 @@
       "github:bdbarnett/mpdisplay/src/extras/wifi.py"
     ],
     [
-      "extras/pywidgets/__init__.py",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/__init__.py"
+      "extras/pdwidgets/__init__.py",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/__init__.py"
     ],
     [
-      "extras/pywidgets/_constants.py",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/_constants.py"
+      "extras/pdwidgets/_constants.py",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/_constants.py"
     ],
     [
-      "extras/pywidgets/_themes.py",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/_themes.py"
+      "extras/pdwidgets/_themes.py",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/_themes.py"
     ],
     [
-      "extras/pywidgets/console.py",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/console.py"
+      "extras/pdwidgets/console.py",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/console.py"
     ],
     [
-      "extras/pywidgets/pct.py",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/pct.py"
+      "extras/pdwidgets/pct.py",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/pct.py"
     ],
     [
-      "extras/pywidgets/icons/LICENSE",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/LICENSE"
+      "extras/pdwidgets/icons/LICENSE",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/LICENSE"
     ],
     [
-      "extras/pywidgets/icons/README.md",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/README.md"
+      "extras/pdwidgets/icons/README.md",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/README.md"
     ],
     [
-      "extras/pywidgets/icons/check_box_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/check_box_36dp.pbm"
+      "extras/pdwidgets/icons/check_box_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/check_box_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/check_box_outline_blank_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/check_box_outline_blank_36dp.pbm"
+      "extras/pdwidgets/icons/check_box_outline_blank_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/check_box_outline_blank_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/home_filled_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/home_filled_36dp.pbm"
+      "extras/pdwidgets/icons/home_filled_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/home_filled_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_down_18dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_down_18dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_down_18dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_down_18dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_down_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_down_36dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_down_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_down_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_left_18dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_left_18dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_left_18dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_left_18dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_left_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_left_36dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_left_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_left_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_right_18dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_right_18dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_right_18dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_right_18dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_right_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_right_36dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_right_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_right_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_up_18dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_up_18dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_up_18dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_up_18dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/keyboard_arrow_up_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/keyboard_arrow_up_36dp.pbm"
+      "extras/pdwidgets/icons/keyboard_arrow_up_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/keyboard_arrow_up_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/radio_button_checked_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/radio_button_checked_36dp.pbm"
+      "extras/pdwidgets/icons/radio_button_checked_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/radio_button_checked_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/radio_button_unchecked_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/radio_button_unchecked_36dp.pbm"
+      "extras/pdwidgets/icons/radio_button_unchecked_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/radio_button_unchecked_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/toggle_off_18dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_off_18dp.pbm"
+      "extras/pdwidgets/icons/toggle_off_18dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/toggle_off_18dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/toggle_off_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_off_36dp.pbm"
+      "extras/pdwidgets/icons/toggle_off_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/toggle_off_36dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/toggle_on_18dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_on_18dp.pbm"
+      "extras/pdwidgets/icons/toggle_on_18dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/toggle_on_18dp.pbm"
     ],
     [
-      "extras/pywidgets/icons/toggle_on_36dp.pbm",
-      "github:bdbarnett/mpdisplay/src/extras/pywidgets/icons/toggle_on_36dp.pbm"
+      "extras/pdwidgets/icons/toggle_on_36dp.pbm",
+      "github:bdbarnett/mpdisplay/src/extras/pdwidgets/icons/toggle_on_36dp.pbm"
     ],
     [
       "extras/tft_text/__init__.py",
@@ -371,26 +375,6 @@
     [
       "lib/palettes/wheel.py",
       "github:bdbarnett/mpdisplay/src/lib/palettes/wheel.py"
-    ],
-    [
-      "lib/pydevices/__init__.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/__init__.py"
-    ],
-    [
-      "lib/pydevices/_numpy.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/_numpy.py"
-    ],
-    [
-      "lib/pydevices/_viper.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/_viper.py"
-    ],
-    [
-      "lib/pydevices/device.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/device.py"
-    ],
-    [
-      "lib/pydevices/keys.py",
-      "github:bdbarnett/mpdisplay/src/lib/pydevices/keys.py"
     ],
     [
       "lib/timer/__init__.py",

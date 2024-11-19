@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 """
-`pydevices.device`
+`eventsys.device`
 ====================================================
 
-Device classes for PyDevices's Event System.  May also be used
+Device classes for eventsys's Event System.  May also be used
 with other applications.  Devices are objects that poll for events
 and return them.  They can be subscribed to and unsubscribed from
 to receive events.
@@ -77,8 +77,8 @@ class Types:
             To create the KEYPAD device type and `KeypadDevice` class:
 
             ```python
-            from pydevices.device import Devices
-            from pydevices import Events
+            from eventsys.device import Types
+            from eventsys import Events
 
             KeypadDevice = Types.new_type("KEYPAD", [Events.KEYDOWN, Events.KEYUP])
             ```
@@ -92,9 +92,7 @@ class Types:
             raise ValueError("all responses must be integers")
 
         if hasattr(Types, type_name):
-            raise ValueError(
-                f"Device type {type_name} already exists in Devices class."
-            )
+            raise ValueError(f"Device type {type_name} already exists in Devices class.")
         class_name = type_name[0].upper() + type_name[1:].lower() + "Device"
         if class_name in [cls.__name__ for cls in _mapping.values()]:
             raise ValueError(f"Device class {class_name} already exists.")
@@ -117,7 +115,6 @@ class Device:
 
     type = Types.UNDEFINED
     responses = Events.filter
-    _broker = None
 
     def __init__(self, read=None, data=None, read2=None, data2=None):
         """
@@ -136,13 +133,16 @@ class Device:
         self._read2 = read2 if read2 else lambda: None
         self._data2 = data2
 
+        self._broker = None
         self._state = None
         self._user_data = None  # Can be set and retrieved by apps such as lv_config
-        self._read_cb = None  # Read callback - can be set by apps such as lv_config
 
-    def poll(self) -> Events:
+    def poll(self, *args) -> Events:
         """
         Poll the device for events.
+
+        Args:
+            *args: Additional arguments that can be passed to the read callback functions.
 
         Returns:
             Event: The event that was polled or None if no event was polled.
@@ -153,18 +153,18 @@ class Device:
                     if self._broker:
                         self._broker.quit()
                 if callback_list := self._event_callbacks.get(event.type):
-                    for func in callback_list:
-                        func(event)
+                    for callback in callback_list:
+                        callback(event, *args)
                 return event
         return None
 
-    def subscribe(self, callback, event_types):
+    def subscribe(self, callback, event_types=None):
         """
         Subscribe to events from the device.
 
         Args:
             callback (function): The function to call when an event is received.
-            event_types (list[int]): A list of event types to subscribe to.
+            event_types (list[int] | None): A list of event types to subscribe to.
 
         Raises:
             ValueError: If `callback` is not callable.
@@ -180,18 +180,17 @@ class Device:
 
             This will call `callback` when the device receives a MOUSEBUTTONDOWN or MOUSEBUTTONUP event.
         """
+        event_types = event_types or self.responses
         if not callable(callback):
             raise ValueError("callback is not callable.")
         for event_type in event_types:
             if event_type not in self.responses:
-                raise ValueError(
-                    "the specified event_type is not a response from this device"
-                )
+                raise ValueError("the specified event_type is not a response from this device")
             callback_set = self._event_callbacks.get(event_type, set())
             callback_set.add(callback)
             self._event_callbacks[event_type] = callback_set
 
-    def unsubscribe(self, callback, event_types):
+    def unsubscribe(self, callback, event_types=None):
         """
         Unsubscribes a callback function from one or more event types.
 
@@ -199,6 +198,7 @@ class Device:
             callback (function): The callback function to unsubscribe.
             event_types (list): A list of event types to unsubscribe from.
         """
+        event_types = event_types or self.responses
         for event_type in event_types:
             if callback_set := self._event_callbacks.get(event_type):
                 callback_set.remove(callback)
@@ -225,36 +225,6 @@ class Device:
     def user_data(self, value):
         self._user_data = value
 
-    def set_read_cb(self, callback):
-        """
-        Set the callback function to be called when a read event occurs.
-
-        Args:
-            callback (callable): The callback function to be called.
-
-        Raises:
-            ValueError: If the provided callback is not callable.
-        """
-        if callable(callback):
-            self._read_cb = callback
-        else:
-            raise ValueError("callback must be callable")
-
-    def read_cb(self, *args):
-        """
-        Used by lv_config or other applications.
-        Polls itself and passes the result to the read callback function
-        saved by .set_read_cb().
-
-        Parameters:
-        *args: Additional arguments that can be passed to the read callback function.
-
-        Returns:
-        None
-        """
-        if self._read_cb:
-            self._read_cb(self.poll(), *args)
-
 
 class Broker(Device):
     """
@@ -264,11 +234,13 @@ class Broker(Device):
     Attributes:
         type (Devices): The type of the device (set to `Types.BROKER`).
         responses (list): The list of event types that the device can respond to.
+        Events (Events): The Events class for convenience.
+                         Applications can use Broker.Events.KEYDOWN, etc.
     """
 
     type = Types.BROKER
     responses = Events.filter
-    Events = Events
+    Events = Events  # Create a reference to the Events class for convenience.
 
     def __init__(self):
         super().__init__()
@@ -513,6 +485,26 @@ class TouchDevice(Device):
         # Currently, bit 2 = invert_y, bit 1 is invert_x and bit 0 is swap_xy, but that may change.
         self._mask = self._data2[self._rotation // 90]
 
+    @property
+    def rotation_table(self):
+        """
+        Get the rotation table of the touch device.
+
+        Returns:
+            list: The rotation table.
+        """
+        return self._data2
+    
+    @rotation_table.setter
+    def rotation_table(self, value):
+        """
+        Set the rotation table of the touch device.
+
+        Args:
+            value (list): The rotation table.
+        """
+        self._data2 = value
+
     def _poll(self):
         """
         Poll the touch device for touch events.
@@ -547,9 +539,7 @@ class TouchDevice(Device):
                     None,
                 )
             else:
-                return Events.Button(
-                    Events.MOUSEBUTTONDOWN, self._state, 1, False, None
-                )
+                return Events.Button(Events.MOUSEBUTTONDOWN, self._state, 1, False, None)
         elif self._state is not None:
             last_pos = self._state
             self._state = None
@@ -613,12 +603,8 @@ class EncoderDevice(Device):
             steps = pos - last_pos
             self._state = (pos, last_pressed)
             if self._data % 2 == 0:
-                return Events.Wheel(
-                    Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None
-                )
-            return Events.Wheel(
-                Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None
-            )
+                return Events.Wheel(Events.MOUSEWHEEL, False, 0, steps, 0, steps, False, None)
+            return Events.Wheel(Events.MOUSEWHEEL, False, steps, 0, steps, 0, False, None)
         return None
 
 
