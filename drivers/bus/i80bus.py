@@ -54,6 +54,7 @@ class _I80BaseBus:
         data: list[int],
         freq: int = 20_000_000,
     ) -> None:
+        print("I80Bus loading...")
         # Not used in this class; may be used in subclasses like _i80bus_rp2.py
         self._freq = freq
 
@@ -78,6 +79,7 @@ class _I80BaseBus:
         self._buf1: bytearray = bytearray(1)
 
         self._setup(data_pins)
+        print("I80Bus loaded")
 
     @micropython.native
     def send(

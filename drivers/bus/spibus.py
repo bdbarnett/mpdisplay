@@ -56,6 +56,7 @@ class SPIBus:
         dc: int = -1,
         cs: int = -1,
     ) -> None:
+        print("SPIBus loading...")
         if dc == -1:
             raise ValueError("DC pin must be specified")
 
@@ -94,6 +95,7 @@ class SPIBus:
         )
 
         self._buf1: bytearray = bytearray(1)
+        print("SPIBus loaded")
 
     @micropython.native
     def send(
