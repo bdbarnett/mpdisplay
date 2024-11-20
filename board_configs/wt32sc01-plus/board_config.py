@@ -4,9 +4,11 @@ from i80bus import I80Bus
 from st7796 import ST7796
 from machine import I2C, Pin  # See the note about reset below
 from ft6x36 import FT6x36
+from machine import freq
 import eventsys.device as device
 
 
+freq(240_000_000)
 # The WT32-SC01 Plus has the reset pins of the display IC and the touch IC both
 # tied to pin 4.  Controlling this pin with the display driver can lead to an
 # unresponsive touchscreen.  This case is uncommon.  If they aren't tied

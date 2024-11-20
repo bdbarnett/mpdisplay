@@ -168,7 +168,7 @@ class BusDisplay(DisplayDriver):
 
         self.send = display_bus.send
         self.send_color = (
-            display_bus.send # if not hasattr(display_bus, "send_color") else display_bus.send_color
+            display_bus.send if not hasattr(display_bus, "send_color") else display_bus.send_color
         )
 
         self.rotation_table = _DEFAULT_ROTATION_TABLE if not mirrored else _MIRRORED_ROTATION_TABLE
