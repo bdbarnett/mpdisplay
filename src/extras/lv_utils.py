@@ -42,7 +42,10 @@ except:
     try:
         from lv_timer import Timer
     except:
-        raise RuntimeError("Missing machine.Timer implementation!")
+        try:
+            from timer import Timer
+        except:
+            raise RuntimeError("Missing machine.Timer implementation!")
 
 # Try to determine default timer id
 
