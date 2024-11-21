@@ -74,19 +74,19 @@ class ColorTheme:
     """
 
     def __init__(self, pal):
-        self.background = pal.white[0]
-        self.on_background = pal.black[0]
-        self.surface = pal.white[0]
-        self.on_surface = pal.black[0]
-        self.primary = pal.blue[4]
-        self.on_primary = pal.white[0]
-        self.secondary = pal.amber[0]
-        self.on_secondary = pal.black[0]
-        self.error = pal.red[0]
-        self.on_error = pal.white[0]
-        self.primary_variant = pal.blue[3]
-        self.secondary_variant = pal.deep_purple[4]
-        self.tertiary = pal.amber[0]
-        self.on_tertiary = pal.black[0]
-        self.tertiary_variant = pal.amber[4]
+        self.background = pal.WHITE
+        self.on_background = pal.BLACK
+        self.surface = pal.WHITE
+        self.on_surface = pal.BLACK
+        self.primary = pal.BLUE_S900
+        self.on_primary = pal.WHITE
+        self.secondary = pal.AMBER_S100
+        self.on_secondary = pal.BLACK
+        self.error = pal.RED
+        self.on_error = pal.WHITE
+        self.primary_variant = pal.BLUE_S600
+        self.secondary_variant = pal.DEEP_PURPLE
+        self.tertiary = pal.AMBER_S700
+        self.on_tertiary = pal.BLACK
+        self.tertiary_variant = pal.AMBER_S400
         self.transparent = False

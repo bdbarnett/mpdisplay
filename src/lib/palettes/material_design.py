@@ -24,61 +24,27 @@ Usage:
     # to access all 256 colors directly:
     x = palette[127]  # color at index 127
 
-    # to access a shade of a color family by index number:
-    x = palette.red[0]  # shade 500
-    x = palette.red[4]  # shade 900
-    x = palette.red[-5]  # shade 50
-
     # to access a shade by name:
-    x = palette.red.S500  # shade 500
-    x = palette.red.S900  # shade 900
-    x = palette.red.S50  # shade 50
-
-    # to access an accent of a color family by index number:
-    x = palette.red.accents[1]  # A100
-    x = palette.red.accents[4]  # A700
+    x = palette.RED_S500  # shade 500
+    x = palette.RED_S900  # shade 900
+    x = palette.RED_S50  # shade 50
 
     # to access an accent of a color family by name:
-    x = palette.red.accents.A100
-    x = palette.red.accents.A700
+    x = palette.RED_A100
+    x = palette.RED_A700
 
     # to iterate over all 256 colors:
         for x in palette:
             pass
-
-    # to iterate over all shades in a family:
-        for x in palette.red:  # iterate over all 10 shades
-            pass
-
-    # to iterate over all accents in a family:
-        for x in palette.red.accents:  # iterate over all 4 accents
-            pass
-
-
 """
 
-from . import MappedPalette as _Palette
+from . import MappedPalette
 from ._material_design import COLORS, FAMILIES, LENGTHS
 
 
-class _Accents(_Palette):
+class MDPalette(MappedPalette):
     """
-    A class to represent the accent colors.
-    """
-
-    _accents = ["A100", "A200", "A400", "A700"]
-
-    def __init__(self, name, color_depth, swapped, color_map):
-        super().__init__(name, color_depth, swapped, color_map)
-
-    def _define_named_colors(self):
-        for i, accent in enumerate(self._accents):
-            setattr(self, accent, self[i])
-
-
-class _Family(_Palette):
-    """
-    A class to represent the color variants.
+    A class to represent the Material Design color palette.
     """
 
     _shades = [
@@ -94,63 +60,29 @@ class _Family(_Palette):
         "S900",
     ]
 
-    def __init__(self, name, color_depth, swapped, color_map):
-        super().__init__(name, color_depth, swapped, color_map)
-
-    def _define_named_colors(self):
-        if len(self) > 1:
-            for i, shade in enumerate(self._shades):
-                setattr(self, shade, self[i - 5])
-        if len(self) > 10:
-            self.accents = _Accents(
-                self._name + "_accents",
-                self._color_depth,
-                self._swapped,
-                self._color_map[-4 * 3 :],
-            )
-
-    def __getitem__(self, index):
-        """Return the color variant as an integer with the number of bits specified in the color depth."""
-        if len(self) == 1:
-            if index != 0:
-                raise IndexError("Index out of range")
-            else:
-                index = 0
-        else:
-            index += 5
-            if not (-1 < index < len(self)):
-                raise IndexError("Index out of range")
-        return super().__getitem__(index)
-
-    def __iter__(self):
-        if len(self) == 1:
-            yield self[0]
-        else:
-            for i in range(-5, 5):
-                yield self[i]
-
-
-class MDPalette(_Palette):
-    """
-    A class to represent the Material Design color palette.
-    """
+    _accents = ["A100", "A200", "A400", "A700"]
 
     def __init__(self, name="", color_depth=16, swapped=False, color_map=COLORS):
         super().__init__(name, color_depth, swapped, color_map)
         self._name = name if name else "MaterialDesign"
 
     def _define_named_colors(self):
-        index = 0
+        # The colors are already available as pal[0], pal[1], etc.
+        # Now we want to add pal.BLACK = pal[0], pal.WHITE = pal[1], etc.
+        color_index = 0
         for name, length in zip(FAMILIES, LENGTHS):
-            setattr(
-                self,
-                name,
-                _Family(
-                    name,
-                    self._color_depth,
-                    self._swapped,
-                    self._color_map[index : index + length * 3],
-                ),
-            )
-            setattr(self, name.upper(), getattr(self, name)[0])
-            index += length * 3
+            if length == 1:  # black or white
+                setattr(self, name.upper(), self[color_index])
+                color_index += 1
+            else:
+                for shade in self._shades:
+                    setattr(self, f"{name}_{shade}".upper(), self[color_index])
+                    # S500 is the default shade for each family, so add it to the palette
+                    # without the _S500 suffix
+                    if shade == "S500":
+                        setattr(self, name.upper(), self[color_index])
+                    color_index += 1
+                if length == 14:
+                    for accent in self._accents:
+                        setattr(self, f"{name}_{accent}".upper(), self[color_index])
+                        color_index += 1

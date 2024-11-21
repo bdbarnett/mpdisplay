@@ -12,9 +12,9 @@ def main():
     BASE_UNIT = min([display_drv.width, display_drv.height]) // 2
 
     # Draw the 3 concentric circles
-    graphics.circle(display_drv, CENTER_X, CENTER_Y, BASE_UNIT, pal.blue.S900, True)
+    graphics.circle(display_drv, CENTER_X, CENTER_Y, BASE_UNIT, pal.BLUE_S900, True)
     graphics.circle(display_drv, CENTER_X, CENTER_Y, int(BASE_UNIT * .9), pal.BLACK, True)
-    graphics.circle(display_drv, CENTER_X, CENTER_Y, int(BASE_UNIT * .8), pal.amber.S500, True)
+    graphics.circle(display_drv, CENTER_X, CENTER_Y, int(BASE_UNIT * .8), pal.AMBER_S500, True)
 
     # Draw the outer rounded rectangle
     LEFT_X = int(CENTER_X - (BASE_UNIT * 1.2) // 2)
@@ -24,7 +24,7 @@ def main():
     # Draw the inner rounded rectangle
     LEFT_X = int(CENTER_X - (BASE_UNIT * 1.1) // 2)
     TOP_Y = int(CENTER_Y - (BASE_UNIT * 0.9) // 2)
-    graphics.round_rect(display_drv, LEFT_X, TOP_Y, int(BASE_UNIT*1.1), int(BASE_UNIT*0.9), BASE_UNIT//9, pal.amber.S100, True)
+    graphics.round_rect(display_drv, LEFT_X, TOP_Y, int(BASE_UNIT*1.1), int(BASE_UNIT*0.9), BASE_UNIT//9, pal.AMBER_S100, True)
 
     # Draw the 2 small squares
     LEFT_X = CENTER_X - (BASE_UNIT * 3 // 8)

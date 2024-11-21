@@ -13,65 +13,10 @@ display_drv.rotation = 0
 
 palette = get_palette(name="material_design", color_depth=16, swapped=needs_swap)
 
-families =[
-    palette.red,
-    palette.pink,
-    palette.purple,
-    palette.deep_purple,
-    palette.indigo,
-    palette.blue,
-    palette.light_blue,
-    palette.cyan,
-    palette.teal,
-    palette.green,
-    palette.light_green,
-    palette.lime,
-    palette.yellow,
-    palette.amber,
-    palette.orange,
-    palette.deep_orange,
-    palette.brown,
-    palette.grey,
-    palette.blue_grey,
-]
-
-names =[
-    "red",
-    "pink",
-    "purple",
-    "deep_purple",
-    "indigo",
-    "blue",
-    "light_blue",
-    "cyan",
-    "teal",
-    "green",
-    "light_green",
-    "lime",
-    "yellow",
-    "amber",
-    "orange",
-    "deep_orange",
-    "brown",
-    "grey",
-    "blue_grey",
-]
-
-line_height = 30
-
-i = 0
 def main():
-    global i
-    for family in families:
-        if i >= display_drv.height:
-            display_drv.vscsad((line_height + i) % display_drv.height)
-        for j, color in enumerate(family):
-            display_drv.fill_rect(0, (i + j*3) % display_drv.height, display_drv.width, 3, color)
-        text16(display_drv, family._name, 0, (1 + i) % display_drv.height, palette.BLACK)
-        i += line_height
+    line_height=1
+    for i, color in enumerate(palette):
+        display_drv.fill_rect(0, i*line_height, display_drv.width, line_height, color)
 
-def loop():
-    while True:
-        main()
-
-main()
+while True:
+    main()
