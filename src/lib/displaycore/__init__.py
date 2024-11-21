@@ -19,6 +19,19 @@ from ._byteswap import byteswap
 gc.collect()
 
 
+def new_buffer(size):
+    """
+    Create a new buffer of the specified size.  In the future, this function may be
+    modified to use port-specific memory allocation such as ESP32's heap_caps_malloc.
+
+    Args:
+        size (int): The size of the buffer to create.
+
+    Returns:
+        (memoryview): The new buffer.
+    """
+    return memoryview(bytearray(size))
+
 def color888(r, g, b):
     """
     Convert RGB values to a 24-bit color value.
