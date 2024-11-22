@@ -55,7 +55,7 @@ packages = [
     ("examples", "examples"),
     ("extras", "extras"),
     ("displaybuf", "lib"),
-    ("displaycore", "lib"),
+    ("displaysys", "lib"),
     ("eventsys", "lib"),
     ("graphics", "lib"),
     ("palettes", "lib"),

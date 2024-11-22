@@ -6,7 +6,7 @@
 pydisplay dtdisplay.pgdisplay
 """
 
-from displaycore import DisplayDriver, color_rgb
+from displaysys import DisplayDriver, color_rgb
 import pygame as pg
 
 try:

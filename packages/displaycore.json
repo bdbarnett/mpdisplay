@@ -1,16 +1,16 @@
 {
   "urls": [
     [
-      "displaycore/__init__.py",
-      "github:PyDevices/pydisplay/src/lib/displaycore/__init__.py"
+      "displaysys/__init__.py",
+      "github:PyDevices/pydisplay/src/lib/displaysys/__init__.py"
     ],
     [
-      "displaycore/_byteswap.py",
-      "github:PyDevices/pydisplay/src/lib/displaycore/_byteswap.py"
+      "displaysys/_byteswap.py",
+      "github:PyDevices/pydisplay/src/lib/displaysys/_byteswap.py"
     ],
     [
-      "displaycore/_byteswap_viper.py",
-      "github:PyDevices/pydisplay/src/lib/displaycore/_byteswap_viper.py"
+      "displaysys/_byteswap_viper.py",
+      "github:PyDevices/pydisplay/src/lib/displaysys/_byteswap_viper.py"
     ]
   ],
   "deps": [],

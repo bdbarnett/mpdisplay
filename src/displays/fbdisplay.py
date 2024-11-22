@@ -6,7 +6,7 @@
 pydisplay fbdisplay
 """
 
-from displaycore import DisplayDriver
+from displaysys import DisplayDriver
 
 
 class FBDisplay(DisplayDriver):

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`displaycore._byteswap`
+`displaysys._byteswap`
 ====================================================
 
 A function to swap the bytes of a buffer in place.  3 implementations are provided:

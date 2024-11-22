@@ -1,4 +1,4 @@
-::: src.lib.displaycore
+::: src.lib.displaysys
 ::: src.lib.displaybuf
 ::: src.lib.eventsys
 ::: src.lib.graphics

@@ -6,7 +6,7 @@
 pydisplay sdldisplay
 """
 
-from displaycore import DisplayDriver, color_rgb
+from displaysys import DisplayDriver, color_rgb
 from eventsys import Events
 from sys import implementation
 from ._sdl2_lib import (

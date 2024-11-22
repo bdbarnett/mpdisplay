@@ -6,7 +6,7 @@
 pydisplay jndisplay
 """
 
-from displaycore import DisplayDriver, color_rgb
+from displaysys import DisplayDriver, color_rgb
 from IPython.display import display, update_display
 from PIL import Image, ImageDraw
 

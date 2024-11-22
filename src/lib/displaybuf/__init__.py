@@ -26,7 +26,7 @@ Usage:
 
 import gc
 import sys
-from displaycore import color565, color565_swapped, color332
+from displaysys import color565, color565_swapped, color332
 
 try:
     import graphics as framebuf

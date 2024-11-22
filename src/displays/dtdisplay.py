@@ -2,7 +2,7 @@
 pydisplay dtdisplay
 """
 
-from displaycore import DisplayDriver, color_rgb  # noqa: F401
+from displaysys import DisplayDriver, color_rgb  # noqa: F401
 
 _poller = None
 

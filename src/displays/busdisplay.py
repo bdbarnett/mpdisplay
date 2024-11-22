@@ -6,7 +6,7 @@
 pydisplay busdisplay
 """
 
-from displaycore import DisplayDriver
+from displaysys import DisplayDriver
 from micropython import const
 import struct
 import sys
@@ -518,7 +518,7 @@ class BusDisplay(DisplayDriver):
     ############### Class Specific Methods ##############
 
     def _set_window(self, x1, y1, x2, y2):
-        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaycore.py#L271-L363
+        # See https://github.com/adafruit/Adafruit_Blinka_Displayio/blob/main/displayio/_displaysys.py#L271-L363
         # TODO:  Add `if self._single_byte_bounds is True:` for Column and Row _param_buf packing
 
         # Column addresses

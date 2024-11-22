@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`displaycore`
+`displaysys`
 ====================================================
 
 A collection of classes and functions for working with displays and input devices

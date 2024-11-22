@@ -31,7 +31,7 @@ if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
 else:
     include("$(PORT_DIR)/boards/manifest.py")  # type: ignore  # noqa: F821
 
-package("displaycore", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
+package("displaysys", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
 package("eventsys", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
 package("displaybuf", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
 package("graphics", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
