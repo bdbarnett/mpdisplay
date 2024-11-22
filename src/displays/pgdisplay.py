@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-pydisplay dtdisplay.pgdisplay
+displaysys.pgdisplay
 """
 
 from displaysys import DisplayDriver, color_rgb

@@ -6,9 +6,13 @@ Tested with MicroPython on Linux.
 Should work on MacOS, but not tested.
 """
 
-from dtdisplay import DTDisplay, poll
 import eventsys.device as device
 import sys
+
+try:
+    from pgdisplay import PGDisplay as DTDisplay, poll
+except ImportError:
+    from sdldisplay import SDLDisplay as DTDisplay, poll
 
 
 display_drv = DTDisplay(

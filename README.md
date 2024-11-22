@@ -79,7 +79,6 @@ Where possible, existing, proven APIs were used.
 
 - There are currently 5 display classes, and hopefully another `EPaperDisplay` display class will be added soon, although I will need help from the community for this.
   - BusDisplay is for microcontrollers, both on MicroPython and CircuitPython.  CircuitPython provides the required bus drivers, as mentioned elsewhere in this README, but MicroPython doesn't have display bus drivers.  The [buses](src/lib/buses) packages are included with the installer.  It is my hope that community members will create other C bus drivers similar to @kdschlosser's bus drivers in [lvgl_micropython](https://github.com/kdschlosser/lvgl_micropython).
-  - DTDisplay is a superclass containing:
     - SDL2Display - the preferred class for desktop operating systems as it is faster than PGDisplay.  It uses an SDL `texture` in place of an LCD's Graphics RAM (GRAM).
     - PGDisplay - an optional class for desktop operating systems.  It uses a pygame `surface` in place of an LCD's GRAM.  It can be benificial in a couple of instances:
       - SDL2Display "glitches" on my ChromeBook, but PGDisplay doesn't

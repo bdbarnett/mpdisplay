@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-An implementation of SDL2 written in MicroPython.
+A bare implementation of SDL2 written in MicroPython using ffi
 """
 
 import uctypes
