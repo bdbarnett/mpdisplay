@@ -13,13 +13,14 @@ dest = "/home/brad/gh/pydisplay/icons"
 scale = "1x"
 threshold = 160
 
+
 def png_to_pbm(filename, dest_file):
     """
     Convert a PNG file to a PBM file
     """
     print(f"\t{dest_file}")
     width, height, pixels, metadata = Reader(filename=filename).read_flat()
-    if not metadata["greyscale"] or metadata['bitdepth'] != 8:
+    if not metadata["greyscale"] or metadata["bitdepth"] != 8:
         print(f"Only 8-bit greyscale PNGs are supported: {filename}")
         return
 
@@ -32,14 +33,15 @@ def png_to_pbm(filename, dest_file):
     # Convert the pixels
     alpha = 1 if metadata["alpha"] else 0
     planes = metadata["planes"]
-    for y in range(0, height):
-        for x in range(0, width):
+    for y in range(height):
+        for x in range(width):
             if pixels[(y * width + x) * planes + alpha] > threshold:
                 c = 1
             else:
                 c = 0
             fbuf.pixel(x, y, c)
     fbuf.save(dest_file)
+
 
 for category in os.listdir(source):
     for short_name in os.listdir(f"{source}/{category}"):

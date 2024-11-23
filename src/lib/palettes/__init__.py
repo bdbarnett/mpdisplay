@@ -48,7 +48,7 @@ class Palette:
         self._name = name
         self._color_depth = color_depth
         self._swapped = swapped
-        self._cache = dict() if cached else None
+        self._cache = {} if cached else None
 
         if not hasattr(self, "_names"):
             self._names = WIN16

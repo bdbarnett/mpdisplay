@@ -1,4 +1,4 @@
-""" pydisplay_simpletest.py """
+""" displaysys_block_test.py """
 from board_config import display_drv
 import random
 import time

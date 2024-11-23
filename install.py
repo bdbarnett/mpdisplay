@@ -50,8 +50,6 @@ dest_base = "./"
 
 # List of package, target pairs
 packages = [
-    ("configs", "configs"),
-    ("displays", "displays"),
     ("examples", "examples"),
     ("extras", "extras"),
     ("displaybuf", "lib"),

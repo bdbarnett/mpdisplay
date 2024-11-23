@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 # A driver for the PCA9554 I2C I/O expander
-import machine  # type: ignore
+import machine  
 
 
 class PCA9554:

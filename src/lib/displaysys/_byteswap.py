@@ -15,7 +15,7 @@ A function to swap the bytes of a buffer in place.  3 implementations are provid
 
 try:
     # import byteswap from MicroPython if available
-    from byteswap import byteswap # type: ignore
+    from byteswap import byteswap
 except ImportError:
     try:
         # import numpy if available
@@ -24,7 +24,8 @@ except ImportError:
             import numpy as np
         except ImportError:
             # import numpy for CircuitPython or MicroPython with numpy module
-            from ulab import numpy as np # type: ignore
+            from ulab import numpy as np
+
         def byteswap(buf):
             """
             Swap the bytes of a 16-bit buffer in place using numpy.
@@ -35,12 +36,14 @@ except ImportError:
         try:
             # import byteswap_viper if available
             from ._byteswap_viper import byteswap_viper
+
             def byteswap(buf):
                 """
                 Swap the bytes of a 16-bit buffer in place using viper.
                 """
                 byteswap_viper(buf, len(buf))
         except Exception:
+
             def byteswap(buf):
                 """
                 Swap the bytes of a 16-bit buffer in place with no dependencies.

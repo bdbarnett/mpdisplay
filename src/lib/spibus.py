@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
 """
-pydisplay spibus
+spibus
 """
 
-from machine import Pin, SPI 
+from machine import Pin, SPI
 import struct
 import micropython
 from micropython import const

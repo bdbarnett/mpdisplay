@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-from machine import Pin as _Pin 
+from machine import Pin as _Pin
 from sys import platform, implementation
 
 
 if platform == "pyboard":
-    import stm 
+    import stm
 
     gpio_data = {
         "pyboard": {

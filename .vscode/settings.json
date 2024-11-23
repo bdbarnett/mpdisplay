@@ -1,8 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "./src",
-        "./src/configs",
-        "./src/displays",
         "./src/examples",
         "./src/extras",
         "./src/lib"

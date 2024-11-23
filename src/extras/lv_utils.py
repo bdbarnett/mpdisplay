@@ -50,11 +50,11 @@ except:
 # Try to determine default timer id
 
 default_timer_id = 0
-if usys.platform == 'pyboard':
+if usys.platform == "pyboard":
     # stm32 only supports SW timer -1
     default_timer_id = -1
-    
-if usys.platform == 'rp2':
+
+if usys.platform == "rp2":
     # rp2 only supports SW timer -1
     default_timer_id = -1
 
@@ -62,17 +62,26 @@ if usys.platform == 'rp2':
 
 try:
     import uasyncio
+
     uasyncio_available = True
 except:
     uasyncio_available = False
 
 ##############################################################################
 
-class event_loop():
 
+class event_loop:
     _current_instance = None
 
-    def __init__(self, freq=25, timer_id=default_timer_id, max_scheduled=2, refresh_cb=None, asynchronous=False, exception_sink=None):
+    def __init__(
+        self,
+        freq=25,
+        timer_id=default_timer_id,
+        max_scheduled=2,
+        refresh_cb=None,
+        asynchronous=False,
+        exception_sink=None,
+    ):
         if self.is_running():
             raise RuntimeError("Event loop is already running!")
 
@@ -88,7 +97,9 @@ class event_loop():
         self.asynchronous = asynchronous
         if self.asynchronous:
             if not uasyncio_available:
-                raise RuntimeError("Cannot run asynchronous event loop. uasyncio is not available!")
+                raise RuntimeError(
+                    "Cannot run asynchronous event loop. uasyncio is not available!"
+                )
             self.refresh_event = uasyncio.Event()
             self.refresh_task = uasyncio.create_task(self.async_refresh())
             self.timer_task = uasyncio.create_task(self.async_timer())
@@ -125,7 +136,8 @@ class event_loop():
         try:
             if lv._nesting.value == 0:
                 lv.task_handler()
-                if self.refresh_cb: self.refresh_cb()
+                if self.refresh_cb:
+                    self.refresh_cb()
             self.scheduled -= 1
         except Exception as e:
             if self.exception_sink:
@@ -152,14 +164,14 @@ class event_loop():
                 except Exception as e:
                     if self.exception_sink:
                         self.exception_sink(e)
-                if self.refresh_cb: self.refresh_cb()
+                if self.refresh_cb:
+                    self.refresh_cb()
 
     async def async_timer(self):
         while True:
             await uasyncio.sleep_ms(self.delay)
             lv.tick_inc(self.delay)
             self.refresh_event.set()
-            
 
     def default_exception_sink(self, e):
         usys.print_exception(e)

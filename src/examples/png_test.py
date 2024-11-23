@@ -34,7 +34,7 @@ while True:
         planes = p.metadata["planes"]
         buf = memoryview(bytearray(p.width * p.height * 2))
         for y, row in enumerate(p.pixels):
-            for x in range(0, p.width):
+            for x in range(p.width):
                 if row[x*planes+offset] > 127:
                     buf[(y*p.width + x)*2:(y*p.width + x)*2+2] = fg_color.to_bytes(2, 'little')
                 else:

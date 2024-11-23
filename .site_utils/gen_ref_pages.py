@@ -10,7 +10,18 @@ nav = mkdocs_gen_files.Nav()
 root = Path(__file__).parent.parent
 src = root / "src"
 
-for p in ["", "configs", "displays", "examples", "extras", "lib", "lib/displaybuf", "lib/graphics", "lib/palettes", "lib/pydevices", "lib/timer"]:
+for p in [
+    "",
+    "examples",
+    "extras",
+    "lib",
+    "lib/displaybuf",
+    "lib/displaysys",
+    "lib/eventsys",
+    "lib/graphics",
+    "lib/palettes",
+    "lib/timer",
+]:
     sys.path.append(src / p)
 
 for path in sorted(src.rglob("*.py")):

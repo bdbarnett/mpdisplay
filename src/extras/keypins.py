@@ -40,7 +40,7 @@ class KeyPins:
 
     def __call__(self, event):
         if event.key in self._keypins.values():
-            button = [name for name, key in self._keypins.items() if key == event.key][0]
+            button = next(name for name, key in self._keypins.items() if key == event.key)
             if event.type == Events.KEYDOWN:
                 getattr(self, button).value(True)
             elif event.type == Events.KEYUP:

@@ -126,7 +126,7 @@ class Device:
             read2 (callable, optional): A function that returns a value or None.  Defaults to None.
             data2 (Any, optional): Data to pass to the read2 function.  Defaults to None.
         """
-        self._event_callbacks = dict()
+        self._event_callbacks = {}
 
         self._read = read if read else lambda: None
         self._data = data
@@ -245,7 +245,7 @@ class Broker(Device):
     def __init__(self):
         super().__init__()
         self.devices = []  # List of devices to poll
-        self._device_callbacks = dict()
+        self._device_callbacks = {}
         # Function to call when the window close button is clicked.
         # Set it like `display_drv.quit_func = cleanup_func` where `cleanup_func` is a
         # function that cleans up resources and calls `sys.exit()`.
@@ -494,7 +494,7 @@ class TouchDevice(Device):
             list: The rotation table.
         """
         return self._data2
-    
+
     @rotation_table.setter
     def rotation_table(self, value):
         """

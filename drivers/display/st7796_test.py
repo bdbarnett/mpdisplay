@@ -1,4 +1,7 @@
-from busdisplay import BusDisplay
+try:
+  from displaysys.busdisplay import BusDisplay
+except ImportError:
+  from busdisplay import BusDisplay
 from micropython import const
 
 _SWRESET = const(0x01)

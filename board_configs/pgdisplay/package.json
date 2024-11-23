@@ -1,0 +1,7 @@
+{
+    "urls": [
+      ["board_config.py", "github:PyDevices/pydisplay/board_configs/pgdisplay/board_config.py"],
+      ["displaysys/pgdisplay.py", "github:PyDevices/pydisplay/src/lib/displaysys/pgdisplay.py"]
+    ],
+    "version": "0.1"
+  }

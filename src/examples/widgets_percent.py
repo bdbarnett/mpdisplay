@@ -1,7 +1,7 @@
 
 import board_config
 import pdwidgets as pd
-import pdwidgets.pct as pct
+from pdwidgets import pct
 
 
 pd.DEBUG = False

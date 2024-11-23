@@ -25,7 +25,7 @@ class TimerTest:
 
 # Create a timer that calls tt.do_something every 1ms
 tt = TimerTest()
-tt.start(1)  
+tt.start(1)
 
 # Create a timer that stops the first timer after 5 seconds
 tim2 = Timer(-1 if platform == "rp2" else 2)

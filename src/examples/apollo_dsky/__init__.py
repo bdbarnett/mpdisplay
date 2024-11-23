@@ -46,7 +46,7 @@ _char_areas = {
     "8": _fca[10], "9": _fca[11], "A": _fca[12], "B": _fca[12], "C": _fca[14],
     "D": _fca[15], "E": _fca[16], "F": _fca[17], "G": _fca[18], "H": _fca[19],
     "I": _fca[20], "J": _fca[21], "L": _fca[22], "N": _fca[23], "P": _fca[24],
-    "Q": _fca[25], "R": _fca[26], "T": _fca[27], "U": _fca[28], "Y": _fca[29], 
+    "Q": _fca[25], "R": _fca[26], "T": _fca[27], "U": _fca[28], "Y": _fca[29],
     "O": _fca[2], "S": _fca[7],
 }
 

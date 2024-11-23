@@ -1,5 +1,5 @@
 """
-pydisplay_touch_test.py - Touch rotation test.
+eventsys_touch_test.py - Touch rotation test.
 Tests the touch driver and finds the correct rotation masks for the touch screen.
 Sets the rotation to each of 4 possible values and asks the user to touch the rectangle in each of the 4 corners.
 Then it prints the touch_rotation_table that should be set in board_config.py.

@@ -3,7 +3,10 @@ ST7789VW Driver
 Adapted from LCD_Module_RPI_code.zip/LCD_Module_RPI_code/RaspberryPi/python/lib
 at https://files.waveshare.com/upload/8/8d/LCD_Module_RPI_code.zip
 """
-from busdisplay import BusDisplay
+try:
+  from displaysys.busdisplay import BusDisplay
+except ImportError:
+  from busdisplay import BusDisplay
 
 
 _INIT_SEQUENCE = [

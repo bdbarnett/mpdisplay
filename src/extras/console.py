@@ -36,7 +36,7 @@ from timer import Timer
 try:
     import graphics as framebuf
 except ImportError:
-    import framebuf  # type: ignore
+    import framebuf
 
 # Todo: Add color changing with ANSI escape codes.  See https://pypi.org/project/colored/
 

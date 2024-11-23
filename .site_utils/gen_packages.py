@@ -16,23 +16,22 @@ master_package_name = "package"
 
 # list of package directories, dependencies and extra files in that package
 packages = [
-    ["configs", [], []],
-    ["displays", [], []],
     ["examples", [], []],
     ["extras", [], []],
     ["lib/displaybuf", [], []],
+    ["lib/displaysys", [], []],
+    ["lib/eventsys", [], []],
     ["lib/graphics", [], []],
     ["lib/palettes", [], []],
-    ["lib/pydevices", [], []],
     ["lib/timer", [], []],
-    ]
+]
 
 master_exclude = ["examples"]
 
 
 # Create the data structures
-package_dicts = dict()
-master_package =  {"urls": [], "version": package_ver}
+package_dicts = {}
+master_package = {"urls": [], "version": package_ver}
 master_toml = ["[files]"]
 extra_files_added_to_master = ["path.py", "jupyter_notebook.ipynb"]
 
@@ -68,7 +67,9 @@ for package_path, deps, extra_files in packages:
                 toml_dest_dir = "/" + "/".join(master_dest_file.split("/")[:-1]) + "/"
                 if toml_dest_dir == "//":
                     toml_dest_dir = "/"
-                master_toml.append(f'"../{os.path.relpath(full_file_path, repo_dir)}" = "{toml_dest_dir}"')
+                master_toml.append(
+                    f'"../{os.path.relpath(full_file_path, repo_dir)}" = "{toml_dest_dir}"'
+                )
                 extra_files_added_to_master.append(full_file_path)
 
     # Iterate over the directories in the package

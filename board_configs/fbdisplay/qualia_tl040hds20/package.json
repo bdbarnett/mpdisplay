@@ -1,0 +1,9 @@
+{
+    "urls": [
+      ["board_config.py", "github:PyDevices/pydisplay/board_configs/fbdisplay/qualia_tl040hds20/board_config.py"],
+      ["displaysys/fbdisplay.py", "github:PyDevices/pydisplay/src/lib/displaysys/fbdisplay.py"],
+      ["pca9554.py", "github:PyDevices/pydisplay/drivers/io_expander/pca9554.py"],
+      ["ft6x36.py", "github:PyDevices/pydisplay/drivers/touch/ft6x36.py"]
+    ],
+    "version": "0.1"
+  }

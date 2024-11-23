@@ -47,7 +47,7 @@ def main():
         tft.draw.fill_rect(0, scroll, tft.width, 1, palette.BLUE)
 
         if scroll % font.HEIGHT == 0:
-            tft_text.text(tft, 
+            tft_text.text(tft,
                 font,
                 f"x{character:02x} {chr(character)}",
                 col,

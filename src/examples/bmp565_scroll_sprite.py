@@ -36,7 +36,7 @@ def main():
     char_y = display_drv.height - char_height
     char_x = 200
     shot_location = 0
-    while True:    
+    while True:
         if i > display_drv.width:
             scroll = i % display_drv.width
             display_drv.vscsad(scroll)

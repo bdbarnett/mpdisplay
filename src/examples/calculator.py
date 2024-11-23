@@ -117,7 +117,7 @@ async def main():
     display_drv.fill_rect(PAD // 2, PAD // 2, WIDTH - PAD, ROW_HEIGHT - PAD, pal.BLUE_GREY)
 
     # Draw the buttons, saving their positions.
-    button_pos = dict()
+    button_pos = {}
     for i, button in enumerate(zip(button_codes, button_labels)):
         x = i % COLS
         y = i // COLS + 1
@@ -199,7 +199,7 @@ async def main():
         draw_button(x, y, label, False)
 
 loop = asyncio.get_event_loop()
-loop.create_task(main())
+main_task = loop.create_task(main())
 if hasattr(loop, "is_running") and loop.is_running():
     pass
 else:

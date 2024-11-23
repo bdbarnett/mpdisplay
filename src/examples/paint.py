@@ -1,5 +1,5 @@
 """
-A simple paint application demonstrating the use of pydisplay.
+A simple paint application demonstrating the use of displaysys.
 """
 
 from board_config import display_drv, broker
@@ -82,7 +82,7 @@ async def main():
             break
 
 loop = asyncio.get_event_loop()
-task = loop.create_task(main())
+main_task = loop.create_task(main())  # noqa: RUF006
 if hasattr(loop, "is_running") and loop.is_running():
     pass
 else:

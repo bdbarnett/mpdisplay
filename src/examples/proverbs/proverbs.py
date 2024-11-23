@@ -83,7 +83,7 @@ def main():
             for count, proverb_line in enumerate(proverb_lines):
                 half_length = tft_write.write_width(font, proverb_line) // 2
 
-                tft_write.write(tft, 
+                tft_write.write(tft,
                     font,
                     proverb_line,
                     half_width - half_length,

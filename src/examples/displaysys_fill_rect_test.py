@@ -1,4 +1,4 @@
-""" pydisplay_simpletest.py """
+""" displaysys_fill_rect_test.py """
 from board_config import display_drv
 from random import randint, getrandbits
 import time

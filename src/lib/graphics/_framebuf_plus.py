@@ -4,7 +4,7 @@ from . import _files
 from . import _font
 
 try:  # Try to import framebuf from MicroPython
-    from framebuf import (  # type: ignore
+    from framebuf import (
         MONO_VLSB,
         MONO_HLSB,
         MONO_HMSB,
@@ -300,7 +300,6 @@ class FrameBuffer(_FrameBuffer):
             (Area): Bounding box of the blitted buffer
         """
         super().blit(buf, x, y, key, palette)
-        return
 
     ########### Additional methods
 

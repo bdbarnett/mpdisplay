@@ -2,7 +2,10 @@
 The init sequence is written out line by line in .init()
 '''
 
-from busdisplay import BusDisplay
+try:
+  from displaysys.busdisplay import BusDisplay
+except ImportError:
+  from busdisplay import BusDisplay
 from time import sleep_ms
 from micropython import const
 

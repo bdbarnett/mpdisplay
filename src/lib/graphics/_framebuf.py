@@ -24,7 +24,7 @@ from . import _shapes
 from . import _font
 
 try:
-    from ulab import numpy as np  # type: ignore
+    from ulab import numpy as np
 except ImportError:
     try:
         import numpy as np
@@ -287,7 +287,9 @@ class RGB565Format:
             rgb565_color_int = int.from_bytes(rgb565_color, "little")
             arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
             for _y in range(y, y + height):
-                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = rgb565_color_int
+                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = (
+                    rgb565_color_int
+                )
         else:
             for _y in range(y, y + height):
                 offset = _y * framebuf._stride

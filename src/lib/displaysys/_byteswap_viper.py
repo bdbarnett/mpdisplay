@@ -1,8 +1,10 @@
 import micropython
 
 if 0:
+
     class ptr8:
         pass
+
 
 @micropython.viper
 def byteswap_viper(buf: ptr8, buf_size: int):  # noqa: F821

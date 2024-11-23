@@ -12,7 +12,7 @@ buttons = KeyPins(
 
 print("\nDetails of the buttons (KeyPins) object:")
 print(f"\n{buttons=}")
-print(f"\n{str(buttons)=}")
+print(f"\n{buttons=!s}")
 print(f"\n{dir(buttons)=}\n")
 
 print("\nFour ways to read the value: ")

@@ -20,22 +20,29 @@ Available functions:
     metadata(description=None, version=None, license=None, author=None)
 
 """
-# This file is to be given as 
+# This file is to be given as
 #     make FROZEN_MANIFEST=../../../../../../pydisplay/manifest.py
-
 
 import os
 
-if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
-    include("$(BOARD_DIR)/manifest.py")  # type: ignore  # noqa: F821
-else:
-    include("$(PORT_DIR)/boards/manifest.py")  # type: ignore  # noqa: F821
+if 0:
+    def include(*args, **kwargs):
+        pass
+    def package(*args, **kwargs):
+        pass
+    def module(*args, **kwargs):
+        pass
 
-package("displaysys", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
-package("eventsys", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
-package("displaybuf", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
-package("graphics", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
-package("palettes", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
-package("timer", files=None, base_path="./src/lib", opt=None)  # type: ignore  # noqa: F821
-module("touch_keypad.py", base_path="./src/extras")  # type: ignore  # noqa: F821
-module("wifi.py", base_path="./src/extras")  # type: ignore  # noqa: F821
+if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
+    include("$(BOARD_DIR)/manifest.py")
+else:
+    include("$(PORT_DIR)/boards/manifest.py")
+
+package("displaysys", files=None, base_path="./src/lib", opt=None)
+package("eventsys", files=None, base_path="./src/lib", opt=None)
+package("displaybuf", files=None, base_path="./src/lib", opt=None)
+package("graphics", files=None, base_path="./src/lib", opt=None)
+package("palettes", files=None, base_path="./src/lib", opt=None)
+package("timer", files=None, base_path="./src/lib", opt=None)
+module("touch_keypad.py", base_path="./src/extras")
+module("wifi.py", base_path="./src/extras")

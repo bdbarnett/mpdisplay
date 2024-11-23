@@ -203,7 +203,6 @@ class Widget:
         """
         Register event callbacks for the widget.  Subclasses should override this method to register event callbacks.
         """
-        pass
 
     def add_event_cb(self, event_type: int, callback: callable, data=None):
         # Look in self._event_callbacks for the event_type.  The value is a dictionary.
@@ -230,9 +229,9 @@ class Widget:
         """
         if condition is None:
             if event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP, Events.MOUSEMOTION):
-                condition = lambda child, e: child.padded_area.contains(
+                condition = lambda child, e: child.padded_area.contains(  # noqa: E731
                     self.display.translate_point(e.pos)
-                )  # noqa: E731
+                )
             else:
                 condition = lambda child, e: True  # noqa: E731
         for child in self.children:
@@ -730,7 +729,7 @@ class Screen(Widget):
 
 
 class Button(Widget):
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         parent: Widget,
         x=0,
@@ -833,7 +832,7 @@ class Button(Widget):
 
 
 class Label(Widget):
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         parent: Widget,
         x=0,
@@ -918,7 +917,7 @@ class Label(Widget):
 
 
 class TextBox(Widget):
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         parent: Widget,
         x=0,
@@ -1504,7 +1503,7 @@ class ProgressBar(Widget):
 
 
 class Slider(ProgressBar):
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         parent: Widget,
         x=0,
@@ -1644,7 +1643,7 @@ class Slider(ProgressBar):
 
 
 class ScrollBar(Widget):
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         parent: Widget,
         x=0,

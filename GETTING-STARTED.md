@@ -43,7 +43,7 @@ You can download the files manually, or you can download the packages with mip o
 mpremote mip install "github:PyDevices/pydisplay/board_configs/<your_board>"
 ```
 or
-```MicroPython
+```Python
 import mip
 mip.install("github:PyDevices/pydisplay/board_configs/<your_board>")
 ```
@@ -59,54 +59,56 @@ See [WSL USB Manager](https://gitlab.com/alelec/wsl-usb-gui) for a way to access
 ## For CircuitPython:
 First get your hardware working with the Adafruit libraries.  It will be much simpler if you get the hardware working with DisplayIO first.  There aren't any installers for CircuitPython yet, so you will need to copy the directories you need from the `src` directory to your board.  There aren't many board_configs for CircuitPython yet, so you will need to use the [CircuitPython examples in board_configs/circuitpython](board_configs/circuitpython) as a reference to create your `board_config.py` file.  Just make sure you place it somewhere on the path.
 
-SPI and I80 based displays in CircuitPython will use `busdisplay.BusDisplay`.  To force CircuitPython to load those files provided by pydisplay instead of the ones provided by Adafruit, you will need to edit the graphics driver file to point to the pydisplay version.  For instance, if you are using an ILI9341 display, you will need to edit the `adafruit_ili9341.py` file and change the line:
+SPI and I80 based displays in CircuitPython will use `displaysys.busdisplay.BusDisplay`.  To force CircuitPython to load those files provided by displaysys instead of the ones provided by Adafruit, you will need to edit the graphics driver file to point to the displaysys version.  For instance, if you are using an ILI9341 display, you will need to edit the `adafruit_ili9341.py` file and change the line:
 ```
 from busdisplay import BusDisplay
 ```
 to 
 ```
-from lib.busdisplay import BusDisplay 
+try:
+  from displaysys.busdisplay import BusDisplay
+except ImportError:
+  from busdisplay import BusDisplay
 ```
 
-Framebuffer based devices such as hardware parallel buses (called RGB666 by Adafruit) and USB Video class devices won't need anything special after you get CircuitPython to see them.  They use pydisplay's `fbdisplay.FBDisplay`.  See the CircuitPython example board_configs for more information.
+Framebuffer based devices such as hardware parallel buses (called RGB666 by Adafruit) and USB Video class devices won't need anything special after you get CircuitPython to see them.  They use displaysys's `displaysys.fbdisplay.FBDisplay`.  See the CircuitPython example board_configs for more information.
 
 ## For Jupyter Notebooks:
-Note:  User input such emulating touchscreens and key input has not been implemented in pydisplay for Jupyter Notebook yet.  Also, if your script has an endless loop, you will need to interrupt the kernel to stop it with `Ctrl+Shift+P` `Jupyter: Restart Kernel`.
+Note:  User input such emulating touchscreens and key input has not been implemented in displaysys for Jupyter Notebook yet.  Also, if your script has an endless loop, you will need to interrupt the kernel to stop it with `Ctrl+Shift+P` `Jupyter: Restart Kernel`.
 
 Make sure you can run Jupyter Notebooks first.  That is beyond the scope of this document.  The author uses VS Code with the Python and Jupyter extensions.  Once you have done that, then just open the example [jupyter_notebook.ipynb](src/utils/jupyter_notebook.ipynb) and run the cells.  As always, start with `import path`.
 
 ## For PyScript:
-The PyScript implementation of pydisplay is very much a work in progress and is not currently a priority for the author.  As with all other parts of pydisplay, the author is open to pull requests for `psdisplay.PSDisplay` and the files in the [html](html) directory.
+The PyScript implementation of displaysys is very much a work in progress and is not currently a priority for the author.  As with all other parts of pydisplay, the author is open to pull requests for `displaysys.psdisplay.PSDisplay` and the files in the [html](html) directory.
 
 PyScript uses `asyncio` and requires Python scripts that run in it to play nice with asyncio by either not having an endless looop or calling `await`.  Only a portion of the examples do that, but you can get an idea of how it works in the [calculator.py](src/examples/calculator.py) example.
 
-Only touchscreen input has been implemented in pydisplay for PyScript.  Key input will come later as time permits or as pull requests are submitted.
+Only touchscreen input has been implemented in displaysys for PyScript.  Key input will come later as time permits or as pull requests are submitted.
 
 You can see and interact with PyScript on the web at [https://PyDevices.github.io/pydisplay/](https://PyDevices.github.io/pydisplay/).  You can also run it from your computer by cloning the repository, cd to the root of the repository (not the src directory) and running `python -m http.server`.  Then open your browser to [http://localhost:8000/](http://localhost:8000/).
 
 # Minimum packages required:
-If you don't need the gfx library and don't plan to run many of the examples, you only need a couple of the packages.  For instance, if you plan to use pydisplay for another library such as LVGL or just the MicroPython framebuffer, you only need:
-1.  A display from [displays](src/lib/displays/), such as [busdisplay.json](packages/busdisplay.json)
-  -  A bus from [buses](src/lib/buses/) if you are using busdisplay in particular, such as [spibus.json](packages/spibus.json) or [i80bus](packages/i80bus.json)
-2.  The [eventsys](src/lib/eventsys/) directory from [eventsys.json](packages/eventsys.json) if you are using pydisplay for managing your touchscreen or other input devices.
+If you don't need the graphics library and don't plan to run many of the examples, you only need a couple of the packages.  For instance, if you plan to use displaysys for another library such as LVGL or just the MicroPython framebuffer, you only need:
+1.  [displaysys](src/lib/displaysys/) directory from [displaysys.json](packages/displaysys.json)
+3.  The [eventsys](src/lib/eventsys/) directory from [eventsys.json](packages/eventsys.json) if you are using it to manage your touchscreen or other input devices
 3.  A `board_config.py` file from [board_configs](board_configs/) that matches your hardware.
-4.  If you are using LVGL on MicroPython, you can use the [lv_config.py](src/configs/lv_config.py) file from [configs](src/configs/).  It has not been thoroughly tested, so please submit pull requests if you find and correct errors.
+  -  Includes a display from [displaysys](src/lib/displaysys/), such as [busdisplay.py](src/lib/displaysys/busdisplay.py)
+  -  Includes a bus from [lib](src/lib/) if you are using busdisplay in particular, such as [spibus.py](src/lib/spibus.py) or [i80bus.py](src/lib/i80bus.py)
+4.  If you are using LVGL on MicroPython, you can use the [lv_config.py](src/examples/lv_config.py) file from [examples](src/examples/).  It has not been thoroughly tested, so please submit pull requests if you find and correct errors.
 
 An example minimum download script for LVGL might look like this:
 ```python
 import mip
-mip.install("github:PyDevices/pydisplay/packages/busdisplay.json")
-mip.install("github:PyDevices/pydisplay/packages/spibus.json")
+mip.install("github:PyDevices/pydisplay/packages/displaysys.json")
 mip.install("github:PyDevices/pydisplay/packages/eventsys.json")
 mip.install("github:PyDevices/pydisplay/board_configs/<your_board>")
-mip.install("github:PyDevices/pydisplay/src/configs/lv_config.py")
+mip.install("github:PyDevices/pydisplay/src/examples/lv_config.py")
 ```
 or
 ```bash
-mpremote mip install "github:PyDevices/pydisplay/packages/busdisplay.json"
-mpremote mip install "github:PyDevices/pydisplay/packages/spibus.json"
+mpremote mip install "github:PyDevices/pydisplay/packages/displaysys.json"
 mpremote mip install "github:PyDevices/pydisplay/packages/eventsys.json"
 mpremote mip install "github:PyDevices/pydisplay/board_configs/<your_board>"
-mpremote mip install "github:PyDevices/pydisplay/src/configs/lv_config.py"
+mpremote mip install "github:PyDevices/pydisplay/src/examples/lv_config.py"
 ```
 See [this Wokwi project](https://wokwi.com/projects/404248867674669057) for an example of a minimum configuration.

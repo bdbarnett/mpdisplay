@@ -37,7 +37,7 @@ keypad = Keypad(
     broker.poll, 0, 0, display_drv.width, display_drv.height, keys=[START, UNUSED, PAUSE, CW, DROP, CCW, LEFT, DOWN, RIGHT]
 )
 
-def main():
+def main():  # noqa: C901, PLR0915
 
     # Define the draw_block function
     def draw_block(x, y, index):

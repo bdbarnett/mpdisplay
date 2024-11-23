@@ -1,4 +1,4 @@
-""" 
+"""
 lv_touch_test.py
 Tests touchscreen and allows changing touch driver rotation
 to find a rotation that matches the display rotation.

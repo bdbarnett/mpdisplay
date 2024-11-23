@@ -61,6 +61,18 @@
       "github:PyDevices/pydisplay/src/extras/wifi.py"
     ],
     [
+      "__pycache__/adafruit_ticks.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/extras/__pycache__/adafruit_ticks.cpython-312.pyc"
+    ],
+    [
+      "__pycache__/framebuf.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/extras/__pycache__/framebuf.cpython-312.pyc"
+    ],
+    [
+      "__pycache__/micropython.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/extras/__pycache__/micropython.cpython-312.pyc"
+    ],
+    [
       "pdwidgets/__init__.py",
       "github:PyDevices/pydisplay/src/extras/pdwidgets/__init__.py"
     ],
@@ -155,6 +167,18 @@
     [
       "pdwidgets/icons/toggle_on_36dp.pbm",
       "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/toggle_on_36dp.pbm"
+    ],
+    [
+      "pdwidgets/__pycache__/__init__.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/extras/pdwidgets/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "pdwidgets/__pycache__/_constants.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/extras/pdwidgets/__pycache__/_constants.cpython-312.pyc"
+    ],
+    [
+      "pdwidgets/__pycache__/_themes.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/extras/pdwidgets/__pycache__/_themes.cpython-312.pyc"
     ],
     [
       "tft_text/__init__.py",

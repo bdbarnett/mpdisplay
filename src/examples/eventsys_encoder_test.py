@@ -1,5 +1,5 @@
 """
-A simple test of an encoder in pydisplay.
+A simple test of an encoder in eventsys.
 """
 
 from board_config import display_drv, broker

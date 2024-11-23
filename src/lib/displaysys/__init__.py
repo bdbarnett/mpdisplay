@@ -32,6 +32,7 @@ def new_buffer(size):
     """
     return memoryview(bytearray(size))
 
+
 def color888(r, g, b):
     """
     Convert RGB values to a 24-bit color value.
@@ -460,7 +461,6 @@ class DisplayDriver:
             value (int): The rotation of the display in degrees.
         """
         # override this method in subclasses to handle rotation
-        pass
 
     ############### Empty API Methods, must be overridden if applicable ################
 
@@ -535,7 +535,6 @@ class DisplayDriver:
         Deinitialize the display.
         """
         self.__del__()
-        return
 
     def show(self, *args, **kwargs) -> None:
         """

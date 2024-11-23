@@ -5,7 +5,7 @@
 `touch_keypad`
 ====================================================
 
-Matrix keypad helper for touch displays on pydisplay
+Matrix keypad helper for touch displays on displaysys.
 
 Divides the display into a grid of rows and columns.
 Returns the key number of the associated cell pressed.
@@ -36,7 +36,7 @@ except ImportError:
 
 class Keypad:
     def __init__(self, poll, x, y, w, h, cols=3, rows=3, keys=None, translate=None):
-        self._keys = keys if keys else [i for i in range(cols * rows)]
+        self._keys = keys if keys else list(range(cols * rows))
         self._poll = poll
         self.x = x
         self.y = y

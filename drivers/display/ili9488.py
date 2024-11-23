@@ -25,7 +25,10 @@ Implementation Notes
 
 """
 
-from busdisplay import BusDisplay
+try:
+  from displaysys.busdisplay import BusDisplay
+except ImportError:
+  from busdisplay import BusDisplay
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ILI9488.git"
