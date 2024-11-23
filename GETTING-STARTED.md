@@ -93,7 +93,7 @@ If you don't need the graphics library and don't plan to run many of the example
 3.  The [eventsys](src/lib/eventsys/) directory from [eventsys.json](packages/eventsys.json) if you are using it to manage your touchscreen or other input devices
 3.  A `board_config.py` file from [board_configs](board_configs/) that matches your hardware.
   -  Includes a display from [displaysys](src/lib/displaysys/), such as [busdisplay.py](src/lib/displaysys/busdisplay.py)
-  -  Includes a bus from [lib](src/lib/) if you are using busdisplay in particular, such as [spibus.py](src/lib/spibus.py) or [i80bus.py](src/lib/i80bus.py)
+  -  Includes a bus from [lib](src/lib/) if you are using busdisplay in particular, such as [spibus.py](drivers/bus/spibus.py) or [i80bus.py](drivers/bus/i80bus.py)
 4.  If you are using LVGL on MicroPython, you can use the [lv_config.py](src/examples/lv_config.py) file from [examples](src/examples/).  It has not been thoroughly tested, so please submit pull requests if you find and correct errors.
 
 An example minimum download script for LVGL might look like this:

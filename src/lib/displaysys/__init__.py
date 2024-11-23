@@ -13,13 +13,22 @@ CPython.  It works on microcontrollers, desktops, web browsers and Jupyter noteb
 """
 
 import gc
-from ._byteswap import byteswap
+
+try:
+    from byteswap import byteswap
+except ImportError:
+    def byteswap(buf):
+        """
+        Swap the bytes of a 16-bit buffer in place with no dependencies.
+        """
+        buf[::2], buf[1::2] = buf[1::2], buf[::2]
+
 
 
 gc.collect()
 
 
-def new_buffer(size):
+def alloc_buffer(size):
     """
     Create a new buffer of the specified size.  In the future, this function may be
     modified to use port-specific memory allocation such as ESP32's heap_caps_malloc.

@@ -4,6 +4,7 @@ Testris game implemented in MicroPython by Brad Barnett.
 
 # For the display & optional touch drivers
 from board_config import display_drv, broker
+from displaysys import alloc_buffer
 from touch_keypad import Keypad
 from eventsys.keys import Keys
 from random import choice  # For random piece selection
@@ -46,10 +47,6 @@ def main():  # noqa: C901, PLR0915
     # Get the display dimensions
     display_width = display_drv.width
     display_height = display_drv.height
-
-    # Define how buffers are allocated
-    def alloc_buffer(x):
-        return memoryview(bytearray(x))
 
     # If byte swapping is required and the display bus is capable of having byte swapping disabled,
     # disable it and set a flag so we can swap the color bytes as they are created.

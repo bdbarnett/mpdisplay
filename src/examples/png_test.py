@@ -1,6 +1,6 @@
 import png
 from board_config import display_drv
-from displaybuf import DisplayBuffer
+from displaybuf import DisplayBuffer, alloc_buffer
 from collections import namedtuple
 from time import sleep
 import os
@@ -32,7 +32,7 @@ while True:
         pos_x, pos_y = (canvas.width - p.width) // 2, (canvas.height - p.height) // 2
         offset = 1 if p.metadata["alpha"] else 0
         planes = p.metadata["planes"]
-        buf = memoryview(bytearray(p.width * p.height * 2))
+        buf = alloc_buffer(p.width * p.height * 2)
         for y, row in enumerate(p.pixels):
             for x in range(p.width):
                 if row[x*planes+offset] > 127:

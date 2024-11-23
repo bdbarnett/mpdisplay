@@ -26,30 +26,30 @@ Usage:
 
 import gc
 import sys
-from displaysys import color565, color565_swapped, color332
+from displaysys import alloc_buffer, color565, color565_swapped, color332
 
 try:
     import graphics as framebuf
 except ImportError:
     import framebuf
 
+_has_viper_tools = False
 if sys.implementation.name == "micropython":
-    from ._viper import _bounce8, _bounce4
-else:
+    try:
+        from viper_tools import _bounce8, _bounce4
+        _has_viper_tools = True
+    except Exception:
+        pass
 
+if not _has_viper_tools:
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
-            ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented for MicroPython."
+            ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented in viper_tools.py for MicroPython."
         )
-
     _bounce4 = _bounce8
 
 
 gc.collect()
-
-
-def alloc_buffer(size):
-    return memoryview(bytearray(size))
 
 
 _display_drv_get_attrs = {"set_vscroll", "tfa", "bfa", "vsa", "vscroll", "translate_point"}
