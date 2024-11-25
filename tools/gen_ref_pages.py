@@ -20,7 +20,7 @@ for p in [
     "lib/eventsys",
     "lib/graphics",
     "lib/palettes",
-    "lib/timer",
+    "lib/multimer",
 ]:
     sys.path.append(src / p)
 

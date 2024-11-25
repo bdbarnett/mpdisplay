@@ -30,6 +30,11 @@
 "../src/lib/graphics/font_8x16.py" = "/lib/graphics/"
 "../src/lib/graphics/font_8x8.py" = "/lib/graphics/"
 
+"../src/lib/multimer/__init__.py" = "/lib/multimer/"
+"../src/lib/multimer/_librt.py" = "/lib/multimer/"
+"../src/lib/multimer/_sdl2.py" = "/lib/multimer/"
+"../src/lib/multimer/_timerbase.py" = "/lib/multimer/"
+
 "../src/lib/palettes/__init__.py" = "/lib/palettes/"
 "../src/lib/palettes/_cube125.py" = "/lib/palettes/"
 "../src/lib/palettes/_cube27.py" = "/lib/palettes/"
@@ -39,11 +44,6 @@
 "../src/lib/palettes/cube.py" = "/lib/palettes/"
 "../src/lib/palettes/material_design.py" = "/lib/palettes/"
 "../src/lib/palettes/wheel.py" = "/lib/palettes/"
-
-"../src/lib/timer/__init__.py" = "/lib/timer/"
-"../src/lib/timer/_librt.py" = "/lib/timer/"
-"../src/lib/timer/_sdl2.py" = "/lib/timer/"
-"../src/lib/timer/_timerbase.py" = "/lib/timer/"
 
 "../src/jupyter_notebook.ipynb" = "/"
 "../src/src/lib/board_config.py" = "/src/lib/"

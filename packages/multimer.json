@@ -1,0 +1,22 @@
+{
+  "urls": [
+    [
+      "multimer/__init__.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/__init__.py"
+    ],
+    [
+      "multimer/_librt.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/_librt.py"
+    ],
+    [
+      "multimer/_sdl2.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/_sdl2.py"
+    ],
+    [
+      "multimer/_timerbase.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/_timerbase.py"
+    ]
+  ],
+  "deps": [],
+  "version": "0.0.0"
+}

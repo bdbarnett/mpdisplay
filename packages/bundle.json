@@ -109,6 +109,22 @@
       "github:PyDevices/pydisplay/src/lib/graphics/font_8x8.py"
     ],
     [
+      "lib/multimer/__init__.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/__init__.py"
+    ],
+    [
+      "lib/multimer/_librt.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/_librt.py"
+    ],
+    [
+      "lib/multimer/_sdl2.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/_sdl2.py"
+    ],
+    [
+      "lib/multimer/_timerbase.py",
+      "github:PyDevices/pydisplay/src/lib/multimer/_timerbase.py"
+    ],
+    [
       "lib/palettes/__init__.py",
       "github:PyDevices/pydisplay/src/lib/palettes/__init__.py"
     ],
@@ -145,22 +161,6 @@
       "github:PyDevices/pydisplay/src/lib/palettes/wheel.py"
     ],
     [
-      "lib/timer/__init__.py",
-      "github:PyDevices/pydisplay/src/lib/timer/__init__.py"
-    ],
-    [
-      "lib/timer/_librt.py",
-      "github:PyDevices/pydisplay/src/lib/timer/_librt.py"
-    ],
-    [
-      "lib/timer/_sdl2.py",
-      "github:PyDevices/pydisplay/src/lib/timer/_sdl2.py"
-    ],
-    [
-      "lib/timer/_timerbase.py",
-      "github:PyDevices/pydisplay/src/lib/timer/_timerbase.py"
-    ],
-    [
       "jupyter_notebook.ipynb",
       "github:PyDevices/pydisplay/src/jupyter_notebook.ipynb"
     ],
@@ -169,5 +169,5 @@
       "github:PyDevices/pydisplay/src//home/brad/gh/pydisplay/src/lib/board_config.py"
     ]
   ],
-  "version": "0.1.0"
+  "version": "0.0.0"
 }

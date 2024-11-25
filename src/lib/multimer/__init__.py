@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`timer`
+`multimer`
 ====================================================
 
 Cross-platform Timer class for *Python.
