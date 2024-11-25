@@ -18,7 +18,7 @@ plugins:
 - autorefs
 - gen-files:
     scripts:
-    - .site_utils/gen_ref_pages.py
+    - tools/gen_ref_pages.py
 - literate-nav:
     nav_file: SUMMARY.md
 - section-index
@@ -46,7 +46,7 @@ nav:
     - And Another:
       - Test Page: test-page.md
 # defer to gen-files + literate-nav
-- Code Reference: reference/  
+- Code Reference: reference/
 # rest of the navigation...
 
 markdown_extensions:

@@ -4,7 +4,7 @@
 # Resolves to:  https://pydevices.github.io/micropython-lib/mip/PyDevices/package/6/displaysys/latest.json
 # Repo URL:  https://github.com/PyDevices/micropython-lib/blob/gh-pages/mip/PyDevices/package/6/displaysys/latest.json
 
-VERSION=0.1.1
+VERSION=0.0.1
 DESCRIPTION_PREFIX="PyDisplay"
 AUTHOR="Brad Barnett <contact@pydevices.com>"
 LICENSE="MIT"
@@ -109,8 +109,8 @@ metadata(
 require("displaysys")
 package("displaysys")
 EOF
-        echo "require(\"$package\")" >> $BUNDLE_MANIFEST
-        ## TODO:  After publishing displaysys, uncomment the following 6 lines
+        ## TODO:  After publishing displaysys, uncomment the following 7 lines
+        # echo "require(\"$package\")" >> $BUNDLE_MANIFEST
         # cp $README_FULL_PATH $DEST_DIR/displaysys/$package/README.md
         # ./tools/makepyproject.py --output $PYPI_DIR/$package $DEST_DIR/displaysys/$package/manifest.py
         # pushd $PYPI_DIR/$package
@@ -128,6 +128,14 @@ EOF
         fi
     fi
 done
+
+## Upload the bundle file
+# cp $README_FULL_PATH $DEST_DIR/$BASENAME-bundle/README.md
+# ./tools/makepyproject.py --output $PYPI_DIR/$BASENAME-bundle $BUNDLE_MANIFEST
+# pushd $PYPI_DIR/$BASENAME-bundle
+# hatch build
+# twine upload --repository testpypi dist/*
+# popd
 
 # Create a package for the display drivers
 mkdir -p $DISPLAY_DEST_DIR

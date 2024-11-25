@@ -12,7 +12,7 @@ src_dir = "src/"
 output_dir = repo_dir
 packages_dir = "packages/"
 toml_full_path = output_dir + "html/pyscript.toml"
-master_package_name = "bundle"
+master_package_name = "pydisplay-bundle"
 
 # list of package directories, dependencies and extra files in that package
 packages = [

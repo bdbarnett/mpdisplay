@@ -53,7 +53,7 @@ Includes 2 functions that install from different sources:
             - /packages/graphics.json
             - /packages/palettes.json
             - /packages/multimer.json
-        - /packages/bundle.json - Bundle package including all 6 core packages,
+        - /packages/pydisplay-bundle.json - Bundle package including all 6 core packages,
             6 extensions and default board_config.py.
         - 4 additional packages:
             - /packages/add_ons.json
