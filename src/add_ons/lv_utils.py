@@ -43,7 +43,7 @@ except:
         from lv_timer import Timer
     except:
         try:
-            from timer import Timer
+            from multimer import Timer
         except:
             raise RuntimeError("Missing machine.Timer implementation!")
 

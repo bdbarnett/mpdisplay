@@ -72,7 +72,7 @@ def init_timer(period=10):
         period (int): The period in milliseconds to call the tick function.
     """
     if Display.timer is None:
-        from timer import get_timer
+        from multimer import get_timer
 
         Display.timer = get_timer(tick, period)
 

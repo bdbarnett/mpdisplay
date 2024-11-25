@@ -5,7 +5,7 @@ import json
 
 
 # Define constants
-package_ver = "0.1.0"
+package_ver = "0.0.0"
 repo_url = "github:PyDevices/pydisplay/"
 repo_dir = os.getcwd() + "/"
 src_dir = "src/"
@@ -22,8 +22,8 @@ packages = [
     ["lib/displaysys", [], ["board_config.py"]],
     ["lib/eventsys", [], []],
     ["lib/graphics", [], []],
+    ["lib/multimer", [], []],
     ["lib/palettes", [], []],
-    ["lib/timer", [], []],
 ]
 
 master_exclude = ["add_ons", "examples"]

@@ -116,7 +116,7 @@ class DisplayDriver:
         self._touch_device = None
         if auto_refresh:
             try:
-                from timer import get_timer
+                from multimer import get_timer
 
                 self._timer = get_timer(self.show)
             except ImportError:

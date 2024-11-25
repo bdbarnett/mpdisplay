@@ -44,7 +44,8 @@ from build import error_color, ensure_path_exists
 
 DEFAULT_AUTHOR = "micropython-lib <contact@micropython.org>"
 DEFAULT_LICENSE = "MIT"
-HOME_PAGE = "https://github.com/PyDevices/pidisplay"
+HOME_PAGE = "https://github.com/PyDevices/pydisplay"
+TESTPYPI = "https://test.pypi.org/simple/"
 
 
 def quoted_escape(s):
@@ -72,6 +73,7 @@ def build(manifest_path, output_path):
 
     # Compile the manifest.
     manifest = manifestfile.ManifestFile(manifestfile.MODE_PYPROJECT, path_vars)
+    manifest.add_library("testpypi", TESTPYPI, prepend=False)
     manifest.execute(manifest_path)
 
     # If a package doesn't have a pypi name, then assume it isn't intended to

@@ -31,7 +31,7 @@ SOFTWARE.
 
 import io
 import gc
-from timer import Timer
+from multimer import Timer
 
 try:
     import graphics as framebuf

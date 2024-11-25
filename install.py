@@ -23,7 +23,7 @@ Includes 2 functions that install from different sources:
             - eventsys
             - graphics
             - palettes
-            - timer
+            - multimer
         - 6 display extensions for the displaysys package:
             - displaysys-busdisplay
             - displaysys-fbdisplay
@@ -52,7 +52,7 @@ Includes 2 functions that install from different sources:
             - /packages/eventsys.json
             - /packages/graphics.json
             - /packages/palettes.json
-            - /packages/timer.json
+            - /packages/multimer.json
         - /packages/bundle.json - Bundle package including all 6 core packages,
             6 extensions and default board_config.py.
         - 4 additional packages:
@@ -148,7 +148,7 @@ install("displaysys")
 install("eventsys")
 install("graphics")
 install("palettes")
-install("timer")
+install("multimer")
 
 ## The 6 display extensions:
 install("displaysys-busdisplay")
@@ -182,7 +182,7 @@ install("/packages/displaysys.json")  # Includes all 6 display extensions
 install("/packages/eventsys.json")
 install("/packages/graphics.json")
 install("/packages/palettes.json")
-install("/packages/timer.json")
+install("/packages/multimer.json")
 
 ## 4 additional packages:
 install("/packages/add_ons.json", target="./add_ons")

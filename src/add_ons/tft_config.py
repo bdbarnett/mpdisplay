@@ -20,7 +20,7 @@ BUFFERED = False
 
 if BUFFERED:
     from displaybuf import DisplayBuffer
-    from timer import Timer
+    from multimer import Timer
 
 
 font_dir = sep.join(tft_text.__file__.split(sep)[:-1]) + sep + "fonts"

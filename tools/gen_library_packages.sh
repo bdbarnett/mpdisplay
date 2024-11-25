@@ -4,13 +4,14 @@
 # Resolves to:  https://pydevices.github.io/micropython-lib/mip/PyDevices/package/6/displaysys/latest.json
 # Repo URL:  https://github.com/PyDevices/micropython-lib/blob/gh-pages/mip/PyDevices/package/6/displaysys/latest.json
 
-VERSION=0.1.6
+VERSION=0.1.1
 DESCRIPTION_PREFIX="PyDisplay"
 AUTHOR="Brad Barnett <contact@pydevices.com>"
 LICENSE="MIT"
 
 BASENAME=pydisplay
-DEST_REPO=~/gh/micropython-lib
+# DEST_REPO=~/gh/micropython-lib
+DEST_REPO=~/temp/micropython-lib
 SOURCE_REPO=~/gh/$BASENAME
 SOURCE_DIR=$SOURCE_REPO/src
 DEST_DIR=$DEST_REPO/micropython/$BASENAME
@@ -23,7 +24,7 @@ TOUCH_SOURCE_DIR=$SOURCE_REPO/drivers/touch
 DISPLAY_DEST_DIR=$DEST_REPO/micropython/drivers/display
 TOUCH_DEST_DIR=$DEST_REPO/micropython/drivers/touch
 
-set -e
+# set -e
 
 # Create the bundle manifest
 mkdir -p $DEST_DIR/$BASENAME-bundle
@@ -52,7 +53,7 @@ metadata(
     version="$VERSION",
     author="$AUTHOR",
     license="$LICENSE",
-    pypi_publish="$BASENAME-$package",
+    pypi_publish="$package",
 )
 package("$package")
 EOF
@@ -61,6 +62,7 @@ EOF
         ./tools/makepyproject.py --output $PYPI_DIR/$package $DEST_DIR/$package/manifest.py
         pushd $PYPI_DIR/$package
         hatch build
+        twine upload --repository testpypi dist/*
         popd
     fi
 done
@@ -83,15 +85,16 @@ metadata(
     version="$VERSION",
     author="$AUTHOR",
     license="$LICENSE",
-    pypi_publish="$BASENAME-$package",
+    pypi_publish="$package",
 )
 package("displaysys")
 EOF
         echo "require(\"$package\")" >> $BUNDLE_MANIFEST
-        cp $README_FULL_PATH $DEST_DIR/displaysys/$package/$package/README.md
+        cp $README_FULL_PATH $DEST_DIR/displaysys/$package/README.md
         ./tools/makepyproject.py --output $PYPI_DIR/$package  $DEST_DIR/displaysys/$package/manifest.py
         pushd $PYPI_DIR/$package
         hatch build
+        twine upload --repository testpypi dist/*
         popd
         cp $SOURCE_DIR/examples/$package*.py $DEST_DIR/displaysys/$package/examples/
     else
@@ -101,17 +104,18 @@ metadata(
     version="$VERSION",
     author="$AUTHOR",
     license="$LICENSE",
-    pypi_publish="$BASENAME-$package",
+    pypi_publish="$package",
 )
 require("displaysys")
 package("displaysys")
 EOF
         echo "require(\"$package\")" >> $BUNDLE_MANIFEST
-        # TODO:  After publishing displaysys, uncomment the following 4 lines
+        ## TODO:  After publishing displaysys, uncomment the following 6 lines
         # cp $README_FULL_PATH $DEST_DIR/displaysys/$package/README.md
         # ./tools/makepyproject.py --output $PYPI_DIR/$package $DEST_DIR/displaysys/$package/manifest.py
         # pushd $PYPI_DIR/$package
         # hatch build
+        # twine upload --repository testpypi dist/*
         # popd
         if [[ $package == displaysys-busdisplay ]]; then
             cp $SOURCE_DIR/../board_configs/busdisplay/i80/wt32sc01-plus/board_config.py $DEST_DIR/displaysys/$package/examples/
