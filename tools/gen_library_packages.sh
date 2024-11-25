@@ -6,17 +6,22 @@
 
 VERSION=0.1.6
 DESCRIPTION_PREFIX="PyDisplay"
+AUTHOR="Brad Barnett <contact@pydevices.com>"
+LICENSE="MIT"
 
 BASENAME=pydisplay
 DEST_REPO=~/gh/micropython-lib
-SOURCE_DIR=~/gh/$BASENAME/src
+SOURCE_REPO=~/gh/$BASENAME
+SOURCE_DIR=$SOURCE_REPO/src
 DEST_DIR=$DEST_REPO/micropython/$BASENAME
 BUNDLE_MANIFEST=$DEST_DIR/$BASENAME-bundle/manifest.py
+PYPI_DIR=$SOURCE_REPO/wheels
+README_FULL_PATH=$SOURCE_REPO/README.md
 
-DISPLAY_SOURCE_DIR=$SOURCE_DIR/../drivers/display
-TOUCH_SOURCE_DIR=$SOURCE_DIR/../drivers/touch
-DISPLAY_DEST_DIR=$DEST_DIR/../drivers/display
-TOUCH_DEST_DIR=$DEST_DIR/../drivers/touch
+DISPLAY_SOURCE_DIR=$SOURCE_REPO/drivers/display
+TOUCH_SOURCE_DIR=$SOURCE_REPO/drivers/touch
+DISPLAY_DEST_DIR=$DEST_REPO/micropython/drivers/display
+TOUCH_DEST_DIR=$DEST_REPO/micropython/drivers/touch
 
 set -e
 
@@ -26,6 +31,9 @@ cat <<EOF > $BUNDLE_MANIFEST
 metadata(
     description="$DESCRIPTION_PREFIX bundle",
     version="$VERSION",
+    author="$AUTHOR",
+    license="$LICENSE",
+    pypi_publish="$BASENAME-bundle",
 )
 EOF
 
@@ -42,10 +50,18 @@ for package_dir in "$SOURCE_DIR/lib"/*; do
 metadata(
     description="$DESCRIPTION_PREFIX $package",
     version="$VERSION",
+    author="$AUTHOR",
+    license="$LICENSE",
+    pypi_publish="$BASENAME-$package",
 )
 package("$package")
 EOF
         echo "require(\"$package\")" >> $BUNDLE_MANIFEST
+        cp $README_FULL_PATH $DEST_DIR/$package/README.md
+        ./tools/makepyproject.py --output $PYPI_DIR/$package $DEST_DIR/$package/manifest.py
+        pushd $PYPI_DIR/$package
+        hatch build
+        popd
     fi
 done
 
@@ -65,21 +81,38 @@ for module in "$SOURCE_DIR/lib/displaysys"/*; do
 metadata(
     description="$DESCRIPTION_PREFIX $package",
     version="$VERSION",
+    author="$AUTHOR",
+    license="$LICENSE",
+    pypi_publish="$BASENAME-$package",
 )
 package("displaysys")
 EOF
         echo "require(\"$package\")" >> $BUNDLE_MANIFEST
+        cp $README_FULL_PATH $DEST_DIR/displaysys/$package/$package/README.md
+        ./tools/makepyproject.py --output $PYPI_DIR/$package  $DEST_DIR/displaysys/$package/manifest.py
+        pushd $PYPI_DIR/$package
+        hatch build
+        popd
         cp $SOURCE_DIR/examples/$package*.py $DEST_DIR/displaysys/$package/examples/
     else
         cat <<EOF > $DEST_DIR/displaysys/$package/manifest.py
 metadata(
     description="$DESCRIPTION_PREFIX $package",
     version="$VERSION",
+    author="$AUTHOR",
+    license="$LICENSE",
+    pypi_publish="$BASENAME-$package",
 )
 require("displaysys")
 package("displaysys")
 EOF
         echo "require(\"$package\")" >> $BUNDLE_MANIFEST
+        # TODO:  After publishing displaysys, uncomment the following 4 lines
+        # cp $README_FULL_PATH $DEST_DIR/displaysys/$package/README.md
+        # ./tools/makepyproject.py --output $PYPI_DIR/$package $DEST_DIR/displaysys/$package/manifest.py
+        # pushd $PYPI_DIR/$package
+        # hatch build
+        # popd
         if [[ $package == displaysys-busdisplay ]]; then
             cp $SOURCE_DIR/../board_configs/busdisplay/i80/wt32sc01-plus/board_config.py $DEST_DIR/displaysys/$package/examples/
         else
