@@ -3,6 +3,16 @@
 Universal MicroPython package installer for pydisplay.
 =====================================================
 
+To download this file to your device, run the following command:
+```MicroPython
+import mip
+mip.install("github:PyDevices/pydisplay/install.py")
+```
+or
+```bash
+wget https://raw.githubusercontent.com/PyDevices/pydisplay/main/install.py
+```
+
 Includes 2 functions that install from different sources:
 - 'lib_install': Installs from the PyDevices fork of the micropython-lib library.
     - By default, installs all modules as precompiled bytecode (.mpy) files.
@@ -21,7 +31,6 @@ Includes 2 functions that install from different sources:
             - displaysys-pgdisplay
             - displaysys-psdisplay
         - pydisplay-bundle - Bundle package including all 6 core packages and 6 extensions.
-        - pydisplay-board_config - The default board configuration file - for desktop environments.
         - Display drivers, for example:
             - gc9a01
             - ili9341
@@ -39,12 +48,13 @@ Includes 2 functions that install from different sources:
     - Includes:
         - 6 core packages:
             - /packages/displaybuf.json
-            - /packages/displaysys.json (includes all 6 display extensions)
+            - /packages/displaysys.json (includes all 6 display extensions and default board_config.py)
             - /packages/eventsys.json
             - /packages/graphics.json
             - /packages/palettes.json
             - /packages/timer.json
-        - /package.json (or simply '/') - Bundle package including all 6 core packages and 6 extensions.
+        - /package.json (or simply '/') - Bundle package including all 6 core packages,
+            6 extensions and default board_config.py.
         - 4 additional packages:
             - /packages/add_ons.json
             - /packages/examples.json
@@ -70,40 +80,6 @@ Includes 2 functions that install from different sources:
 - Since micropython-lib packages will never have a '/' in their name and the PyDevices/pydisplay
   repository packages always have a '/', there is a third function that will determine which of the
   2 installers to use.  It is simply called 'install'.
-
-
-
-
-Install script for pydisplay with control over each package.
-Uses 'mip' to download directly to a MicroPython device or
-uses 'mpremote' to download to an attached microcontroller
-from Python.
-
-To download this file to your device, run the following command:
-```MicroPython
-import mip
-mip.install("github:PyDevices/pydisplay/install.py")
-```
-or
-```bash
-wget https://raw.githubusercontent.com/PyDevices/pydisplay/main/install.py
-```
-
-Comment out the packages you don't want to install and
-change the target directories if needed.
-
-Usage (MicroPython or CPython):
-    import install
-
-Equivalent to copying the contents of the 'src' directory of the repository
-to your working directory / microcontroller.
-
-Also equivalent to running the following commands in the REPL:
-```
-import mip
-mip.install("github:PyDevices/pydisplay", target=".")  # Does not include examples
-mip.install("github:PyDevices/pydisplay/packages/examples.json", target="examples")
-```
 """
 
 
@@ -111,7 +87,7 @@ from sys import implementation
 
 
 pkg_index = "https://PyDevices.github.io/micropython-lib/mip/PyDevices"
-prefix = "github:PyDevices"
+prefix = "github:PyDevices/pydisplay"
 
 
 if implementation.name == "micropython":
@@ -162,80 +138,78 @@ def install(package, **kwargs):
 ####################################################################################################
 # Library packages - install as precompiled bytecode (.mpy) files
 ####################################################################################################
-
+"""
 ## The bundle of all 6 core packages and 6 display extensions:
-# install("pydisplay-bundle")
+install("pydisplay-bundle")
 
 ## The 6 core packages:
-# install("displaybuf")
-# install("displaysys")
-# install("eventsys")
-# install("graphics")
-# install("palettes")
-# install("timer")
+install("displaybuf")
+install("displaysys")
+install("eventsys")
+install("graphics")
+install("palettes")
+install("timer")
 
 ## The 6 display extensions:
-# install("displaysys-busdisplay")
-# install("displaysys-fbdisplay")
-# install("displaysys-jndisplay")
-# install("displaysys-pgdisplay")
-# install("displaysys-psdisplay")
-# install("displaysys-sdldisplay")
-
-## An example board configuration file for desktop environments
-# install("board_config")
+install("displaysys-busdisplay")
+install("displaysys-fbdisplay")
+install("displaysys-jndisplay")
+install("displaysys-pgdisplay")
+install("displaysys-psdisplay")
+install("displaysys-sdldisplay")
 
 ## Display drivers, for example:
-# install("gc9a01")
-# install("ili9341")
-# install("st7789")
+install("gc9a01")
+install("ili9341")
+install("st7789")
 
 ## Touch drivers, for example:
-# install("ft6x36")
-# install("cst226")
-# install("xpt2046")
-
+install("ft6x36")
+install("cst226")
+install("xpt2046")
+"""
 
 ####################################################################################################
 # Repository packages - contains no precompiled bytecode (.mpy) files
 ####################################################################################################
-
+"""
 ## The bundle of all 6 core packages and 6 display extensions:
-# install("/")  # or install("/package.json")
+install("/")  # or install("/package.json")
 
 ## The 6 core packages:
-# install("/packages/displaybuf.json")
-# install("/packages/displaysys.json")  # Includes all 6 display extensions
-# install("/packages/eventsys.json")
-# install("/packages/graphics.json")
-# install("/packages/palettes.json")
-# install("/packages/timer.json")
+install("/packages/displaybuf.json")
+install("/packages/displaysys.json")  # Includes all 6 display extensions
+install("/packages/eventsys.json")
+install("/packages/graphics.json")
+install("/packages/palettes.json")
+install("/packages/timer.json")
 
 ## 4 additional packages:
-# install("/packages/add_ons.json", target="add_ons")
-# install("/packages/examples.json", target="examples")
-# install("/packages/spibus.json")
-# install("/packages/i80bus.json")
+install("/packages/add_ons.json", target="./add_ons")
+install("/packages/examples.json", target="./examples")
+install("/packages/spibus.json")
+install("/packages/i80bus.json")
 
 ## Board package files for MicroPython boards from the 'board_configs' directory.
 ## For example:
-# install("/board_configs/busdisplay/i80/wt32sc01-plus")
-# install("/board_configs/busdisplay/spi/t-display-s3-pro")
-# install("/board_configs/fbdisplay/qualia_tl040hds20")
+install("/board_configs/busdisplay/i80/wt32sc01-plus", target="./")
+install("/board_configs/busdisplay/spi/t-display-s3-pro", tartget="./")
+install("/board_configs/fbdisplay/qualia_tl040hds20", target="./")
 
 ## Non-packaged files from the repository:
 ## The default board configuration file - for desktop environments
-# install("/src/lib/board_config.py")
+install("/src/lib/board_config.py", target="./")
+"""
 
 ####################################################################################################
-# Recommended "full" installation
+# Customize as you see fit by copying the line you want from above and pasting it below.
+# The default is the recommended "full" installation
 ####################################################################################################
 
 install("pydisplay-bundle")
-install("/packages/add_ons.json", target="add_ons")
-install("/packages/examples.json", target="examples")
+install("/packages/add_ons.json", target="./add_ons")
+install("/packages/examples.json", target="./examples")
 
-##  Only one of the following should be uncommented
-# install("board_config")  # Installs the default as a .mpy file (not editable)
-install("/src/lib/board_config.py")  # Installs the default and remains editable
-# install("/board_configs/busdisplay/i80/wt32sc01-plus") #  Change to match your hardware
+## If you are running on a microcontroller, uncomment and edit the following line
+## to match your hardware.
+# install("/board_configs/busdisplay/i80/wt32sc01-plus", target="./")

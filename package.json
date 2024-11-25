@@ -5,6 +5,10 @@
       "github:PyDevices/pydisplay/src/lib/displaybuf/__init__.py"
     ],
     [
+      "lib/board_config.py",
+      "github:PyDevices/pydisplay/src/lib/board_config.py"
+    ],
+    [
       "lib/displaysys/__init__.py",
       "github:PyDevices/pydisplay/src/lib/displaysys/__init__.py"
     ],
@@ -159,6 +163,10 @@
     [
       "jupyter_notebook.ipynb",
       "github:PyDevices/pydisplay/src/jupyter_notebook.ipynb"
+    ],
+    [
+      "src/lib/board_config.py",
+      "github:PyDevices/pydisplay/src//home/brad/gh/pydisplay/src/lib/board_config.py"
     ]
   ],
   "version": "0.1.0"

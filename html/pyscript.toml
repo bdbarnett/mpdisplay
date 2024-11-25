@@ -1,6 +1,7 @@
 [files]
 "../src/lib/displaybuf/__init__.py" = "/lib/displaybuf/"
 
+"../src/lib/board_config.py" = "/lib/"
 "../src/lib/displaysys/__init__.py" = "/lib/displaysys/"
 "../src/lib/displaysys/busdisplay.py" = "/lib/displaysys/"
 "../src/lib/displaysys/fbdisplay.py" = "/lib/displaysys/"
@@ -45,3 +46,4 @@
 "../src/lib/timer/_timerbase.py" = "/lib/timer/"
 
 "../src/jupyter_notebook.ipynb" = "/"
+"../src/src/lib/board_config.py" = "/src/lib/"

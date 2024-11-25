@@ -19,7 +19,7 @@ packages = [
     ["add_ons", [], []],
     ["examples", [], []],
     ["lib/displaybuf", [], []],
-    ["lib/displaysys", [], []],
+    ["lib/displaysys", [], ["board_config.py"]],
     ["lib/eventsys", [], []],
     ["lib/graphics", [], []],
     ["lib/palettes", [], []],

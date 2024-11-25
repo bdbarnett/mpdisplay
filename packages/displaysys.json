@@ -1,6 +1,10 @@
 {
   "urls": [
     [
+      "board_config.py",
+      "github:PyDevices/pydisplay/src/lib/board_config.py"
+    ],
+    [
       "displaysys/__init__.py",
       "github:PyDevices/pydisplay/src/lib/displaysys/__init__.py"
     ],

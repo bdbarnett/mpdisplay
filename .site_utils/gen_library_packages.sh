@@ -92,17 +92,6 @@ EOF
     fi
 done
 
-# Create a package for an example board_config.py
-mkdir -p $DEST_DIR/$BASENAME-board_config
-cp $SOURCE_DIR/lib/board_config.py $DEST_DIR/$BASENAME-board_config/
-cat <<EOF > $DEST_DIR/$BASENAME-board_config/manifest.py
-metadata(
-    description="$DESCRIPTION_PREFIX example board_config",
-    version="$VERSION",
-)
-module("board_config.py", opt=3)
-EOF
-
 # Create a package for the display drivers
 mkdir -p $DISPLAY_DEST_DIR
 for display_driver in "$DISPLAY_SOURCE_DIR"/*.py; do
