@@ -15,20 +15,8 @@
     [
       "timer/_timerbase.py",
       "github:PyDevices/pydisplay/src/lib/timer/_timerbase.py"
-    ],
-    [
-      "timer/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/timer/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "timer/__pycache__/_sdl2.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/timer/__pycache__/_sdl2.cpython-312.pyc"
-    ],
-    [
-      "timer/__pycache__/_timerbase.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/timer/__pycache__/_timerbase.cpython-312.pyc"
     ]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.1.0"
 }

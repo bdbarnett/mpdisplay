@@ -11,16 +11,8 @@
     [
       "eventsys/keys.py",
       "github:PyDevices/pydisplay/src/lib/eventsys/keys.py"
-    ],
-    [
-      "eventsys/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/eventsys/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "eventsys/__pycache__/device.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/eventsys/__pycache__/device.cpython-312.pyc"
     ]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.1.0"
 }

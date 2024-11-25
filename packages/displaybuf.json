@@ -3,12 +3,8 @@
     [
       "displaybuf/__init__.py",
       "github:PyDevices/pydisplay/src/lib/displaybuf/__init__.py"
-    ],
-    [
-      "displaybuf/_viper.py",
-      "github:PyDevices/pydisplay/src/lib/displaybuf/_viper.py"
     ]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.1.0"
 }

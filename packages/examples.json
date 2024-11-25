@@ -1,6 +1,10 @@
 {
   "urls": [
     [
+      "add_path.py",
+      "github:PyDevices/pydisplay/src/examples/add_path.py"
+    ],
+    [
       "apollo.py",
       "github:PyDevices/pydisplay/src/examples/apollo.py"
     ],
@@ -29,20 +33,12 @@
       "github:PyDevices/pydisplay/src/examples/bmp565_sprite_transparent.py"
     ],
     [
-      "board_config.py",
-      "github:PyDevices/pydisplay/src/examples/board_config.py"
-    ],
-    [
       "boxlines.py",
       "github:PyDevices/pydisplay/src/examples/boxlines.py"
     ],
     [
       "calculator.py",
       "github:PyDevices/pydisplay/src/examples/calculator.py"
-    ],
-    [
-      "color_setup.py",
-      "github:PyDevices/pydisplay/src/examples/color_setup.py"
     ],
     [
       "color_test.py",
@@ -129,10 +125,6 @@
       "github:PyDevices/pydisplay/src/examples/graphics_simpletest.py"
     ],
     [
-      "hardware_setup.py",
-      "github:PyDevices/pydisplay/src/examples/hardware_setup.py"
-    ],
-    [
       "hello.py",
       "github:PyDevices/pydisplay/src/examples/hello.py"
     ],
@@ -143,10 +135,6 @@
     [
       "logo.py",
       "github:PyDevices/pydisplay/src/examples/logo.py"
-    ],
-    [
-      "lv_config.py",
-      "github:PyDevices/pydisplay/src/examples/lv_config.py"
     ],
     [
       "lv_touch_test.py",
@@ -161,16 +149,16 @@
       "github:PyDevices/pydisplay/src/examples/paint.py"
     ],
     [
-      "palette_cube.py",
-      "github:PyDevices/pydisplay/src/examples/palette_cube.py"
+      "palettes_cube.py",
+      "github:PyDevices/pydisplay/src/examples/palettes_cube.py"
     ],
     [
-      "palette_material.py",
-      "github:PyDevices/pydisplay/src/examples/palette_material.py"
+      "palettes_material.py",
+      "github:PyDevices/pydisplay/src/examples/palettes_material.py"
     ],
     [
-      "palette_wheel.py",
-      "github:PyDevices/pydisplay/src/examples/palette_wheel.py"
+      "palettes_wheel.py",
+      "github:PyDevices/pydisplay/src/examples/palettes_wheel.py"
     ],
     [
       "pbm_create_new.py",
@@ -203,10 +191,6 @@
     [
       "testris.py",
       "github:PyDevices/pydisplay/src/examples/testris.py"
-    ],
-    [
-      "tft_config.py",
-      "github:PyDevices/pydisplay/src/examples/tft_config.py"
     ],
     [
       "timer_simpletest.py",
@@ -247,14 +231,6 @@
     [
       "widgets_test.py",
       "github:PyDevices/pydisplay/src/examples/widgets_test.py"
-    ],
-    [
-      "__pycache__/board_config.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/examples/__pycache__/board_config.cpython-312.pyc"
-    ],
-    [
-      "__pycache__/widgets_calc.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/examples/__pycache__/widgets_calc.cpython-312.pyc"
     ],
     [
       "noto_fonts/NotoSansMono_32.py",
@@ -402,5 +378,5 @@
     ]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.1.0"
 }

@@ -35,20 +35,8 @@
     [
       "palettes/wheel.py",
       "github:PyDevices/pydisplay/src/lib/palettes/wheel.py"
-    ],
-    [
-      "palettes/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/palettes/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "palettes/__pycache__/_material_design.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/palettes/__pycache__/_material_design.cpython-312.pyc"
-    ],
-    [
-      "palettes/__pycache__/material_design.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/palettes/__pycache__/material_design.cpython-312.pyc"
     ]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.1.0"
 }

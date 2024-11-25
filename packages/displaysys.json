@@ -5,14 +5,6 @@
       "github:PyDevices/pydisplay/src/lib/displaysys/__init__.py"
     ],
     [
-      "displaysys/_byteswap.py",
-      "github:PyDevices/pydisplay/src/lib/displaysys/_byteswap.py"
-    ],
-    [
-      "displaysys/_byteswap_viper.py",
-      "github:PyDevices/pydisplay/src/lib/displaysys/_byteswap_viper.py"
-    ],
-    [
       "displaysys/busdisplay.py",
       "github:PyDevices/pydisplay/src/lib/displaysys/busdisplay.py"
     ],
@@ -51,20 +43,8 @@
     [
       "displaysys/sdldisplay/_sdl2_lib/_micropython.py",
       "github:PyDevices/pydisplay/src/lib/displaysys/sdldisplay/_sdl2_lib/_micropython.py"
-    ],
-    [
-      "displaysys/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "displaysys/__pycache__/_byteswap.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/_byteswap.cpython-312.pyc"
-    ],
-    [
-      "displaysys/__pycache__/pgdisplay.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/pgdisplay.cpython-312.pyc"
     ]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.1.0"
 }
