@@ -1,0 +1,43 @@
+Metadata-Version: 2.1
+Name: micropython-stdlib-stubs
+Version: 1.24.0
+Summary: Micropython stdlib is a reduced and augmented copy of typeshed's stdlib for use by MicroPython stub packages
+Home-page: https://github.com/josverl/micropython-stubs#micropython-stubs
+License: MIT
+Author: josverl
+Author-email: josverl@users.noreply.github.com
+Requires-Python: >=3.8,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: Implementation :: MicroPython
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Text Editors :: Integrated Development Environments (IDE)
+Classifier: Typing :: Typed
+Project-URL: Documentation, https://micropython-stubs.readthedocs.io/
+Project-URL: Repository, https://github.com/josverl/micropython-stubs
+Description-Content-Type: text/markdown
+
+
+A limited size copy of typesheds stdlib directory. 
+https://github.com/python/typeshed/tree/main/stdlib
+
+This is used as a dependency in the micropython-*-stub packages to allow overriding of some of the stdlib modules with MicroPython specific implementations.
+
+MicroPython specific updates to:
+- collections
+
+If you have suggestions or find any issues with the stubs, please report them in the [MicroPython-stubs Discussions](https://github.com/Josverl/micropython-stubs/discussions)
+
+For an overview of  Micropython Stubs please see: https://micropython-stubs.readthedocs.io/en/main/ 
+ * List of all stubs : https://micropython-stubs.readthedocs.io/en/main/firmware_grp.html
+
+

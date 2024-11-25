@@ -13,6 +13,7 @@ from palettes import get_palette
 
 BPP = display_drv.color_depth // 8  # Bytes per pixel
 
+
 def write(font, string, x, y, fg_color, bg_color, scale):
     """
     Write text to the display.
@@ -24,6 +25,7 @@ def write(font, string, x, y, fg_color, bg_color, scale):
     fb.fill(bg_color)
     font.text(fb, string, 0, 0, fg_color, scale)
     display_drv.blit_rect(buffer, x, y, buffer_width, buffer_height)
+
 
 def main():
     """

@@ -8,6 +8,7 @@ The font files should have a naming convention of "fontname_WxH.bin", where W is
 The script iterates through the font files, creates a framebuffer, and renders the font on it.
 The rendered font is then displayed on the display driver.
 """
+
 from board_config import display_drv
 from graphics import Font, FrameBuffer, RGB565
 import os
@@ -57,9 +58,7 @@ def main():
         fb.fill(bg_color)
         string = "".join([chr(i) for i in range(65, 91)]) + ": " + font_name.split("/")[-1]
         font.text(fb, string, 0, 0, fg_color, scale)
-        display_drv.blit_rect(
-            buffer, 0, y_pos % display_drv.height, display_drv.width, height
-        )
+        display_drv.blit_rect(buffer, 0, y_pos % display_drv.height, display_drv.width, height)
         y_pos += height
         if y_pos > display_drv.height:
             display_drv.vscsad((y_pos - display_drv.height) % display_drv.height)

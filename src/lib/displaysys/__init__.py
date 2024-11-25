@@ -17,12 +17,12 @@ import gc
 try:
     from byteswap import byteswap
 except ImportError:
+
     def byteswap(buf):
         """
         Swap the bytes of a 16-bit buffer in place with no dependencies.
         """
         buf[::2], buf[1::2] = buf[1::2], buf[::2]
-
 
 
 gc.collect()

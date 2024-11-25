@@ -16,6 +16,7 @@ display = DisplayBuffer(display_drv)
 
 BPP = display.color_depth // 8  # Bytes per pixel
 
+
 def write(font, string, x, y, fg_color, bg_color, scale):
     """
     Write text to the display.

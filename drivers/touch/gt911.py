@@ -28,6 +28,7 @@ while True:
 from time import sleep_ms
 from array import array
 from machine import Pin
+from micropython import const
 
 _DEFAULT_ADDR = const(0x5D)
 
@@ -114,7 +115,7 @@ class GT911:
         status = self._read_reg(_DATA_BUFFER)[0]
         n_points = status & 0x0F
         if status & 0x80:
-            for i in range(0, n_points):
+            for i in range(n_points):
                 self._read_reg(_POINT_DATA_START + i * 8, buf=self.points_data[i])
                 # We read an extra reserved byte, shift track ID to fix it.
                 self.points_data[i][-1] = self.points_data[i][-1] >> 8
@@ -133,6 +134,4 @@ class GT911:
         sleep_ms(100)
         self.irq_pin = Pin(self.irq_pin_label, Pin.IN, Pin.PULL_UP)
         if self.touch_callback is not None:
-            self.irq_pin.irq(
-                handler=self.touch_callback, trigger=Pin.IRQ_FALLING, hard=False
-            )
+            self.irq_pin.irq(handler=self.touch_callback, trigger=Pin.IRQ_FALLING, hard=False)

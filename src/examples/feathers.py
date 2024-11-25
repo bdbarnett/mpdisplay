@@ -28,7 +28,6 @@ import tft_config
 from palettes.wheel import WheelPalette
 
 
-
 def between(left, right, along):
     """returns a point along the curve from left to right"""
     dist = (1 - math.cos(along * math.pi)) / 2
@@ -97,12 +96,8 @@ def main():
 
         # draw mirrored pixels across the display at the offsets using the color_wheel effect
         for i, y_offset in enumerate(y_offsets):
-            tft.draw.pixel(
-                half + tween, (scroll + y_offset) % height, palette[wheel + (i << 2)]
-            )
-            tft.draw.pixel(
-                half - tween, (scroll + y_offset) % height, palette[wheel + (i << 2)]
-            )
+            tft.draw.pixel(half + tween, (scroll + y_offset) % height, palette[wheel + (i << 2)])
+            tft.draw.pixel(half - tween, (scroll + y_offset) % height, palette[wheel + (i << 2)])
 
         # increment scroll, counter, and wheel
         scroll = (scroll + 1) % height

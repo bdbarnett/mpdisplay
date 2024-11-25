@@ -13,7 +13,7 @@ except MemoryError:
     raise MemoryError("this board doesn't have enough RAM to load the full image")
 
 print(f"{bmp.width=}, {bmp.height=}, {bmp.bpp=}")
-display_drv.blit_rect(bmp[0:bmp.width, 0:bmp.height], 0, 0, bmp.width, bmp.height)
+display_drv.blit_rect(bmp[0 : bmp.width, 0 : bmp.height], 0, 0, bmp.width, bmp.height)
 
-hline(bmp, 0, bmp.height//2, bmp.width, 0xFFFF)
+hline(bmp, 0, bmp.height // 2, bmp.width, 0xFFFF)
 display_drv.blit_rect(bmp[:], bmp.width, 0, bmp.width, bmp.height)

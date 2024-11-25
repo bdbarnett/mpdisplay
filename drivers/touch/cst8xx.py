@@ -1,9 +1,10 @@
-'''
+"""
 Adapted from https://github.com/waveshareteam/RP2040-Touch-LCD-1.28/blob/main/python/RP2040-LCD-1.28.py
 and https://github.com/koendv/cst816t/blob/master/src/cst816t.cpp
 by Brad Barnett, 2024
 Reference:  https://files.waveshare.com/upload/c/c2/CST816S_register_declaration.pdf
-'''
+"""
+
 from machine import Pin
 from time import sleep_ms
 from micropython import const
@@ -37,15 +38,29 @@ IRQ_EN_CHANGE = const(0x20)
 IRQ_EN_MOTION = const(0x10)
 IRQ_EN_LONGPRESS = const(0x01)
 
-class CST8XX():
-    def __init__(self, bus, address=0x15, rst_pin=None,
-                 irq_pin=None, irq_handler=lambda pin: None, irq_en=0x00, motion_mask=0b000):
 
+class CST8XX:
+    def __init__(
+        self,
+        bus,
+        address=0x15,
+        rst_pin=None,
+        irq_pin=None,
+        irq_handler=lambda pin: None,
+        irq_en=0x00,
+        motion_mask=0b000,
+    ):
         self._bus = bus
         self._address = address
         self.rst = Pin(rst_pin, Pin.OUT) if isinstance(rst_pin, int) else rst_pin
         self.reset()
-        if self._read(_REG_CHIP_ID)[0] not in (_CST816S_ID, _CST816T_ID, _CST816D_ID, _CST820_ID, _CST826_ID):
+        if self._read(_REG_CHIP_ID)[0] not in (
+            _CST816S_ID,
+            _CST816T_ID,
+            _CST816D_ID,
+            _CST820_ID,
+            _CST826_ID,
+        ):
             raise ValueError("Error:  CST8xx not detected.")
         self.disable_autosleep()
 
@@ -61,15 +76,15 @@ class CST8XX():
         if self.touched() != 1:
             return None
         xy_data = self._read(_REG_TOUCHDATA, 4)
-        x = ((xy_data[0] & 0x0f) << 8) + xy_data[1]
-        y = ((xy_data[2] & 0x0f) << 8) + xy_data[3]
+        x = ((xy_data[0] & 0x0F) << 8) + xy_data[1]
+        y = ((xy_data[2] & 0x0F) << 8) + xy_data[3]
         return (x, y)
 
     def get_gestures(self):
         if not self.touched():
             return None
         return self._read(_REG_GESTURE_ID)[0]
-    
+
     def get_points(self):
         raise NotImplementedError("get_points() not implemented (yet)")
 
@@ -83,7 +98,7 @@ class CST8XX():
     def disable_autosleep(self, val=0x01):
         self._write(_REG_DIS_AUTOSLEEP, val)
 
-    def set_irq_ctl(self, irq_en, motion_mask=0b000): 
+    def set_irq_ctl(self, irq_en, motion_mask=0b000):
         self._write(_REG_IRQ_CTL, irq_en)
         self._write(_REG_MOTION_MASK, motion_mask)
 
@@ -95,6 +110,6 @@ class CST8XX():
 
     def _read(self, reg, length=1):
         return self._bus.readfrom_mem(self._address, int(reg), length)
-    
+
     def _write(self, reg, val):
         self._bus.writeto_mem(self._address, int(reg), bytes([int(val)]))

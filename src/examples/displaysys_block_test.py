@@ -1,4 +1,5 @@
-""" displaysys_block_test.py """
+"""displaysys_block_test.py"""
+
 from board_config import display_drv
 import random
 import time
@@ -13,8 +14,10 @@ if display_drv.requires_byteswap:
 else:
     needs_swap = False
 
+
 def test():
     raise Exception("Test exception")
+
 
 def main():
     # display_bus.register_callback(test)
@@ -25,7 +28,9 @@ def main():
     max_y = display_drv.height - block_size - 1
 
     for pixel_color in [0x0000, 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0, 0x07FF, 0xF81F]:
-        pixel_bytes = pixel_color.to_bytes(2, "big") if needs_swap else pixel_color.to_bytes(2, "little")
+        pixel_bytes = (
+            pixel_color.to_bytes(2, "big") if needs_swap else pixel_color.to_bytes(2, "little")
+        )
         blocks.append(memoryview(bytearray(pixel_bytes * (block_size * block_size))))
 
     print("Drawing blocks on display")
@@ -42,5 +47,6 @@ def main():
         count += 1
         if count % 2000 == 0:
             print("blocks/sec:", count / (time.time() - start_time))
+
 
 main()

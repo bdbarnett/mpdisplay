@@ -83,7 +83,7 @@ class WheelPalette(_Palette):
     def _hsv_to_rgb(self, h, s, v):
         # incoming values are in the range of 0-1
         # returns r, g, b values in the range of 0-255
-        if s == 0.0:  # when s=0, all values are shades of gray
+        if s == 0:  # when s=0, all values are shades of gray
             return int(v * 255), int(v * 255), int(v * 255)
         i = int(h * 6.0)
         f = (h * 6.0) - i

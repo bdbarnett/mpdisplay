@@ -13,7 +13,7 @@ src = root / "src"
 for p in [
     "",
     "examples",
-    "extras",
+    "add_ons",
     "lib",
     "lib/displaybuf",
     "lib/displaysys",

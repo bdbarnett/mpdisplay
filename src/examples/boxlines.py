@@ -51,9 +51,7 @@ def main():
             row,
             width,
             height,
-            palette.color565(
-                random.getrandbits(8), random.getrandbits(8), random.getrandbits(8)
-            ),
+            palette.color565(random.getrandbits(8), random.getrandbits(8), random.getrandbits(8)),
         )
 
 

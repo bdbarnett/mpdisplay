@@ -27,34 +27,34 @@ Implementation Notes
 """
 
 try:
-  from displaysys.busdisplay import BusDisplay
+    from displaysys.busdisplay import BusDisplay
 except ImportError:
-  from busdisplay import BusDisplay
+    from busdisplay import BusDisplay
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_SSD1331.git"
 
 _INIT_SEQUENCE = (
-    b"\xAE\x00"  # _DISPLAYOFF
-    b"\xA0\x01\x72"  # _SETREMAP (RGB)
-    b"\xA1\x01\x00"  # _STARTLINE
-    b"\xA2\x01\x00"  # _DISPLAYOFFSET
-    b"\xA4\x00"  # _NORMALDISPLAY
-    b"\xA8\x01\x3F"  # _SETMULTIPLEX (1/64 duty)
-    b"\xAD\x01\x8E"  # _SETMASTER
-    b"\xB0\x01\x0B"  # _POWERMODE
-    b"\xB1\x01\x31"  # _PRECHARGE
-    b"\xB3\x01\xF0"  # _CLOCKDIV 7:4 = Osc Freq, 3:0 = CLK Div Ratio
-    b"\x8A\x01\x64"  # _PRECHARGEA
-    b"\x8B\x01\x78"  # _PRECHARGEB
-    b"\x8C\x01\x64"  # _PRECHARGEC
-    b"\xBB\x01\x3A"  # _PRECHARGELEVEL
-    b"\xBE\x01\x3E"  # _VCOMH
+    b"\xae\x00"  # _DISPLAYOFF
+    b"\xa0\x01\x72"  # _SETREMAP (RGB)
+    b"\xa1\x01\x00"  # _STARTLINE
+    b"\xa2\x01\x00"  # _DISPLAYOFFSET
+    b"\xa4\x00"  # _NORMALDISPLAY
+    b"\xa8\x01\x3f"  # _SETMULTIPLEX (1/64 duty)
+    b"\xad\x01\x8e"  # _SETMASTER
+    b"\xb0\x01\x0b"  # _POWERMODE
+    b"\xb1\x01\x31"  # _PRECHARGE
+    b"\xb3\x01\xf0"  # _CLOCKDIV 7:4 = Osc Freq, 3:0 = CLK Div Ratio
+    b"\x8a\x01\x64"  # _PRECHARGEA
+    b"\x8b\x01\x78"  # _PRECHARGEB
+    b"\x8c\x01\x64"  # _PRECHARGEC
+    b"\xbb\x01\x3a"  # _PRECHARGELEVEL
+    b"\xbe\x01\x3e"  # _VCOMH
     b"\x87\x01\x06"  # _MASTERCURRENT
     b"\x81\x01\x91"  # _CONTRASTA
     b"\x82\x01\x50"  # _CONTRASTB
-    b"\x83\x01\x7D"  # _CONTRASTC
-    b"\xAF\x00"  # _DISPLAYON
+    b"\x83\x01\x7d"  # _CONTRASTC
+    b"\xaf\x00"  # _DISPLAYON
 )
 
 
@@ -73,6 +73,6 @@ class SSD1331(BusDisplay):
         )
 
     def init(self):
-#         self.rotation_table = _ROTATION_TABLE
+        #         self.rotation_table = _ROTATION_TABLE
         self._init_bytes(_INIT_SEQUENCE)
         super().init()

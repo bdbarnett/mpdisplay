@@ -9,11 +9,13 @@
 from machine import Pin, I2C
 from time import sleep_ms
 from micropython import const
-    
-class CHSC6X:
-    CHSC6X_I2C_ID = const(0x2e)
-    CHSC6X_READ_POINT_LEN = const(5)
 
+
+CHSC6X_I2C_ID = const(0x2E)
+CHSC6X_READ_POINT_LEN = const(5)
+
+
+class CHSC6X:
     def __init__(self, i2c, addr=CHSC6X_I2C_ID, irq_pin=None):
         self._i2c = i2c
         self._addr = addr
@@ -23,14 +25,14 @@ class CHSC6X:
 
     def is_touched(self):
         if self._irq is not None:
-            if self._irq.value() == False:
+            if self._irq.value() is False:
                 return True
             return False
-        return (self.touch_read() is not None)
+        return self.touch_read() is not None
 
     def touch_read(self):
         if self._irq is not None:
-            if self.is_touched() == True:
+            if self.is_touched() is True:
                 self._i2c.readfrom_into(self._addr, self._buffer)
             else:
                 return None
@@ -40,12 +42,12 @@ class CHSC6X:
             except OSError:  # Thrown when reading too fast
                 return None
 
-        results = [i for i in self._buffer]
+        results = list(self._buffer)
         # first byte is non-zero when touched, 3rd byte is x, 5th byte is y
         if results[0]:
             return results[2], results[4]
         return None
-     
+
 
 def main():
     print("Started...")
@@ -55,6 +57,7 @@ def main():
     while True:
         if touch.is_touched():
             print("Touched: ", touch.touch_read())
+
 
 if __name__ == "__main__":
     main()

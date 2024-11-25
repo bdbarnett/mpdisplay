@@ -1,4 +1,5 @@
-""" displaysys_fill_rect_test.py """
+"""displaysys_fill_rect_test.py"""
+
 from board_config import display_drv
 from random import randint, getrandbits
 import time
@@ -34,5 +35,6 @@ def main():
         count += 1
         if count % 1000 == 0:
             print("blocks/sec:", count / (time.time() - start_time))
+
 
 main()

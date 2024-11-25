@@ -15,7 +15,7 @@ sleep(1)
 
 ssd.fill(0x0)
 ssd.show()
-sleep(.25)
+sleep(0.25)
 
 a = ssd.blit_rect(bmp[:], 0, 0, bmp.width, bmp.height)
 print(a)

@@ -81,9 +81,7 @@ class Adafruit_FocalTouch:
 
         chip_data = self._read(_FT_REG_LIBH, 8)  # don't wait for IRQ
         # print("chip_data: {%x}".format(chip_data))
-        lib_ver, chip_id, _, _, firm_id, _, vend_id = struct.unpack(
-            ">HBBBBBB", chip_data
-        )
+        lib_ver, chip_id, _, _, firm_id, _, vend_id = struct.unpack(">HBBBBBB", chip_data)
         if debug:
             print(
                 "lib_ver: {:02X}, chip_id: {:02X}, firm_id: {:02X}, vend_id: {:02X}".format(
@@ -166,7 +164,7 @@ class Adafruit_FocalTouch:
     def _write(self, register, values) -> None:
         """Writes an array of 'length' bytes to the 'register'"""
         with self._i2c as i2c:
-            values = [(v & 0xFF) for v in [register] + values]
+            values = [(v & 0xFF) for v in [register] + values]  # noqa: RUF005
             if self._debug:
                 print("register: %02X, value: %02X" % (values[0], values[1]))
             i2c.write(bytes(values))

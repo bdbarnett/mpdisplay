@@ -22,9 +22,7 @@ BLACK = ssd.color(0, 0, 0)
 LIGHT_GREY = ssd.color(192, 192, 192)
 GREY = ssd.color(96, 96, 96)
 DARK_GREY = ssd.color(64, 64, 64)
-GREY = ssd.color(
-    128, 128, 128, GREY
-)  # Example of how to redefine a color in the lookup table
+GREY = ssd.color(128, 128, 128, GREY)  # Example of how to redefine a color in the lookup table
 if ssd.colors_registered:  # Will be 0 if not using lookup tables / GS4_HMSB mode.
     print(f"{ssd.colors_registered} colors registered.")
 
@@ -45,9 +43,7 @@ def main(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
         ssd.hline(WIDTH // 8, HEIGHT // 2, WIDTH * 3 // 4, MAGENTA)
         ssd.vline(WIDTH // 2, HEIGHT // 4, HEIGHT // 2, CYAN)
         ssd.pixel(WIDTH // 2, HEIGHT * 1 // 8, WHITE)
-        ssd.ellipse(
-            WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, BLACK, True, 0b1111
-        )
+        ssd.ellipse(WIDTH // 2, HEIGHT // 2, WIDTH // 4, HEIGHT // 8, BLACK, True, 0b1111)
         ssd.text(text1, (WIDTH - FONT_WIDTH * len(text1)) // 2, HEIGHT // 2 - 8, WHITE)
         ssd.text(text2, (WIDTH - FONT_WIDTH * len(text2)) // 2, HEIGHT // 2, WHITE)
         ssd.show()
@@ -60,8 +56,5 @@ def main(scroll=False, animate=False, text1="displaybuf", text2="simpletest"):
         ssd.scroll(1, 1)
         ssd.show()
 
-
-launch = lambda: main(animate=True)
-wipe = lambda: main(scroll=True)
 
 main()

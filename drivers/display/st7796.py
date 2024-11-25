@@ -1,11 +1,11 @@
-'''
+"""
 The init sequence is written out line by line in .init()
-'''
+"""
 
 try:
-  from displaysys.busdisplay import BusDisplay
+    from displaysys.busdisplay import BusDisplay
 except ImportError:
-  from busdisplay import BusDisplay
+    from busdisplay import BusDisplay
 from time import sleep_ms
 from micropython import const
 
@@ -27,13 +27,13 @@ _DISPON = const(0x29)
 
 
 class ST7796(BusDisplay):
-    """ ST7796 display driver """
+    """ST7796 display driver"""
 
     def __init__(self, bus, **kwargs):
         super().__init__(bus, **kwargs)
 
     def init(self):
-#         self.rotation_table = _ROTATION_TABLE
+        #         self.rotation_table = _ROTATION_TABLE
         param_buf = bytearray(14)
         param_mv = memoryview(param_buf)
 
@@ -51,14 +51,13 @@ class ST7796(BusDisplay):
         param_buf[0] = 0x96
         self.send(_CSCON, param_mv[:1])
 
-        if self.color_depth // 8 == 2:  # NOQA
+        if self.color_depth // 8 == 2:
             pixel_format = 0x55
         elif self.color_depth // 8 == 3:
             pixel_format = 0x77
         else:
             raise RuntimeError(
-                "ST7796 IC only supports "
-                "lv.COLOR_FORMAT.RGB565 or lv.COLOR_FORMAT.RGB888"
+                "ST7796 IC only supports " "lv.COLOR_FORMAT.RGB565 or lv.COLOR_FORMAT.RGB888"
             )
 
         param_buf[0] = pixel_format

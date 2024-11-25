@@ -1,12 +1,15 @@
 import gc
+
 try:
     # For CircuitPython and MicroPython
     from gc import mem_free
 except ImportError:
     # For CPython
     from psutil import virtual_memory
+
     def mem_free():
         return virtual_memory().free
+
 
 gc.collect()
 mem = mem_free()
@@ -29,7 +32,8 @@ async def write_time():
             last_time = (y, mo, d, h, m, s)
             gc.collect()
             dsky.write_string(f"{mem-mem_free():7}", dsky.data3_pos)
-        await asyncio.sleep(.5)
+        await asyncio.sleep(0.5)
+
 
 async def scroll():
     if vscsad := display_drv.vscsad():
@@ -39,6 +43,7 @@ async def scroll():
     for i in range(*scroll_range):
         display_drv.vscsad(i)
         await asyncio.sleep(0.001)
+
 
 async def main():
     dsky.init_screen()
@@ -67,7 +72,7 @@ loop = asyncio.get_event_loop()
 tasks = [
     loop.create_task(main()),
     loop.create_task(write_time()),
-    ]
+]
 if hasattr(loop, "is_running") and loop.is_running():
     pass
 else:

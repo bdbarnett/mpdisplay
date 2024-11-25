@@ -35,11 +35,16 @@ LEFT = Keys.K_LEFT  # LEFT
 DOWN = Keys.K_DOWN  # DOWN
 RIGHT = Keys.K_RIGHT  # RIGHT
 keypad = Keypad(
-    broker.poll, 0, 0, display_drv.width, display_drv.height, keys=[START, UNUSED, PAUSE, CW, DROP, CCW, LEFT, DOWN, RIGHT]
+    broker.poll,
+    0,
+    0,
+    display_drv.width,
+    display_drv.height,
+    keys=[START, UNUSED, PAUSE, CW, DROP, CCW, LEFT, DOWN, RIGHT],
 )
 
-def main():  # noqa: C901, PLR0915
 
+def main():  # noqa: C901, PLR0915
     # Define the draw_block function
     def draw_block(x, y, index):
         return display_drv.blit_rect(blocks[index], x, y, block_size, block_size)
@@ -75,9 +80,7 @@ def main():  # noqa: C901, PLR0915
     SPEEDUP = const(
         25
     )  # Amount of time in ms to reduce the drop time by when a row is cleared (Difficulty)
-    BAG_SIZE = const(
-        7
-    )  # Number of random unique pieces to add to the bag at a time, min 1, max 7
+    BAG_SIZE = const(7)  # Number of random unique pieces to add to the bag at a time, min 1, max 7
     GRID_WIDTH = const(10)
     GRID_HEIGHT = const(20)
     BACKGROUND_INDEX = const(0)  # Index of the background block (black)
@@ -137,7 +140,18 @@ def main():  # noqa: C901, PLR0915
 
     # Create the blocks: black for background, 7 piece colors, gray for border, white for touch targets
     blocks = []
-    for color in [pal.BLACK, pal.CYAN, pal.YELLOW, pal.PURPLE, pal.GREEN, pal.BLUE, pal.RED, pal.ORANGE, pal.GREY, pal.WHITE]:
+    for color in [
+        pal.BLACK,
+        pal.CYAN,
+        pal.YELLOW,
+        pal.PURPLE,
+        pal.GREEN,
+        pal.BLUE,
+        pal.RED,
+        pal.ORANGE,
+        pal.GREY,
+        pal.WHITE,
+    ]:
         # Allocate a buffer for the block, 2 bytes per pixel.  Use DMA and internal RAM.
         block = alloc_buffer(block_size * block_size * 2)
         for y in range(block_size):  # Working top to bottom
@@ -152,9 +166,9 @@ def main():  # noqa: C901, PLR0915
                 elif (x < block_bevel or y < block_bevel) and (x & 1 == y & 1):
                     pixel_color = pal.WHITE  # Dither with white on the top and left bevels
                 # Right or bottom bevel pixel with even x on even rows, odd x on odd rows
-                elif (
-                    x > block_size - block_bevel - 1 or y > block_size - block_bevel - 1
-                ) and (x & 1 == y & 1):
+                elif (x > block_size - block_bevel - 1 or y > block_size - block_bevel - 1) and (
+                    x & 1 == y & 1
+                ):
                     pixel_color = pal.BLACK  # Dither with black on the bottom and right bevels
                 else:
                     pixel_color = color  # Fill the block with the specified color
@@ -162,13 +176,12 @@ def main():  # noqa: C901, PLR0915
                     x + (y * block_size)
                 ) * 2  # Address of the pixel in the buffer, 2 bytes per pixel
                 block[address] = pixel_color & 0xFF
-                block[address + 1] = (pixel_color >> 8)
+                block[address + 1] = pixel_color >> 8
         blocks.append(block)
 
     # Create a frame buffer for text
     text_buffer = alloc_buffer(banner_width * banner_height * 2)
     text_fb = FrameBuffer(text_buffer, banner_width, banner_height, RGB565)
-
 
     def draw_banner(text, x=border_x_offset, y=0, color=pal.WHITE, bg_color=pal.BLACK):
         """
@@ -191,7 +204,6 @@ def main():  # noqa: C901, PLR0915
             text_buffer, x, y, banner_width, banner_height
         )  # Draw the text buffer on the display
 
-
     def show_score(message=""):
         """
         Show the score.
@@ -206,7 +218,6 @@ def main():  # noqa: C901, PLR0915
             f"{message}\nScore: {score:,}\nLines cleared: {lines}\nDrop time: {drop_time:,} ms"
         )  # Draw the score
 
-
     def show_splash():
         """
         Show the splash screen.
@@ -217,19 +228,13 @@ def main():  # noqa: C901, PLR0915
         splash_y = (
             display_height - len(splash) * block_size
         ) // 2  # Center the splash screen vertically
-        draw_piece(
-            splash, [0, 0], offset_x=splash_x, offset_y=splash_y
-        )  # Draw the splash screen
-
+        draw_piece(splash, [0, 0], offset_x=splash_x, offset_y=splash_y)  # Draw the splash screen
 
     def clear_screen():
         """
         Clear the screen.
         """
-        display_drv.fill_rect(
-            0, 0, display_width, display_height, pal.BLACK
-        )  # Clear the screen
-
+        display_drv.fill_rect(0, 0, display_width, display_height, pal.BLACK)  # Clear the screen
 
     def draw_border():
         """
@@ -246,7 +251,6 @@ def main():  # noqa: C901, PLR0915
                 border_x_offset + border_width - block_size, y, BORDER_INDEX
             )  # Right border
 
-
     def draw_touch_targets():
         """
         Draw the touch targets.
@@ -255,7 +259,6 @@ def main():  # noqa: C901, PLR0915
         for x in [-1, GRID_WIDTH]:
             for y in [-1, (GRID_HEIGHT // 2) - 3, GRID_HEIGHT - 5]:
                 draw_piece([[TOUCH_TARGET_INDEX]] * 4, [x, y])
-
 
     def save_high_score(score):
         """
@@ -270,7 +273,6 @@ def main():  # noqa: C901, PLR0915
         with open("high_score.json", "w") as f:
             dump(score, f)
 
-
     def load_high_score():
         """
         Load the high score from the 'high_score.json' file.
@@ -283,7 +285,6 @@ def main():  # noqa: C901, PLR0915
                 return load(f)
         except OSError:
             return 0
-
 
     def wait_for_key(key=None, exclude=[]):
         """
@@ -306,7 +307,6 @@ def main():  # noqa: C901, PLR0915
                     break  # Exit the loop
         return pressed
 
-
     def sample(population, k):
         """
         Randomly select k items from population without replacement.
@@ -326,7 +326,6 @@ def main():  # noqa: C901, PLR0915
             population.remove(result)
         return results
 
-
     def rotate(piece, dir):
         """
         Rotate a piece in the specified direction.
@@ -345,7 +344,6 @@ def main():  # noqa: C901, PLR0915
             if dir > 0
             else [list(row) for row in reversed(piece)]
         )
-
 
     def collision(piece, pos, dx, dy, rotation=0):
         """
@@ -373,7 +371,6 @@ def main():  # noqa: C901, PLR0915
                         return True
         return False
 
-
     def draw_piece(
         piece, piece_position, index=-1, offset_x=grid_x_offset, offset_y=grid_y_offset
     ):
@@ -395,7 +392,6 @@ def main():  # noqa: C901, PLR0915
                         offset_y + (piece_position[1] + y) * block_size,
                         index if index >= 0 else block,
                     )
-
 
     high_score = load_high_score()  # Load the high score
 
@@ -422,7 +418,9 @@ def main():  # noqa: C901, PLR0915
         next_piece = choice(pieces)  # Select the first piece
         score = 0  # Start with a score of 0
         lines = 0  # Start with 0 lines cleared
-        drop_time = 1000  # Time between automatic drops in ms, decreases by SPEEDUP as lines are cleared
+        drop_time = (
+            1000  # Time between automatic drops in ms, decreases by SPEEDUP as lines are cleared
+        )
         last_read = 0  # The last time the keypad was read
         hard_drop = False  # Flag to indicate a hard drop
 
@@ -465,22 +463,14 @@ def main():  # noqa: C901, PLR0915
                         key := keypad.read()
                     ):  # If a key was pressed
                         last_read = ticks_ms()  # Save the time of the last read
-                        if key == LEFT and not collision(
-                            current_piece, current_position, -1, 0
-                        ):
+                        if key == LEFT and not collision(current_piece, current_position, -1, 0):
                             current_position[0] -= 1  # Move the piece left
-                        elif key == RIGHT and not collision(
-                            current_piece, current_position, 1, 0
-                        ):
+                        elif key == RIGHT and not collision(current_piece, current_position, 1, 0):
                             current_position[0] += 1  # Move the piece right
-                        elif key == DOWN and not collision(
-                            current_piece, current_position, 0, 1
-                        ):
+                        elif key == DOWN and not collision(current_piece, current_position, 0, 1):
                             current_position[1] += 1  # Move the piece down
                             last_drop = ticks_ms()  # Reset the last drop time
-                        elif key == DROP and not collision(
-                            current_piece, current_position, 0, 1
-                        ):
+                        elif key == DROP and not collision(current_piece, current_position, 0, 1):
                             hard_drop = True  # Hard drop the piece
                         elif key == CCW and not collision(
                             current_piece, current_position, 0, 0, ROTCCW
@@ -491,13 +481,9 @@ def main():  # noqa: C901, PLR0915
                         elif key == CW and not collision(
                             current_piece, current_position, 0, 0, ROTCW
                         ):
-                            current_piece = rotate(
-                                current_piece, CW
-                            )  # Rotate the piece clockwise
+                            current_piece = rotate(current_piece, CW)  # Rotate the piece clockwise
                         elif key == PAUSE:  # Pause the game
-                            draw_banner(
-                                "Paused.\n\nPress START to reset.\nAny key to resume."
-                            )
+                            draw_banner("Paused.\n\nPress START to reset.\nAny key to resume.")
                             key = wait_for_key(
                                 exclude=[PAUSE]
                             )  # Wait for the user to press a key, excluding PAUSE
@@ -523,9 +509,9 @@ def main():  # noqa: C901, PLR0915
                             for y, row in enumerate(current_piece):
                                 for x, block in enumerate(row):
                                     if block:
-                                        grid[current_position[1] + y][
-                                            current_position[0] + x
-                                        ] = block  # Add the piece to the grid
+                                        grid[current_position[1] + y][current_position[0] + x] = (
+                                            block  # Add the piece to the grid
+                                        )
                             current_piece = (
                                 None  # Piece is no longer in play; its now part of the grid
                             )
@@ -533,16 +519,12 @@ def main():  # noqa: C901, PLR0915
                             full_lines = []
                             for y, row in enumerate(grid):  # Check each row
                                 if all(row):  # If each block in the row is non-zero
-                                    full_lines.append(
-                                        y
-                                    )  # Add the row to the list of full lines
+                                    full_lines.append(y)  # Add the row to the list of full lines
                             if full_lines:
                                 score += [100, 200, 400, 800][
                                     len(full_lines) - 1
                                 ]  # Update the score
-                                lines += len(
-                                    full_lines
-                                )  # Update the number of lines cleared
+                                lines += len(full_lines)  # Update the number of lines cleared
                                 drop_time = max(
                                     DELAY, drop_time - SPEEDUP
                                 )  # Decrease the drop time, but not below DELAY time
@@ -555,18 +537,12 @@ def main():  # noqa: C901, PLR0915
                                     for y in range(
                                         full_line, 0, -1
                                     ):  # Working from the full line up to the top
-                                        grid[y] = list(
-                                            grid[y - 1]
-                                        )  # Copy the line above it
-                                    grid[0] = [
-                                        0 for _ in range(GRID_WIDTH)
-                                    ]  # Clear the top line
+                                        grid[y] = list(grid[y - 1])  # Copy the line above it
+                                    grid[0] = [0 for _ in range(GRID_WIDTH)]  # Clear the top line
                                 # Redraw only the lines that have changed
                                 for y in range(GRID_HEIGHT):  # For each line
                                     if grid[y] != old_grid[y]:  # If the line has changed
-                                        for x in range(
-                                            GRID_WIDTH
-                                        ):  # For each block in the line
+                                        for x in range(GRID_WIDTH):  # For each block in the line
                                             draw_block(
                                                 x * block_size + grid_x_offset,
                                                 y * block_size + grid_y_offset,
@@ -578,9 +554,7 @@ def main():  # noqa: C901, PLR0915
                 ):  # If the piece hasn't hit bottom, erase it from its previous position
                     draw_piece(old_piece, old_position, BACKGROUND_INDEX)
 
-            draw_piece(
-                next_piece, [7, -3], BACKGROUND_INDEX
-            )  # Erase the previous next piece
+            draw_piece(next_piece, [7, -3], BACKGROUND_INDEX)  # Erase the previous next piece
 
         # Game over - show the score and wait for the user to press a key
         if score > high_score:

@@ -44,9 +44,9 @@ Implementation Notes
 """
 
 try:
-  from displaysys.busdisplay import BusDisplay
+    from displaysys.busdisplay import BusDisplay
 except ImportError:
-  from busdisplay import BusDisplay
+    from busdisplay import BusDisplay
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/electronut/Electronutlabs_CircuitPython_ILI9163.git"
@@ -67,7 +67,7 @@ _INIT_SEQUENCE = (
     b"\xc7\x01\x40"
     b"\x2a\x04\x00\x00\x00\x7f"
     b"\x2b\x04\x00\x00\x00\x7f"
-    b"\x36\x01\x68"      # rotation
+    b"\x36\x01\x68"  # rotation
     b"\x29\x80\x78"
     b"\x2c\x80\x78"
 )

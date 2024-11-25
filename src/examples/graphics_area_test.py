@@ -18,6 +18,6 @@ from board_config import display_drv
 from graphics import rect, circle, ellipse
 
 
-dirty = circle(display_drv, 120, 120, 50, 0XFF00, True)
-dirty += ellipse(display_drv, 100, 85, 50, 30, 0X0FF0, True, 0b1111)
+dirty = circle(display_drv, 120, 120, 50, 0xFF00, True)
+dirty += ellipse(display_drv, 100, 85, 50, 30, 0x0FF0, True, 0b1111)
 rect(display_drv, *dirty, 0x00FF)

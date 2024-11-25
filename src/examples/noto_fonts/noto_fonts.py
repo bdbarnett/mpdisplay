@@ -32,6 +32,7 @@ import NotoSerif_32 as noto_serif
 import NotoSansMono_32 as noto_mono
 import tft_write
 
+
 def main():
     """main"""
 

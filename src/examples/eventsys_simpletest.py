@@ -11,6 +11,7 @@ async def main():
                 break
         await asyncio.sleep(0.001)
 
+
 loop = asyncio.get_event_loop()
 main_task = loop.create_task(main())  # noqa: RUF006
 if hasattr(loop, "run_forever"):

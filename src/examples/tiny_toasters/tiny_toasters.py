@@ -112,9 +112,7 @@ def main():
 
         def clear(self):
             """clear above and behind sprite"""
-            tft.draw.fill_rect(
-                self.col, self.row - 1, self.width, self.dir_row + 1, palette.BLACK
-            )
+            tft.draw.fill_rect(self.col, self.row - 1, self.width, self.dir_row + 1, palette.BLACK)
 
             tft.draw.fill_rect(
                 self.col + self.width + self.dir_col,

@@ -56,8 +56,16 @@ async def main():
     button_offset = [None] * COLS
 
     # Create the keypad
-    keypad = Keypad(broker.poll, 0, 0, display_drv.width, display_drv.height, COLS, ROWS, button_offset + button_codes)
-
+    keypad = Keypad(
+        broker.poll,
+        0,
+        0,
+        display_drv.width,
+        display_drv.height,
+        COLS,
+        ROWS,
+        button_offset + button_codes,
+    )
 
     # Function to draw a button
     def draw_button(xpos, ypos, label, pressed=False):
@@ -86,7 +94,6 @@ async def main():
             BTN_HEIGHT,
         )
 
-
     # Function to display the result line right justified
     def show_result(result):
         x_start = LINE_WIDTH - (len(str(result)) * FONT_WIDTH + PAD_X2)
@@ -94,14 +101,12 @@ async def main():
         line_fb.text16(str(result), x_start, PAD, pal.WHITE)
         display_drv.blit_rect(line_ba, PAD, PAD, LINE_WIDTH, LINE_HEIGHT)
 
-
     # Function to display the input line right justified
     def show_input(input):
         x_start = LINE_WIDTH - (len(input) * FONT_WIDTH + PAD_X2)
         line_fb.fill(pal.BLACK)
         line_fb.text16(input, x_start, PAD, pal.YELLOW)
         display_drv.blit_rect(line_ba, PAD, LINE_HEIGHT + PAD, LINE_WIDTH, LINE_HEIGHT)
-
 
     # Create the framebuffers
     line_ba = bytearray(LINE_WIDTH * LINE_HEIGHT * BPP)
@@ -197,6 +202,7 @@ async def main():
         show_input(input)
         sleep(0.15)
         draw_button(x, y, label, False)
+
 
 loop = asyncio.get_event_loop()
 main_task = loop.create_task(main())

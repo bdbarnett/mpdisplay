@@ -5,6 +5,7 @@ A simple paint application demonstrating the use of displaysys.
 from board_config import display_drv, broker
 import asyncio
 
+
 async def main():
     colors = [0xFFFF, 0xF800, 0x07E0, 0x001F, 0x07FF, 0xF81F, 0xFFE0, 0x0000]
 
@@ -13,7 +14,6 @@ async def main():
     selected_pad = block_size // 10
     brush_size = 5
     selected = 0
-
 
     def draw_block(index, color):
         x, y = (index * block_size, 0) if on_x_axis else (0, index * block_size)
@@ -29,12 +29,10 @@ async def main():
         else:
             display_drv.fill_rect(x, y, block_size, block_size, color)
 
-
     def paint(x, y, color):
         display_drv.fill_rect(
             x - brush_size // 2, y - brush_size // 2, brush_size, brush_size, color
         )
-
 
     for i, color in enumerate(colors):
         draw_block(i, color)
@@ -80,6 +78,7 @@ async def main():
                 paint(x, y, colors[selected])
         elif e.type == broker.Events.QUIT:
             break
+
 
 loop = asyncio.get_event_loop()
 main_task = loop.create_task(main())  # noqa: RUF006

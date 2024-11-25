@@ -21,7 +21,6 @@ s_top = pd.ScrollBar(top, value=0.5, align=pd.ALIGN.BOTTOM, reverse=True)
 s_bottom = pd.ScrollBar(bottom, value=0.5, align=pd.ALIGN.TOP)
 
 
-
 screen.visible = True
 
 if not display.timer:

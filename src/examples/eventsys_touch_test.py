@@ -67,15 +67,9 @@ def loop():
                 touched_point = None
                 while not touched_point:
                     event = broker.poll()
-                    if (
-                        event
-                        and event.type == broker.Events.MOUSEBUTTONDOWN
-                        and event.button == 1
-                    ):
+                    if event and event.type == broker.Events.MOUSEBUTTONDOWN and event.button == 1:
                         touched_point = event.pos
-                zone = (touched_point[1] // half_height) * 2 + (
-                    touched_point[0] // half_width
-                )
+                zone = (touched_point[1] // half_height) * 2 + (touched_point[0] // half_width)
                 touched_zones.append(zone)
                 print(f"{touched_point=} in {zone=}")
                 display_drv.fill_rect(
@@ -117,12 +111,12 @@ def loop():
     out_text = f"touch_rotation_table = {tuple(touch_rotation_table)}"
     print("    ", out_text, "\n")
     text16(
-            display_drv,
-            out_text,
-            (display_drv.width - len(out_text) * 8) // 2,
-            (display_drv.height - 8) // 2,
-            FG_COLOR,
-        )
+        display_drv,
+        out_text,
+        (display_drv.width - len(out_text) * 8) // 2,
+        (display_drv.height - 8) // 2,
+        FG_COLOR,
+    )
     return True
 
 

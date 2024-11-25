@@ -61,9 +61,7 @@ def main():
                 (
                     0
                     if idx != i
-                    else int(
-                        interpolate(0, color_value, row - start_row, height_division)
-                    )
+                    else int(interpolate(0, color_value, row - start_row, height_division))
                 )
                 for idx in range(3)
             ]

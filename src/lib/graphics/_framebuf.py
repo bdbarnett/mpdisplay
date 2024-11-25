@@ -282,17 +282,16 @@ class RGB565Format:
             width = framebuf.width - x
         if y + height > framebuf.height:
             height = framebuf.height - y
+        stride = framebuf._stride
         rgb565_color = (color & 0xFFFF).to_bytes(2, "little")
         if np:
             rgb565_color_int = int.from_bytes(rgb565_color, "little")
             arr = np.frombuffer(framebuf._buffer, dtype=np.uint16)
             for _y in range(y, y + height):
-                arr[_y * framebuf._stride + x : _y * framebuf._stride + x + width] = (
-                    rgb565_color_int
-                )
+                arr[_y * stride + x : _y * stride + x + width] = rgb565_color_int
         else:
             for _y in range(y, y + height):
-                offset = _y * framebuf._stride
+                offset = _y * stride
                 for _x in range(x, x + width):
                     index = (offset + _x) * 2
                     framebuf.buffer[index : index + 2] = rgb565_color

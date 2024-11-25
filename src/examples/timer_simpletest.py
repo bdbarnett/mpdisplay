@@ -7,6 +7,7 @@ It creates a periodic timer in a class instance and a one-shot timer that stops 
 from timer import Timer
 from sys import platform
 
+
 class TimerTest:
     def __init__(self):
         self._tim = Timer(-1 if platform == "rp2" else 1)
@@ -22,6 +23,7 @@ class TimerTest:
     def stop(self, t=None):
         self._tim.deinit()
         print(f"TimerTest:  timer stopped after {self._counter:,} calls.")
+
 
 # Create a timer that calls tt.do_something every 1ms
 tt = TimerTest()

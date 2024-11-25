@@ -6,9 +6,10 @@ from random import getrandbits
 
 canvas = display_drv
 
+
 def main():
     line_height = 16
-    canvas.set_vscroll(16, 16) # Does not have to == line_height
+    canvas.set_vscroll(16, 16)  # Does not have to == line_height
 
     pal = get_palette()
     draw = Draw(canvas)
@@ -24,8 +25,12 @@ def main():
         # draw bottom fixed area
         draw.fill_rect(0, canvas.height - canvas.bfa, canvas.width, canvas.bfa, pal.BLUE)
         if canvas.bfa > 15:
-            draw.text14(f"{canvas.height - canvas.bfa} BFA", 1, canvas.height - canvas.bfa + 1, pal.WHITE)
-            draw.round_rect(canvas.width - 44, canvas.height - canvas.bfa + 1, 40, 12, 4, pal.GREEN, True)
+            draw.text14(
+                f"{canvas.height - canvas.bfa} BFA", 1, canvas.height - canvas.bfa + 1, pal.WHITE
+            )
+            draw.round_rect(
+                canvas.width - 44, canvas.height - canvas.bfa + 1, 40, 12, 4, pal.GREEN, True
+            )
             draw.text("Down", canvas.width - 40, canvas.height - canvas.bfa + 5, pal.WHITE)
 
     for i, y in enumerate(range(canvas.tfa, canvas.vsa + canvas.tfa, line_height)):
@@ -51,7 +56,10 @@ def main():
                     canvas.vscroll += line_height
                 else:
                     y_pos = (y // line_height) * line_height
-                    canvas.fill_rect(canvas.width - 20, y_pos + 2, 12, 12, getrandbits(canvas.color_depth))
+                    canvas.fill_rect(
+                        canvas.width - 20, y_pos + 2, 12, 12, getrandbits(canvas.color_depth)
+                    )
                 canvas.show()
+
 
 main()

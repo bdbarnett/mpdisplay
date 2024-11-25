@@ -1,10 +1,11 @@
 [tool.ruff]
 # Exclude some code from linting and formatting
 exclude = [
-  "drivers/**",
+  "drivers/encoder/**",
+  "drivers/io_expander/**",
   "icons/**",
+  "src/add_ons/png.py",
   "src/examples/**",
-  "src/extras/png.py",
 ]
 lint.select = [
   "ASYNC",  # flake8-comprehensions
@@ -75,7 +76,6 @@ lint.ignore = [
   "PLW2901",
   "RUF012",
   "RUF100",
-  "PYI024", # Micropython has no typing module
   "SIM101",
   "W191",  # tab-indent, redundant when using formatter
 ]

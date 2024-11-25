@@ -447,11 +447,11 @@ class BusDisplay(DisplayDriver):
         Args:
             value (float): The brightness of the display as a float between 0.0 and 1.0.
         """
-        if 0 <= float(value) <= 1.0:
+        if 0 <= float(value) <= 1:
             self._brightness = value
             if self._backlight_pin:
                 if not self._backlight_on_high:
-                    value = 1.0 - value
+                    value = 1 - value
                 if self._backlight_is_pwm:
                     if sys.implementation.name == "micropython":
                         self._backlight_pin.duty_u16(int(value * 0xFFFF))

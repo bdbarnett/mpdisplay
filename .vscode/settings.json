@@ -2,8 +2,22 @@
     "python.analysis.extraPaths": [
         "./src",
         "./src/examples",
-        "./src/extras",
-        "./src/lib"
+        "./src/add_ons",
+        "./src/lib",
+        "./site_utils/typings"
     ],
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    },
+    // pip install -U micropython-esp32-esp32_generic_s3-stubs==1.23.* --target ./.site_utils/typings --no-user
+    "python.analysis.typeshedPaths": [
+        "tools/typings"
+    ],
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "files.trimTrailingWhitespace": true,
+    "files.exclude": {
+        "build-*/**": false
+    },
+    "files.insertFinalNewline": true
 }

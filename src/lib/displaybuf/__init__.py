@@ -37,15 +37,18 @@ _has_viper_tools = False
 if sys.implementation.name == "micropython":
     try:
         from viper_tools import _bounce8, _bounce4
+
         _has_viper_tools = True
     except Exception:
         pass
 
 if not _has_viper_tools:
+
     def _bounce8(*args, **kwargs):
         raise NotImplementedError(
             ".GS8 and .GS4_HMSB DisplayBuffer formats are only implemented in viper_tools.py for MicroPython."
         )
+
     _bounce4 = _bounce8
 
 

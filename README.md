@@ -53,7 +53,7 @@ On desktop operating systems, `cd` into the `mp` directory (or wherever you have
 ```
 python3 -i path.py
 ```
-or 
+or
 ```
 micropython -i path.py
 ```
@@ -88,7 +88,7 @@ Where possible, existing, proven APIs were used.
   - PSDisplay for PyScript.  Only touchscreens are currently supported.
 - Names of Events and Devices in [eventsys](src/lib/eventsys/) are taken from PyGame and/or SDL2 to keep the API consistent.
 - All drawing targets, sometimes referred to as `canvas` in the code, may be written to using the API from MicroPython's framebuf.FrameBuffer API
-  - CPython and CircuitPython don't have a `framebuf` module that is API compliant with MicroPython's `framebuf`, so [framebuf.py](extras/framebuf.py)  is provided for those platforms.  It is not used in MicroPython unless framebuf wasn't compiled in.
+  - CPython and CircuitPython don't have a `framebuf` module that is API compliant with MicroPython's `framebuf`, so [framebuf.py](add_ons/framebuf.py)  is provided for those platforms.  It is not used in MicroPython unless framebuf wasn't compiled in.
   - A `graphics` module is provided that subclasses `FrameBuffer` (either built-in or from framebuf.py) and provides additional drawing tools, such as `round_rect`.  All methods in graphics return an Area object with x, y, w and h attributes describing a bounding box of what was changed.  This can be used by applications to only update the part of the display that needs it.  That functionality is implemented in DisplayBuffer and will likely be required by EPaperDisplay when it is implemented.
   - Canvases include, but are not limited to, the display itself, framebuf bytearrays, bmp565 (16-bit Windows Bitmap files) and displaybuf.DisplayBuffer objects.
   - displaybuf.DisplayBuffer implements @peterhinch's API that represents the full display as a framebuffer and allows for 4-, 8- and 16-bit bytearrays while still drawing to the screen as 16-bit.  It is required for `MicroPython-Touch` and is very useful outside of that library as well, especially when memory is constrained.

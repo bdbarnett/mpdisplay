@@ -26,23 +26,30 @@ Available functions:
 import os
 
 if 0:
+
     def include(*args, **kwargs):
         pass
+
     def package(*args, **kwargs):
         pass
+
     def module(*args, **kwargs):
         pass
+
+    def require(*args, **kwargs):
+        pass
+
 
 if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
     include("$(BOARD_DIR)/manifest.py")
 else:
     include("$(PORT_DIR)/boards/manifest.py")
 
+package("displaybuf", files=None, base_path="./src/lib", opt=None)
 package("displaysys", files=None, base_path="./src/lib", opt=None)
 package("eventsys", files=None, base_path="./src/lib", opt=None)
-package("displaybuf", files=None, base_path="./src/lib", opt=None)
 package("graphics", files=None, base_path="./src/lib", opt=None)
 package("palettes", files=None, base_path="./src/lib", opt=None)
 package("timer", files=None, base_path="./src/lib", opt=None)
-module("touch_keypad.py", base_path="./src/extras")
-module("wifi.py", base_path="./src/extras")
+module("touch_keypad.py", base_path="./src/add_ons")
+module("wifi.py", base_path="./src/add_ons")

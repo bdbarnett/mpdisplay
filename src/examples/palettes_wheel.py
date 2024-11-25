@@ -16,6 +16,8 @@ palette = get_palette(name="wheel", swapped=needs_swap, length=256, saturation=1
 line_height = 2
 
 i = 0
+
+
 def main():
     global i
     for color in palette:
@@ -24,8 +26,10 @@ def main():
         display_drv.fill_rect(0, i % display_drv.height, display_drv.width, line_height, color)
         i += line_height
 
+
 def loop():
     while True:
         main()
+
 
 loop()

@@ -4,7 +4,7 @@ from time import sleep
 from random import choice
 from collections import namedtuple
 
-show = display_drv.show if hasattr(display_drv, "show") else lambda : None
+show = display_drv.show if hasattr(display_drv, "show") else lambda: None
 
 
 image = BMP565("examples/assets/warrior.bmp", streamed=True)
@@ -25,8 +25,23 @@ print("Sprite coordinates:")
 for col in [fwd, left, right, back]:
     print(f"{(a, col)} {(b, col)} {(c, col)} {(b, col)}")
 
-def draw_sprite(dest_x, dest_y, source_x, source_y, source_image=image, width=sprite_width, height=sprite_height):
-    display_drv.blit_rect(source_image[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height)
+
+def draw_sprite(
+    dest_x,
+    dest_y,
+    source_x,
+    source_y,
+    source_image=image,
+    width=sprite_width,
+    height=sprite_height,
+):
+    display_drv.blit_rect(
+        source_image[source_x : source_x + width, source_y : source_y + height],
+        dest_x,
+        dest_y,
+        width,
+        height,
+    )
 
 
 display_drv.fill(bg)
@@ -56,10 +71,14 @@ while True:
             display_drv.fill_rect(location.x, location.y, sprite_width, step, bg)
             location = point(location.x, location.y + step)
         elif dir == back:
-            display_drv.fill_rect(location.x, location.y + sprite_height - step, sprite_width, step, bg)
+            display_drv.fill_rect(
+                location.x, location.y + sprite_height - step, sprite_width, step, bg
+            )
             location = point(location.x, location.y - step)
         elif dir == left:
-            display_drv.fill_rect(location.x + sprite_width - step, location.y, step, sprite_height, bg)
+            display_drv.fill_rect(
+                location.x + sprite_width - step, location.y, step, sprite_height, bg
+            )
             location = point(location.x - step, location.y)
         elif dir == right:
             display_drv.fill_rect(location.x, location.y, step, sprite_height, bg)

@@ -1,7 +1,7 @@
-'''
+"""
 Adapted from:
     https://github.com/lewisxhe/SensorLib/blob/master/src/touch/TouchClassCST226.cpp
-'''
+"""
 
 from machine import Pin
 from time import sleep_ms
@@ -29,10 +29,18 @@ IRQ_EN_CHANGE = const(0x20)
 IRQ_EN_MOTION = const(0x10)
 IRQ_EN_LONGPRESS = const(0x01)
 
-class CST226():
-    def __init__(self, bus, address=0x5A, rst_pin=None,
-                 irq_pin=None, irq_handler=lambda pin: None, irq_en=0x00, motion_mask=0b000):
 
+class CST226:
+    def __init__(
+        self,
+        bus,
+        address=0x5A,
+        rst_pin=None,
+        irq_pin=None,
+        irq_handler=lambda pin: None,
+        irq_en=0x00,
+        motion_mask=0b000,
+    ):
         self._bus = bus
         self._address = address
 
@@ -45,7 +53,7 @@ class CST226():
         chipType = (buffer[3] << 8) | buffer[2]
         if chipType != _CST226_ID:
             raise ValueError("Error: CST226 not detected.")
-        
+
         # Setup pins and reset the device
         self.rst = Pin(rst_pin, Pin.OUT) if isinstance(rst_pin, int) else rst_pin
         self.reset()
@@ -66,26 +74,26 @@ class CST226():
         buffer = self._read(_CST226_REG_STATUS, _CST226_BUFFER_NUM)
         if buffer[0] == 0xAB or buffer[5] == 0x80:
             return 0  # No touch detected or button press
-        
+
         point_count = buffer[5] & 0x7F
         if point_count > 5 or point_count == 0:
             self._write(0x00, 0xAB)
             return 0
-        
+
         points = []
         index = 0
         for i in range(point_count):
-            x = ((buffer[index + 1] << 4) | ((buffer[index + 3] >> 4) & 0x0F))
-            y = ((buffer[index + 2] << 4) | (buffer[index + 3] & 0x0F))
+            x = (buffer[index + 1] << 4) | ((buffer[index + 3] >> 4) & 0x0F)
+            y = (buffer[index + 2] << 4) | (buffer[index + 3] & 0x0F)
             points.append((x, y))
             index += 7 if i == 0 else 5
-        
+
         return points
 
     def get_gestures(self):
         # CST226-specific gesture handling (not available in this example)
         return None
-    
+
     def get_points(self):
         raise NotImplementedError("get_points() not implemented (yet)")
 
@@ -103,7 +111,7 @@ class CST226():
     def disable_autosleep(self, val=0x01):
         self._write(_REG_DIS_AUTOSLEEP, val)
 
-    def set_irq_ctl(self, irq_en, motion_mask=0b000): 
+    def set_irq_ctl(self, irq_en, motion_mask=0b000):
         self._write(_REG_IRQ_CTL, irq_en)
         self._write(_REG_MOTION_MASK, motion_mask)
 
@@ -130,7 +138,7 @@ class CST226():
 
     def _read(self, reg, length=1):
         return self._bus.readfrom_mem(self._address, int(reg), length)
-    
+
     def _write(self, reg, val):
         self._bus.writeto_mem(self._address, int(reg), bytes([int(val)]))
 

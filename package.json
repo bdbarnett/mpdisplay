@@ -1,252 +1,252 @@
 {
   "urls": [
     [
-      "extras/adafruit_ticks.py",
-      "github:PyDevices/pydisplay/src/extras/adafruit_ticks.py"
+      "add_ons/adafruit_ticks.py",
+      "github:PyDevices/pydisplay/src/add_ons/adafruit_ticks.py"
     ],
     [
-      "extras/bmp565.py",
-      "github:PyDevices/pydisplay/src/extras/bmp565.py"
+      "add_ons/bmp565.py",
+      "github:PyDevices/pydisplay/src/add_ons/bmp565.py"
     ],
     [
-      "extras/console.py",
-      "github:PyDevices/pydisplay/src/extras/console.py"
+      "add_ons/console.py",
+      "github:PyDevices/pydisplay/src/add_ons/console.py"
     ],
     [
-      "extras/ezfont.py",
-      "github:PyDevices/pydisplay/src/extras/ezfont.py"
+      "add_ons/ezfont.py",
+      "github:PyDevices/pydisplay/src/add_ons/ezfont.py"
     ],
     [
-      "extras/framebuf.py",
-      "github:PyDevices/pydisplay/src/extras/framebuf.py"
+      "add_ons/framebuf.py",
+      "github:PyDevices/pydisplay/src/add_ons/framebuf.py"
     ],
     [
-      "extras/keypins.py",
-      "github:PyDevices/pydisplay/src/extras/keypins.py"
+      "add_ons/keypins.py",
+      "github:PyDevices/pydisplay/src/add_ons/keypins.py"
     ],
     [
-      "extras/lv_utils.py",
-      "github:PyDevices/pydisplay/src/extras/lv_utils.py"
+      "add_ons/lv_utils.py",
+      "github:PyDevices/pydisplay/src/add_ons/lv_utils.py"
     ],
     [
-      "extras/micropython.py",
-      "github:PyDevices/pydisplay/src/extras/micropython.py"
+      "add_ons/micropython.py",
+      "github:PyDevices/pydisplay/src/add_ons/micropython.py"
     ],
     [
-      "extras/pbm.py",
-      "github:PyDevices/pydisplay/src/extras/pbm.py"
+      "add_ons/pbm.py",
+      "github:PyDevices/pydisplay/src/add_ons/pbm.py"
     ],
     [
-      "extras/png.py",
-      "github:PyDevices/pydisplay/src/extras/png.py"
+      "add_ons/png.py",
+      "github:PyDevices/pydisplay/src/add_ons/png.py"
     ],
     [
-      "extras/romfont.py",
-      "github:PyDevices/pydisplay/src/extras/romfont.py"
+      "add_ons/romfont.py",
+      "github:PyDevices/pydisplay/src/add_ons/romfont.py"
     ],
     [
-      "extras/tft_bitmap.py",
-      "github:PyDevices/pydisplay/src/extras/tft_bitmap.py"
+      "add_ons/tft_bitmap.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_bitmap.py"
     ],
     [
-      "extras/tft_write.py",
-      "github:PyDevices/pydisplay/src/extras/tft_write.py"
+      "add_ons/tft_write.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_write.py"
     ],
     [
-      "extras/touch_keypad.py",
-      "github:PyDevices/pydisplay/src/extras/touch_keypad.py"
+      "add_ons/touch_keypad.py",
+      "github:PyDevices/pydisplay/src/add_ons/touch_keypad.py"
     ],
     [
-      "extras/wifi.py",
-      "github:PyDevices/pydisplay/src/extras/wifi.py"
+      "add_ons/wifi.py",
+      "github:PyDevices/pydisplay/src/add_ons/wifi.py"
     ],
     [
-      "extras/__pycache__/adafruit_ticks.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/extras/__pycache__/adafruit_ticks.cpython-312.pyc"
+      "add_ons/__pycache__/adafruit_ticks.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/__pycache__/adafruit_ticks.cpython-312.pyc"
     ],
     [
-      "extras/__pycache__/framebuf.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/extras/__pycache__/framebuf.cpython-312.pyc"
+      "add_ons/__pycache__/framebuf.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/__pycache__/framebuf.cpython-312.pyc"
     ],
     [
-      "extras/__pycache__/micropython.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/extras/__pycache__/micropython.cpython-312.pyc"
+      "add_ons/__pycache__/micropython.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/__pycache__/micropython.cpython-312.pyc"
     ],
     [
-      "extras/pdwidgets/__init__.py",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/__init__.py"
+      "add_ons/pdwidgets/__init__.py",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/__init__.py"
     ],
     [
-      "extras/pdwidgets/_constants.py",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/_constants.py"
+      "add_ons/pdwidgets/_constants.py",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/_constants.py"
     ],
     [
-      "extras/pdwidgets/_themes.py",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/_themes.py"
+      "add_ons/pdwidgets/_themes.py",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/_themes.py"
     ],
     [
-      "extras/pdwidgets/console.py",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/console.py"
+      "add_ons/pdwidgets/console.py",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/console.py"
     ],
     [
-      "extras/pdwidgets/pct.py",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/pct.py"
+      "add_ons/pdwidgets/pct.py",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/pct.py"
     ],
     [
-      "extras/pdwidgets/icons/LICENSE",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/LICENSE"
+      "add_ons/pdwidgets/icons/LICENSE",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/LICENSE"
     ],
     [
-      "extras/pdwidgets/icons/README.md",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/README.md"
+      "add_ons/pdwidgets/icons/README.md",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/README.md"
     ],
     [
-      "extras/pdwidgets/icons/check_box_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/check_box_36dp.pbm"
+      "add_ons/pdwidgets/icons/check_box_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/check_box_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/check_box_outline_blank_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/check_box_outline_blank_36dp.pbm"
+      "add_ons/pdwidgets/icons/check_box_outline_blank_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/check_box_outline_blank_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/home_filled_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/home_filled_36dp.pbm"
+      "add_ons/pdwidgets/icons/home_filled_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/home_filled_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_down_18dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_down_18dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_down_18dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_down_18dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_down_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_down_36dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_down_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_down_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_left_18dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_left_18dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_left_18dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_left_18dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_left_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_left_36dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_left_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_left_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_right_18dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_right_18dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_right_18dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_right_18dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_right_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_right_36dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_right_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_right_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_up_18dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_up_18dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_up_18dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_up_18dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/keyboard_arrow_up_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/keyboard_arrow_up_36dp.pbm"
+      "add_ons/pdwidgets/icons/keyboard_arrow_up_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/keyboard_arrow_up_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/radio_button_checked_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/radio_button_checked_36dp.pbm"
+      "add_ons/pdwidgets/icons/radio_button_checked_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/radio_button_checked_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/radio_button_unchecked_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/radio_button_unchecked_36dp.pbm"
+      "add_ons/pdwidgets/icons/radio_button_unchecked_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/radio_button_unchecked_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/toggle_off_18dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/toggle_off_18dp.pbm"
+      "add_ons/pdwidgets/icons/toggle_off_18dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/toggle_off_18dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/toggle_off_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/toggle_off_36dp.pbm"
+      "add_ons/pdwidgets/icons/toggle_off_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/toggle_off_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/toggle_on_18dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/toggle_on_18dp.pbm"
+      "add_ons/pdwidgets/icons/toggle_on_18dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/toggle_on_18dp.pbm"
     ],
     [
-      "extras/pdwidgets/icons/toggle_on_36dp.pbm",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/icons/toggle_on_36dp.pbm"
+      "add_ons/pdwidgets/icons/toggle_on_36dp.pbm",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/toggle_on_36dp.pbm"
     ],
     [
-      "extras/pdwidgets/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/__pycache__/__init__.cpython-312.pyc"
+      "add_ons/pdwidgets/__pycache__/__init__.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/__pycache__/__init__.cpython-312.pyc"
     ],
     [
-      "extras/pdwidgets/__pycache__/_constants.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/__pycache__/_constants.cpython-312.pyc"
+      "add_ons/pdwidgets/__pycache__/_constants.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/__pycache__/_constants.cpython-312.pyc"
     ],
     [
-      "extras/pdwidgets/__pycache__/_themes.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/extras/pdwidgets/__pycache__/_themes.cpython-312.pyc"
+      "add_ons/pdwidgets/__pycache__/_themes.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/pdwidgets/__pycache__/_themes.cpython-312.pyc"
     ],
     [
-      "extras/tft_text/__init__.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/__init__.py"
+      "add_ons/tft_text/__init__.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/__init__.py"
     ],
     [
-      "extras/tft_text/_python.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/_python.py"
+      "add_ons/tft_text/_python.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/_python.py"
     ],
     [
-      "extras/tft_text/_viper.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/_viper.py"
+      "add_ons/tft_text/_viper.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/_viper.py"
     ],
     [
-      "extras/tft_text/fonts/__init__.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/__init__.py"
+      "add_ons/tft_text/fonts/__init__.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/__init__.py"
     ],
     [
-      "extras/tft_text/fonts/compile_upload.sh",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/compile_upload.sh"
+      "add_ons/tft_text/fonts/compile_upload.sh",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/compile_upload.sh"
     ],
     [
-      "extras/tft_text/fonts/vga1_16x16.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga1_16x16.py"
+      "add_ons/tft_text/fonts/vga1_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_16x32.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga1_16x32.py"
+      "add_ons/tft_text/fonts/vga1_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_16x32.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_8x16.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga1_8x16.py"
+      "add_ons/tft_text/fonts/vga1_8x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_8x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_8x8.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga1_8x8.py"
+      "add_ons/tft_text/fonts/vga1_8x8.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_8x8.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_bold_16x16.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga1_bold_16x16.py"
+      "add_ons/tft_text/fonts/vga1_bold_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_bold_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga1_bold_16x32.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga1_bold_16x32.py"
+      "add_ons/tft_text/fonts/vga1_bold_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_bold_16x32.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_16x16.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga2_16x16.py"
+      "add_ons/tft_text/fonts/vga2_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_16x32.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga2_16x32.py"
+      "add_ons/tft_text/fonts/vga2_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_16x32.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_8x16.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga2_8x16.py"
+      "add_ons/tft_text/fonts/vga2_8x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_8x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_8x8.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga2_8x8.py"
+      "add_ons/tft_text/fonts/vga2_8x8.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_8x8.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_bold_16x16.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga2_bold_16x16.py"
+      "add_ons/tft_text/fonts/vga2_bold_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_bold_16x16.py"
     ],
     [
-      "extras/tft_text/fonts/vga2_bold_16x32.py",
-      "github:PyDevices/pydisplay/src/extras/tft_text/fonts/vga2_bold_16x32.py"
+      "add_ons/tft_text/fonts/vga2_bold_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_bold_16x32.py"
     ],
     [
       "lib/displaybuf/__init__.py",

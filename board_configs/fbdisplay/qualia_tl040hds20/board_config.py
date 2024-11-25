@@ -56,21 +56,26 @@ btn_up = iox.Pin(5, Pin.IN)
 reset = iox.Pin(2, Pin.OUT, value=1)
 backlight = iox.Pin(4, Pin.OUT, value=1)
 
-send_init_sequence(init_sequence, mosi=iox.Pin(7, Pin.OUT),
-                   sck=iox.Pin(0, Pin.OUT, value=0), cs=iox.Pin(1, Pin.OUT, value=1))
+send_init_sequence(
+    init_sequence,
+    mosi=iox.Pin(7, Pin.OUT),
+    sck=iox.Pin(0, Pin.OUT, value=0),
+    cs=iox.Pin(1, Pin.OUT, value=1),
+)
 
 
 fb = RGBFrameBuffer(**tft_pins, **tft_timings)
 mv = memoryview(fb)
-mv[:] = b'\xFF' * len(mv)
+mv[:] = b"\xff" * len(mv)
 fb.refresh()
 
-touch_drv = FT6x36(i2c, address=0x48)  #, irq = iox.Pin(3, Pin.OUT))
+touch_drv = FT6x36(i2c, address=0x48)  # , irq = iox.Pin(3, Pin.OUT))
+
 
 def touch_read_func():
     touches = touch_drv.touches
     if len(touches):
-        return touches[0]['x'], touches[0]['y']
+        return touches[0]["x"], touches[0]["y"]
     return None
 
 
@@ -78,7 +83,7 @@ def touch_read_func():
 
 display_drv = FBDisplay(fb)
 
-touch_rotation_table=(0, 0, 0, 0)
+touch_rotation_table = (0, 0, 0, 0)
 
 broker = device.Broker()
 

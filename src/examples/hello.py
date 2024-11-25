@@ -46,7 +46,8 @@ def main():
                 raise RuntimeError("This font is too big to display on this screen.")
 
             for _ in range(100):
-                tft_text.text(tft,
+                tft_text.text(
+                    tft,
                     font,
                     "Hello",
                     random.randint(0, col_max),

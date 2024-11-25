@@ -24,6 +24,7 @@ BPP = display_drv.color_depth // 8  # Bytes per pixel
 ba = bytearray(display_drv.width * line_height * BPP)
 fb = FrameBuffer(ba, display_drv.width, line_height, RGB565)
 
+
 def main():
     global y, scroll
     for index, color in enumerate(palette):
@@ -36,7 +37,7 @@ def main():
         fb.text16(name, 2, 2, text_color)
         display_drv.blit_rect(ba, 0, y % display_drv.height, display_drv.width, line_height)
         y += line_height
-        sleep(.1)
+        sleep(0.1)
 
 
 def loop():

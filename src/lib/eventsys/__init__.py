@@ -42,13 +42,13 @@ class Events:
     ]
 
     # Event classes from PyGame
-    Unknown = namedtuple("Common", "type")
-    Motion = namedtuple("Motion", "type pos rel buttons touch window")
-    Button = namedtuple("Button", "type pos button touch window")
-    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")
-    Key = namedtuple("Key", "type name key mod scancode window")
-    Quit = namedtuple("Quit", "type")
-    Any = namedtuple("Any", "type")
+    Unknown = namedtuple("Common", "type")  # noqa: PYI024
+    Motion = namedtuple("Motion", "type pos rel buttons touch window")  # noqa: PYI024
+    Button = namedtuple("Button", "type pos button touch window")  # noqa: PYI024
+    Wheel = namedtuple("Wheel", "type flipped x y precise_x precise_y touch window")  # noqa: PYI024
+    Key = namedtuple("Key", "type name key mod scancode window")  # noqa: PYI024
+    Quit = namedtuple("Quit", "type")  # noqa: PYI024
+    Any = namedtuple("Any", "type")  # noqa: PYI024
 
     @staticmethod
     def new(types: list[str | tuple[str, int]] = [], classes: dict[str, str] = {}):
@@ -96,5 +96,5 @@ class Events:
                 setattr(
                     Events,
                     event_class_name,
-                    namedtuple(event_class_name, event_class_fields),
+                    namedtuple(event_class_name, event_class_fields),  # noqa: PYI024
                 )

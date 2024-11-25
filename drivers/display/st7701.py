@@ -4,9 +4,9 @@ see https://github.com/Xinyuan-LilyGO/lilygo-micropython/tree/master/target/esp3
 """
 
 try:
-  from displaysys.busdisplay import BusDisplay
+    from displaysys.busdisplay import BusDisplay
 except ImportError:
-  from busdisplay import BusDisplay
+    from busdisplay import BusDisplay
 from time import sleep_ms
 
 
@@ -57,9 +57,7 @@ _INIT_SEQUENCE = [
 
 
 class LCDPins:
-    def __init__(
-        self, *, pwr_en, cs, sda, clk, rst
-    ):
+    def __init__(self, *, pwr_en, cs, sda, clk, rst):
         self.pwr_en = pwr_en
         self.cs = cs
         self.sda = sda
@@ -93,8 +91,8 @@ class ST7701(BusDisplay):
         super()._init_(bus, _INIT_SEQUENCE, **kwargs)
 
     def init(self):
-#         self.rotation_table = _ROTATION_TABLE
-        super.init(render_mode_full=True)
+        #         self.rotation_table = _ROTATION_TABLE
+        super().init(render_mode_full=True)
 
     def send(self, cmd, params=None):
         self._tx_cmd(cmd)

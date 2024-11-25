@@ -25,6 +25,7 @@ import time
 import tft_config
 import tft_text
 import vga1_16x16 as font
+
 palette = tft_config.palette
 
 

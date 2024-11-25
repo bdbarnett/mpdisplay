@@ -2,6 +2,7 @@ from board_config import display_drv, broker
 from bmp565 import BMP565
 from time import sleep
 from collections import namedtuple
+
 point = namedtuple("point", "x y")
 
 display_drv.rotation = 90
@@ -11,8 +12,12 @@ display_drv.fill(0)
 image = BMP565("examples/assets/longstreet.bmp", streamed=True, mirrored=True)
 print(f"\n{image.width=}, {image.height=}, {image.bpp=}")
 
+
 def draw_bg(dest_x, source_y, count=1, source=image):
-    display_drv.blit_rect(source[source_y:source_y + count], dest_x, 0, count, display_drv.height)
+    display_drv.blit_rect(
+        source[source_y : source_y + count], dest_x, 0, count, display_drv.height
+    )
+
 
 char_sprites = BMP565("examples/assets/runner.bmp", streamed=True)
 print(f"\n{char_sprites.width=}, {char_sprites.height=}, {char_sprites.bpp=}")
@@ -27,8 +32,18 @@ jump_sprites = [point(x * char_width, char_height * 2) for x in range(2)]
 jump_shoot_sprites = [point((x + 2) * char_width, char_height * 2) for x in range(2)]
 shot_sprite = point(4 * char_width, char_height * 2)
 
-def draw_sprite(dest_x, dest_y, source_x, source_y, source=char_sprites, width=char_width, height=char_height):
-    display_drv.blit_rect(source[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height)
+
+def draw_sprite(
+    dest_x, dest_y, source_x, source_y, source=char_sprites, width=char_width, height=char_height
+):
+    display_drv.blit_rect(
+        source[source_x : source_x + width, source_y : source_y + height],
+        dest_x,
+        dest_y,
+        width,
+        height,
+    )
+
 
 def main():
     i = 0
@@ -45,7 +60,7 @@ def main():
         if i < display_drv.width:
             continue
         event = broker.poll()
-        if (event and event.type == broker.Events.MOUSEMOTION and event.buttons[0] == 1):
+        if event and event.type == broker.Events.MOUSEMOTION and event.buttons[0] == 1:
             touched_point = event.pos
             if touched_point[1] < display_drv.height // 2:
                 sprites = jump_shoot_sprites
@@ -66,8 +81,11 @@ def main():
             draw_sprite(draw_x + char_width + shot_location, char_y, shot_sprite.x, shot_sprite.y)
             shot_location += 8
             if shot_location > (display_drv.width - char_width) // 2:
-                display_drv.fill_rect(draw_x + char_width + shot_location, char_y, char_width, char_height, bg)
+                display_drv.fill_rect(
+                    draw_x + char_width + shot_location, char_y, char_width, char_height, bg
+                )
                 shot_location = 0
         sleep(0.05)
+
 
 main()

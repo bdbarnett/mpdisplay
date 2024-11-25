@@ -1,5 +1,5 @@
 # from board_config import display_drv as canvas
-from color_setup import ssd  as canvas
+from color_setup import ssd as canvas
 from bmp565 import BMP565
 from time import sleep
 from random import choice
@@ -27,8 +27,24 @@ print("Sprite coordinates:")
 for col in [fwd, left, right, back]:
     print(f"{(a, col)} {(b, col)} {(c, col)} {(b, col)}")
 
-def draw_sprite(dest_x, dest_y, source_x, source_y, source_image=image, width=sprite_width, height=sprite_height):
-    return canvas.blit_transparent(source_image[source_x:source_x + width, source_y:source_y + height], dest_x, dest_y, width, height, transparent)
+
+def draw_sprite(
+    dest_x,
+    dest_y,
+    source_x,
+    source_y,
+    source_image=image,
+    width=sprite_width,
+    height=sprite_height,
+):
+    return canvas.blit_transparent(
+        source_image[source_x : source_x + width, source_y : source_y + height],
+        dest_x,
+        dest_y,
+        width,
+        height,
+        transparent,
+    )
 
 
 canvas.fill(bg)

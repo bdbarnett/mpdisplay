@@ -3,6 +3,7 @@ from framebuf import FrameBuffer, RGB565
 from pbm import PBM
 import graphics
 
+
 def draw_logo(canvas):
     w = canvas.width
     h = canvas.height
@@ -16,18 +17,22 @@ def draw_logo(canvas):
 
     # Draw the 3 concentric circles
     graphics.circle(canvas, center_x, center_y, unit, blue, True)
-    graphics.circle(canvas, center_x, center_y, int(unit * .9), black, True)
-    graphics.circle(canvas, center_x, center_y, int(unit * .8), amber, True)
+    graphics.circle(canvas, center_x, center_y, int(unit * 0.9), black, True)
+    graphics.circle(canvas, center_x, center_y, int(unit * 0.8), amber, True)
 
     # Draw the outer rounded rectangle
     left = int(center_x - (unit * 1.2) // 2)
-    top = int(center_y - (unit * 1.0 ) // 2)
-    graphics.round_rect(canvas, left, top, int(unit*1.2), int(unit*1.0), unit//7, black, True)
+    top = int(center_y - (unit * 1.0) // 2)
+    graphics.round_rect(
+        canvas, left, top, int(unit * 1.2), int(unit * 1.0), unit // 7, black, True
+    )
 
     # Draw the inner rounded rectangle
     left = int(center_x - (unit * 1.1) // 2)
     top = int(center_y - (unit * 0.9) // 2)
-    graphics.round_rect(canvas, left, top, int(unit*1.1), int(unit*0.9), unit//9, amber, True)
+    graphics.round_rect(
+        canvas, left, top, int(unit * 1.1), int(unit * 0.9), unit // 9, amber, True
+    )
 
     # Draw the 2 small squares
     left = center_x - (unit * 3 // 8)
@@ -51,7 +56,7 @@ draw_logo(logo)
 logo.render(display_drv, 0, 0, 0xFFFF, 0x0000)
 
 # render direct to the display with fg and transparent bg
-logo.render(display_drv, 0, display_drv.height//2, 0xFFFF)
+logo.render(display_drv, 0, display_drv.height // 2, 0xFFFF)
 
 
 # render to a frame buffer
@@ -60,10 +65,12 @@ fb = FrameBuffer(buf, logo.width, logo.height, RGB565)
 logo.render(fb, 0, 0, 0xFFFF)  # add a bg color if needed
 
 # blit the frame buffer to the display
-display_drv.blit_rect(buf, display_drv.width//3, 0, logo.width, logo.height)
+display_drv.blit_rect(buf, display_drv.width // 3, 0, logo.width, logo.height)
 
 # blit the frame buffer to the display with transparent bg
-display_drv.blit_transparent(buf, display_drv.width//3, display_drv.height//2, logo.width, logo.height, 0x0)
+display_drv.blit_transparent(
+    buf, display_drv.width // 3, display_drv.height // 2, logo.width, logo.height, 0x0
+)
 
 
 # blit to a frame buffer; re-use the same buffer and frame buffer but fill with blue first
@@ -77,4 +84,6 @@ fb.blit(logo, 0, 0, palette.pixel(0, 0), palette)
 display_drv.blit_rect(buf, display_drv.width * 2 // 3, 0, logo.width, logo.height)
 
 # blit the frame buffer to the display with transparent bg
-display_drv.blit_transparent(buf, display_drv.width * 2 // 3, display_drv.height//2, logo.width, logo.height, 0x000F)
+display_drv.blit_transparent(
+    buf, display_drv.width * 2 // 3, display_drv.height // 2, logo.width, logo.height, 0x000F
+)

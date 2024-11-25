@@ -25,16 +25,20 @@ https://github.com/erikflowers/weather-icons and is licensed under SIL OFL 1.1
 (http://scripts.sil.org/OFL).
 
 """
+
 try:
     from time import ticks_ms, sleep_ms
 except ImportError:
     from adafruit_ticks import ticks_ms
     from time import sleep
+
     def sleep_ms(ms):
         sleep(ms / 1000)
 
+
 import tft_config
 import tft_bitmap
+
 palette = tft_config.palette
 import alien_bitmap as alien
 

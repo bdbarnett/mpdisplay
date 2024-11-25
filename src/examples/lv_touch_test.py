@@ -3,6 +3,7 @@ lv_touch_test.py
 Tests touchscreen and allows changing touch driver rotation
 to find a rotation that matches the display rotation.
 """
+
 import lv_config
 import lvgl as lv
 
@@ -39,7 +40,7 @@ parent = lv.screen_active()
 
 i = 0
 for alignment in alignments:
-    i +=1
+    i += 1
     btn = lv.button(parent)
     btn.align(*alignment)
     btn.add_style(style_default, 0)

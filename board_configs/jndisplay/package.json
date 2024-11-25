@@ -1,7 +1,6 @@
 {
     "urls": [
-      ["board_config.py", "github:PyDevices/pydisplay/board_configs/jndisplay/board_config.py"],
-      ["displaysys/jndisplay.py", "github:PyDevices/pydisplay/src/lib/displaysys/jndisplay.py"]
+      ["board_config.py", "github:PyDevices/pydisplay/board_configs/jndisplay/board_config.py"]
     ],
     "version": "0.1"
   }
