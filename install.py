@@ -53,7 +53,7 @@ Includes 2 functions that install from different sources:
             - /packages/graphics.json
             - /packages/palettes.json
             - /packages/timer.json
-        - /package.json (or simply '/') - Bundle package including all 6 core packages,
+        - /packages/bundle.json - Bundle package including all 6 core packages,
             6 extensions and default board_config.py.
         - 4 additional packages:
             - /packages/add_ons.json
@@ -173,8 +173,8 @@ install("xpt2046")
 # Repository packages - contains no precompiled bytecode (.mpy) files
 ####################################################################################################
 """
-## The bundle of all 6 core packages and 6 display extensions:
-install("/")  # or install("/package.json")
+## The bundle of all 6 core packages, 6 display extensions and default board_config.py:
+install("/packages/bundle.json")
 
 ## The 6 core packages:
 install("/packages/displaybuf.json")
@@ -213,3 +213,5 @@ install("/packages/examples.json", target="./examples")
 ## If you are running on a microcontroller, uncomment and edit the following line
 ## to match your hardware.
 # install("/board_configs/busdisplay/i80/wt32sc01-plus", target="./")
+## Otherwise uncomment the following line to get the default board_config.py
+install("/src/lib/board_config.py", target="./")

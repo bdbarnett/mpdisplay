@@ -11,17 +11,17 @@ You may add the contents to an __init__.py file in the directory if you prefer. 
 import os
 import sys
 
+def add_path(directory, file="add_path"):
+    RELPATH = True  # Set to True to use relative paths instead of absolute paths.
 
-# Set to True to use relative paths instead of absolute paths.
-RELPATH = True
+    if RELPATH:
+        cwd = os.getcwd()
+        if cwd[-1] != "/":
+            cwd += "/"
+        directory = directory.split(cwd, 1)[-1]
 
-directory, file = __file__.rsplit("/", 1)
-if RELPATH:
-    cwd = os.getcwd()
-    if cwd[-1] != "/":
-        cwd += "/"
-    directory = directory.split(cwd, 1)[-1]
+    if directory not in sys.path:
+        sys.path.append(directory)
+        print(f"{file}:  Added '{directory}' to sys.path.")
 
-if directory not in sys.path:
-    sys.path.append(directory)
-    print(f"{file}:  Added '{directory}' to sys.path.")
+add_path(*__file__.rsplit("/", 1))

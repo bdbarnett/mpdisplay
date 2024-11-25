@@ -12,7 +12,7 @@ src_dir = "src/"
 output_dir = repo_dir
 packages_dir = "packages/"
 toml_full_path = output_dir + "html/pyscript.toml"
-master_package_name = "package"
+master_package_name = "bundle"
 
 # list of package directories, dependencies and extra files in that package
 packages = [
@@ -116,10 +116,7 @@ package_dicts[master_package_name] = master_package
 
 # Write the package .json files
 for package_name, contents in package_dicts.items():
-    if package_name == master_package_name:
-        package_file = output_dir + package_name + ".json"
-    else:
-        package_file = output_dir + packages_dir + package_name + ".json"
+    package_file = output_dir + packages_dir + package_name + ".json"
     with open(package_file, "w") as f:
         json.dump(contents, f, indent=2)
 
