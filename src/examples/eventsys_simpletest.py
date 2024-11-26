@@ -7,7 +7,7 @@ async def main():
         e = broker.poll()
         if e:
             print(e)
-            if e == broker.Events.QUIT:
+            if e == broker.events.QUIT:
                 break
         await asyncio.sleep(0.001)
 

@@ -5,7 +5,7 @@ from fourwire import FourWire
 from ili9341 import ILI9341
 import board
 from adafruit_focaltouch import Adafruit_FocalTouch
-from eventsys import device
+from eventsys import devices
 
 release_displays()
 
@@ -51,10 +51,10 @@ def touch_read_func():
 
 touch_rotation_table = (6, 3, 0, 5)
 
-broker = device.Broker()
+broker = devices.Broker()
 
 touch_dev = broker.create_device(
-    type=device.Types.TOUCH,
+    type=devices.types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

@@ -19,11 +19,11 @@ ssd = SSD(display_drv, format)
 
 # enable screenshot functionality
 def screenshot(event):
-    if event.type == broker.Events.MOUSEBUTTONDOWN and event.button == 3:
+    if event.type == broker.events.MOUSEBUTTONDOWN and event.button == 3:
         ssd.screenshot()
 
 
-broker.subscribe(screenshot, event_types=[broker.Events.MOUSEBUTTONDOWN])
+broker.subscribe(screenshot, event_types=[broker.events.MOUSEBUTTONDOWN])
 # End screenshot functionality
 
 
@@ -39,13 +39,13 @@ class Poller:
         return True if self._touched else False
 
     def callback(self, event):
-        if event.type == broker.Events.MOUSEMOTION and event.buttons[0] == 1:
+        if event.type == broker.events.MOUSEMOTION and event.buttons[0] == 1:
             self.col, self.row = event.pos
             self._touched = True
-        elif event.type == broker.Events.MOUSEBUTTONDOWN and event.button == 1:
+        elif event.type == broker.events.MOUSEBUTTONDOWN and event.button == 1:
             self.col, self.row = event.pos
             self._touched = True
-        elif event.type == broker.Events.MOUSEBUTTONUP and event.button == 1:
+        elif event.type == broker.events.MOUSEBUTTONUP and event.button == 1:
             self._touched = False
 
 
@@ -53,9 +53,9 @@ tpad = Poller(broker.poll)
 broker.subscribe(
     tpad.callback,
     event_types=[
-        broker.Events.MOUSEMOTION,
-        broker.Events.MOUSEBUTTONDOWN,
-        broker.Events.MOUSEBUTTONUP,
+        broker.events.MOUSEMOTION,
+        broker.events.MOUSEBUTTONDOWN,
+        broker.events.MOUSEBUTTONUP,
     ],
 )
 

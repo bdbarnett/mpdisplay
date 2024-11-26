@@ -4,7 +4,7 @@ from spibus import SPIBus
 from gc9a01 import GC9A01
 from machine import Pin, I2C
 from chsc6x import CHSC6X
-from eventsys import device
+from eventsys import devices
 
 
 display_bus = SPIBus(
@@ -43,10 +43,10 @@ touch_drv = CHSC6X(i2c, irq_pin=5)
 touch_read_func = touch_drv.touch_read
 touch_rotation_table = (0, 5, 6, 3)
 
-broker = device.Broker()
+broker = devices.Broker()
 
 touch_dev = broker.create_device(
-    type=device.Types.TOUCH,
+    type=devices.types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

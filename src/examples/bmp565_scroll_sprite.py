@@ -60,7 +60,7 @@ def main():
         if i < display_drv.width:
             continue
         event = broker.poll()
-        if event and event.type == broker.Events.MOUSEMOTION and event.buttons[0] == 1:
+        if event and event.type == broker.events.MOUSEMOTION and event.buttons[0] == 1:
             touched_point = event.pos
             if touched_point[1] < display_drv.height // 2:
                 sprites = jump_shoot_sprites

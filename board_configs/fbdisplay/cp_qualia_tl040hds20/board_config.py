@@ -9,7 +9,7 @@ import board
 
 from displaysys.fbdisplay import FBDisplay
 import adafruit_focaltouch
-from eventsys import device
+from eventsys import devices
 
 
 # This first part is particular to CircuitPython-based framebuffer-based displays
@@ -63,10 +63,10 @@ def touch_read_func():
 
 touch_rotation_table = (0, 0, 0, 0)
 
-broker = device.Broker()
+broker = devices.Broker()
 
 touch_dev = broker.create_device(
-    type=device.Types.TOUCH,
+    type=devices.types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

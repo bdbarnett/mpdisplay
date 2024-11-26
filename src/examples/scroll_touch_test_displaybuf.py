@@ -49,7 +49,7 @@ def main():
     while True:
         # Check for mouse events
         if evt := broker.poll():
-            if evt.type == broker.Events.MOUSEBUTTONDOWN:
+            if evt.type == broker.events.MOUSEBUTTONDOWN:
                 x, y = canvas.translate_point(evt.pos)
                 if y < canvas.tfa:
                     canvas.vscroll -= line_height

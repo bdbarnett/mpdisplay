@@ -11,7 +11,48 @@ from micropython import const
 from collections import namedtuple
 
 
-class Events:
+def custom_type(types: dict[str, int]={}, classes: dict[str, str]={}):
+    """
+    Create new event types and classes for the events class.
+
+    For example, to recreate the events for the keypad device:
+    ```
+    import eventsys
+
+    types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
+    classes = {"Key": "type name key mod scancode window"}
+    eventsys.custom_type(types, classes)
+
+    # Optionally update the filter
+    events.filter += [events.KEYDOWN, events.KEYUP]
+    ```
+
+    Args:
+        types (dict[str, int]): Dictionary of event types and values.
+        classes (dict[str, str]): Dictionary of event classes and fields.
+    """
+    for type_name, value in types.items():
+        type_name = type_name.upper()
+        if hasattr(events, type_name):
+            raise ValueError(f"Event type {type_name} already exists in events class.")
+        else:
+            setattr(events, type_name, value or events._USER_TYPE_BASE)
+            if not value:
+                events._USER_TYPE_BASE += 1
+
+    for event_class_name, event_class_fields in classes.items():
+        event_class_name = event_class_name[0].upper() + event_class_name[1:].lower()
+        if hasattr(events, event_class_name):
+            raise ValueError(f"Event class {event_class_name} already exists in events class.")
+        else:
+            event_class_fields = event_class_fields.lower()
+            setattr(
+                events,
+                event_class_name,
+                namedtuple(event_class_name, event_class_fields),  # noqa: PYI024
+            )
+
+class events:
     """
     A container for event types and classes.  Similar to a C enum and struct.
     """
@@ -49,52 +90,3 @@ class Events:
     Key = namedtuple("Key", "type name key mod scancode window")  # noqa: PYI024
     Quit = namedtuple("Quit", "type")  # noqa: PYI024
     Any = namedtuple("Any", "type")  # noqa: PYI024
-
-    @staticmethod
-    def new(types: list[str | tuple[str, int]] = [], classes: dict[str, str] = {}):
-        """
-        Create new event types and classes for the Events class.
-
-        For example, to create the events for the keypad device:
-        ```
-        from eventsys import Events
-
-        types = [("KEYDOWN", 0x300), ("KEYUP", 0x301)]
-        classes = {
-            "Key": "type name key mod scancode window",
-        }
-        Events.new_types(types, classes)
-
-        # Optionally update the filter
-        Events.filter += [Events.KEYDOWN, Events.KEYUP]
-        ```
-
-        Args:
-            types (list[str | tuple[str, int]]): List of event types or tuples of event type and value.
-                If a value is not provided, the next available value will be used.
-            classes (dict[str, str]): Dictionary of event classes and fields.
-        """
-        for type_name in types:
-            if isinstance(type_name, tuple):
-                type_name, value = type_name
-            else:
-                value = None
-            type_name = type_name.upper()
-            if hasattr(Events, type_name):
-                raise ValueError(f"Event type {type_name} already exists in Events class.")
-            else:
-                setattr(Events, type_name, value if value else Events._USER_TYPE_BASE)
-                if not value:
-                    Events._USER_TYPE_BASE += 1
-
-        for event_class_name, event_class_fields in classes.items():
-            event_class_name = event_class_name[0].upper() + event_class_name[1:].lower()
-            if hasattr(Events, event_class_name):
-                raise ValueError(f"Event class {event_class_name} already exists in Events class.")
-            else:
-                event_class_fields = event_class_fields.lower()
-                setattr(
-                    Events,
-                    event_class_name,
-                    namedtuple(event_class_name, event_class_fields),  # noqa: PYI024
-                )

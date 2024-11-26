@@ -6,7 +6,7 @@ Then it prints the touch_rotation_table that should be set in board_config.py.
 """
 
 from board_config import display_drv, broker
-from eventsys.device import Types
+from eventsys.devices import types
 from graphics import round_rect, text16
 
 
@@ -25,7 +25,7 @@ REVERSE_Y = 0b100
 
 def set_rotation_table(table):
     if display_drv.touch_device is not None:
-        if display_drv.touch_device.type == Types.TOUCH:
+        if display_drv.touch_device.type == types.TOUCH:
             display_drv.touch_device.rotation_table = table
 
 
@@ -67,7 +67,7 @@ def loop():
                 touched_point = None
                 while not touched_point:
                     event = broker.poll()
-                    if event and event.type == broker.Events.MOUSEBUTTONDOWN and event.button == 1:
+                    if event and event.type == broker.events.MOUSEBUTTONDOWN and event.button == 1:
                         touched_point = event.pos
                 zone = (touched_point[1] // half_height) * 2 + (touched_point[0] // half_width)
                 touched_zones.append(zone)

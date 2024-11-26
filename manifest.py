@@ -21,7 +21,7 @@ Available functions:
 
 """
 # This file is to be given as
-#     make FROZEN_MANIFEST=../../../../../../pydisplay/manifest.py
+#     make FROZEN_MANIFEST=<PATH>/manifest.py
 
 import os
 
@@ -42,14 +42,14 @@ if 0:
 
 if os.path.exists(os.path.join("$(BOARD_DIR)", "manifest.py")):
     include("$(BOARD_DIR)/manifest.py")
-else:
+elif os.path.exists(os.path.join("$(PORT_DIR)", "boards", "manifest.py")):
     include("$(PORT_DIR)/boards/manifest.py")
+elif os.path.exists(os.path.join("$(PORT_DIR)", "variants", "standard", "manifest.py")):
+    include("$(PORT_DIR)/variants/standard/manifest.py")
 
-package("displaybuf", files=None, base_path="./src/lib", opt=None)
-package("displaysys", files=None, base_path="./src/lib", opt=None)
-package("eventsys", files=None, base_path="./src/lib", opt=None)
-package("graphics", files=None, base_path="./src/lib", opt=None)
-package("palettes", files=None, base_path="./src/lib", opt=None)
-package("multimer", files=None, base_path="./src/lib", opt=None)
-module("touch_keypad.py", base_path="./src/add_ons")
-module("wifi.py", base_path="./src/add_ons")
+package("displaybuf", base_path="./src/lib", opt=3)
+package("displaysys", base_path="./src/lib", opt=3)
+package("eventsys", base_path="./src/lib", opt=3)
+package("graphics", base_path="./src/lib", opt=3)
+package("multimer", base_path="./src/lib", opt=3)
+package("palettes", base_path="./src/lib", opt=3)

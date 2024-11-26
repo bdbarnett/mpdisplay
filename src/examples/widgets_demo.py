@@ -125,19 +125,19 @@ button = pd.Button(
 # demo_alignments(button)
 
 scroll_jump = 5
-home.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_to(0))
-toggle.add_event_cb(pd.Events.MOUSEBUTTONDOWN, toggle_auto_scroll)
-down.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(-scroll_jump))
-up.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(scroll_jump))
+home.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: scroll_to(0))
+toggle.add_event_cb(pd.events.MOUSEBUTTONDOWN, toggle_auto_scroll)
+down.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(-scroll_jump))
+up.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: scroll_by(scroll_jump))
 slider1.set_change_cb(lambda sender: scroll_to(int(sender.value * display.vsa)))
 button.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button pressed")
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button pressed")
 )
-button.add_event_cb(pd.Events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released"))
+button.add_event_cb(pd.events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released"))
 clock_toggle.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
 )
-screen.add_event_cb(pd.Events.MOUSEWHEEL, lambda sender, e: scroll_by(-e.y))
+screen.add_event_cb(pd.events.MOUSEWHEEL, lambda sender, e: scroll_by(-e.y))
 
 screen.visible = True
 

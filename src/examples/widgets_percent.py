@@ -25,7 +25,7 @@ status = pd.TextBox(
     bottom, y=-8, w=clock_toggle.x, align=pd.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded."
 )
 clock_toggle.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
 )
 
 
@@ -43,7 +43,7 @@ def inflate_box():
     box.set_position(w=box.width + 10, h=box.height + 10)
 
 
-button.add_event_cb(pd.Events.MOUSEBUTTONUP, lambda sender, e: inflate_box())
+button.add_event_cb(pd.events.MOUSEBUTTONUP, lambda sender, e: inflate_box())
 
 screen.visible = True
 

@@ -25,7 +25,7 @@ status = pd.TextBox(
     bottom, y=-8, w=clock_toggle.x, align=pd.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded."
 )
 clock_toggle.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
 )
 
 item_no = 1
@@ -37,7 +37,7 @@ def add_item(to_list: pd.ListView):
         to_list, label=f"Item {item_no}", icon_file=pd.icon_theme.home(pd.ICON_SIZE.LARGE)
     )
     item.add_event_cb(
-        pd.Events.MOUSEBUTTONDOWN,
+        pd.events.MOUSEBUTTONDOWN,
         lambda sender, e: status.set_value(f"{sender.label.value} clicked."),
     )
     item_no += 1
@@ -64,10 +64,10 @@ up = pd.IconButton(
     icon_file=pd.icon_theme.up_arrow(pd.ICON_SIZE.LARGE),
 )
 
-add.add_event_cb(pd.Events.MOUSEBUTTONUP, lambda sender, e: add_item(list_view))
-remove.add_event_cb(pd.Events.MOUSEBUTTONUP, lambda sender, e: remove_item(list_view))
-down.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: list_view.scroll_down())
-up.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: list_view.scroll_up())
+add.add_event_cb(pd.events.MOUSEBUTTONUP, lambda sender, e: add_item(list_view))
+remove.add_event_cb(pd.events.MOUSEBUTTONUP, lambda sender, e: remove_item(list_view))
+down.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: list_view.scroll_down())
+up.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: list_view.scroll_up())
 list_view.set_change_cb(
     lambda sender: status.set_value(f"Item {sender.value+1} of {len(sender.children)}")
 )

@@ -54,7 +54,7 @@ def clock_toggle_callback(sender, event):
     entry.hide(sender.value)
 
 
-clock_toggle.add_event_cb(pd.Events.MOUSEBUTTONDOWN, clock_toggle_callback)
+clock_toggle.add_event_cb(pd.events.MOUSEBUTTONDOWN, clock_toggle_callback)
 
 button_box = pd.Widget(screen, h=display.height - top_box.height, align=pd.ALIGN.BOTTOM)
 cols, rows = len(button_labels[0]), len(button_labels)
@@ -165,10 +165,10 @@ clear_everything()
 for row in buttons:
     for button in row:
         button.add_event_cb(
-            pd.Events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value)
+            pd.events.MOUSEBUTTONUP, lambda sender, e: handle_key_input(sender.value)
         )
 
-screen.add_event_cb(pd.Events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
+screen.add_event_cb(pd.events.KEYDOWN, lambda sender, e: handle_key_input(e.unicode))
 
 screen.visible = True
 

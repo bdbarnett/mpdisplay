@@ -2,8 +2,8 @@
 Board configuration for PyGame.
 """
 
-from displaysys.pgdisplay import PGDisplay as DTDisplay, poll
-from eventsys import device
+from displaysys.pgdisplay import PGDisplay as DTDisplay, poll, peek
+from eventsys import devices
 import sys
 
 
@@ -20,13 +20,14 @@ display_drv = DTDisplay(
     scale=scale,
 )
 
-broker = device.Broker()
+broker = devices.Broker()
 
 events_dev = broker.create_device(
-    type=device.Types.QUEUE,
+    type=devices.types.QUEUE,
     read=poll,
     data=display_drv,
-    # data2=Events.filter,
+    read2=peek,
+    # data2=events.filter,
 )
 
 display_drv.fill(0)

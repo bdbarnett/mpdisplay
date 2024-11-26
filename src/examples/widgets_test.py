@@ -32,11 +32,11 @@ def flip_label(sender, event):
     label1.changed()
 
 
-toggle_button.add_event_cb(pd.Events.MOUSEBUTTONDOWN, flip_label)
+toggle_button.add_event_cb(pd.events.MOUSEBUTTONDOWN, flip_label)
 
 checkbox = pd.CheckBox(screen, align=pd.ALIGN.OUTER_BOTTOM, align_to=toggle, value=False)
 checkbox.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN,
+    pd.events.MOUSEBUTTONDOWN,
     lambda sender, e: status.set_value(f"{'checked' if sender.value else 'unchecked'}"),
 )
 cb_label = pd.Label(checkbox, value="Check Me", align=pd.ALIGN.OUTER_RIGHT)
@@ -51,7 +51,7 @@ if mem_free:
         collect()
         mem_free_label.set_value(f"Free mem: {mem_free()}")
 
-    button1.add_event_cb(pd.Events.MOUSEBUTTONDOWN, mem_free_action)
+    button1.add_event_cb(pd.events.MOUSEBUTTONDOWN, mem_free_action)
 
 hide_button = pd.Button(
     screen,
@@ -60,7 +60,7 @@ hide_button = pd.Button(
     value="Hide",
     label="Hide",
 )
-hide_button.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: hide_button.hide(True))
+hide_button.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: hide_button.hide(True))
 
 jmp_button = pd.Button(
     screen, align=pd.ALIGN.OUTER_RIGHT, align_to=button1, value="Jump", label="Jump"
@@ -74,7 +74,7 @@ def jump(sender, event):
         jmp_button.set_position(align=pd.ALIGN.OUTER_RIGHT)
 
 
-jmp_button.add_event_cb(pd.Events.MOUSEBUTTONUP, (jump))
+jmp_button.add_event_cb(pd.events.MOUSEBUTTONUP, (jump))
 
 radio_group = pd.RadioGroup()
 radio1 = pd.RadioButton(
@@ -86,13 +86,13 @@ radio2 = pd.RadioButton(
 )
 r2_label = pd.Label(radio2, value="Radio 2", align=pd.ALIGN.OUTER_RIGHT, scale=2)
 radio1.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN,
+    pd.events.MOUSEBUTTONDOWN,
     lambda sender, e: status.set_value(
         f"RadioButton 1 is now {'checked' if sender.value else 'unchecked'}"
     ),
 )
 radio2.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN,
+    pd.events.MOUSEBUTTONDOWN,
     lambda sender, e: status.set_value(
         f"RadioButton 2 is now {'checked' if sender.value else 'unchecked'}"
     ),
@@ -102,7 +102,7 @@ scrollbar2 = pd.ScrollBar(
     screen, align_to=status, align=pd.ALIGN.OUTER_TOP, vertical=False, value=0.5, reverse=REVERSE
 )
 scrollbar2.slider.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN,
+    pd.events.MOUSEBUTTONDOWN,
     lambda sender, e: status.set_value(f"ScrollBar value: {sender.value:.2f}"),
 )
 
@@ -110,7 +110,7 @@ slider1 = pd.Slider(
     screen, align_to=scrollbar2, align=pd.ALIGN.OUTER_TOP, value=0.5, step=0.05, reverse=REVERSE
 )
 slider1.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN,
+    pd.events.MOUSEBUTTONDOWN,
     lambda sender, e: status.set_value(f"Slider value: {sender.value:.2f}"),
 )
 
@@ -124,7 +124,7 @@ pbar = pd.ProgressBar(
     reverse=REVERSE,
 )
 pbar.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value(f"Progress: {sender.value:.0%}")
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value(f"Progress: {sender.value:.0%}")
 )
 pbtn1 = pd.Button(pbar, w=22, h=22, align=pd.ALIGN.OUTER_LEFT)
 pbtn1_icon = pd.Icon(
@@ -133,8 +133,8 @@ pbtn1_icon = pd.Icon(
 pbtn2 = pd.IconButton(
     pbar, align=pd.ALIGN.OUTER_RIGHT, icon_file=pd.icon_theme.right_arrow(pd.ICON_SIZE.SMALL)
 )
-pbtn1.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: pbar.set_value(pbar.value - 0.1))
-pbtn2.add_event_cb(pd.Events.MOUSEBUTTONDOWN, lambda sender, e: pbar.set_value(pbar.value + 0.1))
+pbtn1.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: pbar.set_value(pbar.value - 0.1))
+pbtn2.add_event_cb(pd.events.MOUSEBUTTONDOWN, lambda sender, e: pbar.set_value(pbar.value + 0.1))
 
 
 clock = pd.DigitalClock(screen, align=pd.ALIGN.TOP_RIGHT)

@@ -79,6 +79,10 @@ SDL_BUTTON_LMASK = const(1 << 0)  # Left mouse button
 SDL_BUTTON_MMASK = const(1 << 1)  # Middle mouse button
 SDL_BUTTON_RMASK = const(1 << 2)  # Right mouse button
 
+# Event constants
+SDL_PEEKEVENT = const(0x1)
+SDL_FIRSTEVENT = const(0x2)
+SDL_LASTEVENT = const(0x3)
 
 ###############################################################################
 #                          SDL2 Pixel Formats                                 #

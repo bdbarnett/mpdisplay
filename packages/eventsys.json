@@ -5,8 +5,8 @@
       "github:PyDevices/pydisplay/src/lib/eventsys/__init__.py"
     ],
     [
-      "eventsys/device.py",
-      "github:PyDevices/pydisplay/src/lib/eventsys/device.py"
+      "eventsys/devices.py",
+      "github:PyDevices/pydisplay/src/lib/eventsys/devices.py"
     ],
     [
       "eventsys/keys.py",

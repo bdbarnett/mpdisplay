@@ -34,7 +34,7 @@ Functions:
 """
 
 from graphics import Area, FrameBuffer, RGB565
-from eventsys import Events
+from eventsys import events
 from sys import exit
 from time import localtime  # for DigitalClock
 from random import getrandbits  # for MARK_UPDATES
@@ -228,7 +228,7 @@ class Widget:
             condition (callable): A function that returns True if the event should be handled by the child widget.
         """
         if condition is None:
-            if event.type in (Events.MOUSEBUTTONDOWN, Events.MOUSEBUTTONUP, Events.MOUSEMOTION):
+            if event.type in (events.MOUSEBUTTONDOWN, events.MOUSEBUTTONUP, events.MOUSEMOTION):
                 condition = lambda child, e: child.padded_area.contains(  # noqa: E731
                     self.display.translate_point(e.pos)
                 )
@@ -643,7 +643,7 @@ class Display(Widget):
                 self.refresh(dirty)
         else:
             if e := self.broker.poll():
-                if e.type in Events.filter:
+                if e.type in events.filter:
                     self.handle_event(e)
 
             t = ticks_ms()
@@ -810,8 +810,8 @@ class Button(Widget):
             self.label = None
 
     def _register_callbacks(self):
-        self.add_event_cb(Events.MOUSEBUTTONDOWN, self.press)
-        self.add_event_cb(Events.MOUSEBUTTONUP, self.release)
+        self.add_event_cb(events.MOUSEBUTTONDOWN, self.press)
+        self.add_event_cb(events.MOUSEBUTTONUP, self.release)
 
     def draw(self, _=None):
         """
@@ -1180,7 +1180,7 @@ class Toggle(IconButton):
         self.changed()
 
     def _register_callbacks(self):
-        self.add_event_cb(Events.MOUSEBUTTONDOWN, self.toggle)
+        self.add_event_cb(events.MOUSEBUTTONDOWN, self.toggle)
 
     def toggle(self, data=None, event=None):
         """Toggle the on/off state of the button."""
@@ -1563,9 +1563,9 @@ class Slider(ProgressBar):
         self.knob_radius = self.end_radius
 
     def _register_callbacks(self):
-        self.add_event_cb(Events.MOUSEBUTTONDOWN, self.event_callback)
-        self.add_event_cb(Events.MOUSEBUTTONUP, self.event_callback)
-        self.add_event_cb(Events.MOUSEMOTION, self.event_callback)
+        self.add_event_cb(events.MOUSEBUTTONDOWN, self.event_callback)
+        self.add_event_cb(events.MOUSEBUTTONUP, self.event_callback)
+        self.add_event_cb(events.MOUSEMOTION, self.event_callback)
 
     def draw(self, _=None):
         """Draw the slider, including the progress bar and the circular knob."""
@@ -1580,9 +1580,9 @@ class Slider(ProgressBar):
     def event_callback(self, data, event):
         """Handle user input events like clicks, dragging, and mouse movements."""
         if self.dragging:
-            if event.type == Events.MOUSEBUTTONUP:
+            if event.type == events.MOUSEBUTTONUP:
                 self.dragging = False
-            elif event.type == Events.MOUSEMOTION:
+            elif event.type == events.MOUSEMOTION:
                 # Adjust the value based on mouse movement while dragging
                 if self.vertical:
                     relative_pos = (
@@ -1596,12 +1596,12 @@ class Slider(ProgressBar):
 
         elif (
             self._point_in_knob(self.display.translate_point(event.pos))
-            and event.type == Events.MOUSEBUTTONDOWN
+            and event.type == events.MOUSEBUTTONDOWN
         ):
             self.dragging = True
         elif (
             self.area.contains(self.display.translate_point(event.pos))
-            and event.type == Events.MOUSEBUTTONDOWN
+            and event.type == events.MOUSEBUTTONDOWN
         ):
             # Clicking outside the knob moves the slider by one step
             positive = True
@@ -1770,10 +1770,10 @@ class ScrollBar(Widget):
 
         # Set button callbacks to adjust slider value
         self.neg_button.add_event_cb(
-            Events.MOUSEBUTTONDOWN, lambda _, e: self.slider.adjust_value(-self.slider.step)
+            events.MOUSEBUTTONDOWN, lambda _, e: self.slider.adjust_value(-self.slider.step)
         )
         self.pos_button.add_event_cb(
-            Events.MOUSEBUTTONDOWN, lambda _, e: self.slider.adjust_value(self.slider.step)
+            events.MOUSEBUTTONDOWN, lambda _, e: self.slider.adjust_value(self.slider.step)
         )
 
 

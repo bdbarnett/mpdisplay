@@ -4,7 +4,7 @@ from spibus import SPIBus
 from st7789 import ST7789
 from machine import Pin
 from rotary_irq_esp import RotaryIRQ
-from eventsys import device
+from eventsys import devices
 
 
 display_bus = SPIBus(
@@ -47,10 +47,10 @@ def encoder_button_func():
     return not encoder_button.value()
 
 
-broker = device.Broker()
+broker = devices.Broker()
 
 encoder_dev = broker.create_device(
-    type=device.Types.ENCODER,
+    type=devices.types.ENCODER,
     read=encoder_read_func,
     read2=encoder_button_func,
 )

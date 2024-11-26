@@ -15,7 +15,7 @@
 "../src/lib/displaysys/sdldisplay/_sdl2_lib/_micropython.py" = "/lib/displaysys/sdldisplay/_sdl2_lib/"
 
 "../src/lib/eventsys/__init__.py" = "/lib/eventsys/"
-"../src/lib/eventsys/device.py" = "/lib/eventsys/"
+"../src/lib/eventsys/devices.py" = "/lib/eventsys/"
 "../src/lib/eventsys/keys.py" = "/lib/eventsys/"
 
 "../src/lib/graphics/__init__.py" = "/lib/graphics/"

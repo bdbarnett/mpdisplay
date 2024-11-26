@@ -42,7 +42,7 @@ async def main():
         await asyncio.sleep(0.01)
         if not (e := broker.poll()):
             continue
-        if e.type == broker.Events.MOUSEBUTTONDOWN:
+        if e.type == broker.events.MOUSEBUTTONDOWN:
             x, y = e.pos
             last_selected = selected
             if on_x_axis and y < block_size or not on_x_axis and x < block_size:
@@ -72,11 +72,11 @@ async def main():
                         )
             elif e.button == 1:
                 paint(x, y, colors[selected])
-        elif e.type == broker.Events.MOUSEMOTION and e.buttons[0] == 1:
+        elif e.type == broker.events.MOUSEMOTION and e.buttons[0] == 1:
             x, y = e.pos
             if (on_x_axis and y > block_size) or (not on_x_axis and x > block_size):
                 paint(x, y, colors[selected])
-        elif e.type == broker.Events.QUIT:
+        elif e.type == broker.events.QUIT:
             break
 
 

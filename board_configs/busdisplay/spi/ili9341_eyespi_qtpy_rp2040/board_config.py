@@ -4,7 +4,7 @@ from spibus import SPIBus
 from ili9341 import ILI9341
 from machine import Pin, I2C
 from ft6x36 import FT6x36
-from eventsys import device
+from eventsys import devices
 import gc
 
 
@@ -52,10 +52,10 @@ touch_rotation_table = (6, 3, 0, 5)
 
 gc.collect()
 
-broker = device.Broker()
+broker = devices.Broker()
 
 touch_dev = broker.create_device(
-    type=device.Types.TOUCH,
+    type=devices.types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

@@ -45,10 +45,6 @@
       "github:PyDevices/pydisplay/src/add_ons/keypins.py"
     ],
     [
-      "lv_config.py",
-      "github:PyDevices/pydisplay/src/add_ons/lv_config.py"
-    ],
-    [
       "lv_utils.py",
       "github:PyDevices/pydisplay/src/add_ons/lv_utils.py"
     ],

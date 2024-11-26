@@ -10,19 +10,35 @@ from displaysys import DisplayDriver, color_rgb
 import pygame as pg
 
 try:
-    from typing import Optional
+    from typing import Optional, Union, Sequence
 except ImportError:
     pass
 
 
-def poll() -> Optional[pg.event.Event]:
+def poll() -> Optional[pg.event.Event | False]:
     """
     Polls for an event and returns the event type and data.
 
     Returns:
-        Optional[pg.event.Event]: The event type and data.
+        Optional[pg.event.Event | False]: The event type and data.
     """
     return pg.event.poll()
+
+def peek(eventtype: Optional[Union[int, Sequence[int]]] = None, pump: bool = True) -> bool:
+    """
+    Check the event queue for messages.  Returns True if there are any events of the given type waiting on the queue.
+    If a sequence of event types is passed, this will return True if any of those events are on the queue.
+
+    If pump is True (the default), then pygame.event.pump() will be called.
+
+    Args:
+        eventtype (Optional[Union[int, Sequence[int]]]): The event type(s) to check. Defaults to None.
+        pump (bool): Whether to call pygame.event.pump(). Defaults to True.
+
+    Returns:
+        bool: True if there are any events of the given type waiting on the queue.
+    """
+    return pg.event.peek(eventtype, pump)
 
 
 class PGDisplay(DisplayDriver):

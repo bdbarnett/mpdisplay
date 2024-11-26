@@ -24,14 +24,14 @@ status = pd.TextBox(
     bottom, y=-8, w=clock_toggle.x, align=pd.ALIGN.BOTTOM_LEFT, scale=1, value="Status: loaded."
 )
 clock_toggle.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: clock.hide(not sender.value)
 )
 button = pd.Button(main, label="Button")
 button.add_event_cb(
-    pd.Events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button clicked!")
+    pd.events.MOUSEBUTTONDOWN, lambda sender, e: status.set_value("Button clicked!")
 )
 button.add_event_cb(
-    pd.Events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released.")
+    pd.events.MOUSEBUTTONUP, lambda sender, e: status.set_value("Button released.")
 )
 screen.visible = True
 

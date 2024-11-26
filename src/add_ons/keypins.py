@@ -17,7 +17,7 @@ Usage:
         fire=Keys.K_SPACE,
     )
 
-    broker.subscribe(buttons, event_types=[broker.Events.KEYDOWN, broker.Events.KEYUP])
+    broker.subscribe(buttons, event_types=[broker.events.KEYDOWN, broker.events.KEYUP])
 
     while True:
         _ = broker.poll()
@@ -26,7 +26,7 @@ Usage:
                 print(f"{button.name} ({button.keyname}) pressed")
 """
 
-from eventsys import Events
+from eventsys import events
 from eventsys.keys import Keys
 
 
@@ -41,9 +41,9 @@ class KeyPins:
     def __call__(self, event):
         if event.key in self._keypins.values():
             button = next(name for name, key in self._keypins.items() if key == event.key)
-            if event.type == Events.KEYDOWN:
+            if event.type == events.KEYDOWN:
                 getattr(self, button).value(True)
-            elif event.type == Events.KEYUP:
+            elif event.type == events.KEYUP:
                 getattr(self, button).value(False)
 
     def __getitem__(self, name):

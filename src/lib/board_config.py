@@ -21,34 +21,34 @@ except ImportError:
 
 if _ps:
     from displaysys.psdisplay import PSDisplay, PSDevices
-    from eventsys import device
+    from eventsys import devices
 
     display_drv = PSDisplay("display_canvas", width, height)
 
-    broker = device.Broker()
+    broker = devices.Broker()
 
     touch_drv = PSDevices("display_canvas")
 
     touch_dev = broker.create_device(
-        type=device.Types.TOUCH,
+        type=devices.types.TOUCH,
         read=touch_drv.get_mouse_pos,
         data=display_drv,
     )
 elif _jn:
     from displaysys.jndisplay import JNDisplay
-    from eventsys import device
+    from eventsys import devices
 
-    broker = device.Broker()
+    broker = devices.Broker()
 
     display_drv = JNDisplay(width, height)
 else:
-    from eventsys import device
+    from eventsys import devices
     import sys
 
     try:
-        from displaysys.pgdisplay import PGDisplay as DTDisplay, poll
+        from displaysys.pgdisplay import PGDisplay as DTDisplay, poll, peek
     except ImportError:
-        from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll
+        from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll, peek
 
     display_drv = DTDisplay(
         width=width,
@@ -58,13 +58,14 @@ else:
         scale=scale,
     )
 
-    broker = device.Broker()
+    broker = devices.Broker()
 
     events_dev = broker.create_device(
-        type=device.Types.QUEUE,
+        type=devices.types.QUEUE,
         read=poll,
         data=display_drv,
-        # data2=Events.filter,
+        read2=peek,
+        # data2=events.filter,
     )
 
 display_drv.fill(0)

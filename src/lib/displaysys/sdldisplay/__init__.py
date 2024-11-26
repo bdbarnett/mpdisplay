@@ -7,7 +7,7 @@ displaysys.sdldisplay
 """
 
 from displaysys import DisplayDriver, color_rgb
-from eventsys import Events
+from eventsys import events
 from sys import implementation
 from ._sdl2_lib import (
     SDL_Init,
@@ -41,6 +41,8 @@ from ._sdl2_lib import (
     SDL_INIT_EVERYTHING,
     SDL_Rect,
     SDL_PollEvent,
+    SDL_PeepEvents,
+    SDL_PumpEvents,
     SDL_GetKeyName,
     SDL_Event,
     SDL_QUIT,
@@ -53,10 +55,13 @@ from ._sdl2_lib import (
     SDL_MOUSEWHEEL,
     SDL_KEYDOWN,
     SDL_KEYUP,
+    SDL_PEEKEVENT,
+    SDL_FIRSTEVENT,
+    SDL_LASTEVENT,
 )
 
 try:
-    from typing import Optional
+    from typing import Optional, Union, Sequence
 except ImportError:
     pass
 
@@ -71,23 +76,49 @@ else:
 _event = SDL_Event()
 
 
-def poll() -> Optional[Events]:
+def poll() -> Optional[events]:
     """
     Polls for an event and returns the event type and data.
 
     Returns:
-        Optional[Events]: The event type and data.
+        Optional[events]: The event type and data.
     """
     global _event
     if SDL_PollEvent(_event):
         if is_cpython:
-            if _event.type in Events.filter:
+            if _event.type in events.filter:
                 return _convert(SDL_Event(_event))
         else:
-            if int.from_bytes(_event[:4], "little") in Events.filter:
+            if int.from_bytes(_event[:4], "little") in events.filter:
                 return _convert(SDL_Event(_event))
     return None
 
+def peek(eventtype: Optional[Union[int, Sequence[int]]] = None, pump: bool = True) -> bool:
+    """
+    Check the event queue for messages.  Returns True if there are any events of the given type waiting on the queue.
+    If a sequence of event types is passed, this will return True if any of those events are on the queue.
+
+    If pump is True (the default), then pygame.event.pump() will be called.
+
+    Args:
+        eventtype (Optional[Union[int, Sequence[int]]]): The event type(s) to check. Defaults to None.
+        pump (bool): Whether to call pygame.event.pump(). Defaults to True.
+
+    Returns:
+        bool: True if there are any events of the given type waiting on the queue.
+    """
+    global _event
+    _event = SDL_Event()
+    if pump:
+        SDL_PumpEvents()
+    num_matching = SDL_PeepEvents(_event, 1, SDL_PEEKEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)
+    if num_matching == 0:
+        return False
+    if eventtype is None:
+        return True
+    if isinstance(eventtype, int):
+        return _event.type == eventtype
+    return _event.type in eventtype
 
 def _convert(e):
     # Convert an SDL event to a Pygame event
@@ -95,7 +126,7 @@ def _convert(e):
         l = 1 if e.motion.state & SDL_BUTTON_LMASK else 0  # noqa: E741
         m = 1 if e.motion.state & SDL_BUTTON_MMASK else 0
         r = 1 if e.motion.state & SDL_BUTTON_RMASK else 0
-        evt = Events.Motion(
+        evt = events.Motion(
             e.type,
             (e.motion.x, e.motion.y),
             (e.motion.xrel, e.motion.yrel),
@@ -104,7 +135,7 @@ def _convert(e):
             e.motion.windowID,
         )
     elif e.type in (SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP):
-        evt = Events.Button(
+        evt = events.Button(
             e.type,
             (e.button.x, e.button.y),
             e.button.button,
@@ -112,7 +143,7 @@ def _convert(e):
             e.button.windowID,
         )
     elif e.type == SDL_MOUSEWHEEL:
-        evt = Events.Wheel(
+        evt = events.Wheel(
             e.type,
             e.wheel.direction != 0,
             e.wheel.x,
@@ -124,7 +155,7 @@ def _convert(e):
         )
     elif e.type in (SDL_KEYDOWN, SDL_KEYUP):
         name = SDL_GetKeyName(e.key.keysym.sym)
-        evt = Events.Key(
+        evt = events.Key(
             e.type,
             name,
             e.key.keysym.sym,
@@ -133,9 +164,9 @@ def _convert(e):
             e.key.windowID,
         )
     elif e.type == SDL_QUIT:
-        evt = Events.Quit(e.type)
+        evt = events.Quit(e.type)
     else:
-        evt = Events.Unknown(e.type)
+        evt = events.Unknown(e.type)
     return evt
 
 

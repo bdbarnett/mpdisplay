@@ -6,7 +6,7 @@ from machine import I2C, Pin
 from pca9554 import PCA9554
 from ft6x36 import FT6x36
 from displaysys.fbdisplay import FBDisplay
-from eventsys import device
+from eventsys import devices
 
 
 def send_init_sequence(init_sequence, mosi, sck, cs):
@@ -85,10 +85,10 @@ display_drv = FBDisplay(fb)
 
 touch_rotation_table = (0, 0, 0, 0)
 
-broker = device.Broker()
+broker = devices.Broker()
 
 touch_dev = broker.create_device(
-    type=device.Types.TOUCH,
+    type=devices.types.TOUCH,
     read=touch_read_func,
     data=display_drv,
     data2=touch_rotation_table,

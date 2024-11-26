@@ -120,6 +120,8 @@ SDL_Init = _libSDL2.func("i", "SDL_Init", "I")
 SDL_Quit = _libSDL2.func("v", "SDL_Quit", "")
 SDL_GetError = _libSDL2.func("s", "SDL_GetError", "")
 SDL_PollEvent = _libSDL2.func("i", "SDL_PollEvent", "P")
+SDL_PeepEvents = _libSDL2.func("i", "SDL_PeepEvents", "Piiii")
+SDL_PumpEvents = _libSDL2.func("v", "SDL_PumpEvents", "")
 
 # SDL key functions
 SDL_GetKeyName = _libSDL2.func("s", "SDL_GetKeyName", "i")

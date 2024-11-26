@@ -3,13 +3,13 @@ Board configuration for Jupyter Notebook.
 """
 
 from displaysys.jndisplay import JNDisplay
-from eventsys import device
+from eventsys import devices
 
 
 width = 320
 height = 480
 
-broker = device.Broker()
+broker = devices.Broker()
 
 display_drv = JNDisplay(width, height)
 

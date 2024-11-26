@@ -23,7 +23,7 @@ while True:
         print(key)
 """
 
-from eventsys import Events
+from eventsys import events
 
 try:
     from graphics import Area
@@ -56,7 +56,7 @@ class Keypad:
 
     def read(self):
         event = self._poll()
-        if event and event.type == Events.MOUSEBUTTONDOWN and event.button == 1:
+        if event and event.type == events.MOUSEBUTTONDOWN and event.button == 1:
             x, y = self._translate(event.pos)
             if x < self.x or x > self.x + self.w or y < self.y or y > self.y + self.h:
                 return None
@@ -70,7 +70,7 @@ class Keypad:
             except IndexError:
                 pass
 
-        if event and event.type == Events.KEYDOWN:
+        if event and event.type == events.KEYDOWN:
             key = event.key
             return key
 
