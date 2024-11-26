@@ -4,7 +4,7 @@
         "./src/examples",
         "./src/add_ons",
         "./src/lib",
-        "./site_utils/typings"
+        "./tools/typings"
     ],
     "python.analysis.diagnosticSeverityOverrides": {
         "reportMissingModuleSource": "none"
