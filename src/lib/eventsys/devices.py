@@ -691,6 +691,42 @@ class JoystickDevice(Device):
         raise NotImplementedError("JoystickDevice.read() not implemented")
 
 
+
+class VirtualDevices:
+    class VirtualDevice:
+        def __init__(self, virtual_devices, device_type):
+            self._virtual_devices = virtual_devices
+            self.type = device_type
+            self.user_data = None
+            self._fifo = []
+
+        def subscribe(self, callback):
+            self._callback = callback
+
+        def poll(self, *args):
+            self._virtual_devices.poll_queue_device()
+            event = self._fifo.pop(0) if self._fifo else None
+            self._callback(event, *args)
+
+        def add_event(self, event):
+            self._fifo.append(event)
+
+    def __init__(self, queue_device):
+        self._queue_device = queue_device
+        self._vd_touch = self.VirtualDevice(self, types.TOUCH)
+        self._vd_encoder = self.VirtualDevice(self, types.ENCODER)
+        self._vd_keypad = self.VirtualDevice(self, types.KEYPAD)
+        self.devices = [self._vd_touch, self._vd_encoder, self._vd_keypad]
+
+    def poll_queue_device(self):
+        if e:= self._queue_device.poll():
+            if e.type == events.MOUSEBUTTONDOWN or e.type == events.MOUSEBUTTONUP:
+                self._vd_touch.add_event(e)
+            elif e.type == events.MOUSEWHEEL:
+                self._vd_encoder.add_event(e)
+            elif e.type == events.KEYDOWN or e.type == events.KEYUP:
+                self._vd_keypad.add_event(e)
+
 _mapping = {
     # Mapping of device types to device classes
     types.BROKER: Broker,
