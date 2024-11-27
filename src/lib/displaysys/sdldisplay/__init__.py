@@ -236,8 +236,7 @@ class SDLDisplay(DisplayDriver):
             raise RuntimeError(f"{SDL_GetError()}")
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
-        super().__init__(auto_refresh=False)
-        scheduler((self.show, 0, 33))
+        super().__init__(auto_refresh=True)
 
 
     ############### Required API Methods ################
@@ -456,12 +455,11 @@ class SDLDisplay(DisplayDriver):
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
                 retcheck(SDL_RenderCopy(self._renderer, self._buffer, bfaRect, bfaRect))
 
-    def show(self, interval=0) -> None:
+    def show(self) -> None:
         """
         Show the display.
         """
         SDL_RenderPresent(self._renderer)
-        return interval
 
     def deinit(self) -> None:
         """

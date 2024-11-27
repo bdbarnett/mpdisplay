@@ -25,17 +25,14 @@ Usage:
 """
 
 import sys
-from micropython import schedule
 
 try:
     from machine import Timer  # MicroPython on microcontrollers
 except ImportError:
     if sys.implementation.name == "micropython":  # MicroPython on Unix
-        # from ._librt import Timer
-        from lv_timer import Timer
-        # from ._sdl2_micropython import Timer
+        from ._librt import Timer
     elif sys.implementation.name == "cpython":  # Big Python
-        from ._sdl2_cpython import Timer
+        from ._sdl2 import Timer
     else:
         Timer = None
 
@@ -57,6 +54,6 @@ def get_timer(callback, period=33):
         id = _next_timer_id
         _next_timer_id += 1
     t = Timer(id)
-    t.init(mode=Timer.PERIODIC, period=period, callback=lambda t: schedule(callback, t))
+    t.init(mode=Timer.PERIODIC, period=period, callback=lambda t: callback())
     print(f"Timer:  timer started ({id=}, {period=})")
     return t
