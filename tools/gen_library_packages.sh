@@ -10,8 +10,7 @@ AUTHOR="Brad Barnett <contact@pydevices.com>"
 LICENSE="MIT"
 
 BASENAME=pydisplay
-# DEST_REPO=~/gh/micropython-lib
-DEST_REPO=~/temp/micropython-lib
+DEST_REPO=~/gh/micropython-lib
 SOURCE_REPO=~/gh/$BASENAME
 SOURCE_DIR=$SOURCE_REPO/src
 DEST_DIR=$DEST_REPO/micropython/$BASENAME
