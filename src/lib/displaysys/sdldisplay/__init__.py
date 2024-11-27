@@ -245,7 +245,6 @@ class SDLDisplay(DisplayDriver):
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
-        print("init")
         retcheck(
             SDL_SetWindowSize(
                 self._window,
