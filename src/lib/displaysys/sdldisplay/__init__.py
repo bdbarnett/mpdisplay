@@ -439,7 +439,7 @@ class SDLDisplay(DisplayDriver):
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
                 retcheck(SDL_RenderCopy(self._renderer, self._buffer, bfaRect, bfaRect))
 
-    def show(self) -> None:
+    def show(self, param=None) -> None:
         """
         Show the display.
         """

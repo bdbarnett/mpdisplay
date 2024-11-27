@@ -246,7 +246,7 @@ class PGDisplay(DisplayDriver):
                 bfaRect = pg.Rect(0, tfa + vsa, width, bfa)
                 self._window.blit(buffer, bfaRect, bfaRect)
 
-    def show(self) -> None:
+    def show(self, param=None) -> None:
         """
         Show the display.
         """
