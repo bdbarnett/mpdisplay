@@ -31,8 +31,9 @@ try:
 except ImportError:
     if sys.implementation.name == "micropython":  # MicroPython on Unix
         from ._librt import Timer
+        # from ._sdl2_micropython import Timer
     elif sys.implementation.name == "cpython":  # Big Python
-        from ._sdl2 import Timer
+        from ._sdl2_cpython import Timer
     else:
         Timer = None
 
