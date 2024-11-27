@@ -118,7 +118,7 @@ class DisplayDriver:
             try:
                 from multimer import get_timer
 
-                self._timer = get_timer(self.show)
+                self._timer = get_timer(self.show, period=33)
             except ImportError:
                 raise ImportError("timer is required for auto_refresh")
         else:
