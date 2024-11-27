@@ -439,7 +439,7 @@ class QueueDevice(Device):
             bool: True if there is an event in the queue that matches the filter in self._data, otherwise False.
                 Note: self._data defaults to events.filter but may be set to a different list.
         """
-        return self._read2(self._data2)
+        raise NotImplementedError("QueueDevice.peek() not implemented")
 
 
 class TouchDevice(Device):

@@ -2,7 +2,7 @@
 Board configuration for PyGame.
 """
 
-from displaysys.pgdisplay import PGDisplay as DTDisplay, poll, peek
+from displaysys.pgdisplay import PGDisplay as DTDisplay, poll
 from eventsys import devices
 import sys
 
@@ -26,7 +26,6 @@ events_dev = broker.create_device(
     type=devices.types.QUEUE,
     read=poll,
     data=display_drv,
-    read2=peek,
     # data2=events.filter,
 )
 

@@ -2,7 +2,7 @@
 Combination board configuration for desktop, pyscript and jupyter notebook platforms.
 """
 
-from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll, peek
+from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll
 from eventsys import devices
 import sys
 
@@ -25,7 +25,6 @@ events_dev = broker.create_device(
     type=devices.types.QUEUE,
     read=poll,
     data=display_drv,
-    read2=peek,
     # data2=events.filter,
 )
 

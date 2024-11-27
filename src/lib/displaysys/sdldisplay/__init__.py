@@ -41,8 +41,6 @@ from ._sdl2_lib import (
     SDL_INIT_EVERYTHING,
     SDL_Rect,
     SDL_PollEvent,
-    SDL_PeepEvents,
-    SDL_PumpEvents,
     SDL_GetKeyName,
     SDL_Event,
     SDL_QUIT,
@@ -55,9 +53,6 @@ from ._sdl2_lib import (
     SDL_MOUSEWHEEL,
     SDL_KEYDOWN,
     SDL_KEYUP,
-    SDL_PEEKEVENT,
-    SDL_FIRSTEVENT,
-    SDL_LASTEVENT,
 )
 
 try:
@@ -92,33 +87,6 @@ def poll() -> Optional[events]:
             if int.from_bytes(_event[:4], "little") in events.filter:
                 return _convert(SDL_Event(_event))
     return None
-
-def peek(eventtype: Optional[Union[int, Sequence[int]]] = None, pump: bool = True) -> bool:
-    """
-    Check the event queue for messages.  Returns True if there are any events of the given type waiting on the queue.
-    If a sequence of event types is passed, this will return True if any of those events are on the queue.
-
-    If pump is True (the default), then pygame.event.pump() will be called.
-
-    Args:
-        eventtype (Optional[Union[int, Sequence[int]]]): The event type(s) to check. Defaults to None.
-        pump (bool): Whether to call pygame.event.pump(). Defaults to True.
-
-    Returns:
-        bool: True if there are any events of the given type waiting on the queue.
-    """
-    global _event
-    _event = SDL_Event()
-    if pump:
-        SDL_PumpEvents()
-    num_matching = SDL_PeepEvents(_event, 1, SDL_PEEKEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)
-    if num_matching == 0:
-        return False
-    if eventtype is None:
-        return True
-    if isinstance(eventtype, int):
-        return _event.type == eventtype
-    return _event.type in eventtype
 
 def _convert(e):
     # Convert an SDL event to a Pygame event
@@ -168,7 +136,6 @@ def _convert(e):
     else:
         evt = events.Unknown(e.type)
     return evt
-
 
 def retcheck(retvalue):
     # Check the return value of an SDL function and raise an exception if it's not 0
@@ -255,6 +222,7 @@ class SDLDisplay(DisplayDriver):
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
         super().__init__(auto_refresh=True)
+
 
     ############### Required API Methods ################
 

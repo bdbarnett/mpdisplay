@@ -46,9 +46,9 @@ else:
     import sys
 
     try:
-        from displaysys.pgdisplay import PGDisplay as DTDisplay, poll, peek
+        from displaysys.pgdisplay import PGDisplay as DTDisplay, poll
     except ImportError:
-        from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll, peek
+        from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll
 
     display_drv = DTDisplay(
         width=width,
@@ -64,7 +64,6 @@ else:
         type=devices.types.QUEUE,
         read=poll,
         data=display_drv,
-        read2=peek,
         # data2=events.filter,
     )
 

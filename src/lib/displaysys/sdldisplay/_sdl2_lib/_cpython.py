@@ -140,14 +140,6 @@ _libSDL2.SDL_PollEvent.argtypes = [ctypes.POINTER(SDL_CommonEvent)]
 _libSDL2.SDL_PollEvent.restype = ctypes.c_int
 SDL_PollEvent = _libSDL2.SDL_PollEvent
 
-_libSDL2.SDL_PeepEvents.argtypes = [ctypes.POINTER(SDL_CommonEvent), ctypes.c_int, ctypes.c_int, ctypes.c_uint, ctypes.c_uint]
-_libSDL2.SDL_PeepEvents.restype = ctypes.c_int
-SDL_PeepEvents = _libSDL2.SDL_PeepEvents
-
-_libSDL2.SDL_PumpEvents.argtypes = []
-_libSDL2.SDL_PumpEvents.restype = None
-SDL_PumpEvents = _libSDL2.SDL_PumpEvents
-
 # SDL key functions
 _libSDL2.SDL_GetKeyName.argtypes = [ctypes.c_int]
 _libSDL2.SDL_GetKeyName.restype = ctypes.c_char_p
