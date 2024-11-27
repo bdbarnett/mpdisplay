@@ -125,8 +125,8 @@ class DisplayDriver:
             self._timer = None
         self.init()
         gc.collect()
-        print(f"{self.__class__.__name__} initialized.")
-        print(f"{self.__class__.__name__} requires_byteswap = {self.requires_byteswap}")
+        print(f"{self.__class__.__name__}: initialized.")
+        print(f"{self.__class__.__name__}: requires_byteswap = {self.requires_byteswap}")
 
     def __del__(self):
         self.deinit()
