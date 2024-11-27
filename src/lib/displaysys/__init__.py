@@ -171,6 +171,7 @@ class DisplayDriver:
 
         print(f"{self.__class__.__name__}.rotation():  Setting rotation to {value}")
         self._rotation_helper(value)
+        print("done setting rotation")
 
         self._rotation = value
 

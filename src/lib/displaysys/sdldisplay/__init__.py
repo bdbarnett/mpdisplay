@@ -9,6 +9,7 @@ displaysys.sdldisplay
 from displaysys import DisplayDriver, color_rgb
 from eventsys import events
 from sys import implementation
+from micropython import schedule
 from ._sdl2_lib import (
     SDL_Init,
     SDL_Quit,
@@ -66,6 +67,20 @@ if implementation.name == "cpython":
     is_cpython = True
 else:
     is_cpython = False
+
+try:
+    from time import ticks_ms, ticks_add
+except ImportError:
+    from adafruit_ticks import ticks_ms, ticks_add
+
+
+def scheduler(param):
+    func, next_run, interval = param
+    if (current_time := ticks_ms()) >= next_run:
+        interval = func(interval)
+        next_run = ticks_add(current_time, interval)
+    if interval > 0:
+        schedule(scheduler, (func, next_run, interval))
 
 
 _event = SDL_Event()
@@ -221,7 +236,8 @@ class SDLDisplay(DisplayDriver):
             raise RuntimeError(f"{SDL_GetError()}")
         retcheck(SDL_SetTextureBlendMode(self._buffer, SDL_BLENDMODE_NONE))
 
-        super().__init__(auto_refresh=True)
+        super().__init__(auto_refresh=False)
+        scheduler((self.show, 0, 33))
 
 
     ############### Required API Methods ################
@@ -230,6 +246,7 @@ class SDLDisplay(DisplayDriver):
         """
         Initializes the display instance.  Called by __init__ and rotation setter.
         """
+        print("init")
         retcheck(
             SDL_SetWindowSize(
                 self._window,
@@ -439,11 +456,12 @@ class SDLDisplay(DisplayDriver):
                 bfaRect = SDL_Rect(0, self._tfa + self._vsa, self.width, self._bfa)
                 retcheck(SDL_RenderCopy(self._renderer, self._buffer, bfaRect, bfaRect))
 
-    def show(self, param=None) -> None:
+    def show(self, interval=0) -> None:
         """
         Show the display.
         """
         SDL_RenderPresent(self._renderer)
+        return interval
 
     def deinit(self) -> None:
         """
