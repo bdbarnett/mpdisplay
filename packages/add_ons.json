@@ -29,6 +29,10 @@
       "github:PyDevices/pydisplay/src/add_ons/console.py"
     ],
     [
+      "display_driver.py",
+      "github:PyDevices/pydisplay/src/add_ons/display_driver.py"
+    ],
+    [
       "ezfont.py",
       "github:PyDevices/pydisplay/src/add_ons/ezfont.py"
     ],
@@ -43,6 +47,10 @@
     [
       "keypins.py",
       "github:PyDevices/pydisplay/src/add_ons/keypins.py"
+    ],
+    [
+      "lv_timer.py",
+      "github:PyDevices/pydisplay/src/add_ons/lv_timer.py"
     ],
     [
       "lv_utils.py",
@@ -73,6 +81,10 @@
       "github:PyDevices/pydisplay/src/add_ons/tft_config.py"
     ],
     [
+      "tft_text.py",
+      "github:PyDevices/pydisplay/src/add_ons/tft_text.py"
+    ],
+    [
       "tft_write.py",
       "github:PyDevices/pydisplay/src/add_ons/tft_write.py"
     ],
@@ -87,6 +99,62 @@
     [
       "wifi.py",
       "github:PyDevices/pydisplay/src/add_ons/wifi.py"
+    ],
+    [
+      "fonts/__init__.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/__init__.py"
+    ],
+    [
+      "fonts/compile_upload.sh",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/compile_upload.sh"
+    ],
+    [
+      "fonts/vga1_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga1_16x16.py"
+    ],
+    [
+      "fonts/vga1_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga1_16x32.py"
+    ],
+    [
+      "fonts/vga1_8x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga1_8x16.py"
+    ],
+    [
+      "fonts/vga1_8x8.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga1_8x8.py"
+    ],
+    [
+      "fonts/vga1_bold_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga1_bold_16x16.py"
+    ],
+    [
+      "fonts/vga1_bold_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga1_bold_16x32.py"
+    ],
+    [
+      "fonts/vga2_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga2_16x16.py"
+    ],
+    [
+      "fonts/vga2_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga2_16x32.py"
+    ],
+    [
+      "fonts/vga2_8x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga2_8x16.py"
+    ],
+    [
+      "fonts/vga2_8x8.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga2_8x8.py"
+    ],
+    [
+      "fonts/vga2_bold_16x16.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga2_bold_16x16.py"
+    ],
+    [
+      "fonts/vga2_bold_16x32.py",
+      "github:PyDevices/pydisplay/src/add_ons/fonts/vga2_bold_16x32.py"
     ],
     [
       "pdwidgets/__init__.py",
@@ -183,74 +251,6 @@
     [
       "pdwidgets/icons/toggle_on_36dp.pbm",
       "github:PyDevices/pydisplay/src/add_ons/pdwidgets/icons/toggle_on_36dp.pbm"
-    ],
-    [
-      "tft_text/__init__.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/__init__.py"
-    ],
-    [
-      "tft_text/_python.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/_python.py"
-    ],
-    [
-      "tft_text/_viper.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/_viper.py"
-    ],
-    [
-      "tft_text/fonts/__init__.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/__init__.py"
-    ],
-    [
-      "tft_text/fonts/compile_upload.sh",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/compile_upload.sh"
-    ],
-    [
-      "tft_text/fonts/vga1_16x16.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_16x16.py"
-    ],
-    [
-      "tft_text/fonts/vga1_16x32.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_16x32.py"
-    ],
-    [
-      "tft_text/fonts/vga1_8x16.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_8x16.py"
-    ],
-    [
-      "tft_text/fonts/vga1_8x8.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_8x8.py"
-    ],
-    [
-      "tft_text/fonts/vga1_bold_16x16.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_bold_16x16.py"
-    ],
-    [
-      "tft_text/fonts/vga1_bold_16x32.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga1_bold_16x32.py"
-    ],
-    [
-      "tft_text/fonts/vga2_16x16.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_16x16.py"
-    ],
-    [
-      "tft_text/fonts/vga2_16x32.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_16x32.py"
-    ],
-    [
-      "tft_text/fonts/vga2_8x16.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_8x16.py"
-    ],
-    [
-      "tft_text/fonts/vga2_8x8.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_8x8.py"
-    ],
-    [
-      "tft_text/fonts/vga2_bold_16x16.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_bold_16x16.py"
-    ],
-    [
-      "tft_text/fonts/vga2_bold_16x32.py",
-      "github:PyDevices/pydisplay/src/add_ons/tft_text/fonts/vga2_bold_16x32.py"
     ]
   ],
   "deps": [],
