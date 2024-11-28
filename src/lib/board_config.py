@@ -1,5 +1,9 @@
 """
 Combination board configuration for desktop, pyscript and jupyter notebook platforms.
+If you are running pydisplay on a microcontroller, you will need to get or create a
+board_config.py file that is specific to your hardware from:
+
+https://github.com/PyDevices/pydisplay/tree/main/board_configs
 """
 
 width = 320
@@ -20,6 +24,7 @@ except ImportError:
         pass
 
 if _ps:
+    # Running in PyScript
     from displaysys.psdisplay import PSDisplay, PSDevices
     from eventsys import devices
 
@@ -35,6 +40,7 @@ if _ps:
         data=display_drv,
     )
 elif _jn:
+    # Running in Jupyter Notebook
     from displaysys.jndisplay import JNDisplay
     from eventsys import devices
 
@@ -42,12 +48,15 @@ elif _jn:
 
     display_drv = JNDisplay(width, height)
 else:
+    # Running on the desktop
     from eventsys import devices
     import sys
 
     try:
+        # This should load for CPython
         from displaysys.pgdisplay import PGDisplay as DTDisplay, poll
     except ImportError:
+        # This should load for MicroPython on the desktop
         from displaysys.sdldisplay import SDLDisplay as DTDisplay, poll
 
     display_drv = DTDisplay(

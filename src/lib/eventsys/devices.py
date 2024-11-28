@@ -52,7 +52,7 @@ def custom_type(type_name, responses):
         responses (list[int]): A list of event types that the device can return.
 
     Returns:
-        Device: The newly created device type.
+        (Device): The newly created device type.
 
     Raises:
         ValueError: If `type_name` is not a string, `responses` is not a list, or any response is not an integer.
@@ -142,7 +142,7 @@ class Device:
         Poll the device for events.
 
         Args:
-            *args: Additional arguments that can be passed to the read callback functions.
+            *args (Any): Additional arguments that can be passed to the read callback functions.
 
         Returns:
             Event: The event that was polled or None if no event was polled.
@@ -501,7 +501,7 @@ class TouchDevice(Device):
         Get the rotation table of the touch device.
 
         Returns:
-            list: The rotation table.
+            (list): The rotation table.
         """
         return self._data2
 

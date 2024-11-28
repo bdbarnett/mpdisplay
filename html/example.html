@@ -5,7 +5,7 @@
         <script type="module" src="https://pyscript.net/releases/2024.8.2/core.js"></script>
     </head>
     <body>
-        <div>Script: 
+        <div>Script:
         <script>
             const urlParams = new URLSearchParams(window.location.search);
             const scriptParam = urlParams.get('script');
@@ -20,7 +20,7 @@
             script_name = script_name_element.textContent
             mip.install("github:PyDevices/pydisplay/src/examples/" + script_name + ".py")
 
-            import path
+            import lib.path
             exec(f"import {script_name}")
         </script>
     </body>

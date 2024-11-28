@@ -15,7 +15,7 @@ except ImportError:
     pass
 
 
-def poll():
+def poll() -> Optional[pg.event.Event]:
     """
     Polls for an event and returns the event type and data.
 

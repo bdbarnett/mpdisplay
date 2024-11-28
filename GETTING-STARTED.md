@@ -1,6 +1,6 @@
 Getting Started
 
-TL;DR - Download the repository, cd into the src directory and run the examples.  Be sure to import path.py first.  More on that later.
+TL;DR - Download the repository, cd into the src directory and run the examples.  Be sure to import lib/path.py first.  More on that later.
 
 # Downloading:
 ## The repository:
@@ -32,7 +32,7 @@ If you downloaded the full repository, installed the master package or used the 
 1.  Install PyGame and/or SDL2 (TODO: Explain this better)
 2.  cd into the src directory or the directory where you installed the packages
 3.  lauch the Python or MicroPython REPL
-4.  `import path`
+4.  `import lib.path`
 5.  `import mdisplay_touch_test` or whatever you want to run
 
 ## For MicroPython on microcontrollers:
@@ -47,9 +47,9 @@ or
 import mip
 mip.install("github:PyDevices/pydisplay/board_configs/<your_board>")
 ```
-Then you can run the examples directly from the `src` directory on your computer by running 
+Then you can run the examples directly from the `src` directory on your computer by running
 1. `mpremote mount .`
-2. `import path`
+2. `import lib.path`
 3. `import mdisplay_touch_test` or whatever you want to run
 
 To put the files on your microcontroller, you can copy them from your computer the same as you do any other files, or follow the directions above for downloading the packages.
@@ -63,7 +63,7 @@ SPI and I80 based displays in CircuitPython will use `displaysys.busdisplay.BusD
 ```
 from busdisplay import BusDisplay
 ```
-to 
+to
 ```
 try:
   from displaysys.busdisplay import BusDisplay
@@ -76,7 +76,7 @@ Framebuffer based devices such as hardware parallel buses (called RGB666 by Adaf
 ## For Jupyter Notebooks:
 Note:  User input such emulating touchscreens and key input has not been implemented in displaysys for Jupyter Notebook yet.  Also, if your script has an endless loop, you will need to interrupt the kernel to stop it with `Ctrl+Shift+P` `Jupyter: Restart Kernel`.
 
-Make sure you can run Jupyter Notebooks first.  That is beyond the scope of this document.  The author uses VS Code with the Python and Jupyter extensions.  Once you have done that, then just open the example [jupyter_notebook.ipynb](src/utils/jupyter_notebook.ipynb) and run the cells.  As always, start with `import path`.
+Make sure you can run Jupyter Notebooks first.  That is beyond the scope of this document.  The author uses VS Code with the Python and Jupyter extensions.  Once you have done that, then just open the example [jupyter_notebook.ipynb](src/utils/jupyter_notebook.ipynb) and run the cells.  As always, start with `import lib.path`.
 
 ## For PyScript:
 The PyScript implementation of displaysys is very much a work in progress and is not currently a priority for the author.  As with all other parts of pydisplay, the author is open to pull requests for `displaysys.psdisplay.PSDisplay` and the files in the [html](html) directory.

@@ -5,7 +5,7 @@ import json
 
 
 # Define constants
-package_ver = "0.0.0"
+package_ver = "0.0.1"
 repo_url = "github:PyDevices/pydisplay/"
 repo_dir = os.getcwd() + "/"
 src_dir = "src/"

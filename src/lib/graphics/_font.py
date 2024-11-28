@@ -25,14 +25,14 @@ else:
 # Try to import the font data from .py files in the same directory as this module.
 # If that fails, use the .bin files in the same directory.
 try:
-    from . import font_8x8
-    from . import font_8x14
-    from . import font_8x16
+    from . import _font_8x8
+    from . import _font_8x14
+    from . import _font_8x16
 
     _FONTS = {
-        8: font_8x8.FONT,
-        14: font_8x14.FONT,
-        16: font_8x16.FONT,
+        8: _font_8x8.FONT,
+        14: _font_8x14.FONT,
+        16: _font_8x16.FONT,
     }
 except ImportError:
     font_dir = __file__.split(sep)[0:-1]  # get the path this module is in
@@ -166,7 +166,7 @@ class Font:
 
     def __init__(self, font_data=None, height=None, cached=True):
         # Optionally specify font_data to override the font data to use (default
-        # is font_8x8.FONT).  font_data may be a memoryview or a string path to a
+        # is _font_8x8.FONT).  font_data may be a memoryview or a string path to a
         # font file.  The font format is a binary file with the following
         # format:
         # - bytes: font data, in ASCII order covering all 256 characters.

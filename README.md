@@ -60,7 +60,7 @@ micropython -i path.py
 
 On microcontrollers, either add the following to your `boot.py` (MicroPython) or `code.py` (CircuitPython), or simply import it at the REPL before importing your desired app:
 ```
-import path
+import lib.path
 ```
 
 The  [examples](examples) directory will be on the system path, so to run an app from it, you just need to type:

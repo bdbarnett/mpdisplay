@@ -8,12 +8,16 @@ import sys
 nav = mkdocs_gen_files.Nav()
 
 root = Path(__file__).parent.parent
-src = root / "src/"
+src = root / "src/lib"
 
 for p in [
     "",
-    "lib",
-    "add_ons"
+    "displaybuf",
+    "displaysys",
+    "eventsys",
+    "graphics",
+    "multimer",
+    "palettes",
 ]:
     sys.path.append(src / p)
 

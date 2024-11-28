@@ -337,6 +337,18 @@
       "github:PyDevices/pydisplay/src/lib/graphics/_font.py"
     ],
     [
+      "lib/graphics/_font_8x14.py",
+      "github:PyDevices/pydisplay/src/lib/graphics/_font_8x14.py"
+    ],
+    [
+      "lib/graphics/_font_8x16.py",
+      "github:PyDevices/pydisplay/src/lib/graphics/_font_8x16.py"
+    ],
+    [
+      "lib/graphics/_font_8x8.py",
+      "github:PyDevices/pydisplay/src/lib/graphics/_font_8x8.py"
+    ],
+    [
       "lib/graphics/_framebuf.py",
       "github:PyDevices/pydisplay/src/lib/graphics/_framebuf.py"
     ],
@@ -347,18 +359,6 @@
     [
       "lib/graphics/_shapes.py",
       "github:PyDevices/pydisplay/src/lib/graphics/_shapes.py"
-    ],
-    [
-      "lib/graphics/font_8x14.py",
-      "github:PyDevices/pydisplay/src/lib/graphics/font_8x14.py"
-    ],
-    [
-      "lib/graphics/font_8x16.py",
-      "github:PyDevices/pydisplay/src/lib/graphics/font_8x16.py"
-    ],
-    [
-      "lib/graphics/font_8x8.py",
-      "github:PyDevices/pydisplay/src/lib/graphics/font_8x8.py"
     ],
     [
       "lib/multimer/__init__.py",
@@ -425,5 +425,5 @@
       "github:PyDevices/pydisplay/src//home/brad/gh/pydisplay/src/lib/path.py"
     ]
   ],
-  "version": "0.0.0"
+  "version": "0.0.1"
 }

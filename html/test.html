@@ -13,8 +13,8 @@
 
             import mip
             mip.install("github:PyDevices/pydisplay/packages/examples.json", target="examples")
-            import path
-      
+            import lib.path
+
             import os
             from pyscript.ffi import create_proxy
 
@@ -38,7 +38,7 @@
                     pass
 
             click_proxy = create_proxy(click_handler)
-            
+
             for file in os.listdir("/examples"):
                 if file.endswith('.py'):
                     new_btn = document.createElement('button')
