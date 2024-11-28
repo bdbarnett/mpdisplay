@@ -238,7 +238,6 @@ class SDLDisplay(DisplayDriver):
 
         super().__init__(auto_refresh=True)
 
-
     ############### Required API Methods ################
 
     def init(self) -> None:
@@ -378,6 +377,7 @@ class SDLDisplay(DisplayDriver):
             value (int): The new rotation value.
         """
 
+        print("here")
         if (angle := (value % 360) - (self._rotation % 360)) != 0:
             if implementation.name == "cpython":
                 tempBuffer = SDL_CreateTexture(
