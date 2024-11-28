@@ -15,6 +15,18 @@
     [
       "multimer/_timerbase.py",
       "github:PyDevices/pydisplay/src/lib/multimer/_timerbase.py"
+    ],
+    [
+      "multimer/__pycache__/__init__.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/multimer/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "multimer/__pycache__/_sdl2.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/multimer/__pycache__/_sdl2.cpython-312.pyc"
+    ],
+    [
+      "multimer/__pycache__/_timerbase.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/multimer/__pycache__/_timerbase.cpython-312.pyc"
     ]
   ],
   "deps": [],

@@ -43,6 +43,50 @@
     [
       "graphics/font_8x8.py",
       "github:PyDevices/pydisplay/src/lib/graphics/font_8x8.py"
+    ],
+    [
+      "graphics/__pycache__/__init__.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/__init__.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_area.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_area.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_draw.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_draw.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_files.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_files.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_font.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_font.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_framebuf.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_framebuf.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_framebuf_plus.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_framebuf_plus.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/_shapes.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_shapes.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/font_8x14.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/font_8x14.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/font_8x16.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/font_8x16.cpython-312.pyc"
+    ],
+    [
+      "graphics/__pycache__/font_8x8.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/font_8x8.cpython-312.pyc"
     ]
   ],
   "deps": [],

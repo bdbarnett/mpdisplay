@@ -19,14 +19,14 @@ packages = [
     ["add_ons", [], []],
     ["examples", [], []],
     ["lib/displaybuf", [], []],
-    ["lib/displaysys", [], ["board_config.py"]],
+    ["lib/displaysys", [], ["board_config.py", "path.py"]],
     ["lib/eventsys", [], []],
     ["lib/graphics", [], []],
     ["lib/multimer", [], []],
     ["lib/palettes", [], []],
 ]
 
-master_exclude = ["add_ons", "examples"]
+master_exclude = ["examples"]
 
 
 # Create the data structures

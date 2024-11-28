@@ -9,10 +9,6 @@
       "github:PyDevices/pydisplay/src/add_ons/adafruit_ticks.py"
     ],
     [
-      "add_path.py",
-      "github:PyDevices/pydisplay/src/add_ons/add_path.py"
-    ],
-    [
       "bmp565.py",
       "github:PyDevices/pydisplay/src/add_ons/bmp565.py"
     ],
@@ -99,6 +95,18 @@
     [
       "wifi.py",
       "github:PyDevices/pydisplay/src/add_ons/wifi.py"
+    ],
+    [
+      "__pycache__/byteswap.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/__pycache__/byteswap.cpython-312.pyc"
+    ],
+    [
+      "__pycache__/framebuf.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/__pycache__/framebuf.cpython-312.pyc"
+    ],
+    [
+      "__pycache__/micropython.cpython-312.pyc",
+      "github:PyDevices/pydisplay/src/add_ons/__pycache__/micropython.cpython-312.pyc"
     ],
     [
       "fonts/__init__.py",
