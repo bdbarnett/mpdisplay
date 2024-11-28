@@ -34,7 +34,7 @@ def main():
         )
         count += 1
         if count % 1000 == 0:
-            print("blocks/sec:", count / (time.time() - start_time))
+            print(f"\rblocks/sec: {(count / (time.time() - start_time)):5.2f}", end="")
 
 
 main()
