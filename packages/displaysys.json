@@ -51,18 +51,6 @@
     [
       "displaysys/sdldisplay/_sdl2_lib/_micropython.py",
       "github:PyDevices/pydisplay/src/lib/displaysys/sdldisplay/_sdl2_lib/_micropython.py"
-    ],
-    [
-      "displaysys/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "displaysys/__pycache__/jndisplay.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/jndisplay.cpython-312.pyc"
-    ],
-    [
-      "displaysys/__pycache__/pgdisplay.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/pgdisplay.cpython-312.pyc"
     ]
   ],
   "deps": [],

@@ -229,14 +229,6 @@
       "github:PyDevices/pydisplay/src/examples/widgets_test.py"
     ],
     [
-      "__pycache__/displaysys_block_test.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/examples/__pycache__/displaysys_block_test.cpython-312.pyc"
-    ],
-    [
-      "__pycache__/displaysys_simpletest.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/examples/__pycache__/displaysys_simpletest.cpython-312.pyc"
-    ],
-    [
       "noto_fonts/NotoSansMono_32.py",
       "github:PyDevices/pydisplay/src/examples/noto_fonts/NotoSansMono_32.py"
     ],

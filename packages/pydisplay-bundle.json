@@ -97,18 +97,6 @@
       "github:PyDevices/pydisplay/src/add_ons/wifi.py"
     ],
     [
-      "add_ons/__pycache__/byteswap.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/add_ons/__pycache__/byteswap.cpython-312.pyc"
-    ],
-    [
-      "add_ons/__pycache__/framebuf.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/add_ons/__pycache__/framebuf.cpython-312.pyc"
-    ],
-    [
-      "add_ons/__pycache__/micropython.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/add_ons/__pycache__/micropython.cpython-312.pyc"
-    ],
-    [
       "add_ons/fonts/__init__.py",
       "github:PyDevices/pydisplay/src/add_ons/fonts/__init__.py"
     ],
@@ -317,18 +305,6 @@
       "github:PyDevices/pydisplay/src/lib/displaysys/sdldisplay/_sdl2_lib/_micropython.py"
     ],
     [
-      "lib/displaysys/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "lib/displaysys/__pycache__/jndisplay.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/jndisplay.cpython-312.pyc"
-    ],
-    [
-      "lib/displaysys/__pycache__/pgdisplay.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/displaysys/__pycache__/pgdisplay.cpython-312.pyc"
-    ],
-    [
       "lib/eventsys/__init__.py",
       "github:PyDevices/pydisplay/src/lib/eventsys/__init__.py"
     ],
@@ -339,14 +315,6 @@
     [
       "lib/eventsys/keys.py",
       "github:PyDevices/pydisplay/src/lib/eventsys/keys.py"
-    ],
-    [
-      "lib/eventsys/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/eventsys/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "lib/eventsys/__pycache__/devices.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/eventsys/__pycache__/devices.cpython-312.pyc"
     ],
     [
       "lib/graphics/__init__.py",
@@ -393,50 +361,6 @@
       "github:PyDevices/pydisplay/src/lib/graphics/font_8x8.py"
     ],
     [
-      "lib/graphics/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_area.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_area.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_draw.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_draw.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_files.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_files.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_font.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_font.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_framebuf.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_framebuf.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_framebuf_plus.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_framebuf_plus.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/_shapes.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/_shapes.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/font_8x14.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/font_8x14.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/font_8x16.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/font_8x16.cpython-312.pyc"
-    ],
-    [
-      "lib/graphics/__pycache__/font_8x8.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/graphics/__pycache__/font_8x8.cpython-312.pyc"
-    ],
-    [
       "lib/multimer/__init__.py",
       "github:PyDevices/pydisplay/src/lib/multimer/__init__.py"
     ],
@@ -451,18 +375,6 @@
     [
       "lib/multimer/_timerbase.py",
       "github:PyDevices/pydisplay/src/lib/multimer/_timerbase.py"
-    ],
-    [
-      "lib/multimer/__pycache__/__init__.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/multimer/__pycache__/__init__.cpython-312.pyc"
-    ],
-    [
-      "lib/multimer/__pycache__/_sdl2.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/multimer/__pycache__/_sdl2.cpython-312.pyc"
-    ],
-    [
-      "lib/multimer/__pycache__/_timerbase.cpython-312.pyc",
-      "github:PyDevices/pydisplay/src/lib/multimer/__pycache__/_timerbase.cpython-312.pyc"
     ],
     [
       "lib/palettes/__init__.py",
