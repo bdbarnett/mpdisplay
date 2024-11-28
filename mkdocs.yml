@@ -15,7 +15,6 @@ theme:
 
 plugins:
 - search
-- autorefs
 - gen-files:
     scripts:
     - tools/gen_ref_pages.py
