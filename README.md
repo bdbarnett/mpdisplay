@@ -42,7 +42,7 @@ It is important to note that pydisplay is meant to be a foundation for GUI libra
 
 ## Getting Started
 
-This section is under construction.  For now, see [Getting Started](GETTING-STARTED.md) for more information.
+This section is under construction.  For now, see [Getting Started]docs/getting_started.md) for more information.
 
 
 ## Running your first app

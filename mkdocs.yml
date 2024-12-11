@@ -39,13 +39,45 @@ plugins:
 
 nav:
 # rest of the navigation...
-- Index: index.md
-- Details:
-  - Another Level:
-    - And Another:
-      - Test Page: test-page.md
+- About the project:
+    - Background: index.md
+    - Getting Started: getting-started.md
+    - Live Demos: test2.md
+- Modules:
+  - displaysys:
+    - busdisplay:  test-page#src.lib.displaysys.busdisplay
+    - fbdisplay:  test-page#src.lib.displaysys.fbdisplay
+    - jndisplay:  test-page#src.lib.displaysys.jndisplay
+    - pgdisplay:  test-page#src.lib.displaysys.pgdisplay
+    - psdisplay:  test-page#src.lib.displaysys.psdisplay
+    - sdldisplay:  test-page#src.lib.displaysys.sdldisplay
+  - eventsys:  test-page#src.lib.eventsys
+  - graphics:  test-page#src.lib.graphics
+  - multimer:  test-page#src.lib.multimer
+  - palettes:  test-page#src.lib.palettes
+- Platforms:
+    - Micropython:
+      - Embedded:  micropython#embedded
+      - Unix:  micropython#unix
+      - PyScript:  micropython#pyscript
+    - CPython:
+      - Desktop:  cpython#desktop
+      - Single Board Computer:  cpython#sbc
+      - Jupyter Notebook:  cpython#jupyter
+      - PyScript:  cpython#pyscript
+    - CircuitPython:
+      - Embedded:  circuitpython#embedded
+      - Blinka:  circuitpython#blinka
+      - USB_Video:  circuitpython#usb_video
+      - DVI (HDMI):  circuitpython#dvi
+      - More - RGBMatrix, IS31FL3741, etc.:  circuitpython#more
+- GUIs:
+  - LVGL:  lvgl.md
+  - MicroPython-Touch:  micropython-touch.md
+  - TFT_GUI:  tft_gui.md
+  - PyWidgets:  pywidgets.md
 # defer to gen-files + literate-nav
-- Code Reference: reference/
+- Package Reference: reference/
 # rest of the navigation...
 
 markdown_extensions:

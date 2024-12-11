@@ -47,7 +47,6 @@ elif os.path.exists(os.path.join("$(PORT_DIR)", "boards", "manifest.py")):
 elif os.path.exists(os.path.join("$(PORT_DIR)", "variants", "standard", "manifest.py")):
     include("$(PORT_DIR)/variants/standard/manifest.py")
 
-package("displaybuf", base_path="./src/lib", opt=3)
 package("displaysys", base_path="./src/lib", opt=3)
 package("eventsys", base_path="./src/lib", opt=3)
 package("graphics", base_path="./src/lib", opt=3)
