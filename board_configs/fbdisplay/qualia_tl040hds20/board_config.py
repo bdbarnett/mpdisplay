@@ -50,6 +50,7 @@ tft_timings = {
 init_sequence = bytes()
 
 i2c = I2C(0, sda=Pin(8), scl=Pin(18), freq=100000)
+print(f"i2c.scan() = {i2c.scan()}")
 iox = PCA9554(i2c, address=0x38)
 btn_down = iox.Pin(6, Pin.IN)
 btn_up = iox.Pin(5, Pin.IN)
@@ -66,7 +67,8 @@ send_init_sequence(
 
 fb = RGBFrameBuffer(**tft_pins, **tft_timings)
 mv = memoryview(fb)
-mv[:] = b"\xff" * len(mv)
+# mv is typecode "H" (unsigned short) and we need to fill it with 0x1234
+mv[::] = b"\x34\x12" * (fb.width * fb.height)
 fb.refresh()
 
 touch_drv = FT6x36(i2c, address=0x48)  # , irq = iox.Pin(3, Pin.OUT))

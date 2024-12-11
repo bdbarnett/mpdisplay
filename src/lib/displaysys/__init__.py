@@ -115,12 +115,13 @@ class DisplayDriver:
         self._auto_byteswap = self.requires_byteswap
         self._touch_device = None
         if auto_refresh:
+            period = 33 if isinstance(auto_refresh, bool) else auto_refresh
             try:
                 from multimer import get_timer
 
-                self._timer = get_timer(self.show, period=33)
+                self._timer = get_timer(self.show, period=period)
             except ImportError:
-                raise ImportError("timer is required for auto_refresh")
+                raise ImportError("multimer is required for auto_refresh")
         else:
             self._timer = None
         self.init()
