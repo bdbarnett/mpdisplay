@@ -88,14 +88,14 @@ def _pack8(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821
 
     for i in range(0, 64, 8):
         byte = glyph[idx]
-        bitmap[i] = fg_color if byte & _BIT7 else bg_color
-        bitmap[i + 1] = fg_color if byte & _BIT6 else bg_color
-        bitmap[i + 2] = fg_color if byte & _BIT5 else bg_color
-        bitmap[i + 3] = fg_color if byte & _BIT4 else bg_color
-        bitmap[i + 4] = fg_color if byte & _BIT3 else bg_color
-        bitmap[i + 5] = fg_color if byte & _BIT2 else bg_color
-        bitmap[i + 6] = fg_color if byte & _BIT1 else bg_color
-        bitmap[i + 7] = fg_color if byte & _BIT0 else bg_color
+        bitmap[i] = fg_color if byte & uint(_BIT7) else bg_color
+        bitmap[i + 1] = fg_color if byte & uint(_BIT6) else bg_color
+        bitmap[i + 2] = fg_color if byte & uint(_BIT5) else bg_color
+        bitmap[i + 3] = fg_color if byte & uint(_BIT4) else bg_color
+        bitmap[i + 4] = fg_color if byte & uint(_BIT3) else bg_color
+        bitmap[i + 5] = fg_color if byte & uint(_BIT2) else bg_color
+        bitmap[i + 6] = fg_color if byte & uint(_BIT1) else bg_color
+        bitmap[i + 7] = fg_color if byte & uint(_BIT0) else bg_color
         idx += 1
 
     return buffer
@@ -110,25 +110,25 @@ def _pack16(glyphs, idx: uint, fg_color: uint, bg_color: uint):  # noqa: F821
     for i in range(0, 128, 16):
         byte = glyph[idx]
 
-        bitmap[i] = fg_color if byte & _BIT7 else bg_color
-        bitmap[i + 1] = fg_color if byte & _BIT6 else bg_color
-        bitmap[i + 2] = fg_color if byte & _BIT5 else bg_color
-        bitmap[i + 3] = fg_color if byte & _BIT4 else bg_color
-        bitmap[i + 4] = fg_color if byte & _BIT3 else bg_color
-        bitmap[i + 5] = fg_color if byte & _BIT2 else bg_color
-        bitmap[i + 6] = fg_color if byte & _BIT1 else bg_color
-        bitmap[i + 7] = fg_color if byte & _BIT0 else bg_color
+        bitmap[i] = fg_color if byte & uint(_BIT7) else bg_color
+        bitmap[i + 1] = fg_color if byte & uint(_BIT6) else bg_color
+        bitmap[i + 2] = fg_color if byte & uint(_BIT5) else bg_color
+        bitmap[i + 3] = fg_color if byte & uint(_BIT4) else bg_color
+        bitmap[i + 4] = fg_color if byte & uint(_BIT3) else bg_color
+        bitmap[i + 5] = fg_color if byte & uint(_BIT2) else bg_color
+        bitmap[i + 6] = fg_color if byte & uint(_BIT1) else bg_color
+        bitmap[i + 7] = fg_color if byte & uint(_BIT0) else bg_color
         idx += 1
 
         byte = glyph[idx]
-        bitmap[i + 8] = fg_color if byte & _BIT7 else bg_color
-        bitmap[i + 9] = fg_color if byte & _BIT6 else bg_color
-        bitmap[i + 10] = fg_color if byte & _BIT5 else bg_color
-        bitmap[i + 11] = fg_color if byte & _BIT4 else bg_color
-        bitmap[i + 12] = fg_color if byte & _BIT3 else bg_color
-        bitmap[i + 13] = fg_color if byte & _BIT2 else bg_color
-        bitmap[i + 14] = fg_color if byte & _BIT1 else bg_color
-        bitmap[i + 15] = fg_color if byte & _BIT0 else bg_color
+        bitmap[i + 8] = fg_color if byte & uint(_BIT7) else bg_color
+        bitmap[i + 9] = fg_color if byte & uint(_BIT6) else bg_color
+        bitmap[i + 10] = fg_color if byte & uint(_BIT5) else bg_color
+        bitmap[i + 11] = fg_color if byte & uint(_BIT4) else bg_color
+        bitmap[i + 12] = fg_color if byte & uint(_BIT3) else bg_color
+        bitmap[i + 13] = fg_color if byte & uint(_BIT2) else bg_color
+        bitmap[i + 14] = fg_color if byte & uint(_BIT1) else bg_color
+        bitmap[i + 15] = fg_color if byte & uint(_BIT0) else bg_color
         idx += 1
 
     return buffer
