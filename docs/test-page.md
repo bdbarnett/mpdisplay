@@ -1,5 +1,4 @@
 ::: src.lib
-::: src.lib.displaybuf
 ::: src.lib.displaysys
 ::: src.lib.eventsys
 ::: src.lib.graphics
