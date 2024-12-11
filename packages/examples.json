@@ -249,18 +249,6 @@
       "github:PyDevices/pydisplay/src/examples/noto_fonts/noto_fonts.py"
     ],
     [
-      "apollo_dsky/Apollo_DSKY_interface.bmp",
-      "github:PyDevices/pydisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
-    ],
-    [
-      "apollo_dsky/Apollo_DSKY_interface.svg",
-      "github:PyDevices/pydisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
-    ],
-    [
-      "apollo_dsky/__init__.py",
-      "github:PyDevices/pydisplay/src/examples/apollo_dsky/__init__.py"
-    ],
-    [
       "assets/font_8x14.bin",
       "github:PyDevices/pydisplay/src/examples/assets/font_8x14.bin"
     ],
@@ -291,6 +279,38 @@
     [
       "assets/warrior.bmp",
       "github:PyDevices/pydisplay/src/examples/assets/warrior.bmp"
+    ],
+    [
+      "apollo_dsky/Apollo_DSKY_interface.bmp",
+      "github:PyDevices/pydisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.bmp"
+    ],
+    [
+      "apollo_dsky/Apollo_DSKY_interface.svg",
+      "github:PyDevices/pydisplay/src/examples/apollo_dsky/Apollo_DSKY_interface.svg"
+    ],
+    [
+      "apollo_dsky/__init__.py",
+      "github:PyDevices/pydisplay/src/examples/apollo_dsky/__init__.py"
+    ],
+    [
+      "chango/__init__.py",
+      "github:PyDevices/pydisplay/src/examples/chango/__init__.py"
+    ],
+    [
+      "chango/chango.py",
+      "github:PyDevices/pydisplay/src/examples/chango/chango.py"
+    ],
+    [
+      "chango/chango_16.py",
+      "github:PyDevices/pydisplay/src/examples/chango/chango_16.py"
+    ],
+    [
+      "chango/chango_32.py",
+      "github:PyDevices/pydisplay/src/examples/chango/chango_32.py"
+    ],
+    [
+      "chango/chango_64.py",
+      "github:PyDevices/pydisplay/src/examples/chango/chango_64.py"
     ],
     [
       "proverbs/__init__.py",
@@ -351,26 +371,6 @@
     [
       "tiny_toasters/tiny_toasters_bitmaps.py",
       "github:PyDevices/pydisplay/src/examples/tiny_toasters/tiny_toasters_bitmaps.py"
-    ],
-    [
-      "chango/__init__.py",
-      "github:PyDevices/pydisplay/src/examples/chango/__init__.py"
-    ],
-    [
-      "chango/chango.py",
-      "github:PyDevices/pydisplay/src/examples/chango/chango.py"
-    ],
-    [
-      "chango/chango_16.py",
-      "github:PyDevices/pydisplay/src/examples/chango/chango_16.py"
-    ],
-    [
-      "chango/chango_32.py",
-      "github:PyDevices/pydisplay/src/examples/chango/chango_32.py"
-    ],
-    [
-      "chango/chango_64.py",
-      "github:PyDevices/pydisplay/src/examples/chango/chango_64.py"
     ]
   ],
   "deps": [],

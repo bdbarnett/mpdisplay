@@ -12,7 +12,6 @@ src = root / "src/lib"
 
 for p in [
     "",
-    "displaybuf",
     "displaysys",
     "eventsys",
     "graphics",

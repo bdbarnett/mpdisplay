@@ -42,6 +42,8 @@ EOF
 for package_dir in "$SOURCE_DIR/lib"/*; do
     package=$(basename $package_dir)
     if [ -d $package_dir ] && [ $(basename $package) != "displaysys" ]; then
+        echo
+        echo "Processing $package"
         mkdir -p $DEST_DIR/$package/examples
         cp -r $package_dir $DEST_DIR/$package/
         cp $SOURCE_DIR/examples/$package*.py $DEST_DIR/$package/examples/
@@ -74,6 +76,8 @@ for module in "$SOURCE_DIR/lib/displaysys"/*; do
         package_dir=$(basename $module .py)
         package=displaysys-$package_dir
     fi
+    echo
+    echo "Processing $package"
     mkdir -p $DEST_DIR/displaysys/$package/displaysys
     cp -r $module $DEST_DIR/displaysys/$package/displaysys/
     mkdir -p $DEST_DIR/displaysys/$package/examples
@@ -108,7 +112,7 @@ metadata(
 require("displaysys")
 package("displaysys")
 EOF
-        ## TODO:  After publishing displaysys, uncomment the following 7 lines
+        ## TODO:  After publishing displaysys to PyPi, uncomment the following 7 lines
         # echo "require(\"$package\")" >> $BUNDLE_MANIFEST
         # cp $README_FULL_PATH $DEST_DIR/displaysys/$package/README.md
         # ./tools/makepyproject.py --output $PYPI_DIR/$package $DEST_DIR/displaysys/$package/manifest.py
@@ -128,7 +132,10 @@ EOF
     fi
 done
 
-## Upload the bundle file
+## Create the bundle file
+## TODO:  Leave this commented out until the individual packages are on PyPi
+# echo
+# echo "Processing $BASENAME-bundle"
 # cp $README_FULL_PATH $DEST_DIR/$BASENAME-bundle/README.md
 # ./tools/makepyproject.py --output $PYPI_DIR/$BASENAME-bundle $BUNDLE_MANIFEST
 # pushd $PYPI_DIR/$BASENAME-bundle
@@ -136,39 +143,7 @@ done
 # twine upload --repository testpypi dist/*
 # popd
 
-# Create a package for the display drivers
-mkdir -p $DISPLAY_DEST_DIR
-for display_driver in "$DISPLAY_SOURCE_DIR"/*.py; do
-    if [ -d $display_driver ]; then
-        continue
-    fi
-    package=$(basename $display_driver .py)
-    mkdir -p $DISPLAY_DEST_DIR/$package
-    cp -r $display_driver $DISPLAY_DEST_DIR/$package/
-    cat <<EOF > $DISPLAY_DEST_DIR/$package/manifest.py
-metadata(
-    description="$DESCRIPTION_PREFIX $package display driver",
-    version="$VERSION",
-)
-module("$package.py", opt=3)
-EOF
-done
-
-# Create a package for the touch drivers
-mkdir -p $TOUCH_DEST_DIR
-for touch_driver in "$TOUCH_SOURCE_DIR"/*.py; do
-    package=$(basename $touch_driver .py)
-    mkdir -p $TOUCH_DEST_DIR/$package
-    cp -r $touch_driver $TOUCH_DEST_DIR/$package/
-    cat <<EOF > $TOUCH_DEST_DIR/$package/manifest.py
-metadata(
-    description="$DESCRIPTION_PREFIX $package touch driver",
-    version="$VERSION",
-)
-module("$package.py", opt=3)
-EOF
-done
-
+echo
 echo "To commit changes now, enter your git commit message, otherwise, press enter."
 echo "The commit should be in the format:  '$BASENAME:  At least two words and a period.'"
 read -p "Enter your git commit message: " commit_message

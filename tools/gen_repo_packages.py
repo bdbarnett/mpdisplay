@@ -18,7 +18,6 @@ master_package_name = "pydisplay-bundle"
 packages = [
     ["add_ons", [], []],
     ["examples", [], []],
-    ["lib/displaybuf", [], []],
     ["lib/displaysys", [], ["board_config.py", "path.py"]],
     ["lib/eventsys", [], []],
     ["lib/graphics", [], []],
