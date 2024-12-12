@@ -43,6 +43,8 @@ nav:
     - Background: index.md
     - Getting Started: getting-started.md
     - Live Demos: test2.md
+    - Getting Help: getting-help.md
+    - Contributing: contributing.md
 - Modules:
   - displaysys:
     - busdisplay:  test-page#src.lib.displaysys.busdisplay
