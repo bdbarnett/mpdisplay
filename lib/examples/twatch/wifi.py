@@ -8,9 +8,9 @@ network in range, "Set up" asks for one from a phone. While the app is open
 the screen still goes dark, but the watch doesn't doze: that would drop the
 link.
 
-Needs ``wifi_manager``, which comes with pydevices::
+Needs ``wifi_manager``, which is part of the pydevices package::
 
-    mip.install("wifi_manager", index="https://PyDevices.github.io/mip")
+    mip.install("pydevices", index="https://PyDevices.github.io/mip")
 """
 
 import lvgl as lv
