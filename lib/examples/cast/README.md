@@ -41,7 +41,7 @@ the Wireless Display app open (Settings > System > Projecting to this PC).
 
 ## Measuring a cast
 
-`pc/rtp_capture.py` records a cast on a PC, and `pc/ts_timing.py` reports what
+[`pc/rtp_capture.py`](pc/rtp_capture.py) records a cast on a PC, and [`pc/ts_timing.py`](pc/ts_timing.py) reports what
 a sink would hear: lost packets, audio gaps, the audio and picture clocks
 against the PC's, and the A/V offset second by second. Run the capture with
 the Windows Python, because a WSL socket does not see the LAN's UDP:
@@ -51,10 +51,10 @@ python.exe pc/rtp_capture.py capture.bin 5004 700
 python pc/ts_timing.py capture.bin
 ```
 
-then run `drum_cast.py` with `MODE = "capture"` and your PC's address.
-`pc/laptop_input.ps1` drives the laptop's mouse and keyboard for
+then run [`drum_cast.py`](drum_cast.py) with `MODE = "capture"` and your PC's address.
+[`pc/laptop_input.ps1`](pc/laptop_input.ps1) drives the laptop's mouse and keyboard for
 `laptop_input` with nobody at the laptop, and the house example's
-`showtv_proof.py` presses SHOW-TV on a schedule with nobody at the panel. On
+[`showtv_proof.py`](../house/showtv_proof.py) presses SHOW-TV on a schedule with nobody at the panel. On
 2026-09-27 a 10-minute drum machine cast measured about 1 ms of A/V drift,
 with the audio clock within 13 ppm of the PC's and nothing dropped on the
 board.
@@ -62,7 +62,7 @@ board.
 ## How it works
 
 The session with the sink is Wi-Fi Display over infrastructure (MICE, then
-RTSP), in Python: `micecast.py`. Once the sink says PLAY, the stream is a C
+RTSP), in Python: [`micecast.py`](micecast.py). Once the sink says PLAY, the stream is a C
 task on the P4's core 0 (`castif`). It converts the framebuffer with the PPA,
 encodes H.264 in hardware, and sends MPEG-TS over RTP, with the audio as
 48 kHz LPCM on the same clock. Python only answers keepalives and draws.
@@ -73,7 +73,7 @@ reads the audio pump's output itself (`castfast.TapFeed`, `Cast.set_tap`), so
 whatever an app plays is what the sink gets, and nothing the interpreter does
 can starve it.
 
-`roku_cast.py` wraps both halves for an app: TV control over the Roku's ECP
+[`roku_cast.py`](roku_cast.py) wraps both halves for an app: TV control over the Roku's ECP
 (through `roku_remote`'s engine) and a cast that starts and stops in the
 background.
 

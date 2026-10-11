@@ -29,20 +29,20 @@ every five seconds.
 
 ## What's where
 
-`spectrum_view.py` does the drawing and knows nothing about audio. Hand
+[`spectrum_view.py`](spectrum_view.py) does the drawing and knows nothing about audio. Hand
 `SpectrumView.update()` one level per band, from 0 to 1, and it handles the
 ballistics itself: bars rise fast and fall at a steady rate, and the peak caps
 hold for about half a second before dropping with gravity. The palette, band
 count, timings and colours are constants at the top of the file.
 
-`fake_music.py` is the stand-in source: a four-bar loop at 120 BPM with kick,
+[`fake_music.py`](fake_music.py) is the stand-in source: a four-bar loop at 120 BPM with kick,
 snare, hats, bass, a pad and a lead, plus a dead stop and a breakdown so you
 can watch the fall-off. Its docstring has the arrangement. The loop is seeded,
 so every run is the same.
 
-`capture.py` renders headless under MicroPython and reports timings, and
-`make_captures.py` (CPython with Pillow) turns those renders into the images
-in `docs/screenshots/`.
+[`capture.py`](capture.py) renders headless under MicroPython and reports timings, and
+[`make_captures.py`](make_captures.py) (CPython with Pillow) turns those renders into the images
+in [`docs/screenshots/`](../../../docs/screenshots/).
 
 ## How it stays cheap
 

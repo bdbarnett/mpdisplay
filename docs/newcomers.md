@@ -25,7 +25,7 @@ Examples demonstrate the portable product stack; they do not publish it. Editing
 
 ## Repository map
 
-The [README's repository layout](../README.md#repository-layout) maps the tree. Repository unit tests live in tests/.
+The [README's repository layout](../README.md#repository-layout) maps the tree. Repository unit tests live in [tests/](../tests/).
 
 ## Application ownership
 
@@ -35,5 +35,5 @@ Board configurations expose hardware; they do not create an appdev.App. Non-LVGL
 
 The same script may run on MicroPython, CircuitPython, or CPython when an appropriate board_config and product stack are present. MicroPython setup uses the PyDevices MIP index and a board package; the [pydevices installation workflows](https://github.com/PyDevices/pydevices/blob/main/docs/install-workflows.md) are authoritative.
 
-The test matrix is intentionally broader than a quick script run. Read tools/README.md before cross-interpreter or LVGL testing. For a focused contribution, use the repo virtual environment, run the relevant unit tests, and keep reusable product fixes in pydevices rather than here.
+The test matrix is intentionally broader than a quick script run. Read [tools/README.md](../tools/README.md) before cross-interpreter or LVGL testing. For a focused contribution, use the repo virtual environment, run the relevant unit tests, and keep reusable product fixes in pydevices rather than here.
 

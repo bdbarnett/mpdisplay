@@ -162,7 +162,9 @@ Desktop matrices use repo `.venv` (`cpython-venv`) plus interpreters on
 `PATH` / `~/bin` (`micropython`, `circuitpython`). `micropython.exe` / `python.exe` are
 Windows binaries and cannot run in a Linux cloud sandbox.
 
-After usermod changes that affect these binaries or PyScript vendor wasm, run `cmods/build_interpreters.sh`.
+After changes to the C modules these binaries or the PyScript runtime carry, rebuild them with
+[micropython-pydevices](https://github.com/PyDevices/micropython-pydevices)' `build_mp.py`: for example
+`./build_mp.py --port unix --variant pydevices --modules all`, and `--port webassembly` for the PyScript runtime.
 
 **`micropython.exe` matrix:** no `threading` / `_thread`. The example wrapper
 uses a `appdev.App.poll` deadline quit (not a multimer SDL quit timer). With
@@ -178,7 +180,7 @@ Examples that `import palettes` / `pdwidgets` / `pygraphics` / the ctypes
 literally named `palettes` is unrelated — do **not** `pip install palettes`.
 Prefer TestPyPI native builds for `pygraphics` and `usdl2` when available.
 
-Quick setup: `bash scripts/setup_sibling_repos.sh` (clones current `main`,
+Quick setup: [`bash scripts/setup_sibling_repos.sh`](../scripts/setup_sibling_repos.sh) (clones current `main`,
 writes `.pth` files). The harness auto-discovers the same paths via
 `sibling_repos.py`. `pdwidgets` also needs pydevices's `lib` on path
 (the harness adds it).
@@ -257,6 +259,6 @@ the binary-bundled ``imageio-ffmpeg`` Python package.
 |---------|--------|
 | MicroPython stdlib stubs | committed under `tools/typings/` |
 | `displaydev` / `appdev` / `multimer` / `events` / `keys` | committed package trees / modules; regenerate with [`../scripts/gen_package_pyi.sh`](../scripts/gen_package_pyi.sh) |
-| `lvgl` | committed `tools/typings/lvgl.pyi` (from `../lvgl-bindings/generated/lvgl.pyi`) |
+| `lvgl` | committed [`tools/typings/lvgl.pyi`](typings/lvgl.pyi) (from `../lvgl-bindings/generated/lvgl.pyi`) |
 
 Confirm **Python: Select Interpreter** → `.venv/bin/python`. Cursor uses **cursorpyright** with `stubPath` / `typeshedPaths` → `tools/typings` (configured in a local `.vscode/settings.json` when present).

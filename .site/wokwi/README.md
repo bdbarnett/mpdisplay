@@ -10,8 +10,8 @@ Board config: [`wokwi_ili9341_ft6x36_esp32s3`](https://github.com/PyDevices/pyde
 
 | File | Purpose |
 |------|---------|
-| `main.py` | WiFi (when `WOKWI = True`, target `lib`) + `mip.install` of the board config, `pygraphics`, and `testris` |
-| `diagram.json` | ESP32-S3 + `board-ili9341-cap-touch` wiring |
+| [`main.py`](main.py) | WiFi (when `WOKWI = True`, target `lib`) + `mip.install` of the board config, `pygraphics`, and `testris` |
+| [`diagram.json`](diagram.json) | ESP32-S3 + `board-ili9341-cap-touch` wiring |
 
 ## Run in the browser
 

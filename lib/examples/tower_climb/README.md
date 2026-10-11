@@ -2,7 +2,7 @@
 
 This folder is a self-contained slice of the pydevices-examples repo: game source, assets,
 trace hooks, and local tooling. It is meant to be movable out of the main tree
-later; paths are resolved from `__file__` via `_paths.py` rather than hard-coded
+later; paths are resolved from `__file__` via [`_paths.py`](_paths.py) rather than hard-coded
 repo locations.
 
 These notes cover how the example was built and debugged, not how to play the
@@ -14,11 +14,11 @@ The example started as a vertical-scrolling platformer (software camera, no
 hardware rotation), loosely inspired by `bmp565_scroll_sprite.py` and classic
 climbers. Early work focused on:
 
-- Scalable layout from a 320×480 reference (`Layout` in `tower_climb.py`)
+- Scalable layout from a 320×480 reference (`Layout` in [`tower_climb.py`](tower_climb.py))
 - Landing/collision physics stable enough for repeated jumps up procedurally
   placed branches
 - The shared periodic timer via ``appdev.App`` for display refresh
-  (see `https://github.com/PyDevices/pydevices/blob/main/docs/app-and-board-config.md` for the timer/display split)
+  (see [app-and-board-config.md](https://github.com/PyDevices/pydevices/blob/main/docs/app-and-board-config.md) for the timer/display split)
 
 Gameplay bugs (flicker, respawn deaths, camera clamp at the crown, bot pathing)
 were fixed iteratively using the trace stream and bot playtests below rather than
@@ -59,9 +59,9 @@ cd lib && PYTHONPATH=lib ../.venv/bin/python examples/tower_climb/tower_climb.py
 
 ## Recording: desktop capture vs PGDisplay frames
 
-Two approaches exist in `tools/`. Prefer **`record_win.sh`**.
+Two approaches exist in `tools/`. Prefer **[`record_win.sh`](tools/record_win.sh)**.
 
-### Old method — full Linux desktop (`tools/record.sh`)
+### Old method — full Linux desktop ([`tools/record.sh`](tools/record.sh))
 
 Uses **ffmpeg x11grab** on the pygame window after locating it with `xwininfo`:
 
@@ -86,7 +86,7 @@ Implemented in pydevices-examples’s **PGDisplay** backend, driven from the gam
    `--video` is set.
 2. On every `PGDisplay.show()`, the driver exports the **logical** RGB24
    framebuffer (`_buffer`, 320×480 for this game) through
-   `FFmpegFrameRecorder` in pydevices `utils/frame_recorder.py`.
+   `FFmpegFrameRecorder` in pydevices [`utils/frame_recorder.py`](https://github.com/PyDevices/pydevices/blob/main/utils/frame_recorder.py).
 3. ffmpeg encodes raw RGB24 piped on stdin to H.264 MP4.
 
 Properties:
@@ -94,7 +94,7 @@ Properties:
 - One encoded frame per game `show()` — duration matches gameplay.
 - Resolution is the game’s logical size, not the scaled pygame window.
 - Supported by the desktop ``PGDisplay`` and ``SDLDisplay`` backends.
-- Unit tests: pydevices `tests/test_pgdisplay_frame_recorder.py`.
+- Unit tests: pydevices [`tests/test_pgdisplay_frame_recorder.py`](https://github.com/PyDevices/pydevices/blob/main/tests/test_pgdisplay_frame_recorder.py).
 
 Typical invocation (what `record_win.sh` runs):
 
@@ -113,7 +113,7 @@ overrides the default hold length (48 when recording, else 150).
 
 ## Debug tooling
 
-### JSONL trace (`tower_climb_trace.py`)
+### JSONL trace ([`tower_climb_trace.py`](tower_climb_trace.py))
 
 Pass `--trace PATH`. Each line is one JSON object with a
 `kind` field. Default playtest output:
@@ -144,7 +144,7 @@ Tracing is what made it practical to tune physics and bot behaviour: you can see
 exactly which platform was under the feet, when coyote time expired, and when
 the camera stopped at `CAM_MIN`.
 
-### Bot playtest (`tools/playtest.py`)
+### Bot playtest ([`tools/playtest.py`](tools/playtest.py))
 
 Runs the game headlessly (`SDL_VIDEODRIVER=dummy`) with `--bot --trace …`,
 tails the trace file in real time, prints climb progress every second, and
@@ -163,7 +163,7 @@ Simple climb AI in `_bot_tick()`: dodge falling spikes, smash ice when standing
 on it, jump toward the nearest branch above, aim for the crown when close. Not
 perfect on every random layout; playtest win rate is the guardrail.
 
-### Asset generator (`assets/gen_tower_assets.py`)
+### Asset generator ([`assets/gen_tower_assets.py`](assets/gen_tower_assets.py))
 
 Procedural RGB565 BMP generator for `climber.bmp`, `tower_tiles.bmp`, and
 `tower_bg.bmp`. Marked as temporary until art is final; sizes are fixed so the
@@ -176,7 +176,7 @@ extract only `tower_climb/`:
 
 - `board_config`, `displaydev`, `appdev`, `pygraphics`, `multimer`
 - `FFmpegFrameRecorder` / `PGDisplay.open_frame_recorder` (recording)
-- `tools/example_test_manifest.toml` entry for CI smoke tests
+- [`tools/example_test_manifest.toml`](../../../tools/example_test_manifest.toml) entry for CI smoke tests
 - pydevices `tests/test_pgdisplay_frame_recorder.py`
 
 The example matrix runs via:
@@ -187,7 +187,7 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
   --only-interpreter cpython-venv --only-example tower_climb
 ```
 
-## Quick reference — game argv (`_cfg.py`)
+## Quick reference — game argv ([`_cfg.py`](_cfg.py))
 
 | Flag | Effect |
 |------|--------|

@@ -38,8 +38,9 @@ Board configs never own an `appdev.App`. `AutoDisplay` is imported from
 - Use the repo-root virtualenv at `.venv` for all Python tooling
   (`.venv/bin/python`, `.venv/bin/ruff`, `.venv/bin/pytest`). The system `python3` has no project
   dependencies installed.
-- **Browser testing with Playwright:** see
-  [`.agents/rules/playwright_environment_rule.md`](../.agents/rules/playwright_environment_rule.md).
+- **Browser testing with Playwright:** see the multi-repo workspace's
+  `.agents/rules/playwright_environment_rule.md`, one level above this
+  checkout (not part of this repo).
 - Desktop matrices use repo `.venv` (`cpython-venv`) plus interpreters on
   `PATH` (`micropython`, `circuitpython`, and when present
   `micropython.exe` / `python.exe`). `jupyter.py` (from `pydevices/bin`), `./scripts/pyscript.sh`, and
@@ -52,7 +53,7 @@ Board configs never own an `appdev.App`. `AutoDisplay` is imported from
   into `.venv` / system `python3` on this laptop — those stay SDL-primary;
   `board_config` falls back to `SDLDisplay` when pygame-ce's public
   `pygame.Window` API is missing. `pygame-ce` is intentionally not in
-  `requirements-dev.txt`.
+  [`requirements-dev.txt`](requirements-dev.txt).
 
 ### Tests and lint
 
@@ -60,7 +61,7 @@ Board configs never own an `appdev.App`. `AutoDisplay` is imported from
   `.venv/bin/python -m unittest discover -s tests`
 - Lint/format: `.venv/bin/ruff check --force-exclude --extend-exclude '*.ipynb' lib tests tools`
   and `.venv/bin/ruff format --check --force-exclude --extend-exclude '*.ipynb' lib tests tools`.
-  Note `pyproject.toml` **excludes `lib/examples/**`**
+  Note [`pyproject.toml`](pyproject.toml) **excludes `lib/examples/**`**
   (and a few others) from ruff, so example files are not linted/formatted; do not
   be surprised when `ruff format --check` on an example path reports a diff.
 - The pre-commit hooks (`.pre-commit-config.yaml`) are `ruff-check`,
@@ -78,14 +79,14 @@ Board configs never own an `appdev.App`. `AutoDisplay` is imported from
   in parallel** (`--jobs 0`): **5** desktop for sync, **7** for async; both
   `PYDEVICES_TIMER_ASYNC=0` and `=1`, `--fail-fast`, line-buffered live log,
   fix after a failed example wave then resume — see
-  [Preferred method](tools/README.md#preferred-method-parallel-interpreters-fail-fast-both-timer-modes)
+  [Preferred method](tools/README.md#preferred-method-parallel-interpreters-fail-fast)
   and [Windows PE under WSL](tools/README.md#windows-pe-under-wsl).
   Do **not** forward `SDL_*` to `*.exe` (PE windows should appear; unix stays
   headless from the shell export). A PE `hang` with a live window means quit
   failed, not that PE failed to start. `--curated-only` is smoke only.
 - `--only-example` / `--only-interpreter` take **space-separated** ids on one flag
   (`--only-interpreter circuitpython python.exe`). Repeating the flag keeps only
-  the last list — see [tools/README.md](tools/README.md#matrix-commands).
+  the last list — see [tools/README.md](tools/README.md#example-test-matrix).
 - Quick headless CPython smoke:
 
   ```bash
@@ -147,7 +148,7 @@ App pattern: queue work and drain on the main tick — see `roku_widgets` /
   [pydevices](https://github.com/PyDevices/pydevices) `lib/display_driver.py`,
   shipped with pydevices (mip, wheel, frozen) — not from this repo, and since
   2026-10 not from lvgl-bindings either.
-- Test LVGL timers with `tools/lv_timer_test_kit.py` (modes: `sync`, `async`).
+- Test LVGL timers with [`tools/lv_timer_test_kit.py`](tools/lv_timer_test_kit.py) (modes: `sync`, `async`).
   Headless: `SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python tools/lv_timer_test_kit.py --only cpython-venv`.
 - Non-obvious: the sync `multimer.auto.Timer` provider on CPython/Linux delivers via a
   main-thread signal handler. LVGL is not re-entrant, so the app loop must not

@@ -11,7 +11,7 @@
 
 | ![paint.py](https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/docs/screenshots/paint.png) | ![tiny_toasters.py](https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/docs/screenshots/tiny_toasters.gif) |
 |:--:|:--:|
-| `paint.py` | `tiny_toasters.py` |
+| [`paint.py`](lib/examples/paint.py) | [`tiny_toasters.py`](lib/examples/tiny_toasters/tiny_toasters.py) |
 
 This repository is the examples, integration documentation, and browser gallery
 for the PyDevices driver ecosystem. The reusable product source lives in
@@ -159,12 +159,12 @@ a single `pydevices` package, not one per component.
 
 | Path | Purpose |
 |---|---|
-| `lib/examples/` | Portable examples and complete demo applications |
-| `lib/utils/` | Example helpers and third-party GUI adapters |
-| `.site/pyscript/` | PyScript gallery and browser demo runners |
-| `docs/` | Peter Hinch GUI integration, the TFT GUI stub, and screenshots |
-| `tools/` | Cross-interpreter example and LVGL test harnesses |
-| `packages/` | GitHub MIP manifests for examples and helpers |
+| [`lib/examples/`](lib/examples/) | Portable examples and complete demo applications |
+| [`lib/utils/`](lib/utils/) | Example helpers and third-party GUI adapters |
+| [`.site/pyscript/`](.site/pyscript/) | PyScript gallery and browser demo runners |
+| [`docs/`](docs/) | Peter Hinch GUI integration, the TFT GUI stub, and screenshots |
+| [`tools/`](tools/) | Cross-interpreter example and LVGL test harnesses |
+| [`packages/`](packages/) | GitHub MIP manifests for examples and helpers |
 
 ## Related repositories
 

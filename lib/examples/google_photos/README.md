@@ -38,7 +38,7 @@ the list, and thumbnails are cached on flash so they download once.
 The Google login cannot run on the microcontroller: Google's TV
 "enter this code on your phone" flow refuses the Picker scope, and a LAN
 address cannot be registered as an OAuth redirect. So the browser login runs
-**once on a PC** (`tools/gphotos_auth.py`) and its output — a refresh token —
+**once on a PC** ([`tools/gphotos_auth.py`](../../../tools/gphotos_auth.py)) and its output — a refresh token —
 is copied to the board. From then on the device only trades that refresh
 token for hour-long access tokens.
 

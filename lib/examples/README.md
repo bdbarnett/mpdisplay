@@ -14,7 +14,7 @@ Run from `lib/` in both cases.
 
 Most examples only need `board_config` and the published product packages
 (`displaydev`, `appdev`, `pygraphics`, etc.), already importable once
-`requirements.txt` is installed:
+[`requirements.txt`](../../requirements.txt) is installed:
 
 ```bash
 ../.venv/bin/python examples/pydevices_demo.py
