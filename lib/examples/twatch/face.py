@@ -6,6 +6,8 @@ import lvgl as lv
 from . import services as sv
 from . import ui
 
+HOURS_24 = False  # True for 13:05, False for 1:05 PM
+
 
 def main(scope):
     scr = ui.screen(scope, center=True)
@@ -18,8 +20,12 @@ def main(scope):
 
     def update():
         y, mo, d, wd, h, mi, s = sv.now()
-        lbl_time.set_text("%02d:%02d" % (h, mi))
-        lbl_secs.set_text("%02d" % s)
+        if HOURS_24:
+            lbl_time.set_text("%02d:%02d" % (h, mi))
+            lbl_secs.set_text("%02d" % s)
+        else:
+            lbl_time.set_text("%d:%02d" % (h % 12 or 12, mi))
+            lbl_secs.set_text("%02d  %s" % (s, "PM" if h >= 12 else "AM"))
         lbl_date.set_text("%s %d %s" % (sv.WEEKDAYS[wd % 7], d, sv.MONTHS[(mo - 1) % 12]))
         lbl_batt.set_text(sv.battery_text())
         lbl_steps.set_text("%d steps" % sv.accel.steps if sv.features else "")
