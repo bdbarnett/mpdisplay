@@ -11,7 +11,7 @@ MicroPython:
   wristwatch example.
 - **Wi-Fi**: Wi-Fi and WebREPL on while it's open, so mpftp or Workbench
   can reach the watch as `twatch.local`, and off when you leave it. It needs
-  `wifi_manager` in `/lib` and a WebREPL password in `/webrepl_cfg.py`
+  pydevices' `wifi_manager` and a WebREPL password in `/webrepl_cfg.py`
   (`PASS = "..."`, at most 9 characters). With no known network in range,
   **Set up** asks for one from a phone.
 
