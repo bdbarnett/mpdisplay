@@ -3,7 +3,15 @@
 from . import services as sv
 from . import ui
 
-APPS = (("Watch", "face"), ("Steps", "steps"), ("Remote", "remote"), ("Sound", "sound"), ("Power", "power"), ("LoRa", "lora"))
+APPS = (
+    ("Watch", "face"),
+    ("Steps", "steps"),
+    ("Remote", "remote"),
+    ("Sound", "sound"),
+    ("Power", "power"),
+    ("LoRa", "lora"),
+    ("Wi-Fi", "wifi"),
+)
 
 
 def main(scope):
@@ -12,7 +20,8 @@ def main(scope):
     grid = ui.row(scr)
     grid.set_style_pad_row(8, 0)
     w = sv.W // 2 - 14
-    h = (sv.H - 16 - 2 * 8) // 3
+    rows = (len(APPS) + 1) // 2
+    h = (sv.H - 16 - (rows - 1) * 8) // rows
     for text, name in APPS:
         ui.button(grid, text, (lambda n: lambda: sv.go(n))(name), width=w, height=h)
     sv.use(scope)
