@@ -9,6 +9,11 @@ MicroPython:
 - **Home**: a button for each app.
 - **Steps**, **TV remote**, **Sound**, **Power** and **LoRa**, as in the
   wristwatch example.
+- **Wi-Fi**: Wi-Fi and WebREPL on while it's open, so mpftp or Workbench
+  can reach the watch as `twatch.local`, and off when you leave it. It needs
+  `wifi_manager` in `/lib` and a WebREPL password in `/webrepl_cfg.py`
+  (`PASS = "..."`, at most 9 characters). With no known network in range,
+  **Set up** asks for one from a phone.
 
 The crown goes back to the watch face from any app. On the face it turns
 the screen off, and on a dark screen it wakes it.

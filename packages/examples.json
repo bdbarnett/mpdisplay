@@ -847,6 +847,10 @@
     [
       "twatch/ui.py",
       "github:PyDevices/pydevices-examples/lib/examples/twatch/ui.py"
+    ],
+    [
+      "twatch/wifi.py",
+      "github:PyDevices/pydevices-examples/lib/examples/twatch/wifi.py"
     ]
   ],
   "deps": [],

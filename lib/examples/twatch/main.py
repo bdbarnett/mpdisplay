@@ -17,7 +17,7 @@ from twatch import services
 if CHARGER is not None and services.battery is not None:
     services.battery.charger(CHARGER)
 
-APPS = ("face", "home", "steps", "remote", "sound", "power", "lora")
+APPS = ("face", "home", "steps", "remote", "sound", "power", "lora", "wifi")
 
 launcher = Launcher(services.app, {name: "twatch." + name for name in APPS}, home="face")
 services.launcher = launcher

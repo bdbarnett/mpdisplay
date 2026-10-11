@@ -43,6 +43,10 @@
     [
       "twatch/ui.py",
       "../lib/examples/twatch/ui.py"
+    ],
+    [
+      "twatch/wifi.py",
+      "../lib/examples/twatch/wifi.py"
     ]
   ],
   "version": "0.0.1"

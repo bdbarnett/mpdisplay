@@ -206,6 +206,7 @@
 "https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/twatch/sound.py" = "/examples/twatch/sound.py"
 "https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/twatch/steps.py" = "/examples/twatch/steps.py"
 "https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/twatch/ui.py" = "/examples/twatch/ui.py"
+"https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/twatch/wifi.py" = "/examples/twatch/wifi.py"
 "https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/widgets_clinic_queue.py" = "/examples/widgets_clinic_queue.py"
 "https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/widgets_energy_panel.py" = "/examples/widgets_energy_panel.py"
 "https://raw.githubusercontent.com/PyDevices/pydevices-examples/main/lib/examples/widgets_locker_kiosk.py" = "/examples/widgets_locker_kiosk.py"

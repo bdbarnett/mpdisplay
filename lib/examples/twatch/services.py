@@ -252,6 +252,9 @@ def wake_screen():
     refresh()
 
 
+stay_awake = False  # an app holding a link (Wi-Fi) sets this: the screen goes dark but the watch doesn't doze
+
+
 def screen_off():
     global screen, _dimmed_at
     if screen == "on":
@@ -260,7 +263,7 @@ def screen_off():
     display_drv.brightness = 0
     if features:
         accel.interrupt_status()  # forget gestures from while the screen was on
-    if sleep is not None and battery is not None and not getattr(battery, "vbus_present", True):
+    if sleep is not None and not stay_awake and battery is not None and not getattr(battery, "vbus_present", True):
         doze()
 
 
