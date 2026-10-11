@@ -1,6 +1,6 @@
 # PyDevices Companion (Roku channel)
 
-The Roku side of `lib/utils/roku_companion.py`: a small channel that speaks
+The Roku side of [`lib/utils/roku_companion.py`](../../lib/utils/roku_companion.py): a small channel that speaks
 text, shows a dashboard, and displays frames a PyDevices program serves.
 
 Install it once on a Roku in developer mode (Home x3, Up x2, Right, Left,
@@ -11,7 +11,7 @@ ROKU_DEV_PASSWORD=yourpassword tools/roku_companion_app/sideload.sh 192.0.2.10
 ```
 
 Also turn on **Settings > System > Advanced system settings > Control by mobile
-apps**. Then run any example in `lib/examples/roku/` with the TV's address as
+apps**. Then run any example in [`lib/examples/roku/`](../../lib/examples/roku/) with the TV's address as
 its argument, or with `ROKU_IP` set.
 
 What else can put a picture on the TV, with nothing installed on it, is in the

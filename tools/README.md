@@ -178,7 +178,7 @@ Examples that `import palettes` / `pdwidgets` / `pygraphics` / the ctypes
 literally named `palettes` is unrelated — do **not** `pip install palettes`.
 Prefer TestPyPI native builds for `pygraphics` and `usdl2` when available.
 
-Quick setup: `bash scripts/setup_sibling_repos.sh` (clones current `main`,
+Quick setup: [`bash scripts/setup_sibling_repos.sh`](../scripts/setup_sibling_repos.sh) (clones current `main`,
 writes `.pth` files). The harness auto-discovers the same paths via
 `sibling_repos.py`. `pdwidgets` also needs pydevices's `lib` on path
 (the harness adds it).
@@ -257,6 +257,6 @@ the binary-bundled ``imageio-ffmpeg`` Python package.
 |---------|--------|
 | MicroPython stdlib stubs | committed under `tools/typings/` |
 | `displaydev` / `appdev` / `multimer` / `events` / `keys` | committed package trees / modules; regenerate with [`../scripts/gen_package_pyi.sh`](../scripts/gen_package_pyi.sh) |
-| `lvgl` | committed `tools/typings/lvgl.pyi` (from `../lvgl-bindings/generated/lvgl.pyi`) |
+| `lvgl` | committed [`tools/typings/lvgl.pyi`](typings/lvgl.pyi) (from `../lvgl-bindings/generated/lvgl.pyi`) |
 
 Confirm **Python: Select Interpreter** → `.venv/bin/python`. Cursor uses **cursorpyright** with `stubPath` / `typeshedPaths` → `tools/typings` (configured in a local `.vscode/settings.json` when present).

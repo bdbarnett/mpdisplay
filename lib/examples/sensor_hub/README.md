@@ -26,13 +26,13 @@ mpftp hard-reset -d COM5
 ```
 
 Then open `http://<board's IP>/` on anything on the same network. Name the
-hub in `board_main.py`. Its Bluetooth name can be 8 characters at most, which
+hub in [`board_main.py`](board_main.py). Its Bluetooth name can be 8 characters at most, which
 is all that fits in the advertisement beside the service UUID; a longer one
 shows up in Chrome's chooser as "Unknown or Unsupported Device".
 
 ## Send it readings
 
-From a PC, `publish.py` sends the machine's load, memory in use and a slow
+From a PC, [`publish.py`](publish.py) sends the machine's load, memory in use and a slow
 wave once a second:
 
 ```bash
@@ -59,9 +59,9 @@ greenhouse temp=21.4 rh=55
 (service `7d9a0001-5a5e-4c2b-9f0e-8b3c1d2e4f60`, characteristic
 `7d9a0002-…`). Two ready-made publishers:
 
-- `ble_publish.py` on a PC, through `bledev`. On WSL, run it with the Windows
+- [`ble_publish.py`](ble_publish.py) on a PC, through `bledev`. On WSL, run it with the Windows
   Python, which owns the radio, with pydevices' `lib` on its `PYTHONPATH`.
-- `ble_publish.html` on a phone, through Web Bluetooth in Chrome. It sends
+- [`ble_publish.html`](ble_publish.html) on a phone, through Web Bluetooth in Chrome. It sends
   the phone's battery level, its tilt and a slider. Web Bluetooth needs
   `https://` or `localhost`, so serve this folder from the PC and forward it:
   `python -m http.server 8765`, `adb reverse tcp:8765 tcp:8765`, then open
@@ -88,7 +88,7 @@ Its five DotStars are switched off at start.
 
 It runs stock MicroPython (`ESP32_GENERIC_S2`), brought up as in
 [board bring-up](https://github.com/PyDevices/pydevices/blob/main/docs/board-bringup.md)
-with the `board_configs/busdisplay/spi/funhouse` package. Then:
+with the [`board_configs/busdisplay/spi/funhouse`](https://github.com/PyDevices/pydevices/tree/main/board_configs/busdisplay/spi/funhouse) package. Then:
 
 ```bash
 mpftp mkdir -d COM30 /lib/sensor_hub
@@ -116,7 +116,7 @@ save the screen straight after:
 
 ## Check it
 
-`check_hub.py` opens the feed, publishes a fresh random number over UDP and
+[`check_hub.py`](check_hub.py) opens the feed, publishes a fresh random number over UDP and
 another over HTTP, and passes only when both come back on the feed
 unchanged. `--expect-node NAME` also waits for a node such as a Bluetooth
 publisher.

@@ -8,7 +8,7 @@ fingers on a touchscreen, with a knob, or with a MIDI controller.
 The audio never touches the interpreter. A C task pulls the effect graph on
 the core the interpreter is not on and writes each block straight into I2S, so
 the screen redraws, USB runs and Python loops while the sound keeps its exact
-clock. `audiolive/__init__.py` is the surface over that: one object owning the
+clock. [`audiolive/__init__.py`](__init__.py) is the surface over that: one object owning the
 codec, the graph and the pump, and nothing in an example opens I2S or touches
 a codec register.
 

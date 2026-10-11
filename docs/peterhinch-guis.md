@@ -3,22 +3,22 @@
 Three of [Peter Hinch](https://github.com/peterhinch)'s MicroPython GUI
 libraries run unchanged on PyDevices hardware, which makes them the clearest
 demonstration of the stack's portability. Each is showcased on its own gallery
-page: [peterhinch.html](https://PyDevices.github.io/pydevices-examples/pyscript/peterhinch.html).
+page: [peterhinch.html](https://pydevices.github.io/pydevices-examples/gallery/peterhinch.html).
 
 | GUI | Input style | Setup module |
 |---|---|---|
-| [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) | Display-only, no input — for memory-constrained boards | `color_setup.py` |
-| [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) | Buttons / encoder, callback-style widgets (asyncio underneath) | `hardware_setup.py` |
-| [MicroPython-Touch](https://github.com/peterhinch/micropython-touch) | Touch widgets and async UI (developed from Micro-GUI) | `touch_setup.py` |
+| [Nano-GUI](https://github.com/peterhinch/micropython-nano-gui) | Display-only, no input — for memory-constrained boards | [`color_setup.py`](../lib/utils/color_setup.py) |
+| [Micro-GUI](https://github.com/peterhinch/micropython-micro-gui) | Buttons / encoder, callback-style widgets (asyncio underneath) | [`hardware_setup.py`](../lib/utils/hardware_setup.py) |
+| [MicroPython-Touch](https://github.com/peterhinch/micropython-touch) | Touch widgets and async UI (developed from Micro-GUI) | [`touch_setup.py`](../lib/utils/touch_setup.py) |
 
 ## How the integration works
 
 This repository does **not** vendor any of the three. Importing the setup module
 for the GUI you want calls
-[`fetch_ph_gui`](https://github.com/PyDevices/pydevices-examples/blob/main/lib/utils/fetch_ph_gui.py),
+[`fetch_ph_gui`](../lib/utils/fetch_ph_gui.py),
 which `mip`-installs the upstream `gui/` tree into `lib/utils/gui/` and patches
 its `pygraphics.FrameBuffer` isinstance checks. Display wiring goes through
-[`displaybuf.py`](https://github.com/PyDevices/pydevices-examples/blob/main/lib/utils/displaybuf.py),
+[`displaybuf.py`](../lib/utils/displaybuf.py),
 which supplies the `ssd` framebuffer the GUIs expect.
 
 **Only one Hinch GUI may occupy `utils/gui/` at a time.** `fetch_ph_gui` empties
@@ -38,7 +38,7 @@ application-owned `appdev` app.
 | *setup module* | `lib/utils/` | `color_setup.py`, `hardware_setup.py`, or `touch_setup.py` — see the table above |
 | `fetch_ph_gui.py` | `lib/utils/` | `mip` install into `utils/gui/` plus the FrameBuffer patches |
 | `displaybuf.py` | `lib/utils/` | The `ssd` framebuffer |
-| `uctypes.py` | `lib/utils/` | CircuitPython shim for the GUIs' `writer.py` |
+| [`uctypes.py`](../lib/utils/uctypes.py) | `lib/utils/` | CircuitPython shim for the GUIs' `writer.py` |
 | `gui/` | `lib/utils/gui/` | **Upstream** — installed by the fetch, not in git |
 
 ### Installing manually
@@ -61,9 +61,9 @@ loader that fetches the GUI through its setup module:
 
 | GUI | Example | Gallery |
 |---|---|---|
-| Nano-GUI | [`nano_gui_simpletest.py`](https://github.com/PyDevices/pydevices-examples/blob/main/lib/examples/nano_gui_simpletest.py) | [loader](https://PyDevices.github.io/pydevices-examples/pyscript/micropython.html?modules=nano_gui_simpletest) |
-| Micro-GUI | [`micro_gui_simpletest.py`](https://github.com/PyDevices/pydevices-examples/blob/main/lib/examples/micro_gui_simpletest.py) | [loader](https://PyDevices.github.io/pydevices-examples/pyscript/micropython.html?modules=micro_gui_simpletest) |
-| MicroPython-Touch | [`touch_gui_simpletest.py`](https://github.com/PyDevices/pydevices-examples/blob/main/lib/examples/touch_gui_simpletest.py) | [loader](https://PyDevices.github.io/pydevices-examples/pyscript/micropython.html?modules=touch_gui_simpletest) |
+| Nano-GUI | [`nano_gui_simpletest.py`](../lib/examples/nano_gui_simpletest.py) | [loader](https://pydevices.github.io/pydevices-examples/gallery/micropython.html?modules=nano_gui_simpletest) |
+| Micro-GUI | [`micro_gui_simpletest.py`](../lib/examples/micro_gui_simpletest.py) | [loader](https://pydevices.github.io/pydevices-examples/gallery/micropython.html?modules=micro_gui_simpletest) |
+| MicroPython-Touch | [`touch_gui_simpletest.py`](../lib/examples/touch_gui_simpletest.py) | [loader](https://pydevices.github.io/pydevices-examples/gallery/micropython.html?modules=touch_gui_simpletest) |
 
 ```bash
 cd pydevices-examples/lib

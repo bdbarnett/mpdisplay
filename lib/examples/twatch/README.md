@@ -26,7 +26,7 @@ however long you wear it.
 
 ## Run it
 
-Copy the `twatch` folder to the watch's `/lib`, and `main.py` from it to
+Copy the `twatch` folder to the watch's `/lib`, and [`main.py`](main.py) from it to
 `/main.py`. The watch needs the T-Watch S3 board config and an `appdev` that
 has `appdev.launcher`. If the firmware's frozen `appdev` is older, copy
 pydevices' `lib/appdev` to the watch's root folder, which comes first on the
@@ -38,7 +38,7 @@ screen does, and `launcher.last` says how the last switch went:
 
 ## What the apps share
 
-`services.py` sets up what every app uses and keeps it running across
+[`services.py`](services.py) sets up what every app uses and keeps it running across
 switches: the display and touch, the AXP2101 power chip, the accelerometer's
 step counter and gestures, the clock, the vibration motor, the IR LED, the
 screen's dimming and sleep, and the crown. An app borrows them; nothing it
@@ -56,4 +56,4 @@ It builds its screen with `ui.screen(scope, "Title")`, makes timers and
 anything else through `scope` (see appdev's "Switchable apps"), and calls
 `services.use(scope, update)` so the screen's tick calls `update()` while
 the screen is on. Add its name to `APPS` in `main.py` and a button for it in
-`home.py`.
+[`home.py`](home.py).

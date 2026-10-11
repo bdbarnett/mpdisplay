@@ -29,15 +29,15 @@ instead, and are installed by `pydevices-desktop`.
 
 | Module | Purpose |
 |---|---|
-| `framebuf.py` | The `framebuf` API on CPython and CircuitPython |
-| `displaybuf.py` | Peter Hinch's `DisplayBuffer` API |
-| `keypins.py` | Presents key events as pin-like objects |
-| `viper_tools.py` | Optional MicroPython Viper accelerators |
-| `console.py` | Scrolling character terminal; an `os.dupterm` target that mirrors the REPL onto a display |
-| `lv_encoder_emu.py` | Desktop-only soft encoder on a secondary surface, standing in for MCU `machine.Encoder` / `rotaryio` (see `examples/lv_multi_display.py`) |
-| `tft_text.py`, `tft_write.py` | @russhughes font rendering |
-| `png.py` | Experimental PNG support |
-| `color_setup.py`, `hardware_setup.py`, `touch_setup.py`, `fetch_ph_gui.py` | [Peter Hinch GUI](../../docs/peterhinch-guis.md) integration |
+| [`framebuf.py`](framebuf.py) | The `framebuf` API on CPython and CircuitPython |
+| [`displaybuf.py`](displaybuf.py) | Peter Hinch's `DisplayBuffer` API |
+| [`keypins.py`](keypins.py) | Presents key events as pin-like objects |
+| [`viper_tools.py`](viper_tools.py) | Optional MicroPython Viper accelerators |
+| [`console.py`](console.py) | Scrolling character terminal; an `os.dupterm` target that mirrors the REPL onto a display |
+| [`lv_encoder_emu.py`](lv_encoder_emu.py) | Desktop-only soft encoder on a secondary surface, standing in for MCU `machine.Encoder` / `rotaryio` (see [`examples/lv_multi_display.py`](../examples/lv_multi_display.py)) |
+| [`tft_text.py`](tft_text.py), [`tft_write.py`](tft_write.py) | @russhughes font rendering |
+| [`png.py`](png.py) | Experimental PNG support |
+| [`color_setup.py`](color_setup.py), [`hardware_setup.py`](hardware_setup.py), [`touch_setup.py`](touch_setup.py), [`fetch_ph_gui.py`](fetch_ph_gui.py) | [Peter Hinch GUI](../../docs/peterhinch-guis.md) integration |
 
 `gui/` is an upstream Peter Hinch tree fetched on demand and gitignored — one of
 nano / micro / touch at a time. See

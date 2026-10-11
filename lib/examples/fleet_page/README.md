@@ -50,7 +50,7 @@ one another program is using.
 
 ## Check it
 
-`check_fleet.py` runs against a board that hosts the sensor hub. It passes
+[`check_fleet.py`](check_fleet.py) runs against a board that hosts the sensor hub. It passes
 when the page lists the board by serial and Wi-Fi with all its details, keeps
 refreshing them, and the hub's own uptime grows through the whole wait, so
 nothing interrupted it.
