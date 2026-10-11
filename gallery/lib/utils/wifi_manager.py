@@ -28,7 +28,9 @@ there is one and always on the REPL:
 
 The board remembers the network and carries on.  While it waits it rescans
 every minute, so a board that booted before the router came back joins on its
-own.  To move to a new network on purpose, call ``wifi_manager.run()``.
+own.  To move to a new network on purpose, call ``wifi_manager.run()``, which
+waits for one.
+``cancel()``, from a timer or another app, ends setup mode without a network.
 
 ``networks()`` lists the remembered SSIDs, ``forget(ssid)`` drops one and
 ``forget()`` drops them all.  A network that is still in ``secrets.py`` comes
@@ -157,21 +159,33 @@ def connect(*, setup=True, hostname=None, display_drv=None, timeout=JOIN_TIMEOUT
         if not ip:
             print("wifi_manager: couldn't join a known network")
         return ip
-    return _Setup(radio, display_drv, timeout).run()
+    return _Setup(radio, display_drv, timeout, rescan=True).run()
 
 
 def run(*, hostname=None, display_drv=None, timeout=JOIN_TIMEOUT_S):
-    """Start setup mode now, even when a known network is in range.
+    """Start setup mode now, even when a known network is in range.  It waits
+    for a new network (or ``cancel()``) rather than going back to a known one.
 
     Returns:
-        str: The IPv4 address of the network joined.
+        str | None: The IPv4 address of the network joined, or ``None`` when
+        ``cancel()`` ended it.
     """
     if display_drv is None:
         display_drv = _board_display()
     radio = _radio()
     if hostname:
         _set_hostname(radio, hostname)
-    return _Setup(radio, display_drv, timeout).run()
+    return _Setup(radio, display_drv, timeout, rescan=False).run()
+
+
+def cancel():
+    """End setup mode without a network: ``connect()`` or ``run()`` returns
+    ``None``.  For a timer or event callback while setup mode waits."""
+    global _cancelled
+    _cancelled = True
+
+
+_cancelled = False
 
 
 def networks():
@@ -558,7 +572,8 @@ class _CPRadio:
 class _Setup:
     """The access point, the captive DNS, the setup page, and the screen."""
 
-    def __init__(self, radio, display_drv, timeout):
+    def __init__(self, radio, display_drv, timeout, rescan):
+        self.rescan = rescan  # rejoin a known network that comes into range
         self.radio = radio
         self.display_drv = display_drv
         self.timeout = timeout
@@ -570,6 +585,8 @@ class _Setup:
         self.port = 80
 
     def run(self):
+        global _cancelled
+        _cancelled = False
         radio = self.radio
         try:
             self.seen = radio.scan()  # before the AP is up: a cleaner scan
@@ -585,7 +602,7 @@ class _Setup:
         try:
             ui.show(ap_name, ap_pass, url)
             last_scan = _ticks_ms()
-            while True:
+            while not _cancelled:
                 self._serve_dns(ap_ip)
                 self._serve_http()
                 if self.pending:
@@ -601,7 +618,7 @@ class _Setup:
                     self.message = "Couldn't join %s. Check the password and try again." % ssid
                     ui.status(self.message, error=True)
                     last_scan = _ticks_ms()
-                elif _ticks_diff(_ticks_ms(), last_scan) > RESCAN_S * 1000:
+                elif self.rescan and _ticks_diff(_ticks_ms(), last_scan) > RESCAN_S * 1000:
                     ui.status("Looking for a known network...")
                     ip = _join_known(radio, self.timeout)
                     if ip:
@@ -615,6 +632,8 @@ class _Setup:
                     ui.status(self.message or "Waiting for setup", error=bool(self.message))
                     last_scan = _ticks_ms()
                 _sleep_ms(20)
+            print("wifi_manager: setup cancelled")
+            return None
         finally:
             self._close_sockets()
             try:
@@ -934,7 +953,7 @@ class _ReplUI:
 
     def show(self, ap_name, ap_pass, url):
         print()
-        print("wifi_manager: no known network in range. To set one up:")
+        print("wifi_manager: setup mode. To pick a network:")
         print("  1. Join Wi-Fi  %s  password  %s" % (ap_name, ap_pass))
         print("  2. Open %s if the setup page doesn't open by itself" % url)
         print("  3. Pick your network and type its password")
@@ -1261,14 +1280,24 @@ class _LvUI(_ReplUI):
         if self.status_lbl is None:
             return
         color = 0x55FF55 if ok else 0xFF5555 if error else 0xAAAAAA
-        self.status_lbl.set_style_text_color(self.lv.color_hex(color), 0)
-        self.status_lbl.set_text(text)
+        try:
+            self.status_lbl.set_style_text_color(self.lv.color_hex(color), 0)
+            self.status_lbl.set_text(text)
+        except Exception:
+            self.status_lbl = None  # deleted by an app switch: the REPL still gets it
+            return
         self._refresh()
 
     def close(self):
         if self.scr is not None:
-            self.lv.screen_load(self.prev)
-            self.scr.delete()
+            # Give the screen back only if it is still ours: an app switch
+            # while setup waited loads another, and may delete both.
+            try:
+                if self.lv.screen_active() == self.scr:
+                    self.lv.screen_load(self.prev)
+                self.scr.delete()
+            except Exception:
+                pass
             self.scr = self.status_lbl = None
 
     def _refresh(self):
