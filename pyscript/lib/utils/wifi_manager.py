@@ -155,7 +155,7 @@ def connect(*, setup=True, hostname=None, display_drv=None, timeout=JOIN_TIMEOUT
     ip = _join_known(radio, timeout)
     if ip or not setup:
         if not ip:
-            print("wifi_manager: no known network in range")
+            print("wifi_manager: couldn't join a known network")
         return ip
     return _Setup(radio, display_drv, timeout).run()
 
@@ -379,10 +379,14 @@ def _join_known(radio, timeout):
     if seen is None:
         order = known
     else:
+        # In range first, strongest first. Then the rest: a scan misses a weak
+        # network about half the time, and a join searches harder than a scan.
         order = [n for n in known if n["ssid"] in seen]
         order.sort(key=lambda n: -seen[n["ssid"]])
-        order += [n for n in known if n.get("hidden") and n["ssid"] not in seen]
-    for n in order:
+        order += [n for n in known if n["ssid"] not in seen]
+    # Two rounds: on a weak link esp32 fails a join ("wrong password",
+    # "network not found") that works a moment later.
+    for n in order + order:
         ip = _try_join(radio, n["ssid"], n.get("password", ""), timeout, seen)
         if ip:
             # A network from secrets.py lands in the cache here, which is what
