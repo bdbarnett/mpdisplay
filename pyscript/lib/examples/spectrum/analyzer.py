@@ -90,6 +90,9 @@ class Spectrum:
     - ``y``: the meter's top row. Default: the bottom of the panel, and
       ``start()`` clears the rest of the panel first. Given, the meter paints
       only its own rows and leaves the rest of the panel to you.
+    - ``x`` and ``width``: the meter's left column and width. Default: the
+      whole width. A narrower meter paints only its own rectangle, so give
+      ``y`` too.
     - ``style``: ``"smooth"`` or ``"segmented"``.
     - ``report``: print the frame rate and per-part costs every few seconds.
 
@@ -97,16 +100,20 @@ class Spectrum:
     music: 18-19 fps full size, 35-45 at half by half on the ESP32-P4.
     """
 
-    def __init__(self, display_drv, source, *, bands=None, height=None, y=None, style="smooth", report=False):
+    def __init__(self, display_drv, source, *, bands=None, height=None, y=None, x=0, width=None,
+                 style="smooth", report=False):
         self.display_drv = display_drv
         W, H = display_drv.width, display_drv.height
         if height is None:
             height = H // 2
+        if width is None:
+            width = W - x
         if bands is None:
-            bands = band_count_for(W) // 2
+            bands = band_count_for(width) // 2
+        self.x = x
         self.y = H - height if y is None else y
         self._clear_panel = y is None  # a placed meter leaves the rest alone
-        self.view = SpectrumView(W, height, bands=bands, style=style)
+        self.view = SpectrumView(width, height, bands=bands, style=style)
         # A class (FakeMusic) or a factory (levels_for) builds the source for
         # this band count; anything else already is one.
         if isinstance(source, type) or not hasattr(source, "levels"):
@@ -146,6 +153,7 @@ class Spectrum:
         return d.blit_rect
 
     def _blit(self, buf, x, y, w, h):
+        x += self.x
         y += self.y
         self._send(buf, x, y, w, h)
         d = self._dirty
@@ -164,7 +172,7 @@ class Spectrum:
         fill = getattr(d, "fill_rect", None)
         if fill is not None and self._clear_panel and view.height < d.height:
             fill(0, 0, d.width, d.height, 0)  # clear whatever the panel showed before
-        d.blit_rect(view.strip(0, view.height), 0, self.y, view.width, view.height)
+        d.blit_rect(view.strip(0, view.height), self.x, self.y, view.width, view.height)
         if self.present_rows:
             d.show()
         view._build_bar_columns()  # a second on the P4; not on the first frame
@@ -194,7 +202,7 @@ class Spectrum:
         dirty[0], dirty[1] = self.y + view.height, 0
         view.render_columns(self._blit)
         if self.present_rows and dirty[1] > dirty[0]:
-            self.display_drv.flush_rect(0, dirty[0], view.width, dirty[1] - dirty[0])
+            self.display_drv.flush_rect(self.x, dirty[0], view.width, dirty[1] - dirty[0])
         if not self.report:
             return
         d = ticks_us()
