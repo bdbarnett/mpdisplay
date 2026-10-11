@@ -21,6 +21,7 @@
                 <button class="btn" id="enable-microphone" type="button">Enable Microphone</button>
                 <button class="btn" id="reset-runtime" type="button">Reset</button>
                 <a class="btn" id="pyodide-link" href="../pyscript/pyodide.html">Pyodide alternative</a>
+                <a class="btn" id="workbench-link" href="https://pydevices.github.io/workbench/" hidden>Open in Workbench</a>
             </div>
         </div>
         <p class="loader-lede">The application runs on the main thread through the compiled <code>_wasm_bridge</code>.</p>
@@ -58,6 +59,11 @@
         if (entry) {
             document.getElementById('loader-title').textContent = entry.replaceAll('_', ' ');
             document.title = `${entry} — Direct MicroPython`;
+            // The same example in Workbench: editable, runnable in its
+            // simulator, and one connect away from a board.
+            const workbench = document.getElementById('workbench-link');
+            workbench.href = `https://pydevices.github.io/workbench/?vm=1&example=${encodeURIComponent(entry)}`;
+            workbench.hidden = false;
         }
     </script>
     <script type="module" src="./gallery-host.js"></script>
