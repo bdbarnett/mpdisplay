@@ -110,5 +110,30 @@ class TestStartClears(unittest.TestCase):
         self.assertEqual([(0, 30, 100, 30)], self.d.blits)
 
 
+class TestPlacedRectangle(unittest.TestCase):
+    """A meter given ``x`` and ``width`` paints and presents only its own
+    rectangle, so an app can put a small one beside its own widgets."""
+
+    def setUp(self):
+        self.analyzer = _load_analyzer(self)
+        self.d = _Display()
+
+    def test_start_paints_only_the_rectangle(self):
+        meter = self.analyzer.Spectrum(self.d, _Source(), height=20, y=30, x=40, width=50)
+        meter.start(_App())
+        self.assertEqual([], self.d.fills)
+        self.assertEqual([(40, 30, 50, 20)], self.d.blits)
+
+    def test_columns_land_at_x(self):
+        meter = self.analyzer.Spectrum(self.d, _Source(), height=20, y=30, x=40, width=50)
+        meter._send = lambda buf, x, y, w, h: self.d.blits.append((x, y, w, h))
+        meter._blit(b"", 3, 2, 4, 5)
+        self.assertEqual([(43, 32, 4, 5)], self.d.blits)
+
+    def test_width_defaults_to_the_rest_of_the_panel(self):
+        meter = self.analyzer.Spectrum(self.d, _Source(), height=20, y=0, x=40)
+        self.assertEqual(60, meter.view.width)
+
+
 if __name__ == "__main__":
     unittest.main()
