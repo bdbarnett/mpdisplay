@@ -162,7 +162,9 @@ Desktop matrices use repo `.venv` (`cpython-venv`) plus interpreters on
 `PATH` / `~/bin` (`micropython`, `circuitpython`). `micropython.exe` / `python.exe` are
 Windows binaries and cannot run in a Linux cloud sandbox.
 
-After usermod changes that affect these binaries or PyScript vendor wasm, run `cmods/build_interpreters.sh`.
+After changes to the C modules these binaries or the PyScript runtime carry, rebuild them with
+[micropython-pydevices](https://github.com/PyDevices/micropython-pydevices)' `build_mp.py`: for example
+`./build_mp.py --port unix --variant pydevices --modules all`, and `--port webassembly` for the PyScript runtime.
 
 **`micropython.exe` matrix:** no `threading` / `_thread`. The example wrapper
 uses a `appdev.App.poll` deadline quit (not a multimer SDL quit timer). With
