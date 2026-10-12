@@ -393,7 +393,32 @@ body[data-runtime-state="failed"] .canvas-stage .hero-spinner {
 .device-footer {
   display: flex;
   justify-content: center;
+  gap: 8px;
   padding-top: 8px;
+}
+
+/* A link beside the console toggle, in its look. The header row isn't shown
+   when a gallery card opens a demo, so the footer is the one place it's seen. */
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  background: var(--panel-2);
+  font: 600 0.78rem var(--font);
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.footer-link[hidden] {
+  display: none;
 }
 
 .console-panel[hidden] {
