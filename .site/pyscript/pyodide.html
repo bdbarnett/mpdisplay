@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
     <link rel="stylesheet" href="/assets/chrome/site.css">
     <link rel="stylesheet" href="./site-extra.css">
-    <link rel="stylesheet" href="./demo.css?v=6">
+    <link rel="stylesheet" href="./demo.css?v=7">
     <link rel="stylesheet" href="./vendor/core.css">
     <script src="./loader-query.js"></script>
     <script src="./theme-toggle.js" defer></script>
@@ -87,6 +87,7 @@
                     </div>
                     <div class="device-footer">
                         <button type="button" class="console-toggle" aria-expanded="false">Show console</button>
+                        <a class="footer-link" id="workbench-link" href="https://pydevices.github.io/workbench/" target="_blank" rel="noopener" hidden>Open in Workbench</a>
                     </div>
                 </div>
             </div>
@@ -337,6 +338,31 @@
             _start()
     </script>
 
+    <script>
+        // The same example in Workbench, in a new tab: editable, runnable in
+        // its MicroPython simulator, and one connect away from a board.
+        // Workbench takes examples from the MicroPython gallery's file list,
+        // so the link shows only for an example that list has.
+        (function () {
+            var params = new URLSearchParams(location.search);
+            var entry = (params.get('modules') || params.get('manifests') || '').split(',')[0].trim();
+            var link = document.getElementById('workbench-link');
+            if (!entry || !link) {
+                return;
+            }
+            fetch('../gallery/python-files.json').then(function (r) {
+                return r.ok ? r.json() : [];
+            }).then(function (files) {
+                var known = files.some(function (f) {
+                    return f === entry + '.py' || f.indexOf(entry + '/') === 0;
+                });
+                if (known) {
+                    link.href = 'https://pydevices.github.io/workbench/?vm=1&example=' + encodeURIComponent(entry);
+                    link.hidden = false;
+                }
+            }).catch(function () {});
+        })();
+    </script>
     <script src="./interpreter-layout.js?v=6"></script>
     <script type="module" src="./pyscript-config.js"></script>
 </body>
