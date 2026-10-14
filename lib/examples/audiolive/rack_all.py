@@ -32,7 +32,9 @@ Run it on the Waveshare ESP32-P4-WIFI6-Touch-LCD-4B
     python.exe -m mpremote connect COM4 exec "import audiolive.rack_all" repl
 
 Same costume as rack_midi.py: CDC + MIDI, applied only if it is not already
-right, so the serial port re-enumerates at most once.
+right, so the serial port re-enumerates at most once. MIDI is read with
+``adafruit_midi`` over ``midiports.usbif_shim``, as there; install both once
+with ``mip.install("github:PyDevices/pydevices/midiports")``.
 
 What you should see and hear
 ----------------------------
@@ -63,7 +65,16 @@ import lvgl as lv
 import audiolive
 from audiolive import PATCHES
 
-BUF = bytearray(256)
+try:
+    import adafruit_midi
+    from adafruit_midi.control_change import ControlChange
+    from adafruit_midi.note_off import NoteOff
+    from adafruit_midi.note_on import NoteOn
+    from adafruit_midi.program_change import ProgramChange
+    from midiports import usbif_shim
+except ImportError:
+    adafruit_midi = None
+
 MIDI_POLL_MS = 5          # the MIDI pump rides the display loop
 STATUS_MS = 500
 
@@ -157,7 +168,7 @@ class AllAtOnce:
             [type(f).NAME for f in live.effects])
         self.midi_count = 0
         self.synth = None
-        self.parser = None
+        self.midi = None
         self.restore = None
         self.phase = 0
         self.mic = True
@@ -187,7 +198,7 @@ class AllAtOnce:
             "status": lv.timer_create(_guarded(self._on_status), STATUS_MS,
                                       None),
         }
-        if self.parser is not None:
+        if self.midi is not None:
             self.timers["midi"] = lv.timer_create(_guarded(self._on_midi),
                                                   MIDI_POLL_MS, None)
 
@@ -197,9 +208,11 @@ class AllAtOnce:
         """Wear the CDC+MIDI costume, if this firmware has MIDI at all."""
         try:
             import _usbif
-            import usbif
         except ImportError:
             print("no usbif in this firmware; running without MIDI")
+            return
+        if adafruit_midi is None:
+            print("adafruit_midi or midiports is not installed; running without MIDI")
             return
         if not (_usbif.dev_functions_built() & _usbif.FN_MIDI):
             print("this firmware has no MIDI device function; no MIDI")
@@ -210,7 +223,8 @@ class AllAtOnce:
         if self.restore != want:
             _usbif.dev_functions(want)
             print("costume: cdc+midi -- the serial port re-enumerates once")
-        self.parser = usbif.MidiParser()
+        self.midi_in, _midi_out = usbif_shim.ports("dev:midi")
+        self.midi = adafruit_midi.MIDI(midi_in=self.midi_in)
         self.synth = None
 
     def _ensure_synth(self):
@@ -228,30 +242,32 @@ class AllAtOnce:
         return self.synth
 
     def _on_midi(self, _t):
-        n = self._usbif.midi_read(BUF)
-        if n:
-            self.feed(BUF, n)
+        # receive() allocates even when nothing came, so ask the port first:
+        # a quiet controller then makes no garbage beside the audio.
+        if not self.midi_in.any():
+            return
+        while True:
+            msg = self.midi.receive()
+            if msg is None:
+                return
+            self.handle(msg)
 
-    def feed(self, buf, n):
-        """Act on `n` bytes of USB-MIDI. The same shape rack_midi.py has.
+    def handle(self, msg):
+        """Act on one ``adafruit_midi`` message. The same shape rack_midi.py has.
 
-        Split out from the timer above so a harness can hand the same bytes
-        in with no host attached: `midi_read()` puts its bytes here and
-        nowhere else, so everything above the USB endpoint is this method.
+        Split out from the timer above so a harness can hand messages in with
+        no host attached: everything above the USB endpoint is this method.
         """
-        self.parser.feed(buf, n)
-        for status, data in self.parser.drain():
-            self.midi_count += 1
-            kind = status >> 4
-            if kind == 0x9 and len(data) == 2 and data[1]:
-                self._ensure_synth().note_on(data[0], data[1])
-            elif kind == 0x8 or (kind == 0x9 and len(data) == 2):
-                if self.synth is not None:
-                    self.synth.note_off(data[0])
-            elif kind == 0xB and len(data) == 2:
-                self._control_change(data[0], data[1])
-            elif kind == 0xC and len(data) >= 1:
-                self._select(data[0] % len(PATCHES))
+        self.midi_count += 1
+        if isinstance(msg, NoteOn) and msg.velocity:
+            self._ensure_synth().note_on(msg.note, msg.velocity)
+        elif isinstance(msg, (NoteOn, NoteOff)):
+            if self.synth is not None:
+                self.synth.note_off(msg.note)
+        elif isinstance(msg, ControlChange):
+            self._control_change(msg.control, msg.value)
+        elif isinstance(msg, ProgramChange):
+            self._select(msg.patch % len(PATCHES))
 
     def _control_change(self, controller, value):
         """A knob on your controller moves a knob on the pedalboard.
