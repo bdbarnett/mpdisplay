@@ -31,10 +31,10 @@ Run it on the Waveshare ESP32-P4-WIFI6-Touch-LCD-4B
     mpftp put -d COM4 lib/examples/audiolive/rack_all.py /lib/audiolive/rack_all.py
     python.exe -m mpremote connect COM4 exec "import audiolive.rack_all" repl
 
-Same costume as rack_midi.py: CDC + MIDI, applied only if it is not already
-right, so the serial port re-enumerates at most once. MIDI is read with
-``adafruit_midi`` over ``midiports.usbif_shim``, as there; install both once
-with ``mip.install("github:PyDevices/pydevices/midiports")``.
+USB MIDI as in rack_midi.py: ``midiports.usb_device`` beside the board's
+serial port, which re-enumerates once as MIDI joins it, read with
+``adafruit_midi``. Install them once with ``mip.install("usb-device-midi")``
+and ``mip.install("github:PyDevices/pydevices/midiports")``.
 
 What you should see and hear
 ----------------------------
@@ -71,7 +71,6 @@ try:
     from adafruit_midi.note_off import NoteOff
     from adafruit_midi.note_on import NoteOn
     from adafruit_midi.program_change import ProgramChange
-    from midiports import usbif_shim
 except ImportError:
     adafruit_midi = None
 
@@ -169,7 +168,6 @@ class AllAtOnce:
         self.midi_count = 0
         self.synth = None
         self.midi = None
-        self.restore = None
         self.phase = 0
         self.mic = True
 
@@ -205,25 +203,17 @@ class AllAtOnce:
     # --- USB ---------------------------------------------------------------
 
     def _start_midi(self):
-        """Wear the CDC+MIDI costume, if this firmware has MIDI at all."""
-        try:
-            import _usbif
-        except ImportError:
-            print("no usbif in this firmware; running without MIDI")
-            return
+        """The board's USB MIDI function, beside its serial port."""
         if adafruit_midi is None:
             print("adafruit_midi or midiports is not installed; running without MIDI")
             return
-        if not (_usbif.dev_functions_built() & _usbif.FN_MIDI):
-            print("this firmware has no MIDI device function; no MIDI")
+        try:
+            from midiports import usb_device
+        except ImportError:
+            print("usb-device-midi is not installed; running without MIDI")
             return
-        self._usbif = _usbif
-        self.restore = _usbif.dev_functions()
-        want = _usbif.FN_CDC | _usbif.FN_MIDI
-        if self.restore != want:
-            _usbif.dev_functions(want)
-            print("costume: cdc+midi -- the serial port re-enumerates once")
-        self.midi_in, _midi_out = usbif_shim.ports("dev:midi")
+        # The serial port re-enumerates once as MIDI joins it.
+        self.midi_in, _midi_out = usb_device.ports()
         self.midi = adafruit_midi.MIDI(midi_in=self.midi_in)
         self.synth = None
 
