@@ -57,47 +57,26 @@ On desktop MicroPython at 800x480 with 48 bands, a frame costs about 0.2 ms to
 generate the data, 0.7–1.5 ms to draw and 0.9 ms to blit to the SDL window.
 The timer caps it at 50 fps.
 
-## On the ESP32-P4 panel, beside the sound card
+## On the ESP32-P4 panel
 
 ![The P4 panel's framebuffer, music playing](../../../docs/screenshots/spectrum_p4_music.png)
 
 This needs a firmware with audiodsp's
 [`audiometer`](https://github.com/PyDevices/audiodsp#audiometermeter--band-levels-for-a-spectrum-meter)
-(`--modules all` has it). Import `spectrum` before running `soundcard.py`, and
-the meter draws from a timer while the sound card runs: `pump_levels.PumpLevels`
-attaches an `audiometer.Meter` to the sound card, whose pump feeds it in C on
-the other core. `pump_levels.TapLevels` meters any audiopump stream instead,
-through the pump's tap: the drum machine's, for one, with no USB at all.
+(`--modules all` has it). `pump_levels.TapLevels` meters any stream audiodsp's
+pump plays, through the pump's tap, read in C: a file, the drum machine, or a
+USB sound card playing through the pump (usbif's `usb_soundcard.py`).
+`analyzer.levels_for(out)` builds one for an `AudioOut` that's playing.
 
-Since the meter moved from usbif to audiodsp (2026-10-06), on the same panel:
-the sound card delivers 99.77-99.86 % of its packets with the meter drawing,
-and the meter costs 1.6-1.8 % of a core for the feed plus 2.7 % for the
-analysis, with the longest analysis 0.6 ms. On the drum machine's tap it costs
-3 % of the reading thread, and the kick band swings a median 35 dB a beat.
+On the drum machine's tap the meter costs 3 % of the reading thread, and the
+kick band swings a median 35 dB a beat. The frame rate is 50 fps in silence,
+27-29 with every bar moving and 19 with loud music: each bar is two prebuilt
+columns, only the rows that moved are copied, and one band is presented a
+frame (`SpectrumView.render_columns`). From a full-range track, every bar from
+35 Hz up moves; the 22, 26 and 30 Hz bars and the top four (10-20 kHz) sit
+near the floor.
 
-What the spike's measurements found (2026-09-25), when the meter was usbif's:
-
-- **Drawing costs no USB packets, once one setting changes.** A cache
-  writeback (`esp_cache_msync`) runs with interrupts off, and syncing the
-  panel held the USB interrupt off long enough to drop delivery to
-  98.7-99.4 %, under the 99.5 % gate. With the writeback sliced
-  (`CONFIG_ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS`), meter on and meter off match
-  to within 0.03 %: 99.75-99.88 % against 99.77-99.86 %. The P4 panel's board
-  definition carries that setting since micropython-pydevices#23.
-- **The sound card's own baseline** settles near 99.8 % a window or two into a
-  48 kHz stream, with or without the meter. A 24 kHz wire holds 100 %.
-- **The cost in the pump** is 1.05 % of a 360 MHz core for the feed plus
-  3.2-3.8 % for the analysis: two FFTs, 60 a second, with the longest single
-  analysis about 1 ms.
-- **The frame rate** is 50 fps in silence, 27-29 with every bar moving and 19
-  with loud music. Each bar is two prebuilt columns, only the rows that moved
-  are copied, and one band is presented a frame (`SpectrumView.render_columns`).
-- **The low end, from a full-range track:** the 22, 26 and 30 Hz bars sit near
-  empty. From 35 Hz up, every bar moves. The top four bars (10-20 kHz) also
-  hover near the floor.
-
-[`tools/spectrum/meter_gate.py`](../../../tools/spectrum/meter_gate.py) (board) and
-[`tools/spectrum/play_src.py`](../../../tools/spectrum/play_src.py) (Windows Python)
-reproduce the sound card's numbers, and
-[`tools/spectrum/tap_gate.py`](../../../tools/spectrum/tap_gate.py) the drum
-machine's.
+[`tools/spectrum/tap_gate.py`](../../../tools/spectrum/tap_gate.py)
+reproduces the drum machine's numbers, with
+[`tools/spectrum/play_src.py`](../../../tools/spectrum/play_src.py) (Windows
+Python) to play a track to a board.
