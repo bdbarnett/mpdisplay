@@ -27,10 +27,15 @@ run makes the serial port disappear and come back once; later runs do not.
 If your firmware was built without the MIDI function the example says so
 and stops: ``_usbif.dev_functions_built() & _usbif.FN_MIDI``.
 
+The MIDI itself is CircuitPython's: ``adafruit_midi`` reads the port, and
+``midiports.usbif_shim`` gives it usbif's device MIDI as a port. Install
+both once with ``mip.install("github:PyDevices/pydevices/midiports")``.
+
 Run it on the Waveshare ESP32-P4-WIFI6-Touch-LCD-4B
 --------------------------------------------------
 ::
 
+    mpremote connect COM4 mip install github:PyDevices/pydevices/midiports
     mpftp mkdir -d COM4 /lib/audiolive
     mpftp put -d COM4 lib/examples/audiolive/__init__.py /lib/audiolive/__init__.py
     mpftp run lib/examples/audiolive/rack_midi.py -d COM4 --follow --timeout 300
@@ -42,8 +47,8 @@ soft reset ``run`` does on the way in is harmless - nothing is playing yet
 times out. (The P4's USB host controller detects nothing at high speed, so
 the P4 is always the device in a pairing - see usbif#3.)
 
-``MidiRack`` below is the reusable half - it turns parsed MIDI into sound
-and knows nothing about how the bytes arrived. ``rack_all.py`` drives the
+``MidiRack`` below is the reusable half - it turns ``adafruit_midi``
+messages into sound and knows nothing about how they arrived. ``rack_all.py`` drives the
 same idea from an LVGL timer instead of a loop, which is what an app with
 a screen wants.
 
@@ -68,7 +73,12 @@ was busy. It should stay at zero.
 import time
 
 import _usbif
-import usbif
+import adafruit_midi
+from adafruit_midi.control_change import ControlChange
+from adafruit_midi.note_off import NoteOff
+from adafruit_midi.note_on import NoteOn
+from adafruit_midi.program_change import ProgramChange
+from midiports import usbif_shim
 
 import audiolive
 from audiolive import PATCHES
@@ -76,7 +86,6 @@ from audiolive import PATCHES
 INSTRUMENT = "karplus"
 MOUNT_TIMEOUT_MS = 10000
 REPORT_MS = 10000
-BUF = bytearray(256)
 
 # Controller number -> (which pedal in the chain, which of its macros).
 # These are the CCs a general-purpose controller already sends: 1 is the
@@ -118,7 +127,6 @@ class MidiRack:
         # after the first few seconds a patch change is a swap, not a build.
         self.live.prefetch([chain for _name, chain in PATCHES])
         self.synth = self.live.synth
-        self.parser = usbif.MidiParser()
         self.counts = {}
         self.held = set()
 
@@ -154,25 +162,25 @@ class MidiRack:
         self.synth.note_off(pitch)
         self.held.discard(pitch)
 
-    def feed(self, buf, n):
-        """One USB packet's worth of MIDI, turned into sound."""
-        self.parser.feed(buf, n)
-        for status, data in self.parser.drain():
-            kind = status >> 4
-            self.counts[kind] = self.counts.get(kind, 0) + 1
-            if kind == 0x9 and len(data) == 2 and data[1]:
-                self.note_on(data[0], data[1])
-            elif kind == 0x8 or (kind == 0x9 and len(data) == 2):
-                self.note_off(data[0])
-            elif kind == 0xB and len(data) == 2:
-                self.control_change(data[0], data[1])
-            elif kind == 0xC and len(data) >= 1:
-                self.program_change(data[0])
+    def handle(self, msg):
+        """One MIDI message from ``adafruit_midi``, turned into sound."""
+        name = type(msg).__name__
+        self.counts[name] = self.counts.get(name, 0) + 1
+        if isinstance(msg, NoteOn):
+            if msg.velocity:
+                self.note_on(msg.note, msg.velocity)
+            else:
+                self.note_off(msg.note)
+        elif isinstance(msg, NoteOff):
+            self.note_off(msg.note)
+        elif isinstance(msg, ControlChange):
+            self.control_change(msg.control, msg.value)
+        elif isinstance(msg, ProgramChange):
+            self.program_change(msg.patch)
 
     def report(self):
         s = self.live.status()
-        seen = ", ".join("%s %d" % (NAMES.get(k, "?"), v)
-                         for k, v in sorted(self.counts.items()))
+        seen = ", ".join("%s %d" % (k, v) for k, v in sorted(self.counts.items()))
         print("%s | held %d | load %d%% worst %d/%d us starved %d ms"
               % (seen or "nothing yet", len(self.held), s["load_pct"],
                  s["worst_us"], s["block_us"], s["starved_ms"]))
@@ -181,10 +189,6 @@ class MidiRack:
         for pitch in tuple(self.held):
             self.note_off(pitch)
         self.live.stop()
-
-
-NAMES = {0x8: "note-off", 0x9: "note-on", 0xB: "cc", 0xC: "program",
-         0xE: "bend"}
 
 
 def main():
@@ -211,12 +215,20 @@ def main():
         rack.stop()
         return False
 
+    midi_in, _midi_out = usbif_shim.ports("dev:midi")
+    midi = adafruit_midi.MIDI(midi_in=midi_in)
     next_report = time.ticks_add(time.ticks_ms(), REPORT_MS)
     try:
         while True:
-            n = _usbif.midi_read(BUF)
-            if n:
-                rack.feed(BUF, n)
+            # receive() allocates even when nothing came, so ask the port
+            # first: an idle loop then makes no garbage for the collector to
+            # stop the audio over.
+            if midi_in.any():
+                while True:
+                    msg = midi.receive()
+                    if msg is None:
+                        break
+                    rack.handle(msg)
             else:
                 # The audio is pulled by a C task on the other core, so
                 # sleeping here costs it nothing at all.
@@ -229,6 +241,7 @@ def main():
     finally:
         rack.report()
         rack.stop()
+        midi_in.close()
         if restore != want:
             _usbif.dev_functions(restore)
     return True
