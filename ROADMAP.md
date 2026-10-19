@@ -11,6 +11,9 @@ package's own demos living beside that package.
   Grandkids) and choose which one the frame shows.
 - A live-audio example built on one object that owns the codec, the audio
   graph and the pump behind a safe surface: the way to build a live instrument.
+- An MJPEG video player that plays a file from SD through `jpegio` onto any
+  display, with its frame rate measured on an S3 with an SPI panel and on the
+  P4's hardware decoder, and the ffmpeg line that makes the file.
 
 ## Layout
 
