@@ -11,25 +11,17 @@ whole pedalboard changes.
 Nothing is needed on the computer but something that sends MIDI - a DAW
 track, a MIDI monitor, a USB keyboard routed through either.
 
-The costume
------------
-usbif calls the set of USB functions a board presents its "costume". This
-example wears **CDC + MIDI**::
+USB MIDI
+--------
+The board's USB MIDI function is ``midiports.usb_device``, over
+micropython-lib's ``usb-device-midi``, beside the board's own serial port, so
+the REPL you start and stop this from stays up. Starting it makes the serial
+port re-enumerate once.
 
-    _usbif.dev_functions(_usbif.FN_CDC | _usbif.FN_MIDI)
-
-MIDI because that is the point, and CDC because dropping it would take the
-REPL down with it - and the REPL is how you start and stop this. The
-costume is only re-applied when it is not already right, because changing
-it drops the host's connection and costs a fresh enumeration. So the first
-run makes the serial port disappear and come back once; later runs do not.
-
-If your firmware was built without the MIDI function the example says so
-and stops: ``_usbif.dev_functions_built() & _usbif.FN_MIDI``.
-
-The MIDI itself is CircuitPython's: ``adafruit_midi`` reads the port, and
-``midiports.usbif_shim`` gives it usbif's device MIDI as a port. Install
-both once with ``mip.install("github:PyDevices/pydevices/midiports")``.
+The MIDI itself is CircuitPython's: ``adafruit_midi`` reads the port that
+``midiports`` gives it. Install them once with
+``mip.install("usb-device-midi")`` and
+``mip.install("github:PyDevices/pydevices/midiports")``.
 
 Run it on the Waveshare ESP32-P4-WIFI6-Touch-LCD-4B
 --------------------------------------------------
@@ -72,13 +64,12 @@ was busy. It should stay at zero.
 
 import time
 
-import _usbif
 import adafruit_midi
 from adafruit_midi.control_change import ControlChange
 from adafruit_midi.note_off import NoteOff
 from adafruit_midi.note_on import NoteOn
 from adafruit_midi.program_change import ProgramChange
-from midiports import usbif_shim
+from midiports import usb_device
 
 import audiolive
 from audiolive import PATCHES
@@ -100,15 +91,14 @@ CC_MAP = {
 }
 
 
-def wait_for_mount(timeout_ms=MOUNT_TIMEOUT_MS):
-    """Wait for the host to configure us, so we do not read into the void."""
+def wait_for_mount(midi_in, timeout_ms=MOUNT_TIMEOUT_MS):
+    """Wait for the computer to configure us, so we do not read into the void."""
     deadline = time.ticks_add(time.ticks_ms(), timeout_ms)
     while time.ticks_diff(deadline, time.ticks_ms()) > 0:
-        connected, mounted, _ = _usbif.dev_state()
-        if mounted:
+        if midi_in._itf.is_open():
             return True
         time.sleep_ms(50)
-    print("the host never configured us.")
+    print("the computer never configured us.")
     print("  check the cable is a data cable and is in the native USB jack,")
     print("  not only the UART bridge.")
     return False
@@ -192,30 +182,17 @@ class MidiRack:
 
 
 def main():
-    built = _usbif.dev_functions_built()
-    if not (built & _usbif.FN_MIDI):
-        print("this firmware has no MIDI device function built in")
-        return False
-
-    restore = _usbif.dev_functions()
-    want = _usbif.FN_CDC | _usbif.FN_MIDI
-    if restore != want:
-        # Re-enumerating costs the host's connection, so only do it when the
-        # costume is actually wrong. CDC stays on so the REPL survives.
-        _usbif.dev_functions(want)
-        print("costume: cdc+midi -- the serial port re-enumerates once")
-    else:
-        print("costume: already cdc+midi, left alone")
+    # The serial port re-enumerates once as MIDI joins it.
+    midi_in, _midi_out = usb_device.ports()
 
     rack = MidiRack()
     print("pedalboard:", PATCHES[0][0],
           [type(f).NAME for f in rack.live.effects])
     print("play into it. program change 0-3 picks the pedalboard.")
-    if not wait_for_mount():
+    if not wait_for_mount(midi_in):
         rack.stop()
         return False
 
-    midi_in, _midi_out = usbif_shim.ports("dev:midi")
     midi = adafruit_midi.MIDI(midi_in=midi_in)
     next_report = time.ticks_add(time.ticks_ms(), REPORT_MS)
     try:
@@ -242,8 +219,6 @@ def main():
         rack.report()
         rack.stop()
         midi_in.close()
-        if restore != want:
-            _usbif.dev_functions(restore)
     return True
 
 

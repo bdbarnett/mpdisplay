@@ -12,8 +12,9 @@ window, the ESP32-P4 panel (800x480) and the T-Embed (320x170). On desktop it
 opens at 800x480 unless ``PYDEVICES_WIDTH``/``PYDEVICES_HEIGHT`` say otherwise.
 Set ``SPECTRUM_STYLE=segmented`` for LED-style bars.
 
-The levels come from the sound card's C pump when the firmware has one
-(``pump_levels.PumpLevels``: run this beside usbif's ``soundcard.py``), from
+The levels come from audiodsp's pump on a board, whatever it plays
+(``pump_levels.TapLevels``: a file, the drum machine, or a USB sound card
+such as usbhost's ``examples/usb_soundcard.py``), from
 what the computer is playing on a CPython desktop with numpy and
 ``soundcard`` installed (``loopback_levels.LoopbackLevels``), and from
 ``fake_music.FakeMusic`` otherwise. ``SPECTRUM_SOURCE=fake|pump|loopback``
@@ -56,7 +57,7 @@ timer = None
 
 
 def _source(bands):
-    """The sound card's C pump on a board, what the computer is playing on a
+    """The audio pump's tap on a board, what the computer is playing on a
     desktop (``loopback_levels``), else the fake. ``SPECTRUM_SOURCE`` forces
     one: ``fake``, ``pump`` or ``loopback``."""
     want = env_get("SPECTRUM_SOURCE")
@@ -64,9 +65,10 @@ def _source(bands):
         if want in (None, "pump"):
             try:
                 import pump_levels
+                from audiodev import pump
 
-                if pump_levels.available():
-                    return pump_levels.PumpLevels(bands)
+                if pump.on_board():
+                    return pump_levels.TapLevels(bands)
             except ImportError:
                 pass
         if want in (None, "loopback"):
