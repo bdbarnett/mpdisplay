@@ -16,7 +16,7 @@ or a factory that builds one for a band count (``FakeMusic`` is one, and so
 is what ``levels_for`` returns). It draws on a timer from the app it's
 started on, and only the rows that moved reach the panel.
 
-A USB sound card that plays through the pump (usbif's ``usb_soundcard.py``)
+A USB sound card that plays through the pump (usbhost's ``examples/usb_soundcard.py``)
 is metered the same way, by ``pump_levels.TapLevels`` on the pump's tap.
 """
 

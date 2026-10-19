@@ -14,7 +14,7 @@ Set ``SPECTRUM_STYLE=segmented`` for LED-style bars.
 
 The levels come from audiodsp's pump on a board, whatever it plays
 (``pump_levels.TapLevels``: a file, the drum machine, or a USB sound card
-such as usbif's ``usb_soundcard.py``), from
+such as usbhost's ``examples/usb_soundcard.py``), from
 what the computer is playing on a CPython desktop with numpy and
 ``soundcard`` installed (``loopback_levels.LoopbackLevels``), and from
 ``fake_music.FakeMusic`` otherwise. ``SPECTRUM_SOURCE=fake|pump|loopback``

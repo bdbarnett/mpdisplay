@@ -3,7 +3,7 @@
 A spectrum analyzer that is built to look good rather than to measure
 anything. It draws log-spaced bars from 20 Hz to 20 kHz in a cool gradient,
 with peak caps that hang and then fall, a faint reflection under the baseline,
-and frequency labels along the bottom. On a board running usbif's USB sound
+and frequency labels along the bottom. On a board running usbhost's USB sound
 card it shows the audio the PC is playing. The levels are computed in C, in
 the sound card's pump. Everywhere else it plays fake music.
 
@@ -65,7 +65,7 @@ This needs a firmware with audiodsp's
 [`audiometer`](https://github.com/PyDevices/audiodsp#audiometermeter--band-levels-for-a-spectrum-meter)
 (`--modules all` has it). `pump_levels.TapLevels` meters any stream audiodsp's
 pump plays, through the pump's tap, read in C: a file, the drum machine, or a
-USB sound card playing through the pump (usbif's `usb_soundcard.py`).
+USB sound card playing through the pump (usbhost's `examples/usb_soundcard.py`).
 `analyzer.levels_for(out)` builds one for an `AudioOut` that's playing.
 
 On the drum machine's tap the meter costs 3 % of the reading thread, and the
