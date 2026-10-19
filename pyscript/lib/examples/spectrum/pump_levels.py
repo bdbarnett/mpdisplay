@@ -1,17 +1,16 @@
 """
 pump_levels.py -- band levels from audiodsp's audiometer, fed in C.
 
-The real sources behind the same interface as ``fake_music.FakeMusic``:
-``PumpLevels(n).levels(t)`` returns ``n`` levels in 0..1. Python never sees a
-sample. ``PumpLevels`` meters usbif's sound card: its pump feeds the meter on
-its own core, where the audio from the PC already passes. ``TapLevels`` meters
-any audiopump stream, the drum machine's for one, through the pump's tap; the
-tap is read in C each time the levels are.
+The real source behind the same interface as ``fake_music.FakeMusic``:
+``TapLevels(n).levels(t)`` returns ``n`` levels in 0..1, and Python never sees
+a sample. ``TapLevels`` meters any stream audiodsp's pump plays (a file, the
+drum machine, a USB sound card playing through the pump) through the pump's
+tap, read in C each time the levels are. ``PumpLevels`` is the meter both
+are built on, for a source of your own.
 
-It needs a firmware with audiodsp's ``audiometer``. ``PumpLevels`` also needs
-something running the sound card's pump, such as ``soundcard.py``. With no
-audio flowing the levels stop advancing, and after ``STALE_MS`` this returns
-zeros so the bars fall.
+It needs a firmware with audiodsp's ``audiometer``. With no audio flowing the
+levels stop advancing, and after ``STALE_MS`` this returns zeros so the bars
+fall.
 
 The mapping from dB to bar height is here, not in C, because it's a matter of
 taste: ``FLOOR_DB`` is an empty bar, ``TOP_DB`` a full one, and ``TILT_DB``
@@ -32,33 +31,16 @@ TILT_FROM_HZ = 1000.0
 STALE_MS = 150
 
 
-def available():
-    """True on a board where usbif's sound card can feed the meter.
-
-    A desktop MicroPython build carries ``_usbif`` too, with no sound card
-    behind it, so importing it isn't enough: the audio pump also has to own a
-    real I2S peripheral. Without that the meter would wait on a sound card
-    that never plays, and the bars would never move.
-    """
-    try:
-        import _usbif  # noqa: F401
-
-        from audiodev import pump
-    except ImportError:
-        return False
-    return pump.on_board()
-
-
 class PumpLevels:
-    """The sound card's meter. ``source`` and ``rate`` are for TapLevels."""
+    """A meter on ``source``, an ``audiopump.Tap`` at ``rate``; TapLevels
+    makes the tap."""
 
-    def __init__(self, bands, low_hz=LOW_HZ, high_hz=HIGH_HZ, source=audiometer.UAC, rate=None):
+    def __init__(self, bands, low_hz=LOW_HZ, high_hz=HIGH_HZ, source=None, rate=48000):
+        if source is None:
+            raise TypeError("PumpLevels needs a source: TapLevels(bands) meters the pump")
         self.bands = bands
         self.meter = audiometer.Meter(bands, low_hz=low_hz, high_hz=high_hz)
-        if rate is None:
-            self.meter.attach(source)
-        else:
-            self.meter.attach(source, rate)
+        self.meter.attach(source, rate)
         self._buf = bytearray(bands)
         self._out = [0.0] * bands
         self._seq = -1
