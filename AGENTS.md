@@ -170,11 +170,11 @@ LVGL and mpftp soft-reset:
 - Soft-reset + re-import is the acceptance test (no hard reset).
 - Prefer `mip.install` over Wi‑Fi for large Python trees; mpftp for thin files
   and firmware.
-- Symptom table, wrap architecture, and bring-up methods live in the sibling
-  displayif repo:
-  [`soft-reset-and-bring-up.md`](https://github.com/PyDevices/displayif/blob/main/docs/soft-reset-and-bring-up.md)
-  (local: `../displayif/docs/soft-reset-and-bring-up.md` or
-  `~/gh/pydevices/displayif/…`). Start at displayif `AGENTS.md`.
+- Symptom table, wrap architecture, and bring-up methods live with displayif,
+  which is `modules/displayif` in the sibling micropython-pydevices repo:
+  [`soft-reset-and-bring-up.md`](https://github.com/PyDevices/micropython-pydevices/blob/main/modules/displayif/docs/soft-reset-and-bring-up.md)
+  (local: `../micropython-pydevices/modules/displayif/docs/soft-reset-and-bring-up.md`).
+  Start at `modules/displayif/AGENTS.md`.
 - Do not leave flash-backed debug logs on the touch/refresh path (looks like
   flicker). Fix displayif/bindings root causes rather than board_config
   workarounds.
