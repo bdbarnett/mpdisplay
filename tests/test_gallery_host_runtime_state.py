@@ -9,6 +9,7 @@ interpreter, and are skipped where Node isn't installed.
 """
 
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -53,9 +54,17 @@ globalThis.document = {
     addEventListener() {},
 };
 globalThis.location = {search: process.argv[2], href: "http://localhost/gallery/micropython.html"};
-globalThis.fetch = async () => ({ok: true, json: async () => []});
+// FETCH_FAILS=n drops the first n requests for the staged file, as a flapping
+// network does; the file list itself always arrives.
+let dropped = Number(process.env.FETCH_FAILS || 0);
+globalThis.fetch = async (url) => {
+    if (!dropped) return {ok: true, json: async () => [], arrayBuffer: async () => new ArrayBuffer(4)};
+    if (String(url).endsWith("python-files.json")) return {ok: true, json: async () => ["demo.py"]};
+    if (dropped-- > 0) throw new TypeError("Failed to fetch");
+    return {ok: true, arrayBuffer: async () => new ArrayBuffer(4)};
+};
 await import("./host.mjs");
-await new Promise((resolve) => setTimeout(resolve, 100));
+await new Promise((resolve) => setTimeout(resolve, Number(process.env.WAIT_MS || 100)));
 console.log(JSON.stringify({
     state: document.body.dataset.runtimeState,
     errors: globalThis.__pydevicesHost.errors,
@@ -65,7 +74,7 @@ console.log(JSON.stringify({
 
 @unittest.skipUnless(shutil.which("node"), "Node is not installed")
 class TestGalleryHostRuntimeState(unittest.TestCase):
-    def _run(self, command):
+    def _run(self, command, fetch_fails=0):
         source = HOST.read_text(encoding="utf-8")
         self.assertIn(RUNTIME_IMPORT, source)
         with tempfile.TemporaryDirectory() as tmp:
@@ -79,6 +88,7 @@ class TestGalleryHostRuntimeState(unittest.TestCase):
                 ["node", str(tmp / "harness.mjs"), f"?command={command}"],
                 capture_output=True,
                 text=True,
+                env={**os.environ, "FETCH_FAILS": str(fetch_fails), "WAIT_MS": "3500"},
                 timeout=60,
                 check=False,
             )
@@ -94,6 +104,15 @@ class TestGalleryHostRuntimeState(unittest.TestCase):
         outcome = self._run("print-only")
         self.assertEqual(outcome["state"], "ready")
         self.assertEqual(outcome["errors"], [])
+
+    def test_a_dropped_request_while_booting_is_retried(self):
+        outcome = self._run("print-only", fetch_fails=2)
+        self.assertEqual(outcome["state"], "ready")
+
+    def test_a_file_that_stays_unreachable_still_fails_the_page(self):
+        outcome = self._run("print-only", fetch_fails=50)
+        self.assertEqual(outcome["state"], "failed")
+        self.assertIn("Failed to fetch", outcome["errors"][-1])
 
 
 if __name__ == "__main__":

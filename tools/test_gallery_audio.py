@@ -111,6 +111,13 @@ async def check_card(browser, base, name):
     page = await browser.new_page(viewport={"width": 1000, "height": 900})
     await page.add_init_script(INIT_SCRIPT.replace("RESUME_DELAY_MS", str(RESUME_DELAY_MS)))
     problems = []
+    trouble = []  # what the browser itself reported, shown if the card fails
+    page.on("pageerror", lambda e: trouble.append(f"page error: {str(e)[:300]}"))
+    page.on("requestfailed", lambda r: trouble.append(f"request failed: {r.url} {r.failure}"))
+    page.on(
+        "response",
+        lambda r: trouble.append(f"HTTP {r.status}: {r.url}") if r.status >= 400 else None,
+    )
     try:
         await load(page, f"{base}/gallery/micropython.html?{query}")
         await page.wait_for_timeout(1500)
@@ -118,6 +125,12 @@ async def check_card(browser, base, name):
         log = await page.inner_text("#log")
         if state != "ready":
             problems.append(f"runtimeState={state}")
+            print(f"  page log ({name}):\n    " + log.strip().replace("\n", "\n    ")[-1500:])
+            errors = await page.evaluate("(window.__pydevicesHost?.errors ?? []).join('\\n')")
+            if errors:
+                print("  host errors:\n    " + errors.replace("\n", "\n    ")[-1500:])
+            for line in trouble[-10:]:
+                print(f"  {line}")
         if "Traceback" in log:
             problems.append("traceback in the console log")
         before = await page.evaluate("window.__audio")
