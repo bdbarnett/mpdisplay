@@ -228,6 +228,7 @@ and pygraphics has its own standalone wheel check.
 |--------|---------|
 | [`quit_inject.py`](quit_inject.py) | Inject quit into running examples (used by the example harness) |
 | [`pydevices_test_mode.py`](pydevices_test_mode.py) | Test-mode env for examples |
+| [`test_gallery_audio.py`](test_gallery_audio.py) | Load the audio cards (Audio Arpeggio, Piano, Drum Machine, Audiolive Rack) on the direct-WebAssembly gallery in headless Chromium, click as a visitor would, and assert non-silent audio reaches Web Audio |
 | [`screenshot.py`](screenshot.py) | Run a desktop example and save its SDL2/pygame-ce window as PNG |
 | [`record.py`](record.py) | Run a desktop example and record its SDL2/pygame-ce window with FFmpeg |
 | [`typings/`](typings/) | MicroPython stdlib stubs + core package `.pyi` (see below) |

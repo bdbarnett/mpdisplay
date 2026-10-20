@@ -190,6 +190,9 @@ class Piano:
         self._drawn_pressed = {}
         self._drawn_status = None
         self._audio_ready = False
+        # source -> midi, for presses made while the sound was still locked
+        self._waiting = {}
+        self._said_locked = False
         # Android focus + mediaPlayback FGS + OpenSL take a few seconds on
         # first open. Warm here (before event handlers) and gate notes so
         # early taps do not queue up and play late when the stream catches up.
@@ -199,11 +202,13 @@ class Piano:
         self._draw_all()
 
     def _open_audio(self):
-        # The host only unlocks the AudioContext on the page's first
-        # gesture, so the very first attempt here (at __init__, before any
-        # click) is expected to fail; _press() retries on every tap until
-        # it succeeds once. play() opens the transport as a side effect, so
-        # a failure to unlock raises here exactly like a bare open() would.
+        # A browser keeps the page silent until its first gesture, so the
+        # attempt at __init__ (before any click) is expected to fail in one,
+        # and so can the one made by the very first tap, since the host
+        # unlocks the sound just after the tap that asked. _retry_audio() tries
+        # again on a timer until it works once. play() opens the transport as
+        # a side effect, so a failure to unlock raises here exactly like a
+        # bare open() would.
         try:
             audio_out.play(synth)
             self._audio_ready = True
@@ -211,9 +216,25 @@ class Piano:
             return True
         except Exception as exc:
             self._audio_ready = False
-            self._status = "Audio not available"
-            print("piano: audio open failed: %r" % (exc,))
+            self._status = "Tap or press a key for sound"
+            if not self._said_locked:
+                self._said_locked = True
+                print("piano: audio is not open yet, waiting for a click:", exc)
             return False
+
+    def _retry_audio(self, timer):
+        if self._audio_ready:
+            timer.deinit()
+            return
+        if not self._open_audio():
+            return
+        timer.deinit()
+        # The visitor's gesture unlocked the sound: sound what they are
+        # still holding down, then show the ready status.
+        waiting, self._waiting = self._waiting, {}
+        for source, midi in waiting.items():
+            self._press(source, midi)
+        self._draw_header()
 
     def _build_geometry(self):
         y = self.kb_y
@@ -247,6 +268,7 @@ class Piano:
         if midi is None:
             return
         if not self._audio_ready and not self._open_audio():
+            self._waiting[source] = midi
             self._draw_header()
             return
         prev = self._sources.get(source)
@@ -264,6 +286,7 @@ class Piano:
         self._refresh()
 
     def _release_source(self, source, redraw=True):
+        self._waiting.pop(source, None)
         midi = self._sources.pop(source, None)
         if midi is None:
             return
@@ -395,6 +418,8 @@ class Piano:
 
 
 piano = Piano()
+if not piano._audio_ready:  # a browser: wait for the visitor's first click
+    app.every(100, piano._retry_audio)
 
 
 def _on_mouse_button(e):
