@@ -49,7 +49,6 @@ lowpass = audiobiquad.Biquad(
 lowpass.play(synth)
 if hasattr(audio_out, "attach"):  # CircuitPython's I2SOut runs on its own
     audio_out.attach(app)
-audio_out.play(lowpass)
 
 UP = [60, 64, 67, 72, 76, 79, 84]  # C4 E4 G4 C5 E5 G5 C6
 
@@ -101,7 +100,26 @@ SEQUENCE = (UP + UP[-2:0:-1]) * 2
 STEP_MS = 160
 CHORD_STEPS = 10  # the chord rings for 10 steps, then everything stops
 
-state = {"step": 0, "note": None}
+state = {"step": 0, "note": None, "open": False, "told": False}
+
+
+def open_audio():
+    """Start the output; False while a browser is still waiting for a gesture.
+
+    A page may not make a sound until the visitor has touched it, so in a
+    browser the first attempts raise RuntimeError. The arpeggio waits, trying
+    again on each tick, and starts when the click or key press unlocks the
+    sound. On a board the first attempt works.
+    """
+    try:
+        audio_out.play(lowpass)
+    except RuntimeError:
+        if not state["told"]:
+            state["told"] = True
+            print("audio_arpeggio: click or press a key to start the sound")
+        return False
+    state["open"] = True
+    return True
 
 
 def note(midi, amplitude=1.0):
@@ -109,6 +127,8 @@ def note(midi, amplitude=1.0):
 
 
 def step(timer):
+    if not state["open"] and not open_audio():
+        return
     if state["note"] is not None:
         synth.release(state["note"])
         state["note"] = None
