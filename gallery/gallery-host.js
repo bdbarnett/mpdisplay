@@ -83,16 +83,38 @@ function mkdirTree(fs, path) {
     }
 }
 
-async function fetchBytes(url) {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`${response.status} fetching ${url}`);
-    return new Uint8Array(await response.arrayBuffer());
+// Booting fetches the runtime and well over a hundred small files, so on a
+// slow or changing network (a phone leaving Wi-Fi, a site deploying mid-load)
+// one dropped request is likely. Retry a few times before calling the page
+// failed; a file that is really missing still fails, a second or two later.
+const ATTEMPTS = 4;
+const pause = (ms) => new Promise((done) => setTimeout(done, ms));
+
+async function withRetry(work) {
+    for (let attempt = 1; ; attempt++) {
+        try {
+            return await work(attempt);
+        } catch (error) {
+            if (attempt === ATTEMPTS) throw error;
+            await pause(300 * attempt);
+        }
+    }
+}
+
+function fetchBytes(url) {
+    return withRetry(async () => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`${response.status} fetching ${url}`);
+        return new Uint8Array(await response.arrayBuffer());
+    });
 }
 
 async function stagePython(mp, plan) {
-    const response = await fetch("./python-files.json", {cache: "no-store"});
-    if (!response.ok) throw new Error("python-files.json is unavailable");
-    const paths = await response.json();
+    const paths = await withRetry(async () => {
+        const response = await fetch("./python-files.json", {cache: "no-store"});
+        if (!response.ok) throw new Error("python-files.json is unavailable");
+        return response.json();
+    });
     for (const relative of paths) {
         const utility = relative.startsWith("utils/");
         const source = utility
@@ -166,12 +188,19 @@ sys.path[:] = [".", ".frozen", "lib", "examples", "utils"]
     }
 }
 
+const RUNTIME = "/vendor/micropython/micropython.mjs";
+
 async function createRuntime() {
-    const {loadMicroPython} = await import("/vendor/micropython/micropython.mjs");
-    return loadMicroPython({
-        stdout: (line) => log(line, "stdout"),
-        stderr: (line) => log(line, "stderr"),
-        heapsize: 16 * 1024 * 1024,
+    // A browser remembers a module that failed to load for this page, so a
+    // retry asks for a different address.
+    return withRetry(async (attempt) => {
+        const suffix = attempt > 1 ? `?retry=${attempt}` : "";
+        const {loadMicroPython} = await import(RUNTIME + suffix);
+        return loadMicroPython({
+            stdout: (line) => log(line, "stdout"),
+            stderr: (line) => log(line, "stderr"),
+            heapsize: 16 * 1024 * 1024,
+        });
     });
 }
 
