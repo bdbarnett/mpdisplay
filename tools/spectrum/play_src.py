@@ -5,6 +5,13 @@
 SOURCE: tone | pink | sweep | mix (10 s pink, 10 s log sweep 20 Hz-20 kHz,
 alternating) | a path to a 48 kHz wav. Loops. GAIN is linear (default 0.25).
 Prints the frame rate the host delivered and underflows, like uac_play_tone.
+
+Exclusive mode plays through blocking writes, which makes PortAudio run
+WASAPI's polling path. Its event path wrote into the device's ring without
+checking where the device was reading, so the stream alternated between new
+audio and stale 20 ms buffers; polling writes only the free space. Shared mode
+keeps the callback. With blocking writes the frame rate counts the frames
+queued ahead of the device, so run at least 10 s before reading it.
 """
 
 import sys
@@ -71,31 +78,44 @@ dev = next(
     and sd.query_hostapis(d["hostapi"])["name"] == "Windows WASAPI"
 )
 state = {"pos": 0, "frames": 0, "under": 0}
+BLOCK = RATE // 50  # 20 ms, one WASAPI period
+
+
+def take(frames):
+    """The next `frames` frames of the looping material."""
+    p = state["pos"]
+    idx = (np.arange(frames) + p) % len(pcm)
+    state["pos"] = (p + frames) % len(pcm)
+    state["frames"] += frames
+    return pcm[idx]
 
 
 def cb(out, frames, t, status):
     if status.output_underflow:
         state["under"] += 1
-    p = state["pos"]
-    n = len(pcm)
-    idx = (np.arange(frames) + p) % n
-    out[:] = pcm[idx]
-    state["pos"] = (p + frames) % n
-    state["frames"] += frames
+    out[:] = take(frames)
 
 
-with sd.OutputStream(
-    device=dev,
-    samplerate=RATE,
-    channels=2,
-    dtype="int16",
-    callback=cb,
-    extra_settings=sd.WasapiSettings(exclusive=excl),
-    latency="high",
-):
-    t0 = time.perf_counter()
-    time.sleep(secs)
-    el = time.perf_counter() - t0
+stream_args = {
+    "device": dev,
+    "samplerate": RATE,
+    "channels": 2,
+    "dtype": "int16",
+    "extra_settings": sd.WasapiSettings(exclusive=excl),
+    "latency": "high",
+}
+if excl:
+    with sd.OutputStream(**stream_args) as stream:
+        t0 = time.perf_counter()
+        while time.perf_counter() - t0 < secs:
+            if stream.write(take(BLOCK)):
+                state["under"] += 1
+        el = time.perf_counter() - t0
+else:
+    with sd.OutputStream(callback=cb, **stream_args):
+        t0 = time.perf_counter()
+        time.sleep(secs)
+        el = time.perf_counter() - t0
 print(
     "HOST src=%s gain=%.3f exclusive=%s frames/s=%.1f underflows=%d"
     % (src, gain, excl, state["frames"] / el, state["under"])
