@@ -12,6 +12,12 @@ checking where the device was reading, so the stream alternated between new
 audio and stale 20 ms buffers; polling writes only the free space. Shared mode
 keeps the callback. With blocking writes the frame rate counts the frames
 queued ahead of the device, so run at least 10 s before reading it.
+
+Exclusive mode asks for a 100 ms buffer. The 21 ms one "high" gives a USB sound
+card leaves the writer no slack: a write that comes a few ms late lets the
+device replay the previous lap of the buffer for that long (5 to 7 ms
+bursts, about 17 a second, seen on the ESP32-P4 card), which breaks a steady
+tone's phase. With 100 ms it plays the material exactly.
 """
 
 import sys
@@ -102,7 +108,7 @@ stream_args = {
     "channels": 2,
     "dtype": "int16",
     "extra_settings": sd.WasapiSettings(exclusive=excl),
-    "latency": "high",
+    "latency": 0.1 if excl else "high",
 }
 if excl:
     with sd.OutputStream(**stream_args) as stream:
