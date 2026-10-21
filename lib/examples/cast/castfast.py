@@ -39,10 +39,10 @@ def pump_stream(fmt=None, volume=85, capacity=32, log=print):
         transport = getattr(transport, "_inner", None)
     if transport is None:
         raise RuntimeError("this board publishes no I2S transport for the pump")
-    try:
-        transport.volume = volume
-    except Exception:
-        pass
+    # ``volume`` is a read-only property, so assigning to it did nothing and the
+    # pump started the codec at the transport's own 100 %. ``set_volume`` is what
+    # the pump applies when it takes the codec live.
+    transport.set_volume(volume)
     driver = pump.BusioDriver(transport.wire, fmt, power=getattr(transport, "audio_power", None),
                               volume=volume, transport=transport)
     stream = pump.attach_stream(fmt, driver=driver, frames=256, capacity=capacity)
