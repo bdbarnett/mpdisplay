@@ -1,0 +1,24 @@
+# playing_cards and blackjack
+
+Playing card classes for the PyDevices display stack, and a blackjack game built on them.
+
+Run either one from `lib/` (see [the examples README](../README.md)):
+
+```bash
+PYTHONPATH=.:lib:utils ../.venv/bin/python examples/blackjack/blackjack.py
+PYTHONPATH=.:lib:utils ../.venv/bin/python examples/blackjack/playing_cards_simpletest.py
+```
+
+`playing_cards.py` draws with [pygraphics](https://github.com/PyDevices/pygraphics) onto a `displaybuf.DisplayBuffer`, and the examples read taps and clicks through `appdev`.  The classes are an example of what may be done with those pieces.  It is a work in-progress and is likely to change significantly.
+
+The ultimate goal is to have a set of classes for a [Standard 52-card deck](https://en.wikipedia.org/wiki/Standard_52-card_deck) that may be used to implement any card game that uses such a deck or portion thereof.  Games can use the full deck, or multiple decks, such as the example [blackjack](blackjack.py), or use a portion of a deck, such as Euchre, or a mutiple portions of decks, such as Pinochle.  Using dunder methods, it will be possible to compare one card to another, with each game having its own rules for comparison.  The logic of the game may say `if card1 > card2:`, and the rules of the game would automatically be applied.
+
+Current, although somewhat incomplete, classes are:
+- `Card` - the base object that has properties for suit, rank, hidden (face down or face up) and position (x, y location if it is in play).  Methods for game play are hide, reveal, flip and discard.  There are also methods for erase to redraw the area where the card had been and hit_test to see if an x, y touch or mouse click coordinate is within the bounds of the card.
+- `Pile` a list of sharing a current state in the game.  Attributes determine whether the top card is up or down, whether the rest of the cards are up or down, whether they are offset to reveal the cards below them and whether the offset is horizontal such as in a player's hand or verticle such as in the seven piles in Solitaire.  Methods include pull and place.
+- `Hand` is a subclass of pile.  The only additional method is reveal.
+- `Cards` is a subclass of pile.  It is the list of all cards that are being used in the game.  It has a list of which suits and ranks are included as well as the number of decks used.  It has definitions and rules about how to render the cards on the screen.  In addition to having a list of all cards being used in the game, it also has lists for cards that are in_deck (haven't been dealt yet), in_play (somewhere on the table or in a hand) and in_discard.  It has methods for shuffle, draw_one, draw(x) and discard as well as the methods for display render and erase.  There are default rules of comparison that are intended to be overriden by the particular game application.
+
+Those classes are enough to display, flip and otherwise manipulate the cards, as shown in the [playing_cards_simpletest.py](playing_cards_simpletest.py) example.  However, it is intended for most applications to subclass the Cards class as Game.  The Game class will define the games comparison rules, if any.  (Trick taking games will need to define their comparison rules, but others, like BlackJack, don't compare cards to each other.)  The Game class can handle the rest of the game logic and polling for user input if those aren't handled in the main flow of the program outside all classes.
+
+As I (or you) implement new games, it will likely become apparent that the way I have structured the classes needs to be modified, so please understand the API WILL change.
