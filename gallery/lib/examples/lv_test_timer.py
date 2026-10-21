@@ -485,7 +485,10 @@ def _emit_result(state, taps):
         "fps": get_fps(),
     }
     print(_RESULT_PREFIX + json.dumps(payload, separators=(",", ":")))
-    sys.stdout.flush()
+    # CircuitPython's stdout has no flush().
+    flush = getattr(sys.stdout, "flush", None)
+    if flush:
+        flush()
     return payload
 
 
