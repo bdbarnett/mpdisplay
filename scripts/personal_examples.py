@@ -7,7 +7,7 @@ PERSONAL_EXAMPLE_DIRS = frozenset(
     {
         "frogger",
         "spotapi",
-        "spotify_remote",  # apps/spotify_remote in spotapi repo
+        "spotify_remote",  # pydevices sayso/apps/spotify_remote, if linked locally
         "spotify_client",  # alias if the symlink is renamed locally
     }
 )
