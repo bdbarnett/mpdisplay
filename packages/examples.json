@@ -309,6 +309,22 @@
       "github:PyDevices/pydevices-examples/lib/examples/audiolive/rack_midi.py"
     ],
     [
+      "blackjack/__init__.py",
+      "github:PyDevices/pydevices-examples/lib/examples/blackjack/__init__.py"
+    ],
+    [
+      "blackjack/blackjack.py",
+      "github:PyDevices/pydevices-examples/lib/examples/blackjack/blackjack.py"
+    ],
+    [
+      "blackjack/playing_cards.py",
+      "github:PyDevices/pydevices-examples/lib/examples/blackjack/playing_cards.py"
+    ],
+    [
+      "blackjack/playing_cards_simpletest.py",
+      "github:PyDevices/pydevices-examples/lib/examples/blackjack/playing_cards_simpletest.py"
+    ],
+    [
       "car_cluster/__init__.py",
       "github:PyDevices/pydevices-examples/lib/examples/car_cluster/__init__.py"
     ],

@@ -2,12 +2,14 @@
 #
 # SPDX-License-Identifier: MIT
 """
-playing_cards.py - A simple playing card library for MPDisplay.
-Cards can be rendered to FrameBuf_Plus, DisplayBuffer or TFT_Graphics targets.
+playing_cards.py - A simple playing card library for PyDevices.
+Cards can be rendered to any pygraphics canvas: a displaybuf DisplayBuffer,
+a pygraphics FrameBuffer, or a display driver.
 """
 
 import random
-import graphics
+
+import pygraphics
 
 
 HEARTS = "Hearts"
@@ -394,7 +396,7 @@ class Cards(Pile):
         card.save_state(target, x, y, hidden)
 
         # Draw the card background
-        dirty = graphics.round_rect(
+        dirty = pygraphics.round_rect(
             target,
             draw_x,
             draw_y,
@@ -406,7 +408,7 @@ class Cards(Pile):
         )
 
         # Draw the card border
-        graphics.round_rect(
+        pygraphics.round_rect(
             target,
             draw_x,
             draw_y,
@@ -419,7 +421,7 @@ class Cards(Pile):
 
         if hidden:
             # Draw the card back
-            graphics.round_rect(
+            pygraphics.round_rect(
                 target,
                 draw_x + 2,
                 draw_y + 2,
@@ -432,7 +434,7 @@ class Cards(Pile):
             return
 
         # Draw the card value in the top left corner
-        graphics.text16(
+        pygraphics.text16(
             target,
             card.value,
             draw_x + self._x_positions[0] - len(card.value) * self._lfw // 2,
@@ -441,7 +443,7 @@ class Cards(Pile):
         )
 
         # Draw the card value in the bottom right corner
-        graphics.text16(
+        pygraphics.text16(
             target,
             card.value,
             draw_x + self._x_positions[4] - len(card.value) * self._lfw // 2,
@@ -451,7 +453,7 @@ class Cards(Pile):
         )
 
         # Draw the suit glyph in the top left corner
-        graphics.text16(
+        pygraphics.text16(
             target,
             self._suit_glyphs[card.suit],
             draw_x + self._x_positions[0] - self._sfw // 2,
@@ -460,7 +462,7 @@ class Cards(Pile):
         )
 
         # Draw the suit glyph in the bottom right corner
-        graphics.text16(
+        pygraphics.text16(
             target,
             self._suit_glyphs[card.suit],
             draw_x + self._x_positions[4] - self._sfw // 2,
@@ -475,7 +477,7 @@ class Cards(Pile):
 
         # Draw the suit glyph on the grid (on Ace through 10)
         for x_pos, y_pos in self._positions[card.rank]:
-            graphics.text16(
+            pygraphics.text16(
                 target,
                 self._suit_glyphs[card.suit],
                 draw_x + self._x_positions[x_pos] - self._lfs * self._lfw // 2,
@@ -487,7 +489,7 @@ class Cards(Pile):
 
         # Draw a large letter on face cards instead of a graphic
         if card.rank in ["Jack", "Queen", "King"]:
-            graphics.text16(
+            pygraphics.text16(
                 target,
                 card.value[0],
                 draw_x + self._x_positions[2] - self._fcs * self._lfw // 2,

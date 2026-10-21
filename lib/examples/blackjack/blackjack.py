@@ -1,18 +1,30 @@
+# gallery: skip
+# deps: palettes, pygraphics
+# utils: displaybuf
 """
-This demo is written to use either DisplayBuf or Direct Draw.  To switch between them, comment out one
-of the two import lines below.
+Blackjack with the playing_cards classes: tap Play to deal, Hit or Stand to
+play your hand against the dealer, and Exit (or close the window) to quit.
+
+The cards draw into a displaybuf DisplayBuffer, which pushes only the changed
+area to the display.
+
+It waits for clicks in a loop that never yields, so it runs from a desktop or a
+board but not in the browser gallery.
 """
 
-from board_config import display_drv, broker
-from displaybuf import DisplayBuffer as SSD
+from board_config import display_drv
+import board_config
+import appdev
+
+app = appdev.App(board_config)
+from displaybuf import DisplayBuffer
 from palettes import get_palette
-from eventsys import events
 from playing_cards import Cards, Hand
 from time import sleep
 
 
 display_drv.rotation = 90
-ssd = SSD(display_drv, SSD.RGB565)
+ssd = DisplayBuffer(display_drv)
 
 palette = get_palette(color_depth=16)
 ssd.color_palette = palette
@@ -105,30 +117,30 @@ class Game(Cards):
 
     def poll(self):
         ret = None
-        evts = broker.poll()
-        if evts:
-            for event in evts:
-                if event.type == events.MOUSEBUTTONDOWN and event.button == 1:
-                    x, y = event.pos
-                    for button in [self.button1, self.button2]:
-                        if button.hit_test(x, y):
-                            ret = button.text().lower()
+        for event in app.poll():
+            if event.type == app.events.QUIT:
+                raise SystemExit
+            if event.type == app.events.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = event.pos
+                for button in [self.button1, self.button2]:
+                    if button.hit_test(x, y):
+                        ret = button.text().lower()
         return ret
 
     def loop(self):
         last_message_area = None
         while True:
-            evts = broker.poll()
-            if evts:
-                for event in evts:
-                    if event.type == events.MOUSEBUTTONDOWN and event.button == 1:
-                        x, y = event.pos
-                        if self.button1.hit_test(x, y):
-                            last_message_area = self.play_hand(last_message_area)
-                            self.show(self.button1.text("Play"))
-                            self.show(self.button2.text("Exit"))
-                        elif self.button2.hit_test(x, y):
-                            return
+            for event in app.poll():
+                if event.type == app.events.QUIT:
+                    return
+                if event.type == app.events.MOUSEBUTTONDOWN and event.button == 1:
+                    x, y = event.pos
+                    if self.button1.hit_test(x, y):
+                        last_message_area = self.play_hand(last_message_area)
+                        self.show(self.button1.text("Play"))
+                        self.show(self.button2.text("Exit"))
+                    elif self.button2.hit_test(x, y):
+                        return
 
     def play_hand(self, last_message_area):
         self.reset(last_message_area)

@@ -1,16 +1,22 @@
+# deps: palettes, pygraphics
+# utils: displaybuf
 """
-Playing Cards Simple Test
+Playing Cards Simple Test: deals the deck across the screen face down; click
+or tap a card to flip it, right-click (or close the window) to quit.
 """
 
-from board_config import display_drv, broker
-from displaybuf import DisplayBuffer as SSD
+from board_config import display_drv
+import board_config
+import appdev
+
+app = appdev.App(board_config)
+from displaybuf import DisplayBuffer
 from palettes import get_palette
-from eventsys import events
 from playing_cards import Cards
 
 
 display_drv.rotation = 90
-ssd = SSD(display_drv, SSD.RGB565)
+ssd = DisplayBuffer(display_drv)
 
 palette = get_palette(color_depth=16)
 ssd.color_palette = palette
@@ -45,18 +51,18 @@ def deal():
 
 def loop():
     while True:
-        evts = broker.poll()
-        if evts:
-            for event in evts:
-                    if event.type == events.MOUSEBUTTONUP:
-                        if event.button == 3:  # right-click
-                            return  # exit loop
-                        x, y = event.pos
-                        for card in cards.in_play:
-                            if card.hit_test(x, y):
-                                card.flip()
-                                ssd.show()
-                                break
+        for event in app.poll():
+            if event.type == app.events.QUIT:
+                return
+            if event.type == app.events.MOUSEBUTTONUP:
+                if event.button == 3:  # right-click
+                    return  # exit loop
+                x, y = event.pos
+                for card in cards.in_play:
+                    if card.hit_test(x, y):
+                        card.flip()
+                        ssd.show()
+                        break
 
 
 deal()

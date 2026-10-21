@@ -507,6 +507,13 @@ kind = "loop"
 quit = "inject"
 deps = ["utils", "tft_config"]
 
+[examples.blackjack]
+import = "blackjack.blackjack"
+script = "examples/blackjack/blackjack.py"
+kind = "loop"
+quit = "inject"
+deps = ["utils"]
+
 [examples.tiny_toasters]
 import = "tiny_toasters.tiny_toasters"
 script = "examples/tiny_toasters/tiny_toasters.py"
