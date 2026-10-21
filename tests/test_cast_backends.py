@@ -101,7 +101,7 @@ class TestCastBackends(unittest.TestCase):
 
     def test_hls_comes_from_auto_display_once_required(self):
         backends.require("display", "hls", module="hls_display")
-        with mock.patch.object(hls_display, "_can_encode", return_value=True), mock.patch.object(
+        with mock.patch("shutil.which", return_value="/usr/bin/ffmpeg"), mock.patch.object(
             hls_display, "_FfmpegHls", _Fake
         ), mock.patch.object(hls_display.HlsDisplay, "_local_ip", return_value="127.0.0.1"):
             display = AutoDisplay(64, 64, tv=None, log=lambda *a: None)
@@ -118,7 +118,7 @@ class TestCastBackends(unittest.TestCase):
 
     def test_cast_comes_from_auto_display_once_required(self):
         backends.require("display", "cast", module="cast_display")
-        with mock.patch.object(cast_display, "_can_encode", return_value=True), mock.patch.object(
+        with mock.patch("shutil.which", return_value="/usr/bin/ffmpeg"), mock.patch.object(
             cast_display, "pycast", mock.Mock(FfmpegCaster=_Fake)
         ), mock.patch.object(cast_display, "castfast", None), mock.patch.object(
             cast_display.CastDisplay, "_start", lambda self: None
