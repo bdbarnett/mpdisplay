@@ -184,6 +184,29 @@ Without the runner, set `CAST_TARGET` to the address, put the method's folder
 first on the path and run the example. A board runs the same script through
 mpftp, with its settings at the top of the file.
 
+## Let AutoDisplay pick a cast display
+
+With PyDevices 0.7.7 or later (experimental), the Roku, HLS and Miracast
+displays register themselves with the `backends` registry. The three
+`board_config.py` files (`roku`, `roku_hls`, `miracast`) each ask for theirs
+with one line, so an app that calls `AutoDisplay(...)` under that config gets
+the cast display rather than a window on the machine. You can ask for one
+yourself:
+
+```python
+import backends
+backends.require("display", "hls", module="hls_display")    # or "roku", "cast"
+display_drv = AutoDisplay(1280, 720, tv="192.168.1.129")    # keywords go to the display
+```
+
+The names are `roku` (`tv=`), `hls` (`tv=`, or `tv=None` to open the printed
+URL in VLC) and `cast` (`sink=` and `kind="windows"` or `"roku"`). A cast
+display is never picked unless something asks for it, so nothing streams to a
+TV by surprise. `PYDEVICES_DISPLAY=hls` names one for a single run. On an
+earlier PyDevices there is no registry and the configs work as they always
+did. The registry itself is described in the
+[displaydev guide](https://github.com/PyDevices/pydevices/blob/main/docs/displaydev.md#experimental-your-own-backend).
+
 ## What isn't done yet
 
 The Roku's remote as input over Miracast is

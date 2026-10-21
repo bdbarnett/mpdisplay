@@ -271,3 +271,27 @@ class HlsDisplay(FBDisplay):
 
     def deinit(self):
         self.close()
+
+
+def _can_encode():
+    # castif on a P4, ffmpeg on a desktop; elsewhere HlsDisplay raises
+    if castif is not None:
+        return True
+    if sys.implementation.name != "cpython":
+        return False
+    import os
+    import shutil
+
+    return bool(os.environ.get("FFMPEG") or shutil.which("ffmpeg"))
+
+
+# Register HlsDisplay with PyDevices' experimental backend registry, so a
+# config that says ``backends.require("display", "hls", module="hls_display")``
+# gets it from AutoDisplay(width, height, tv=ADDRESS_OR_NONE). PyDevices before
+# 0.7.7 has no registry; there the display is still built by hand.
+try:
+    import backends
+except ImportError:
+    pass
+else:
+    backends.register("display", "hls", "hls_display:HlsDisplay", probe=_can_encode)

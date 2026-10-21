@@ -5,6 +5,16 @@ Put this folder first on the path and run the example, e.g. testris.py.
 
 from utils.roku_companion import RokuAudioSink, RokuCompanion, RokuDisplay, roku_host
 
+# PyDevices 0.7.7 and later: tell AutoDisplay this display is wanted, so an app
+# that calls AutoDisplay(...) under this config gets it. Earlier releases have
+# no registry, and the display built below is all there is.
+try:
+    import backends
+except ImportError:
+    pass
+else:
+    backends.require("display", "roku", module="utils.roku_companion")
+
 WIDTH = 480
 HEIGHT = 270
 

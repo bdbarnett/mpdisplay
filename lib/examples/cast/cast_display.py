@@ -182,3 +182,26 @@ class CastDisplay(FBDisplay):
 
     def deinit(self):
         self.close()
+
+
+def _can_encode():
+    # castif on a P4, ffmpeg on a desktop
+    if castfast is not None:
+        return True
+    import os
+    import shutil
+
+    return bool(os.environ.get("FFMPEG") or shutil.which("ffmpeg"))
+
+
+# Register CastDisplay with PyDevices' experimental backend registry, so a
+# config that says ``backends.require("display", "cast", module="cast_display")``
+# gets it from AutoDisplay(width, height, sink=ADDRESS, kind="windows").
+# PyDevices before 0.7.7 has no registry; there the display is still built by
+# hand.
+try:
+    import backends
+except ImportError:
+    pass
+else:
+    backends.register("display", "cast", "cast_display:CastDisplay", probe=_can_encode)

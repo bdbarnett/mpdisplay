@@ -1241,3 +1241,15 @@ class RokuAudioSink:
             self._sock.close()
         except OSError:
             pass
+
+
+# Register RokuDisplay with PyDevices' experimental backend registry, so a
+# config that says ``backends.require("display", "roku", module="utils.roku_companion")``
+# gets it from AutoDisplay(width, height, tv=ADDRESS). PyDevices before 0.7.7
+# has no registry; there the display is still built by hand.
+try:
+    import backends
+except ImportError:
+    pass
+else:
+    backends.register("display", "roku", "utils.roku_companion:RokuDisplay")

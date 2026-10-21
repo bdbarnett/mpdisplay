@@ -23,6 +23,16 @@ from cast_display import CastDisplay  # noqa: E402
 
 from utils import cast_target  # noqa: E402
 
+# PyDevices 0.7.7 and later: tell AutoDisplay this display is wanted, so an app
+# that calls AutoDisplay(...) under this config gets it. Earlier releases have
+# no registry, and the display built below is all there is.
+try:
+    import backends
+except ImportError:
+    pass
+else:
+    backends.require("display", "cast", module="cast_display")
+
 # the laptop's (or the Roku's) address; "roku:ADDRESS" for a Roku
 SINK = cast_target.get("192.168.1.143")
 KIND = "windows"          # "windows" or "roku"
