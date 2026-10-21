@@ -21,6 +21,16 @@ if _here not in sys.path:
 from hls_display import HlsDisplay  # noqa: E402
 from utils import cast_target  # noqa: E402
 
+# PyDevices 0.7.7 and later: tell AutoDisplay this display is wanted, so an app
+# that calls AutoDisplay(...) under this config gets it. Earlier releases have
+# no registry, and the display built below is all there is.
+try:
+    import backends
+except ImportError:
+    pass
+else:
+    backends.require("display", "hls", module="hls_display")
+
 TV = cast_target.get("192.168.1.129")      # your Roku's IP address, or None
 WIDTH = 1280
 HEIGHT = 720
