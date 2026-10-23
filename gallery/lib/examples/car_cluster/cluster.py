@@ -229,6 +229,8 @@ class Cluster:
             bg=BG,
             unit="mph",
             caption="0.0 mi",
+            minor=5,
+            major=20,
         )
         self.speed.set_pos(W * 27 // 100 - size // 2, cy - size // 2)
         self.power = Ring(
@@ -240,6 +242,8 @@ class Cluster:
             bg=BG,
             unit="kW",
             caption="3.7 mi/kWh",
+            minor=10,
+            major=50,
         )
         self.power.set_pos(W * 73 // 100 - size // 2, cy - size // 2)
 
