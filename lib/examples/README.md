@@ -1,8 +1,8 @@
 # lib/examples
 
 Portable examples and complete demo applications for the PyDevices driver
-stack. Each script runs unmodified on MicroPython, CircuitPython, and CPython
-wherever a `board_config` is available.
+stack, written for MicroPython, CircuitPython and CPython. A script runs on
+your board once it has a `board_config` and the libraries the script imports.
 
 The easiest way to browse and run these examples is the interactive
 [PyScript gallery](https://PyDevices.github.io/pydevices-examples/pyscript/) —
