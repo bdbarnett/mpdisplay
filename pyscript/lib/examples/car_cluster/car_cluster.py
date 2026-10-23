@@ -7,12 +7,15 @@ car_cluster
 An electric car's instrument cluster, 800x480, in LVGL.
 
 Two neon dials, speed in mph on the left and motor power in kW on the right,
-with the odometer and the miles per kWh under them; the clock, the date and
+with the lap distance and the miles per kWh under them; the clock, the date and
 the outside temperature along the top; the turn indicators; a lit lane
 running to the horizon with the car's marker at its foot; and P R N D S
 along the bottom.
 
-The car drives itself round a 90 second loop (see ``vehicle.py``). Keys:
+The car drives itself round a ten mile figure eight of two stacked blocks,
+out of its driveway and back (see ``vehicle.py``), at ten times real time
+so a lap takes a couple of minutes; set ``CAR_CLUSTER_SPEEDUP=1`` for the
+real twenty. Keys:
 
   Left / Right  hold that turn indicator on; press again to cancel
   Enter         pause and resume the drive
@@ -44,6 +47,11 @@ if _PKG not in sys.path:
 
 from boarddev import env_bool, env_get, env_set  # noqa: E402
 
+try:
+    SPEEDUP = float(env_get("CAR_CLUSTER_SPEEDUP") or 10.0)
+except (TypeError, ValueError):
+    SPEEDUP = 10.0
+
 env_set("PYDEVICES_WIDTH", "800")
 env_set("PYDEVICES_HEIGHT", "480")
 if env_get("PYDEVICES_SCALE") is None:
@@ -61,6 +69,7 @@ _vehicle = None
 _last_ms = None
 _timer = None
 _keys = None
+_wall = [0.0]  # real seconds since start, for the indicator blink
 
 
 def _now_ms():
@@ -88,12 +97,13 @@ def _dt_s(now):
 
 
 def _clock_text():
+    """Today's date and the time, as ("9/30", "9:59 PM")."""
     try:
         t = time.localtime()
         hour = t[3] % 12 or 12
-        return "%d:%02d %s" % (hour, t[4], "PM" if t[3] >= 12 else "AM")
+        return "%d/%d" % (t[1], t[2]), "%d:%02d %s" % (hour, t[4], "PM" if t[3] >= 12 else "AM")
     except Exception:
-        return "9:59 PM"
+        return "9/30", "9:59 PM"
 
 
 # Set CAR_CLUSTER_FREEZE=1 to hold the dials still for layout work at the REPL.
@@ -103,9 +113,12 @@ _FREEZE = env_bool("CAR_CLUSTER_FREEZE", False)
 def _on_tick(timer):
     if _ui is None or _vehicle is None or _FREEZE:
         return
-    _vehicle.tick(_dt_s(_now_ms()))
-    _ui.set_clock(_clock_text())
-    _ui.update()
+    dt = _dt_s(_now_ms())
+    _wall[0] += dt
+    _vehicle.tick(dt * SPEEDUP)
+    date, clock = _clock_text()
+    _ui.set_clock(clock, date)
+    _ui.update(_wall[0])
 
 
 def freeze(static=True):
@@ -160,7 +173,8 @@ def build_ui():
         _vehicle = Vehicle()
         scr = lv.screen_active()
         _ui = Cluster(_vehicle, scr)
-        _ui.set_clock(_clock_text())
+        date, clock = _clock_text()
+        _ui.set_clock(clock, date)
         _listen_for_keys(scr)
         _last_ms = _now_ms()
         _timer = lv.timer_create(_on_tick, 40, None)

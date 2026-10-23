@@ -173,6 +173,8 @@ class Cluster:
         self._blink = None
         self._gear = None
         self._clock = None
+        self._date = None
+        self._caps = None
 
         scr.set_style_bg_color(_color(BG), 0)
         scr.set_style_bg_opa(lv.OPA.COVER, 0)
@@ -202,7 +204,7 @@ class Cluster:
         # Status line: date, clock, outside temperature.
         self.date = self._text(scr, "9/30", lv.font_montserrat_16, DIM)
         self.clock = self._text(scr, "9:59 PM", lv.font_montserrat_24, TEXT)
-        self.temp = self._text(scr, "54~61\u00b0F", lv.font_montserrat_16, DIM)
+        self.temp = self._text(scr, "75\u00b0F", lv.font_montserrat_16, DIM)
         self.clock.align(lv.ALIGN.TOP_MID, 0, H * 5 // 100)
         self.date.align_to(self.clock, lv.ALIGN.OUT_LEFT_MID, -W * 5 // 100, 0)
         self.temp.align_to(self.clock, lv.ALIGN.OUT_RIGHT_MID, W * 5 // 100, 0)
@@ -226,7 +228,7 @@ class Cluster:
             track=TRACK,
             bg=BG,
             unit="mph",
-            caption="13488 mi",
+            caption="0.0 mi",
         )
         self.speed.set_pos(W * 27 // 100 - size // 2, cy - size // 2)
         self.power = Ring(
@@ -276,20 +278,27 @@ class Cluster:
         lbl.set_style_text_letter_space(1, 0)
         return lbl
 
-    def set_clock(self, text):
+    def set_clock(self, text, date=None):
         if text != self._clock:
             self._clock = text
             self.clock.set_text(text)
+        if date is not None and date != self._date:
+            self._date = date
+            self.date.set_text(date)
+            self.date.align_to(self.clock, lv.ALIGN.OUT_LEFT_MID, -self.W * 5 // 100, 0)
 
-    def update(self):
+    def update(self, wall_s=0.0):
         v = self.vehicle
         self.speed.set_value(v.speed_mph)
         self.power.set_value(abs(v.power_kw))
-        self.speed.set_caption("%d mi" % int(v.odometer_mi))
-        self.power.set_caption("%.1f mi/kWh" % v.mi_per_kwh)
-        self.power.unit.set_text("kW regen" if v.power_kw < -0.5 else "kW")
+        caps = ("%.1f" % v.trip_mi, "%.1f" % v.mi_per_kwh, v.power_kw < -0.5)
+        if caps != self._caps:
+            self._caps = caps
+            self.speed.set_caption("%s mi" % caps[0])
+            self.power.set_caption("%s mi/kWh" % caps[1])
+            self.power.unit.set_text("kW regen" if caps[2] else "kW")
 
-        on = v.blink_on()
+        on = v.blink_on(wall_s)
         state = (v.left and on, v.right and on)
         if state != self._blink:
             self._blink = state
