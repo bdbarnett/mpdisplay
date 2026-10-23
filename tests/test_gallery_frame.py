@@ -204,8 +204,8 @@ class TestGalleryFrame(unittest.TestCase):
 
     def test_car_cluster_forces_its_browser_resolution(self):
         source = _read(ROOT / "lib" / "examples" / "car_cluster" / "car_cluster.py")
-        assert 'env_set("PYDEVICES_WIDTH", "1024")' in source
-        assert 'env_set("PYDEVICES_HEIGHT", "512")' in source
+        assert 'env_set("PYDEVICES_WIDTH", "800")' in source
+        assert 'env_set("PYDEVICES_HEIGHT", "480")' in source
         assert 'if env_get("PYDEVICES_WIDTH")' not in source
         assert 'if env_get("PYDEVICES_HEIGHT")' not in source
 
