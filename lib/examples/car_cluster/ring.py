@@ -93,8 +93,8 @@ class Ring:
         sweep=270,
         unit="",
         caption="",
-        ticks=54,
-        major_every=6,
+        minor=None,
+        major=None,
     ):
         self.size = size
         self.stops = stops
@@ -141,7 +141,13 @@ class Ring:
         self._buf = lv.draw_buf_create(size, size, lv.COLOR_FORMAT.ARGB8888, 0)
         self.canvas.set_draw_buf(self._buf)
         self.canvas.fill_bg(_color(0x000000), lv.OPA.TRANSP)
-        self._paint(track, ticks, major_every)
+        # Ticks sit at round values: one every ``minor`` units, a longer one
+        # every ``major``. Left unset, the dial gets ten major divisions.
+        if minor is None:
+            minor = self.vmax / 50.0
+        if major is None:
+            major = self.vmax / 10.0
+        self._paint(track, minor, major)
 
         # The cover: the empty part of the track, painted over the sweep.
         self.cover = lv.arc(self.obj)
@@ -216,7 +222,7 @@ class Ring:
 
     # -- art ----------------------------------------------------------------
 
-    def _paint(self, track, ticks, major_every):
+    def _paint(self, track, minor, major):
         layer = lv.layer_t()
         self.canvas.init_layer(layer)
         cx, cy, r = self.cx, self.cy, self.radius
@@ -263,14 +269,16 @@ class Ring:
         line.round_start = True
         line.round_end = True
         r_out = self.size // 2 - 2
+        ticks = int(round(self.vmax / minor))
+        per_major = max(1, int(round(major / minor)))
         for i in range(ticks + 1):
             t = i / ticks
             a = math.radians(self.start + self.sweep * t)
-            major = i % major_every == 0
-            length = max(8, self.size // 24) if major else max(4, self.size // 48)
-            line.width = 3 if major else 2
+            is_major = i % per_major == 0
+            length = max(8, self.size // 24) if is_major else max(4, self.size // 48)
+            line.width = 3 if is_major else 2
             line.color = _color(gradient_at(self.stops, t))
-            line.opa = 230 if major else 110
+            line.opa = 230 if is_major else 110
             line.p1 = lv.point_precise_t({"x": cx + math.cos(a) * r_out, "y": cy + math.sin(a) * r_out})
             line.p2 = lv.point_precise_t(
                 {"x": cx + math.cos(a) * (r_out - length), "y": cy + math.sin(a) * (r_out - length)}
