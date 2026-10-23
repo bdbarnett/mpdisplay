@@ -14,6 +14,9 @@ package's own demos living beside that package.
 - An MJPEG video player that plays a file from SD through `jpegio` onto any
   display, with its frame rate measured on an S3 with an SPI panel and on the
   P4's hardware decoder, and the ffmpeg line that makes the file.
+- car_cluster: redraw the ring gauges and the hood with real radial gradients
+  and vector art once the LVGL bindings support them. Waits on lvgl-bindings
+  [#38](https://github.com/PyDevices/lvgl-bindings/issues/38) and [#39](https://github.com/PyDevices/lvgl-bindings/issues/39), and on vector graphics in the build.
 
 ## Layout
 
